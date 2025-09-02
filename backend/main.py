@@ -86,7 +86,7 @@ def health():
 @app.post("/api/mcqs/generate")
 async def generate_mcqs(req: MCQRequest):
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(req.topic, req.count, req.difficulty)
         resp = model.generate_content(prompt)
         raw = resp.text or ""
