@@ -19,6 +19,7 @@ app = FastAPI(title="Placify Aptitude Backend", version="0.2.0")
 # ---- CORS ----
 allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 allowed = [o.strip() for o in allowed if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed,
@@ -37,21 +38,26 @@ class MCQRequest(BaseModel):
 def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
     difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
     return f"""
-Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
-{difficulty_line}
-Return STRICT JSON (no markdown) as a list of objects with fields:
-- "question" (string)
-- "options" (array of exactly 4 distinct strings)
-- "answer" (one of the options, string)
+    Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
+    {difficulty_line}
+    Return STRICT JSON (no markdown, no text outside JSON) as a list of objects with fields:
+    - "question" (string)
+    - "options" (array of exactly 4 distinct strings)
+    - "answer" (one of the options, string)
+    - "explanation" (string explaining why the answer is correct in 2–3 lines)
 
-Example:
-[
-  {{"question":"...","options":["A","B","C","D"],"answer":"B"}}
-]
-"""
+    Example:
+    [
+      {{
+        "question":"What is 2+2?",
+        "options":["2","3","4","5"],
+        "answer":"4",
+        "explanation":"2+2 equals 4 because addition combines two numbers."
+      }}
+    ]
+    """
 
 def parse_mcqs(raw: str, count: int):
-    # Extract JSON list
     m = re.search(r"\[\s*\{.*?\}\s*\]", raw, re.S)
     if not m:
         m2 = re.search(r"\{.*\}", raw, re.S)
@@ -63,8 +69,6 @@ def parse_mcqs(raw: str, count: int):
         arr_text = m.group(0)
 
     data = json.loads(arr_text)
-
-    # Minimal validation
     cleaned = []
     for q in data:
         if (
@@ -74,7 +78,12 @@ def parse_mcqs(raw: str, count: int):
             and isinstance(q.get("answer"), str)
             and q["answer"] in q["options"]
         ):
-            cleaned.append(q)
+            cleaned.append({
+                "question": q["question"],
+                "options": q["options"],
+                "answer": q["answer"],
+                "explanation": q.get("explanation", "No explanation provided.")
+            })
 
     return cleaned[:count]
 
@@ -99,11 +108,9 @@ async def generate_mcqs(req: MCQRequest):
 
 @app.post("/api/mcqs/test")
 async def generate_test(req: MCQRequest = Body(...)):
-    """
-    Always generate a test of 20 MCQs for the given topic/subtitle.
-    """
+    """ Always generate a test of 20 MCQs for the given topic/subtitle. """
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(req.topic, 20, req.difficulty)
         resp = model.generate_content(prompt)
         raw = resp.text or ""
