@@ -119,9 +119,9 @@ function Home() {
                 bg: "https://img.freepik.com/free-photo/futuristic-new-year-s-eve-celebration_23-2151084728.jpg",
               },
             ].map((feature, index) => (
-              <div key={index} className="group [perspective:1000px]">
+              <div key={index} className="group [perspective:1000px] h-full">
                 {/* Card container with 3D effect */}
-                <div className="relative h-80 w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                <div className="relative h-80 w-full hove:shadow-2xl transition-shadow transform hover:-translate-y-2 border duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                   
                   {/* Front Side */}
                   <div

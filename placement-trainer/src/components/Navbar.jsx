@@ -65,7 +65,13 @@ const Navbar = ({ toggleSidebar }) => {
             alt="User"
             className="w-10 h-10 rounded-full border border-gray-300"
           />
-          {user && <span className="font-semibold">{user.email || "Student"}</span>}
+            {user && <span className="font-semibold">
+  {user?.fname && user?.lname
+    ? `${user.fname} ${user.lname}`
+    : user?.email || "Student"}
+</span>
+
+          }
         </button>
 
         {dropdownOpen && (

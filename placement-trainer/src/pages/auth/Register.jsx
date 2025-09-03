@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -10,11 +9,10 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPwd, setConfirmPwd] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!fname || !lname || !email || !password || !confirmPwd) {
+    if (!email || !password || !confirmPwd) {
       setError("All fields are required");
       return;
     }
@@ -22,17 +20,9 @@ export default function Register() {
       setError("Passwords do not match");
       return;
     }
-
     setError("");
-    setLoading(true);
-    try {
-      await registerUser(fname, lname, email, password);
-      navigate("/login");
-    } catch (err) {
-      setError(err.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
+    // No backend: just redirect to login
+    navigate("/login");
   };
 
   return (
@@ -48,19 +38,17 @@ export default function Register() {
             <input
               type="text"
               className="w-full border border-gray-300 rounded px-3 py-2"
-              value={fname}
-              onChange={(e) => setName(e.target.value)}
+                value={fname}
+                onChange={(e) => setName(e.target.value)}
               placeholder="First Name"
-              required
             />
             <label className="block mb-1 font-medium">Last Name</label>
             <input
               type="text"
               className="w-full border border-gray-300 rounded px-3 py-2"
-              value={lname}
-              onChange={(e) => setLastName(e.target.value)}
+                value={lname}
+                onChange={(e) => setLastName(e.target.value)}
               placeholder="Last Name"
-              required
             />
             <label className="block mb-1 font-medium">Email</label>
             <input
@@ -69,7 +57,6 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              required
             />
           </div>
           <div>
@@ -80,7 +67,6 @@ export default function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="********"
-              required
             />
           </div>
           <div>
@@ -91,15 +77,13 @@ export default function Register() {
               value={confirmPwd}
               onChange={(e) => setConfirmPwd(e.target.value)}
               placeholder="********"
-              required
             />
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition disabled:opacity-50"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
           >
-            {loading ? "Registering..." : "Register"}
+            Register
           </button>
         </form>
         <p className="mt-4 text-center text-sm">

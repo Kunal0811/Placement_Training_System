@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import userImage from "../../assets/user-3296.png"; // Check this path exists
 import { useAuth } from "../../context/AuthContext";
-import { loginUser } from "../../api";
 
 export default function Login() {
   const { login } = useAuth();
@@ -9,26 +10,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Email and password are required");
       return;
     }
-
     setError("");
-    setLoading(true);
-    try {
-      const data = await loginUser(email, password);
-      login({ email: data.email, token: data.token });
-      navigate("/");
-    } catch (err) {
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
+    // Simulate login
+    login({ email });
+    navigate("/");
   };
 
   return (
@@ -45,7 +37,6 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              required
             />
           </div>
           <div>
@@ -56,19 +47,17 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="********"
-              required
             />
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            {loading ? "Logging in..." : "Login"}
+            Login
           </button>
         </form>
         <p className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
             Register here
           </Link>
