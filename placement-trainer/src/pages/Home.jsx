@@ -119,7 +119,7 @@ function Home() {
                 bg: "https://img.freepik.com/free-photo/futuristic-new-year-s-eve-celebration_23-2151084728.jpg",
               },
             ].map((feature, index) => (
-              <div key={index} className="group [perspective:1000px] h-full">
+              <div key={index} className="group [perspective:1000px]">
                 {/* Card container with 3D effect */}
                 <div className="relative h-80 w-full hove:shadow-2xl transition-shadow transform hover:-translate-y-2 border duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                   
@@ -128,7 +128,7 @@ function Home() {
                     className="absolute inset-0 rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-center text-center bg-cover bg-center [backface-visibility:hidden]"
                     style={{ backgroundImage: `url(${feature.bg})` }}
                   >
-                    <div className="bg-black/50 p-4 rounded-lg">
+                    <div className="bg-black/50 p-4 rounded-lg animate-pulse">
                       <span className="text-4xl mb-3">{feature.icon}</span>
                       <h3 className="text-xl font-bold text-white">{feature.title}</h3>
                     </div>

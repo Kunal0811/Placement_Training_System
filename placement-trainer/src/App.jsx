@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import TestPage from "./pages/Aptitude/TestPage";
 import Dashboard from "./pages/Dashboard";
+import CNotes from "./pages/Technical/CNotes";
 
 // ---- Auth Context ----
 export const AuthContext = createContext();
@@ -113,6 +114,14 @@ function App() {
                   element={
                     <ProtectedRoute isLoggedIn={!!user}>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/technical/cnotes"
+                  element={
+                    <ProtectedRoute isLoggedIn={!!user}>
+                      <CNotes />
                     </ProtectedRoute>
                   }
                 />

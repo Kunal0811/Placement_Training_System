@@ -47,7 +47,7 @@ const syllabus = [
           "Marked Price = Cost Price + Profit",
         ],
         videos: [
-          "https://www.youtube.com/embed/QxUwTHG4JGM",
+          "https://youtube.com/embed/_cW7_BUDYcw",
         ],
       },
       {
