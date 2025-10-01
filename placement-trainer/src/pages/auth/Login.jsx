@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import userImage from "../../assets/user-3296.png"; // Check this path exists
 import { useAuth } from "../../context/AuthContext";
+import API_BASE from "../../api";
 
 export default function Login() {
   const { login } = useAuth();
@@ -11,17 +12,37 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Email and password are required");
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!email || !password) {
+    setError("Email and password are required");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.detail || "Invalid credentials");
       return;
     }
-    setError("");
-    // Simulate login
-    login({ email });
-    navigate("/");
-  };
+
+    // Login successful: save user info to context or localStorage
+    login(data.user);  // assuming your AuthContext has login()
+    navigate("/");     // redirect to homepage/dashboard
+  } catch (err) {
+    console.error(err);
+    setError("Server error, please try again later");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">

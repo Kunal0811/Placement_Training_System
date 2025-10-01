@@ -1,10 +1,8 @@
 // src/pages/Aptitude/AptitudeNotes.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-
 
 const syllabus = [
   {
@@ -201,7 +199,6 @@ const syllabus = [
   },
 ];
 
-
 export default function AptitudeNotes({ section }) {
   const [open, setOpen] = useState({});
   const [mcqs, setMcqs] = useState([]);
@@ -219,7 +216,7 @@ export default function AptitudeNotes({ section }) {
       const res = await fetch(`${API_BASE}/api/mcqs/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, count: 5 }), // you can add difficulty too
+        body: JSON.stringify({ topic, count: 5 }),
       });
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -285,7 +282,7 @@ export default function AptitudeNotes({ section }) {
                               src={video}
                               title={`Video ${vIdx}`}
                               className="w-full h-full rounded-lg border"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
                               allowFullScreen
                             />
                           </div>
@@ -293,7 +290,6 @@ export default function AptitudeNotes({ section }) {
                       </div>
                     )}
 
-                
                     {/* Start Test Button */}
                     <div className="mt-4">
                       <Link
@@ -302,7 +298,6 @@ export default function AptitudeNotes({ section }) {
                       >
                         🚀 Start Test
                       </Link>
-
                     </div>
                   </div>
                 )}
