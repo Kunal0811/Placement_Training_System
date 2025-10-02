@@ -1,18 +1,14 @@
-import React from "react";
+// ProtectedRoute.jsx
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute({ isLoggedIn, children }) {
+export default function ProtectedRoute({ children }) {
   const { user } = useAuth();
+
+  // If no user in context, redirect to login
   if (!user) {
-    return (
-      <div style={{ padding: 20, textAlign: "center" }}>
-        <h2>Access Denied</h2>
-        <p>You must be logged in to view this page.</p>
-      </div>
-      
-    );
-    return <Navigate to="/login" replace />; // Redirect to home if not logged in
+    return <Navigate to="/login" replace />;
   }
+
   return children;
 }

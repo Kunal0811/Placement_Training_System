@@ -43,7 +43,6 @@ export default function Login() {
   }
 };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-md w-full bg-white p-8 rounded shadow">
@@ -83,6 +82,12 @@ export default function Login() {
             Register here
           </Link>
         </p>
+        <p className="mt-2 text-center text-sm">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline">
+            Forgot Password?
+          </Link>
+        </p>
+
       </div>
     </div>
   );

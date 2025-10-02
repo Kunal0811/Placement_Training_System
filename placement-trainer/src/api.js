@@ -10,6 +10,11 @@ export async function registerUser(userData) {
   return res.data;
 }
 
+export async function getUserDetails(userId) {
+  const res = await axios.get(`${API_BASE}/api/user/${userId}`);
+  return res.data;
+}
+
 export async function loginUser(credentials) {
   // credentials = { email, password }
   const res = await axios.post(`${API_BASE}/api/login`, credentials);

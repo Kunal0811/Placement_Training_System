@@ -8,8 +8,14 @@ from pydantic import BaseModel, EmailStr
 from dotenv import load_dotenv
 import google.generativeai as genai
 from passlib.hash import argon2
+import secrets
+from datetime import datetime, timedelta
+import smtplib
+from email.message import EmailMessage
+from fastapi import Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-# Load env
+# Load environment variables
 load_dotenv()
 
 # Configure Gemini AI
@@ -30,7 +36,6 @@ app = FastAPI(title="Placify Backend", version="1.0.0")
 # ---- CORS ----
 allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 allowed = [o.strip() for o in allowed if o.strip()]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed,
@@ -63,12 +68,35 @@ class SubmitTest(BaseModel):
     topic: str
     mode: str
     score: int
-    total: int = 20  # Default to 20
+    total: int = 20  # Default total
 
 class ModeStatusRequest(BaseModel):
     userId: int
     topic: str
     mode: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordWithIDRequest(BaseModel):
+    user_id: int
+    password: str
+
+class VerifyOTPRequest(BaseModel):
+    email: EmailStr
+    otp: str
+
+def send_email(to_email: str, subject: str, body: str):
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = os.getenv("EMAIL_USER")
+    msg["To"] = to_email
+    msg.set_content(body)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
+        smtp.send_message(msg)
+
 
 # ---- Utils ----
 def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
@@ -82,6 +110,26 @@ def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> st
     - "answer" (one of the options, string)
     - "explanation" (string explaining why the answer is correct in 2–3 lines)
     """
+
+# ---- Utils ----
+def validate_password(password: str):
+    """
+    Validate password strength:
+    - Minimum 8 characters
+    - At least 1 uppercase, 1 lowercase, 1 digit, 1 special character
+    """
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    if not re.search(r"[A-Z]", password):
+        return False, "Password must contain at least one uppercase letter"
+    if not re.search(r"[a-z]", password):
+        return False, "Password must contain at least one lowercase letter"
+    if not re.search(r"\d", password):
+        return False, "Password must contain at least one digit"
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        return False, "Password must contain at least one special character"
+    return True, ""
+
 
 def parse_mcqs(raw: str, count: int):
     m = re.search(r"\[\s*\{.*?\}\s*\]", raw, re.S)
@@ -121,12 +169,81 @@ def parse_mcqs(raw: str, count: int):
 def health():
     return {"status": "ok"}
 
+# ---- Forgot Password ----
+@app.post("/api/forgot-password")
+def forgot_password(req: ForgotPasswordRequest):
+    cursor.execute("SELECT id, fname FROM users WHERE email=%s", (req.email,))
+    user = cursor.fetchone()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Generate 6-digit OTP
+    otp = f"{secrets.randbelow(1000000):06}"
+    expiry = datetime.now() + timedelta(minutes=10)
+
+    # Save OTP to DB
+    cursor.execute(
+        "INSERT INTO password_resets (user_id, otp, expires_at) VALUES (%s,%s,%s)",
+        (user["id"], otp, expiry)
+    )
+    db.commit()
+
+    # Send OTP email
+    subject = "Your OTP for Password Reset"
+    body = f"Hello {user['fname']},\n\nYour OTP for password reset is: {otp}\nIt expires in 10 minutes."
+    send_email(req.email, subject, body)
+
+    return {"message": "OTP sent to your email"}
+
+
+@app.post("/api/verify-otp")
+def verify_otp(req: VerifyOTPRequest):
+    cursor.execute(
+        """
+        SELECT pr.*, u.id as user_id FROM password_resets pr
+        JOIN users u ON pr.user_id = u.id
+        WHERE u.email=%s AND pr.otp=%s AND pr.expires_at > NOW()
+        ORDER BY pr.id DESC LIMIT 1
+        """,
+        (req.email, req.otp)
+    )
+    record = cursor.fetchone()
+    if not record:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+
+    return {"message": "OTP verified", "user_id": record["user_id"]}
+
+
+
+@app.post("/api/reset-password")
+def reset_password_with_otp(req: ResetPasswordWithIDRequest):
+    valid, msg = validate_password(req.password)
+    if not valid:
+        raise HTTPException(status_code=400, detail=msg)
+
+    hashed_pwd = argon2.hash(req.password)
+    cursor.execute(
+        "UPDATE users SET password=%s WHERE id=%s",
+        (hashed_pwd, req.user_id)
+    )
+    # Delete OTP record after use
+    cursor.execute("DELETE FROM password_resets WHERE user_id=%s", (req.user_id,))
+    db.commit()
+
+    return {"message": "Password reset successful"}
+
 # ---- Auth Routes ----
 @app.post("/api/register")
 def register_user(user: RegisterUser):
+    # Validate password strength
+    valid, msg = validate_password(user.password)
+    if not valid:
+        raise HTTPException(status_code=400, detail=msg)
+
     cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
     if cursor.fetchone():
         raise HTTPException(status_code=400, detail="User already exists")
+
     hashed_pwd = argon2.hash(user.password)
     cursor.execute(
         "INSERT INTO users (fname, lname, email, year, field, password) VALUES (%s, %s, %s, %s, %s, %s)",
@@ -135,6 +252,7 @@ def register_user(user: RegisterUser):
     db.commit()
     return {"message": "User registered successfully"}
 
+
 @app.post("/api/login")
 def login_user(user: LoginUser):
     cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
@@ -142,6 +260,23 @@ def login_user(user: LoginUser):
     if not record or not argon2.verify(user.password, record["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"message": "Login successful", "user": record}
+
+@app.get("/api/user/{user_id}")
+def get_user_details(user_id: int):
+    # Fetch user info
+    cursor.execute("SELECT id, fname, lname, email, year, field FROM users WHERE id=%s", (user_id,))
+    user = cursor.fetchone()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Fetch user's test summary
+    cursor.execute(
+        "SELECT topic, mode, score, total, created_at FROM test_attempts WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,)
+    )
+    tests = cursor.fetchall()
+
+    return {"user": user, "tests": tests}
 
 # ---- MCQ Generation ----
 @app.post("/api/mcqs/generate")
@@ -162,7 +297,7 @@ async def generate_mcqs(req: MCQRequest):
 async def generate_test(req: MCQRequest):
     try:
         model = genai.GenerativeModel("gemini-2.5-flash")
-        count = 20
+        count = req.count or 20
         prompt = generate_prompt(req.topic, count, req.difficulty)
         resp = model.generate_content(prompt)
         raw = resp.text or ""
@@ -175,21 +310,21 @@ async def generate_test(req: MCQRequest):
 
 # ---- Test submission ----
 @app.post("/api/test/submit")
-def submit_test(data: SubmitTest):
+def submit_test(data: SubmitTest = Body(...)):
     # Validate user exists
     cursor.execute("SELECT id FROM users WHERE id=%s", (data.user_id,))
     if not cursor.fetchone():
         raise HTTPException(status_code=404, detail="User not found")
 
     cursor.execute(
-        "INSERT INTO user_tests (user_id, topic, mode, score, total) VALUES (%s,%s,%s,%s,%s)",
+        "INSERT INTO test_attempts (user_id, topic, mode, score, total) VALUES (%s,%s,%s,%s,%s)",
         (data.user_id, data.topic, data.mode, data.score, data.total)
     )
     db.commit()
 
     next_mode = None
-    passing_score = int(data.total * 0.75)  # 75% to pass
-    
+    passing_score = int(data.total * 0.75)
+
     if data.score >= passing_score:
         if data.mode == "easy":
             next_mode = "moderate"
@@ -205,21 +340,13 @@ def mode_status(req: ModeStatusRequest):
     if req.mode == "easy":
         return {"unlocked": True}
     
-    # Check if previous mode was passed
-    prev_mode_completed = False
+    prev_mode = "easy" if req.mode == "moderate" else "moderate"
     passing_score = 15  # 75% of 20
-    
-    if req.mode == "moderate":
-        cursor.execute(
-            "SELECT * FROM user_tests WHERE user_id=%s AND topic=%s AND mode='easy' AND score>=%s ORDER BY id DESC LIMIT 1",
-            (req.userId, req.topic, passing_score)
-        )
-        prev_mode_completed = bool(cursor.fetchone())
-    elif req.mode == "hard":
-        cursor.execute(
-            "SELECT * FROM user_tests WHERE user_id=%s AND topic=%s AND mode='moderate' AND score>=%s ORDER BY id DESC LIMIT 1",
-            (req.userId, req.topic, passing_score)
-        )
-        prev_mode_completed = bool(cursor.fetchone())
-    
+
+    cursor.execute(
+        "SELECT * FROM test_attempts WHERE user_id=%s AND topic=%s AND mode=%s AND score>=%s ORDER BY id DESC LIMIT 1",
+        (req.userId, req.topic, prev_mode, passing_score)
+    )
+    prev_mode_completed = bool(cursor.fetchone())
+
     return {"unlocked": prev_mode_completed}
