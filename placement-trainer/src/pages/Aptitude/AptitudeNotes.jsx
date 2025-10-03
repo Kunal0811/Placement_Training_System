@@ -293,7 +293,7 @@ export default function AptitudeNotes({ section }) {
                     {/* Start Test Button */}
                     <div className="mt-4">
                       <Link
-                        to={`/aptitude/test/${encodeURIComponent(topic.subtitle)}`}
+                        to={`/aptitude/modes/${encodeURIComponent(topic.subtitle)}`}
                         className="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
                       >
                         🚀 Start Test

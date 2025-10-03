@@ -19,6 +19,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
+import ModeSelection from "./pages/Aptitude/ModeSelection.jsx"; // Import ModeSelection
 
 
 // Wrapper to extract :section param
@@ -101,7 +102,15 @@ function App() {
                 }
               />
               <Route
-                path="/aptitude/test/:topic"
+                path="/aptitude/modes/:topic"
+                element={
+                  <ProtectedRoute>
+                    <ModeSelection />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/aptitude/test/:topic/:mode"
                 element={
                   <ProtectedRoute>
                     <TestPage />

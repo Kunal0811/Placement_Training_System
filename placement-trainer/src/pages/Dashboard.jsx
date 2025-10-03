@@ -15,23 +15,26 @@ import {
   LineChart,
   Line,
 } from "recharts";
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
 
 export default function Dashboard() {
   const { user: authUser } = useAuth(); // get user from context
   const [user, setUser] = useState(null);
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    if (!authUser) return; // Shouldn't happen if ProtectedRoute works
+    if (!authUser) return;
 
     async function fetchUser() {
       try {
-        const data = await getUserDetails(authUser.id);
+        // Pass the current page to the API call
+        const data = await getUserDetails(authUser.id, page);
         setUser(data.user);
-        setTests(data.tests || []);
+
+        // When loading more pages, you would append the new tests instead of replacing them
+        const sortedTests = (data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        setTests(sortedTests);
       } catch (err) {
         console.error(err);
       } finally {
@@ -40,7 +43,7 @@ export default function Dashboard() {
     }
 
     fetchUser();
-  }, [authUser]);
+  }, [authUser, page]);
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (!user) return <p className="text-center mt-10">No user data found.</p>;
@@ -90,22 +93,19 @@ export default function Dashboard() {
     });
   });
 
-  // Line Chart Data → Attempt-wise progress
-  const lineChartData = [];
-  const topicModeAttempts = {};
+  // --- Start of New Changes: Line Chart Data Processing ---
+  
+  // Group tests by topic for separate line charts
+  const testsByTopic = tests.reduce((acc, test) => {
+    if (!acc[test.topic]) {
+      acc[test.topic] = [];
+    }
+    acc[test.topic].push(test);
+    return acc;
+  }, {});
 
-  tests.forEach((test) => {
-    const key = `${test.topic}_${test.mode}`;
-    if (!topicModeAttempts[key]) topicModeAttempts[key] = 0;
-    topicModeAttempts[key] += 1;
+  // --- End of New Changes ---
 
-    lineChartData.push({
-      topic: test.topic,
-      mode: test.mode,
-      score: test.score,
-      attempt: topicModeAttempts[key],
-    });
-  });
 
   return (
     <div className="p-4">
@@ -131,7 +131,7 @@ export default function Dashboard() {
       
 
       {/* Test History */}
-      <div className="bg-white p-6 rounded shadow">
+      <div className="bg-white p-6 rounded shadow mb-6">
         <h2 className="text-xl font-semibold mb-2">Test History</h2>
         {tests.length === 0 ? (
           <p>No tests attempted yet.</p>
@@ -147,8 +147,8 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {tests.map((test) => (
-                <tr key={test.id}>
+              {tests.map((test, index) => (
+                <tr key={index}>
                   <td className="border-b p-2">{test.topic}</td>
                   <td className="border-b p-2">{test.mode}</td>
                   <td className="border-b p-2">{test.score}</td>
@@ -188,83 +188,88 @@ export default function Dashboard() {
             </ResponsiveContainer>
           )}
         </div>
-
-        {/* Line Chart */}
-        {/* Line Charts: Attempt-wise Progress Per Topic */}
-<div className="bg-white p-6 rounded shadow mt-6">
-  <h2 className="text-xl font-semibold mb-4">Progress by Topic & Mode</h2>
-
-  {Object.keys(
-    tests.reduce((acc, test) => {
-      if (!acc[test.topic]) acc[test.topic] = [];
-      acc[test.topic].push(test);
-      return acc;
-    }, {})
-  ).map((topic) => {
-    // Get attempts data for this topic
-    const topicTests = tests.filter((t) => t.topic === topic);
-
-    // Prepare attempt-wise data (Easy, Moderate, Hard separate)
-    const attemptTracker = { easy: 0, moderate: 0, hard: 0 };
-    const topicLineData = topicTests.map((t) => {
-      const mode = t.mode.toLowerCase();
-      attemptTracker[mode] += 1;
-      return {
-        attempt: attemptTracker[mode],
-        mode,
-        score: t.score,
-      };
-    });
-
-    // Split into datasets for each mode
-    const easyData = topicLineData.filter((d) => d.mode === "easy");
-    const moderateData = topicLineData.filter((d) => d.mode === "moderate");
-    const hardData = topicLineData.filter((d) => d.mode === "hard");
-
-    return (
-      <div key={topic} className="mb-8">
-        <h3 className="text-lg font-semibold mb-2">{topic}</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="attempt" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-
-            {/* Lines per mode */}
-            <Line
-              type="monotone"
-              dataKey="score"
-              data={easyData}
-              stroke="#82ca9d"
-              name="Easy"
-              dot
-            />
-            <Line
-              type="monotone"
-              dataKey="score"
-              data={moderateData}
-              stroke="#8884d8"
-              name="Moderate"
-              dot
-            />
-            <Line
-              type="monotone"
-              dataKey="score"
-              data={hardData}
-              stroke="#FF8042"
-              name="Hard"
-              dot
-            />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
-    );
-  })}
-</div>
+      
+      {/* --- Start of New Changes: Line Chart Rendering --- */}
 
+      <div className="bg-white p-6 rounded shadow mt-6">
+        <h2 className="text-xl font-semibold mb-4">Progress by Topic & Mode</h2>
+        {Object.keys(testsByTopic).length === 0 ? (
+          <p>No test data available for progress charts.</p>
+        ) : (
+          Object.keys(testsByTopic).map((topic) => {
+            const topicTests = testsByTopic[topic];
+
+            const attemptData = { easy: [], moderate: [], hard: [] };
+            let attemptCounters = { easy: 0, moderate: 0, hard: 0 };
+            
+            topicTests.forEach(test => {
+                const mode = test.mode.toLowerCase();
+                attemptCounters[mode]++;
+                attemptData[mode].push({
+                    attempt: attemptCounters[mode],
+                    score: test.score
+                });
+            });
+
+            return (
+              <div key={topic} className="mb-8">
+                <h3 className="text-lg font-semibold mb-2">{topic}</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                        dataKey="attempt" 
+                        type="number" 
+                        allowDecimals={false}
+                        label={{ value: "Attempt Number", position: "insideBottom", offset: -5 }}
+                    />
+                    <YAxis label={{ value: "Score", angle: -90, position: "insideLeft" }} />
+                    <Tooltip />
+                    <Legend />
+
+                    {attemptData.easy.length > 0 && (
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        data={attemptData.easy}
+                        name="Easy"
+                        stroke="#82ca9d"
+                        strokeWidth={2}
+                        dot
+                      />
+                    )}
+                    {attemptData.moderate.length > 0 && (
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        data={attemptData.moderate}
+                        name="Moderate"
+                        stroke="#8884d8"
+                        strokeWidth={2}
+                        dot
+                      />
+                    )}
+                    {attemptData.hard.length > 0 && (
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        data={attemptData.hard}
+                        name="Hard"
+                        stroke="#FF8042"
+                        strokeWidth={2}
+                        dot
+                      />
+                    )}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })
+        )}
       </div>
+
+      {/* --- End of New Changes --- */}
     </div>
   );
 }

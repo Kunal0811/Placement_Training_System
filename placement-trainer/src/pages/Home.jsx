@@ -22,7 +22,6 @@ function Home() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Left Side: Heading + Description */}
               <div>
-                <span className="ml-3 text-xl font-bold text-yellow-600">Placify</span>
                 <h1 className="text-5xl font-bold mb-6 leading-tight transition-all">
                   
                   <span className="hover:drop-shadow-lg transition-all">

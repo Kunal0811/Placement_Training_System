@@ -4,10 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-const MODES = ["easy", "moderate", "hard"];
 
 export default function TestPage() {
-  const { topic } = useParams();
+  const { topic, mode } = useParams();
   const navigate = useNavigate();
 
   const { user } = useAuth();
@@ -17,47 +16,20 @@ export default function TestPage() {
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [mode, setMode] = useState("easy");
-  const [modeUnlocked, setModeUnlocked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Redirect if not logged in
-  if (!userId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg text-red-600">Please login to take tests.</p>
-      </div>
-    );
-  }
-
-  // Check mode unlock status
   useEffect(() => {
-    const checkMode = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/test/mode-status`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, topic, mode }),
-        });
-        const data = await res.json();
-        console.log("Mode status response:", data);
-        setModeUnlocked(data.unlocked);
-      } catch (err) {
-        console.error("Error checking mode status:", err);
-        setModeUnlocked(false);
-      }
-    };
-    checkMode();
-  }, [userId, topic, mode]);
+    if (!userId) {
+      navigate('/login');
+    }
+  }, [userId, navigate]);
 
   // Fetch questions
   useEffect(() => {
-    const fetchQuestions = async () => {
-      if (!modeUnlocked) {
-        setLoading(false);
-        return;
-      }
+    if (!userId) return;
 
+    const fetchQuestions = async () => {
       setLoading(true);
       setQuestions([]);
       setAnswers({});
@@ -80,7 +52,7 @@ export default function TestPage() {
     };
 
     fetchQuestions();
-  }, [topic, mode, modeUnlocked]);
+  }, [topic, mode, userId]);
 
   const handleSelect = (qIdx, option) => {
     setAnswers({ ...answers, [qIdx]: option });
@@ -95,7 +67,7 @@ export default function TestPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE}/api/test/submit`, {
+      await fetch(`${API_BASE}/api/test/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -106,8 +78,6 @@ export default function TestPage() {
           total: questions.length,
         }),
       });
-      const data = await res.json();
-      console.log("Submitted:", data);
     } catch (err) {
       console.error("Error submitting test:", err);
       alert("Test submitted locally, but failed to save results.");
@@ -116,59 +86,33 @@ export default function TestPage() {
     }
   };
 
-  const handleNextMode = () => {
-    const currentIdx = MODES.indexOf(mode);
-    if (currentIdx < MODES.length - 1) {
-      setMode(MODES[currentIdx + 1]);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-xl text-gray-600">⏳Loading Test...</p>
-    </div>
-  );
-
-  if (!modeUnlocked) return (
-    <div className="max-w-2xl mx-auto p-6 mt-10">
-      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
-        <h3 className="text-lg font-semibold text-yellow-800 mb-2">Mode Locked</h3>
-        <p className="text-yellow-700">
-          Complete previous mode(s) with at least 75% to unlock <strong>{mode}</strong>.
-        </p>
-        {mode !== "easy" && (
-          <button
-            onClick={() => setMode("easy")}
-            className="mt-4 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg"
-          >
-            ← Start Easy Mode
-          </button>
-        )}
+  if (!userId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-red-600">Please login to take tests.</p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-2xl font-semibold text-blue-600">Generating your test...</p>
+          <p className="text-gray-500">Our AI is preparing your questions. This might take a moment.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 mb-10">
       <h1 className="text-3xl font-bold text-center text-blue-700 mb-2">
         🚀 {decodeURIComponent(topic)}
       </h1>
-
-      {/* Mode Selector */}
-      <div className="mb-4 flex justify-center items-center space-x-4">
-        <label className="font-semibold text-gray-700">Select Mode:</label>
-        <select
-          value={mode}
-          onChange={(e) => setMode(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-1"
-          disabled={!modeUnlocked || score !== null || submitting}
-        >
-          {MODES.map((m) => (
-            <option key={m} value={m}>{m.toUpperCase()}</option>
-          ))}
-        </select>
-      </div>
+      <p className="text-center text-gray-600 mb-6">
+        Mode: <span className="font-semibold text-blue-600">{mode.toUpperCase()}</span>
+      </p>
 
       {score === null ? (
         <>
@@ -209,7 +153,7 @@ export default function TestPage() {
             <h2 className="text-3xl font-bold text-green-700 mb-2">🎉 Test Complete!</h2>
             <p className="text-4xl font-bold text-blue-600">{score} / {questions.length}</p>
             <p className="text-lg text-gray-700 mt-2">
-              {score >= questions.length * 0.75 ? "🌟 Great job!" : "Keep practicing!"}
+              {score >= questions.length * 0.75 ? "🌟 Great job! You passed!" : "Keep practicing!"}
             </p>
           </div>
 
@@ -229,17 +173,11 @@ export default function TestPage() {
             );
           })}
 
-          {score >= questions.length * 0.75 && MODES.indexOf(mode) < MODES.length - 1 && (
-            <button onClick={handleNextMode} className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-semibold text-lg">
-              ▶️ Proceed to {MODES[MODES.indexOf(mode) + 1].toUpperCase()} Mode
-            </button>
-          )}
-
           <button
-            onClick={() => navigate(`/aptitude/notes/${encodeURIComponent(topic.split(' - ')[0] || topic)}`)}
+            onClick={() => navigate(`/aptitude/modes/${encodeURIComponent(topic)}`)}
             className="mt-4 w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 font-semibold"
           >
-            ← Back to Notes
+            ← Back to Levels
           </button>
         </div>
       )}

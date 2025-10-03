@@ -45,47 +45,59 @@ export default function ModeSelection() {
 
   const userId = user?.id;
 
+  // --- Start of New Changes ---
+
   useEffect(() => {
     const checkAllModes = async () => {
       if (!userId) return;
-
+  
       setLoading(true);
-      const status = {};
-      const scores = {};
-
+  
       try {
-        // Check all modes
-        for (const mode of MODES) {
-          // Check unlock status
-          const statusRes = await fetch(`${API_BASE}/api/test/mode-status`, {
+        const modePromises = MODES.map(mode => {
+          const statusPromise = fetch(`${API_BASE}/api/test/mode-status`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId, topic, mode: mode.id }),
-          });
-          const statusData = await statusRes.json();
-          status[mode.id] = statusData.unlocked;
-
-          // Get best score for this mode
-          const scoreRes = await fetch(`${API_BASE}/api/test/best-score`, {
+          }).then(res => res.json());
+  
+          const scorePromise = fetch(`${API_BASE}/api/test/best-score`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId, topic, mode: mode.id }),
-          });
-          const scoreData = await scoreRes.json();
-          scores[mode.id] = scoreData.best_score;
-        }
-
-        setModeStatus(status);
-        setBestScores(scores);
+          }).then(res => res.json());
+          
+          return Promise.all([statusPromise, scorePromise]).then(([statusData, scoreData]) => ({
+              modeId: mode.id,
+              unlocked: statusData.unlocked,
+              best_score: scoreData.best_score
+          }));
+        });
+  
+        const results = await Promise.all(modePromises);
+        
+        const newStatus = {};
+        const newScores = {};
+        results.forEach(result => {
+          newStatus[result.modeId] = result.unlocked;
+          newScores[result.modeId] = result.best_score;
+        });
+  
+        setModeStatus(newStatus);
+        setBestScores(newScores);
+  
       } catch (err) {
         console.error("Failed to check mode status:", err);
       } finally {
         setLoading(false);
       }
     };
-
+  
     checkAllModes();
   }, [userId, topic]);
+
+  // --- End of New Changes ---
+
 
   const handleModeClick = (modeId, isUnlocked) => {
     if (!isUnlocked) {
@@ -125,7 +137,7 @@ export default function ModeSelection() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4">⏳</div>
+          <div className="text-4xl mb-4 animate-spin">⏳</div>
           <p className="text-xl text-gray-600">Loading Levels...</p>
         </div>
       </div>
@@ -154,7 +166,10 @@ export default function ModeSelection() {
         {/* Mode Cards */}
         <div className="space-y-6">
           {MODES.map((mode) => {
-            const isUnlocked = modeStatus[mode.id] || false;
+            // --- Start of a Change ---
+            const isUnlocked = mode.id === 'easy' || (modeStatus[mode.id] || false);
+            // --- End of a Change ---
+            
             const bestScore = bestScores[mode.id];
             const isPassed = bestScore >= 15;
 

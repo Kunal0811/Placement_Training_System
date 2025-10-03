@@ -10,8 +10,10 @@ export async function registerUser(userData) {
   return res.data;
 }
 
-export async function getUserDetails(userId) {
-  const res = await axios.get(`${API_BASE}/api/user/${userId}`);
+export async function getUserDetails(userId, page = 1, limit = 20) {
+  const res = await axios.get(`${API_BASE}/api/user/${userId}`, {
+    params: { page, limit }
+  });
   return res.data;
 }
 
