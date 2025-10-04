@@ -222,6 +222,7 @@ export default function Dashboard() {
                         dataKey="attempt" 
                         type="number" 
                         allowDecimals={false}
+                        domain={[1, 'dataMax']} // This line fixes the axis
                         label={{ value: "Attempt Number", position: "insideBottom", offset: -5 }}
                     />
                     <YAxis label={{ value: "Score", angle: -90, position: "insideLeft" }} />

@@ -1,5 +1,5 @@
-// src/pages/TestPage.jsx
-import React, { useEffect, useState } from "react";
+// src/pages/Aptitude/TestPage.jsx
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
@@ -9,6 +9,10 @@ export default function TestPage() {
   const { topic, mode } = useParams();
   const navigate = useNavigate();
 
+  const isFinalTest = topic === "Final Aptitude Test";
+  const initialTime = isFinalTest ? 3600 : 1800; // 60 mins for final, 30 for others
+  const questionCount = isFinalTest ? 50 : 20;   // 50 questions for final, 20 for others
+
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -17,55 +21,102 @@ export default function TestPage() {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(initialTime);
+
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
+  const submissionLock = useRef(false);
+  const answersRef = useRef(answers);
+
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!userId) {
-      navigate('/login');
-    }
+    if (!userId) navigate('/login');
   }, [userId, navigate]);
 
   // Fetch questions
   useEffect(() => {
+    // Debugging: Log when the effect is triggered
+    console.log(`Fetching questions for topic: ${topic}, user: ${userId}`);
+
     if (!userId) return;
 
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchQuestions = async () => {
-      setLoading(true);
+      setLoading(true); // Ensure loading state is set immediately
       setQuestions([]);
       setAnswers({});
       setScore(null);
-
       try {
         const res = await fetch(`${API_BASE}/api/mcqs/test`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topic, count: 20, difficulty: mode }),
+          body: JSON.stringify({ topic, count: questionCount, difficulty: mode }),
+          signal,
         });
+
+        if (!res.ok) {
+            // Throw an error if the response is not successful
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
         const data = await res.json();
-        setQuestions(Array.isArray(data) ? data : []);
+        if (!signal.aborted) {
+          setQuestions(Array.isArray(data) ? data : []);
+          startTimeRef.current = Date.now();
+        }
       } catch (err) {
-        console.error("Error fetching questions:", err);
-        alert("Error loading test.");
+        if (err.name !== 'AbortError') {
+          console.error("Error fetching questions:", err);
+          alert("Error loading test. Please try again.");
+        }
       } finally {
-        setLoading(false);
+        if (!signal.aborted) setLoading(false);
       }
     };
 
     fetchQuestions();
-  }, [topic, mode, userId]);
+    return () => controller.abort();
+  }, [topic, mode, userId, questionCount]); // Keep questionCount here as it's a key parameter
+
+  // Timer logic
+  useEffect(() => {
+    if (loading || score !== null) {
+      clearInterval(timerRef.current);
+      return;
+    }
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timerRef.current);
+          submitTest(true);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [loading, score]);
 
   const handleSelect = (qIdx, option) => {
     setAnswers({ ...answers, [qIdx]: option });
   };
 
-  const submitTest = async () => {
+  const submitTest = async (autoSubmitted = false) => {
+    if (submissionLock.current) return;
+    submissionLock.current = true;
+    setSubmitting(true);
     let correct = 0;
     questions.forEach((q, idx) => {
-      if (answers[idx] === q.answer) correct++;
+      if (answersRef.current[idx] === q.answer) correct++;
     });
-    setScore(correct);
-
-    setSubmitting(true);
+    const endTime = Date.now();
+    const timeTaken = Math.round((endTime - startTimeRef.current) / 1000);
     try {
       await fetch(`${API_BASE}/api/test/submit`, {
         method: "POST",
@@ -76,16 +127,36 @@ export default function TestPage() {
           mode,
           score: correct,
           total: questions.length,
+          time_taken: timeTaken,
         }),
       });
+      setScore(correct);
+      if (autoSubmitted) {
+        alert("Time's up! Your test has been automatically submitted.");
+      }
     } catch (err) {
       console.error("Error submitting test:", err);
-      alert("Test submitted locally, but failed to save results.");
+      alert("Failed to submit test results. Please try again.");
+      submissionLock.current = false;
     } finally {
       setSubmitting(false);
     }
   };
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleBackNavigation = () => {
+      if (isFinalTest) {
+          navigate('/aptitude');
+      } else {
+          navigate(`/aptitude/modes/${encodeURIComponent(topic)}`);
+      }
+  };
+  
   if (!userId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -114,6 +185,15 @@ export default function TestPage() {
         Mode: <span className="font-semibold text-blue-600">{mode.toUpperCase()}</span>
       </p>
 
+      {score === null && (
+        <div className="sticky top-0 bg-white py-2 z-10 shadow-sm mb-4 rounded-lg">
+          <p className="text-center text-2xl font-bold text-red-600">
+            Time Left: {formatTime(timeLeft)}
+          </p>
+        </div>
+      )}
+
+
       {score === null ? (
         <>
           {questions.map((q, idx) => (
@@ -140,7 +220,7 @@ export default function TestPage() {
           ))}
 
           <button
-            onClick={submitTest}
+            onClick={() => submitTest(false)}
             disabled={submitting}
             className="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
           >
@@ -158,7 +238,7 @@ export default function TestPage() {
           </div>
 
           {questions.map((q, idx) => {
-            const userAnswer = answers[idx];
+            const userAnswer = answers[idx] || answersRef.current[idx];
             const isCorrect = userAnswer === q.answer;
             return (
               <div key={idx} className={`mb-4 p-6 rounded-lg shadow-md border-l-4 ${isCorrect ? "bg-green-50 border-green-500" : "bg-red-50 border-red-500"}`}>
@@ -174,10 +254,10 @@ export default function TestPage() {
           })}
 
           <button
-            onClick={() => navigate(`/aptitude/modes/${encodeURIComponent(topic)}`)}
+            onClick={handleBackNavigation}
             className="mt-4 w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 font-semibold"
           >
-            ← Back to Levels
+            {isFinalTest ? '← Back to Aptitude' : '← Back to Levels'}
           </button>
         </div>
       )}

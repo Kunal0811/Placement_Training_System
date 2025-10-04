@@ -2,14 +2,14 @@
 import { Link } from "react-router-dom";
 
 const technicalModules = [
-  { name: "C Programming Notes", path: "/technical/cnotes" },
-  { name: "C++ Programming Notes", path: "/technical/cpp" },
-  { name: "Java Programming Notes", path: "/technical/java" },
-  { name: "Python Programming Notes", path: "/technical/python" },
-  { name: "DSA Notes", path: "/technical/dsa" },
-  { name: "DBMS Notes", path: "/technical/dbms" },
-  { name: "OS Notes", path: "/technical/os" },
-  { name: "CN Notes", path: "/technical/cn" },
+  { name: "C Programming Notes", path: "cnotes" },
+  { name: "C++ Programming Notes", path: "cpp" },
+  { name: "Java Programming Notes", path: "java" },
+  { name: "Python Programming Notes", path: "python" },
+  { name: "DSA Notes", path: "dsa" },
+  { name: "DBMS Notes", path: "dbms" },
+  { name: "OS Notes", path: "os" },
+  { name: "CN Notes", path: "cn" },
 ];
 
 export default function Technical() {

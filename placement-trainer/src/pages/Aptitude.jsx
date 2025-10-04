@@ -63,6 +63,37 @@ export default function Aptitude() {
           </li>
         ))}
       </ul>
+
+      {/* --- Final Test Section --- */}
+      <div className="mt-16 pt-8 border-t-2 border-dashed border-gray-300">
+        <h2 className="text-3xl font-bold text-center mb-6 text-red-600">
+          Final Challenge 🏆
+        </h2>
+        <div className="max-w-md mx-auto">
+          <Link
+            to={`/aptitude/test/${encodeURIComponent("Final Aptitude Test")}/hard`}
+            className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-2 border-2 border-red-500"
+          >
+            <div className="text-center">
+              <div className="text-5xl mb-4">🚀</div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                Final Aptitude Test
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                A comprehensive test combining all aptitude topics to simulate a real exam environment.
+              </p>
+              <div className="text-sm text-gray-700 space-y-1 font-medium">
+                <p>• 50 Questions</p>
+                <p>• 60 Minutes</p>
+                <p>• High Difficulty</p>
+              </div>
+              <span className="mt-4 inline-block bg-red-600 text-white font-bold py-2 px-5 rounded-lg group-hover:bg-red-700 transition-colors">
+                Start Final Test →
+              </span>
+            </div>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

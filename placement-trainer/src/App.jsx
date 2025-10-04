@@ -19,10 +19,17 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
-import ModeSelection from "./pages/Aptitude/ModeSelection.jsx"; // Import ModeSelection
+import ModeSelection from "./pages/Aptitude/ModeSelection.jsx";
 
+// Technical Notes Components
+import CppNotes from "./pages/Technical/CppNotes.jsx";
+import JavaNotes from "./pages/Technical/JavaNotes.jsx";
+import PythonNotes from "./pages/Technical/PythonNotes.jsx";
+import DSANotes from "./pages/Technical/DSANotes.jsx";
+import DBMSNotes from "./pages/Technical/DBMSNotes.jsx";
+import OSNotes from "./pages/Technical/OSNotes.jsx";
+import CNNotes from "./pages/Technical/CNNotes.jsx";
 
-// Wrapper to extract :section param
 function AptitudeNotesWrapper() {
   const { section } = useParams();
   return <AptitudeNotes section={section} />;
@@ -34,7 +41,6 @@ function App() {
   return (
     <Router>
       <div className="flex">
-        {/* Sidebar */}
         <div
           className={`fixed top-0 left-0 h-screen transition-all duration-300 ${
             sidebarOpen ? "w-64" : "w-0"
@@ -43,7 +49,6 @@ function App() {
           <Sidebar isOpen={sidebarOpen} />
         </div>
 
-        {/* Main Content */}
         <div
           className={`flex-1 min-h-screen flex flex-col transition-all duration-300 ${
             sidebarOpen ? "ml-64" : "ml-0"
@@ -61,78 +66,24 @@ function App() {
               <Route path="/reset-password-otp/:userId" element={<ResetPasswordWithOTP />} />
 
               {/* Protected Routes */}
-              <Route
-                path="/aptitude"
-                element={
-                  <ProtectedRoute>
-                    <Aptitude />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/technical"
-                element={
-                  <ProtectedRoute>
-                    <Technical />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/gd"
-                element={
-                  <ProtectedRoute>
-                    <GD />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/interview"
-                element={
-                  <ProtectedRoute>
-                    <Interview />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/aptitude/notes/:section"
-                element={
-                  <ProtectedRoute>
-                    <AptitudeNotesWrapper />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/aptitude/modes/:topic"
-                element={
-                  <ProtectedRoute>
-                    <ModeSelection />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/aptitude/test/:topic/:mode"
-                element={
-                  <ProtectedRoute>
-                    <TestPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/technical/cnotes"
-                element={
-                  <ProtectedRoute>
-                    <CNotes />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/aptitude" element={<ProtectedRoute><Aptitude /></ProtectedRoute>} />
+              <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
+              <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
+              <Route path="/aptitude/notes/:section" element={<ProtectedRoute><AptitudeNotesWrapper /></ProtectedRoute>} />
+              <Route path="/aptitude/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
+              <Route path="/aptitude/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+              {/* --- NESTED TECHNICAL ROUTES --- */}
+              <Route path="/technical" element={<ProtectedRoute><Technical /></ProtectedRoute>} />
+              <Route path="/technical/cnotes" element={<ProtectedRoute><CNotes /></ProtectedRoute>} />
+              <Route path="/technical/cpp" element={<ProtectedRoute><CppNotes /></ProtectedRoute>} />
+              <Route path="/technical/java" element={<ProtectedRoute><JavaNotes /></ProtectedRoute>} />
+              <Route path="/technical/python" element={<ProtectedRoute><PythonNotes /></ProtectedRoute>} />
+              <Route path="/technical/dsa" element={<ProtectedRoute><DSANotes /></ProtectedRoute>} />
+              <Route path="/technical/dbms" element={<ProtectedRoute><DBMSNotes /></ProtectedRoute>} />
+              <Route path="/technical/os" element={<ProtectedRoute><OSNotes /></ProtectedRoute>} />
+              <Route path="/technical/cn" element={<ProtectedRoute><CNNotes /></ProtectedRoute>} />
             </Routes>
           </div>
         </div>

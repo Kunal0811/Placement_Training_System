@@ -15,6 +15,7 @@ from email.message import EmailMessage
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import asyncio
 from fastapi import Query
+import random # Import the random module
 
 # Load environment variables
 load_dotenv()
@@ -92,6 +93,8 @@ class SubmitTest(BaseModel):
     mode: str
     score: int
     total: int = 20
+    time_taken: int | None = None
+
 
 class ModeStatusRequest(BaseModel):
     userId: int
@@ -129,6 +132,9 @@ def send_email(to_email: str, subject: str, body: str):
 # ---- Utils ----
 def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
     difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
+    
+    # The topic for the final test is handled in the /api/mcqs/test endpoint
+    # This function can now be simplified.
     return f"""
     Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
     {difficulty_line}
@@ -138,6 +144,7 @@ def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> st
     - "answer" (one of the options, string)
     - "explanation" (string explaining why the answer is correct in 2–3 lines)
     """
+
 
 def validate_password(password: str):
     if len(password) < 8:
@@ -303,39 +310,47 @@ def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page:
 
     return {"user": user, "tests": tests}
 
-# ---- MCQ Generation ----
-@app.post("/api/mcqs/generate")
-async def generate_mcqs(req: MCQRequest):
-    try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        prompt = generate_prompt(req.topic, req.count, req.difficulty)
-        resp = model.generate_content(prompt)
-        raw = resp.text or ""
-        mcqs = parse_mcqs(raw, req.count)
-        if not mcqs:
-            return {"error": "No valid MCQs parsed", "raw": raw}
-        return mcqs
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
-async def generate_and_cache_questions(topic: str, difficulty: str, count: int):
+# ---- New Helper for Individual Generation ----
+async def generate_single_topic(topic: str, count: int, difficulty: str):
     try:
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(topic, count, difficulty)
-        resp = model.generate_content(prompt)
+        resp = await model.generate_content_async(prompt)
         raw = resp.text or ""
-        mcqs = parse_mcqs(raw, count)
-        
-        if mcqs:
-            cache_key = f"{topic}:{difficulty}"
-            if cache_key not in question_cache:
-                question_cache[cache_key] = []
-            question_cache[cache_key].append(mcqs)
+        return parse_mcqs(raw, count)
     except Exception as e:
-        print(f"Error generating questions for cache: {e}")
+        print(f"Error generating questions for topic {topic}: {e}")
+        return []
 
+# ---- MCQ Generation ----
 @app.post("/api/mcqs/test")
 async def generate_test(req: MCQRequest):
+    if req.topic == "Final Aptitude Test":
+        try:
+            # Parallel generation for the final test
+            tasks = [
+                generate_single_topic("Quantitative Aptitude", 20, "hard"),
+                generate_single_topic("Logical Reasoning", 15, "hard"),
+                generate_single_topic("Verbal Ability", 15, "hard"),
+            ]
+            results = await asyncio.gather(*tasks)
+            
+            all_mcqs = [mcq for result in results for mcq in result]
+            
+            if len(all_mcqs) < 50:
+                print(f"Warning: Generated only {len(all_mcqs)}/50 questions for the final test.")
+
+            if not all_mcqs:
+                raise HTTPException(status_code=500, detail="Failed to generate any questions for the final test.")
+
+            random.shuffle(all_mcqs)
+            return all_mcqs
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred during final test generation: {str(e)}")
+
+    # --- Standard Test Generation Logic ---
     cache_key = f"{req.topic}:{req.difficulty}"
     count = req.count or 20
 
@@ -346,6 +361,7 @@ async def generate_test(req: MCQRequest):
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(req.topic, count, req.difficulty)
         
+        # Background task for caching
         asyncio.create_task(generate_and_cache_questions(req.topic, req.difficulty, count))
         
         resp = model.generate_content(prompt)
@@ -360,6 +376,20 @@ async def generate_test(req: MCQRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+async def generate_and_cache_questions(topic: str, difficulty: str, count: int):
+    # This is a background task, so we handle errors gracefully
+    try:
+        mcqs = await generate_single_topic(topic, count, difficulty)
+        if mcqs:
+            cache_key = f"{topic}:{difficulty}"
+            if cache_key not in question_cache:
+                question_cache[cache_key] = []
+            question_cache[cache_key].append(mcqs)
+    except Exception as e:
+        print(f"Error generating questions for cache: {e}")
+
+
+
 # ---- Test submission & Mode Unlock ----
 @app.post("/api/test/submit")
 def submit_test(data: SubmitTest = Body(...), db_cursor: tuple = Depends(get_cursor)):
@@ -369,8 +399,8 @@ def submit_test(data: SubmitTest = Body(...), db_cursor: tuple = Depends(get_cur
         raise HTTPException(status_code=404, detail="User not found")
 
     cursor.execute(
-        "INSERT INTO test_attempts (user_id, topic, mode, score, total) VALUES (%s,%s,%s,%s,%s)",
-        (data.user_id, data.topic, data.mode, data.score, data.total)
+        "INSERT INTO test_attempts (user_id, topic, mode, score, total, time_taken) VALUES (%s,%s,%s,%s,%s,%s)",
+        (data.user_id, data.topic, data.mode, data.score, data.total, data.time_taken)
     )
     db.commit()
 
