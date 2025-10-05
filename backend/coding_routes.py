@@ -7,6 +7,7 @@ from fastapi import APIRouter, Body, HTTPException, Depends
 from pydantic import BaseModel
 import google.generativeai as genai
 import docker
+from database import get_cursor
 
 router = APIRouter(
     prefix="/api/coding",
@@ -17,6 +18,7 @@ class ProblemRequest(BaseModel):
     difficulty: str
 
 class EvaluationRequest(BaseModel):
+    user_id: int
     problem: dict
     code: str
     language: str
@@ -200,10 +202,8 @@ async def generate_coding_problem(req: ProblemRequest):
 
 
 @router.post("/evaluate-code")
-async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends()): # Placeholder for now
+async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
-    
-    # First, get the AI evaluation
     try:
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
@@ -215,7 +215,6 @@ async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(
         
         evaluation_data = json.loads(match.group(0))
 
-        # If the solution is correct, save it to the database
         if evaluation_data.get("is_correct"):
             cursor.execute(
                 """
@@ -231,23 +230,16 @@ async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(
     except Exception as e:
         print(f"Error evaluating code: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred during evaluation: {str(e)}")
-    
+
 @router.post("/level-status")
-async def get_level_status(req: LevelStatusRequest, db_cursor: tuple = Depends()): # Placeholder for now
+async def get_level_status(req: LevelStatusRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Count the number of *unique* correct problems for the given difficulty
         cursor.execute(
-            """
-            SELECT COUNT(DISTINCT problem_title) as solved_count
-            FROM coding_attempts
-            WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE
-            """,
+            "SELECT COUNT(DISTINCT problem_title) as solved_count FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
             (req.user_id, req.difficulty)
         )
         result = cursor.fetchone()
-        solved_count = result['solved_count'] if result else 0
-        
-        return {"solved_count": solved_count}
+        return {"solved_count": result['solved_count'] if result else 0}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -4,6 +4,8 @@ import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
 import { cpp } from '@codemirror/lang-cpp';
 import API_BASE from '../../api';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import { useParams, useNavigate } from 'react-router-dom';
 
 const boilerplate = {
   python: `import sys
@@ -22,7 +24,6 @@ import java.io.IOException;
 class MyClass {
     public static void main(String[] args) {
         // Your solution logic here.
-
     }
 }`,
   cpp: `#include <iostream>
@@ -31,11 +32,14 @@ class MyClass {
 
 int main() {
     // Your solution logic here.
-    
 }`,
 };
 
 export default function CodingPlatform() {
+  const { difficulty } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth(); // Get the authenticated user
+
   const [problem, setProblem] = useState(null);
   const [isLoadingProblem, setIsLoadingProblem] = useState(true);
   const [isEvaluating, setIsEvaluating] = useState(false);
@@ -43,7 +47,6 @@ export default function CodingPlatform() {
   const [evaluation, setEvaluation] = useState(null);
   const [output, setOutput] = useState("");
   const [customInput, setCustomInput] = useState("");
-  const [difficulty, setDifficulty] = useState('easy');
   const [code, setCode] = useState(boilerplate.python);
   const [language, setLanguage] = useState('python');
   
@@ -71,7 +74,6 @@ export default function CodingPlatform() {
       const data = await res.json();
       setProblem(data);
       if (data.examples && data.examples.length > 0) {
-        // A more robust way to handle different example formats
         const exampleInput = data.examples[0].input.replace(/nums = |target = /g, "").replace(/, /g, '\n');
         setCustomInput(exampleInput);
       }
@@ -111,14 +113,15 @@ export default function CodingPlatform() {
   };
 
   const handleEvaluateCode = async () => {
-    if (!problem) return;
+    if (!problem || !user) return; // Ensure user exists
     setIsEvaluating(true);
     setEvaluation(null);
     try {
         const res = await fetch(`${API_BASE}/api/coding/evaluate-code`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ problem, code, language }),
+            // Add user_id to the request body
+            body: JSON.stringify({ user_id: user.id, problem, code, language }),
         });
         if (!res.ok) throw new Error('Failed to evaluate code');
         const data = await res.json();
@@ -141,15 +144,14 @@ export default function CodingPlatform() {
 
   return (
     <div className="p-4 bg-gray-100 min-h-full">
+        <button onClick={() => navigate('/technical/coding-levels')} className="mb-4 text-blue-600 hover:underline">
+            &larr; Back to Levels
+        </button>
         <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-1/2">
                 <div className="flex items-center justify-between mb-4">
                     <h1 className="text-2xl font-bold">Coding Problem</h1>
-                    <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className="p-2 border rounded" disabled={isLoadingProblem}>
-                        <option value="easy">Easy</option>
-                        <option value="medium">Medium</option>
-                        <option value="hard">Hard</option>
-                    </select>
+                    <span className="p-2 border rounded bg-gray-200 font-semibold capitalize">{difficulty}</span>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow min-h-[500px]">
                     {isLoadingProblem && <p>Generating a new problem...</p>}
@@ -220,27 +222,40 @@ export default function CodingPlatform() {
         </div>
 
         {(isEvaluating || evaluation) && (
-            <div className="mt-6 p-6 bg-white rounded-lg shadow">
-                <h2 className="text-2xl font-bold mb-2">Evaluation Result</h2>
-                {isEvaluating && <p className="text-gray-600">The AI is analyzing your code. Please wait...</p>}
-                {evaluation && (
-                    <div className={`p-4 rounded-lg ${evaluation.is_correct ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'} border-l-4`}>
-                        <h3 className={`text-lg font-bold ${evaluation.is_correct ? 'text-green-800' : 'text-red-800'}`}>
-                            {evaluation.is_correct ? '✅ Correct Solution' : '❌ Needs Improvement'}
-                        </h3>
-                        <ul className="mt-2 text-gray-800 list-disc pl-5 space-y-1">
-                            {evaluation.feedback_points && evaluation.feedback_points.map((point, index) => (
-                                <li key={index}>{point}</li>
-                            ))}
-                        </ul>
-                        <div className="mt-4 flex items-center gap-6 text-sm">
-                            <p className="font-medium">Time Complexity:<code className={`ml-2 px-2 py-1 rounded-md ${evaluation.is_correct ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'}`}>{evaluation.time_complexity}</code></p>
-                            <p className="font-medium">Space Complexity:<code className={`ml-2 px-2 py-1 rounded-md ${evaluation.is_correct ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'}`}>{evaluation.space_complexity}</code></p>
-                        </div>
-                    </div>
-                )}
+        <div className="mt-6 p-6 bg-white rounded-lg shadow">
+          <h2 className="text-2xl font-bold mb-2">Evaluation Result</h2>
+          {isEvaluating && <p className="text-gray-600">The AI is analyzing your code. Please wait...</p>}
+          {evaluation && (
+            <div>
+              <div className={`p-4 rounded-lg ${evaluation.is_correct ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'} border-l-4`}>
+                <h3 className={`text-lg font-bold ${evaluation.is_correct ? 'text-green-800' : 'text-red-800'}`}>
+                    {evaluation.is_correct ? '✅ Correct Solution' : '❌ Needs Improvement'}
+                </h3>
+                <ul className="mt-2 text-gray-800 list-disc pl-5 space-y-1">
+                    {evaluation.feedback_points?.map((point, index) => <li key={index}>{point}</li>)}
+                </ul>
+                <div className="mt-4 flex items-center gap-6 text-sm">
+                    <p className="font-medium">Time Complexity:<code className={`ml-2 px-2 py-1 rounded-md ${evaluation.is_correct ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'}`}>{evaluation.time_complexity}</code></p>
+                    <p className="font-medium">Space Complexity:<code className={`ml-2 px-2 py-1 rounded-md ${evaluation.is_correct ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'}`}>{evaluation.space_complexity}</code></p>
+                </div>
+              </div>
+
+              {/* --- NEW BUTTONS FOR PROGRESSION --- */}
+              {evaluation.is_correct && (
+                <div className="mt-4 flex gap-4">
+                    <button onClick={handleGenerateProblem} className="w-1/2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                        Next Problem &rarr;
+                    </button>
+                    <button onClick={() => navigate('/technical/coding-levels')} className="w-1/2 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700">
+                        Back to Levels
+                    </button>
+                </div>
+              )}
             </div>
-        )}
+          )}
+        </div>
+      )}
+
     </div>
   );
 }

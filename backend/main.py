@@ -13,49 +13,19 @@ from email.message import EmailMessage
 from passlib.hash import argon2
 import google.generativeai as genai
 
-# 1. Load environment variables at the very top
-load_dotenv()
-
-# 2. Configure the genai library immediately after
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-# 3. Now, import the route files that depend on genai
+# Import from the new database file and other route files
+from database import get_cursor
 from aptitude_routes import router as aptitude_router
 from technical_routes import router as technical_router
-from coding_routes import router as coding_router, LevelStatusRequest
+from coding_routes import router as coding_router
 
-# Database configuration
-db_config = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "user": os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", ""),
-    "database": os.getenv("DB_NAME", "placify")
-}
+# --- Setup ---
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Dependency to get a database connection
-def get_db():
-    db = None
-    try:
-        db = mysql.connector.connect(**db_config)
-        yield db
-    finally:
-        if db:
-            db.close()
-
-# Dependency to get a database cursor
-def get_cursor(db: mysql.connector.MySQLConnection = Depends(get_db)):
-    cursor = None
-    try:
-        cursor = db.cursor(dictionary=True)
-        yield cursor, db
-    finally:
-        if cursor:
-            cursor.close()
-
-# FastAPI app
 app = FastAPI(title="Placify Backend", version="1.0.0")
 
-# ---- CORS Middleware ----
+# --- CORS Middleware ---
 allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -68,8 +38,7 @@ app.add_middleware(
 # --- Include Routers ---
 app.include_router(aptitude_router)
 app.include_router(technical_router)
-app.include_router(coding_router)
-app.include_router(coding_router, dependencies=[Depends(get_cursor)])
+app.include_router(coding_router) 
 
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):
