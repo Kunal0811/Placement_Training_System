@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Placify from "../assets/Placify.png";
 import { useAuth } from "../context/AuthContext";
+import API_BASE from "../api"; // <-- 1. IMPORT THE API_BASE URL
 
 const Navbar = ({ toggleSidebar }) => {
   const { user, logout } = useAuth();
@@ -29,8 +30,8 @@ const Navbar = ({ toggleSidebar }) => {
     <div className="relative bg-dark-card/80 backdrop-blur-sm p-4 flex justify-between items-center z-50 border-b border-neon-blue/20">
       {/* Left Section */}
       <div className="flex items-center gap-4">
-        <button 
-          onClick={toggleSidebar} 
+        <button
+          onClick={toggleSidebar}
           className="p-2 rounded-lg bg-dark-card border border-neon-blue/20 text-gray-300 hover:text-neon-blue hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/30 transition-all duration-300 transform hover:scale-110 focus:outline-none"
         >
           ☰
@@ -58,14 +59,15 @@ const Navbar = ({ toggleSidebar }) => {
 
           {/* Logic to display profile picture or initial */}
           {user?.profile_picture_url ? (
-            <img 
-              src={user.profile_picture_url} 
-              alt="Profile" 
+            <img
+              // --- 2. PREPEND THE API_BASE URL TO THE SRC ATTRIBUTE ---
+              src={`${API_BASE}${user.profile_picture_url}`}
+              alt="Profile"
               className="w-10 h-10 rounded-full object-cover border-2 border-neon-blue/50"
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-neon-blue font-bold text-xl border-2 border-neon-blue/50">
-              {user?.fname?.[0].toUpperCase() || 'U'}
+              {user ? (user?.fname?.[0].toUpperCase() || 'U') : '?'}
             </div>
           )}
         </button>

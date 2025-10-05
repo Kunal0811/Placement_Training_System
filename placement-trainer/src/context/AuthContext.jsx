@@ -24,8 +24,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user_id"); // optional
   };
 
+  // --- MODIFIED: Use a functional update for safer state changes ---
+  const updateUser = (updatedData) => {
+    setUser(currentUser => {
+      const updatedUser = { ...currentUser, ...updatedData };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

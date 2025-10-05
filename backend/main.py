@@ -2,8 +2,9 @@ import os
 import re
 import json
 import mysql.connector
-from fastapi import FastAPI, Body, HTTPException, Depends
+from fastapi import FastAPI, Body, HTTPException, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles  # <-- Import StaticFiles
 from pydantic import BaseModel, EmailStr
 from dotenv import load_dotenv
 import secrets
@@ -12,6 +13,8 @@ import smtplib
 from email.message import EmailMessage
 from passlib.hash import argon2
 import google.generativeai as genai
+import shutil  # <-- Import shutil
+import uuid    # <-- Import uuid
 
 # Import from the new database file and other route files
 from database import get_cursor
@@ -24,6 +27,12 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = FastAPI(title="Placify Backend", version="1.0.0")
+
+# --- Mount Static Files Directory ---
+# This makes files in the 'static' folder accessible via the /static URL
+os.makedirs("static/profile_pics", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # --- CORS Middleware ---
 allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
@@ -38,7 +47,7 @@ app.add_middleware(
 # --- Include Routers ---
 app.include_router(aptitude_router)
 app.include_router(technical_router)
-app.include_router(coding_router) 
+app.include_router(coding_router)
 
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):
@@ -181,6 +190,36 @@ def register_user(user: RegisterUser, db_cursor: tuple = Depends(get_cursor)):
     db.commit()
     return {"message": "User registered successfully"}
 
+@app.post("/api/user/{user_id}/upload-pfp")
+async def upload_profile_picture(user_id: int, file: UploadFile = File(...), db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    
+    # Validate file type
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid file type. Please upload an image.")
+
+    # Generate a unique filename
+    file_extension = os.path.splitext(file.filename)[1]
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    file_path = os.path.join("static/profile_pics", unique_filename)
+
+    # Save the file
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not save file: {e}")
+
+    # Construct the URL
+    profile_picture_url = f"/static/profile_pics/{unique_filename}"
+
+    # Update the database
+    cursor.execute("UPDATE users SET profile_picture_url = %s WHERE id = %s", (profile_picture_url, user_id))
+    db.commit()
+
+    return {"message": "Profile picture updated successfully", "profile_picture_url": profile_picture_url}
+
+
 @app.post("/api/login")
 def login_user(user: LoginUser, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
@@ -193,7 +232,7 @@ def login_user(user: LoginUser, db_cursor: tuple = Depends(get_cursor)):
 @app.get("/api/user/{user_id}")
 def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page: int = 1, limit: int = 20):
     cursor, db = db_cursor
-    cursor.execute("SELECT id, fname, lname, email, year, field FROM users WHERE id=%s", (user_id,))
+    cursor.execute("SELECT id, fname, lname, email, year, field, profile_picture_url FROM users WHERE id=%s", (user_id,))
     user = cursor.fetchone()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -205,7 +244,6 @@ def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page:
     )
     tests = cursor.fetchall()
 
-    # Fetch all coding attempts for the user
     cursor.execute(
         "SELECT problem_title, difficulty, is_correct, created_at FROM coding_attempts WHERE user_id=%s ORDER BY created_at DESC",
         (user_id,)

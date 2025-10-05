@@ -13,6 +13,8 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import API_BASE from "../api"; // <-- Import API_BASE
+import axios from "axios"; // <-- Import axios
 
 // Define which topics belong to which category
 const APTITUDE_TOPICS = [
@@ -43,12 +45,18 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function Dashboard() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, updateUser } = useAuth(); // Already correctly getting updateUser
   const [user, setUser] = useState(null);
   const [tests, setTests] = useState([]);
   const [codingAttempts, setCodingAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedView, setSelectedView] = useState('aptitude');
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState('');
 
   useEffect(() => {
     if (!authUser) return;
@@ -56,6 +64,7 @@ export default function Dashboard() {
       try {
         const data = await getUserDetails(authUser.id);
         setUser(data.user);
+        updateUser(data.user); 
         setTests((data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setCodingAttempts((data.coding || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
       } catch (err) {
@@ -65,7 +74,60 @@ export default function Dashboard() {
       }
     }
     fetchUser();
-  }, [authUser]);
+    // Add updateUser to the dependency array
+  }, [authUser, updateUser]);
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  // --- NEW: Handlers for file selection and upload ---
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+      setUploadError('');
+      setUploadSuccess('');
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadError("Please select a file first.");
+      return;
+    }
+    setUploading(true);
+    setUploadError('');
+    setUploadSuccess('');
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const res = await axios.post(
+        `${API_BASE}/api/user/${authUser.id}/upload-pfp`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      
+      // Update the user context and local state
+      updateUser({ profile_picture_url: res.data.profile_picture_url });
+      setUser(prev => ({ ...prev, profile_picture_url: res.data.profile_picture_url }));
+
+      setUploadSuccess(res.data.message);
+      setSelectedFile(null); // Clear selection after upload
+    } catch (err) {
+      const errorMsg = err.response?.data?.detail || "Upload failed. Please try again.";
+      setUploadError(errorMsg);
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const { mcqBarChartData, testsByTopic, filteredTests } = useMemo(() => {
     const relevantTopics = selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS;
@@ -284,15 +346,46 @@ export default function Dashboard() {
   }
   
   return (
-    <div className="p-6">
+<div className="p-6">
       <h1 className="text-5xl font-bold mb-8 text-glow text-white">Dashboard</h1>
       <div className="bg-dark-card p-6 rounded-xl shadow-lg border border-neon-blue/20 mb-8">
         <h2 className="text-2xl font-semibold mb-3 text-neon-blue">Profile Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
-          <p><strong>Name:</strong> {user.fname} {user.lname}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Year:</strong> {user.year}</p>
-          <p><strong>Field:</strong> {user.field}</p>
+        <div className="flex flex-col md:flex-row gap-6 items-start">
+            {/* --- NEW: Profile Picture Section --- */}
+            <div className="w-full md:w-1/3 text-center">
+              <div className="relative w-32 h-32 mx-auto mb-4">
+                  {preview ? (
+                      <img src={preview} alt="Preview" className="w-32 h-32 rounded-full object-cover border-4 border-neon-blue" />
+                  ) : user && user.profile_picture_url ? (
+                      <img src={`${API_BASE}${user.profile_picture_url}`} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-neon-blue" />
+                  ) : (
+                      <div className="w-32 h-32 rounded-full bg-gray-700 flex items-center justify-center text-neon-blue font-bold text-5xl border-4 border-neon-blue">
+                          {user?.fname?.[0].toUpperCase() || 'U'}
+                      </div>
+                  )}
+              </div>
+              <input type="file" id="pfp-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
+              <label htmlFor="pfp-upload" className="cursor-pointer bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                  Choose Image
+              </label>
+              {selectedFile && (
+                <div className="mt-4">
+                  <button onClick={handleUpload} disabled={uploading} className="bg-neon-blue text-black font-bold py-2 px-6 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none">
+                    {uploading ? "Uploading..." : "Upload"}
+                  </button>
+                </div>
+              )}
+              {uploadError && <p className="text-red-500 text-sm mt-2">{uploadError}</p>}
+              {uploadSuccess && <p className="text-neon-green text-sm mt-2">{uploadSuccess}</p>}
+            </div>
+
+            {/* Existing Profile Details */}
+            <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-300 pt-4">
+              <p><strong>Name:</strong> {user.fname} {user.lname}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Year:</strong> {user.year}</p>
+              <p><strong>Field:</strong> {user.field}</p>
+            </div>
         </div>
       </div>
       <div className="bg-dark-card p-6 rounded-xl shadow-lg border border-neon-blue/20 mb-8">
