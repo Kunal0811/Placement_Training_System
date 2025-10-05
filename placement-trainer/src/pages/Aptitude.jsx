@@ -24,38 +24,36 @@ const sections = [
 
 export default function Aptitude() {
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-4xl font-bold mb-6 text-center text-blue-700">
-        Aptitude Module
-      </h1>
-      <p className="mb-10 text-center text-lg text-gray-700 max-w-2xl mx-auto">
-        Sharpen your problem-solving and analytical thinking with our structured
-        aptitude modules. Each section is designed with <b>topic-wise notes,
-        practice questions, and real exam-style tests</b> to make your prep
-        effective.
-      </p>
+    <div className="max-w-7xl mx-auto p-6">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-bold mb-4 text-white text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
+          Aptitude Module
+        </h1>
+        <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+          Sharpen your problem-solving and analytical thinking with our structured aptitude modules. Each section is designed with topic-wise notes, practice questions, and real exam-style tests.
+        </p>
+      </div>
 
-      <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
         {sections.map((sec) => (
-          <li key={sec.title} className="h-full">
+          <li key={sec.title}>
             <Link
               to={`/aptitude/notes/${encodeURIComponent(sec.title)}`}
-              className="group relative flex flex-col justify-between h-full bg-white rounded-2xl p-6 shadow-md hover:shadow-2xl transition-transform transform hover:-translate-y-2 border border-gray-200"
+              className="group relative block h-full bg-dark-card rounded-2xl p-8 border border-neon-blue/20 hover:border-neon-blue transition-all duration-300 transform hover:-translate-y-2"
             >
-              {/* Gradient border animation */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition duration-500 blur-md"></div>
-              <div className="relative z-10 flex flex-col h-full text-center">
-                <div className="text-5xl mb-4">{sec.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <div className="absolute top-0 left-0 w-full h-full rounded-2xl bg-gradient-to-r from-neon-blue to-neon-pink opacity-0 group-hover:opacity-10 transition duration-500 blur-md"></div>
+              <div className="relative z-10 flex flex-col h-full text-center items-center">
+                <div className="text-6xl mb-5 transition-transform duration-300 group-hover:scale-110">{sec.icon}</div>
+                <h3 className="text-2xl font-bold text-white mb-3">
                   {sec.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">{sec.desc}</p>
-                <div className="text-sm text-gray-700 space-y-1">
+                <p className="text-gray-400 mb-6 flex-grow">{sec.desc}</p>
+                <div className="text-sm text-neon-blue/80 space-y-1 mb-6">
                   {sec.details.map((d, i) => (
                     <div key={i}>• {d}</div>
                   ))}
                 </div>
-                <span className="mt-4 inline-block text-blue-600 font-medium group-hover:underline">
+                <span className="mt-auto inline-block text-neon-blue font-bold group-hover:text-glow transition-all">
                   Explore →
                 </span>
               </div>
@@ -65,29 +63,27 @@ export default function Aptitude() {
       </ul>
 
       {/* --- Final Test Section --- */}
-      <div className="mt-16 pt-8 border-t-2 border-dashed border-gray-300">
-        <h2 className="text-3xl font-bold text-center mb-6 text-red-600">
+      <div className="mt-24 pt-12 border-t-2 border-dashed border-neon-pink/20">
+        <h2 className="text-4xl font-bold text-center mb-4 text-neon-pink text-glow">
           Final Challenge 🏆
         </h2>
+        <p className="text-center text-lg text-gray-400 mb-8 max-w-md mx-auto">
+            A comprehensive test combining all aptitude topics to simulate a real exam.
+        </p>
         <div className="max-w-md mx-auto">
           <Link
             to={`/aptitude/test/${encodeURIComponent("Final Aptitude Test")}/hard`}
-            className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-2 border-2 border-red-500"
+            className="group block bg-dark-card rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:shadow-neon-pink/20 transition-all duration-300 transform hover:-translate-y-2 border-2 border-neon-pink/50 hover:border-neon-pink"
           >
             <div className="text-center">
-              <div className="text-5xl mb-4">🚀</div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+              <div className="text-6xl mb-4 animate-bounce">🚀</div>
+              <h3 className="text-2xl font-semibold text-white mb-2">
                 Final Aptitude Test
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                A comprehensive test combining all aptitude topics to simulate a real exam environment.
+              <p className="text-gray-400 mb-4">
+                50 Questions | 60 Minutes | High Difficulty
               </p>
-              <div className="text-sm text-gray-700 space-y-1 font-medium">
-                <p>• 50 Questions</p>
-                <p>• 60 Minutes</p>
-                <p>• High Difficulty</p>
-              </div>
-              <span className="mt-4 inline-block bg-red-600 text-white font-bold py-2 px-5 rounded-lg group-hover:bg-red-700 transition-colors">
+              <span className="mt-4 inline-block bg-neon-pink text-black font-bold py-3 px-8 rounded-lg group-hover:scale-105 transition-transform">
                 Start Final Test →
               </span>
             </div>

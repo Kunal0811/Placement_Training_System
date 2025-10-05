@@ -3,6 +3,7 @@ import re
 import json
 import uuid
 import shutil
+from typing import List
 from fastapi import APIRouter, Body, HTTPException, Depends
 from pydantic import BaseModel
 import google.generativeai as genai
@@ -14,14 +15,19 @@ router = APIRouter(
     tags=["Coding"],
 )
 
-class ProblemRequest(BaseModel):
+# --- Pydantic Models ---
+
+class LevelProblemRequest(BaseModel):
     difficulty: str
+    user_id: int
+    count: int = 5
 
 class EvaluationRequest(BaseModel):
     user_id: int
     problem: dict
     code: str
     language: str
+    difficulty: str
 
 class RunRequest(BaseModel):
     code: str
@@ -32,28 +38,27 @@ class LevelStatusRequest(BaseModel):
     user_id: int
     difficulty: str
 
-def create_problem_prompt(difficulty: str) -> str:
-    return f"""
-    Generate a standard software engineering coding interview problem of {difficulty} difficulty.
-    The problem should be self-contained and suitable for a platform like LeetCode or HackerRank.
-    Focus on common topics like arrays, strings, trees, graphs, or dynamic programming.
+# --- Prompt Engineering Functions ---
 
-    Return the response as a SINGLE, STRICT JSON object (no markdown, no text outside the JSON) with the following structure:
+def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List[str] = None) -> str:
+    avoid_instruction = ""
+    if solved_titles:
+        titles_str = ", ".join([f'"{title}"' for title in solved_titles])
+        avoid_instruction = f"\\nIMPORTANT: Do NOT generate a problem with any of the following titles: {titles_str}."
+
+    return f"""
+    Generate exactly {count} unique software engineering coding interview problems of {difficulty} difficulty.
+    Focus on common topics like arrays, strings, trees, graphs, or dynamic programming.{avoid_instruction}
+
+    Return the response as a SINGLE, STRICT JSON object with a key "problems" which is a list of {count} problem objects.
+    Each problem object must have the following structure:
     {{
         "title": "A concise and descriptive title for the problem",
         "description": "A detailed, paragraph-style description of the problem. Explain the task clearly.",
         "input_format": "A clear description of the input format. Specify if input is on single or multiple lines.",
         "output_format": "A clear description of the expected output format.",
-        "constraints": [
-            "A list of constraints as an array of strings."
-        ],
-        "examples": [
-            {{
-                "input": "An example input string that matches the input format. Use '\\n' for newlines.",
-                "output": "The corresponding output string.",
-                "explanation": "A brief explanation of how the output is derived from the input."
-            }}
-        ]
+        "constraints": ["A list of constraints as an array of strings."],
+        "examples": [{{ "input": "...", "output": "...", "explanation": "..." }}]
     }}
     """
 
@@ -97,12 +102,13 @@ def create_evaluation_prompt(problem: dict, code: str, language: str) -> str:
             "If syntax/IO is OK, provide a point on implementation details and logic flaws."
         ],
         "time_complexity": "The estimated time complexity (e.g., 'O(n)'). Set to 'N/A' if the code is incorrect.",
-        "space_complexity": "The estimated space complexity (e.g., 'O(1)'). Set to 'N/A' if the code is incorrect."
+        "space_complexity": "The estimated auxiliary space complexity (e.g., 'O(1)'). This excludes the space taken by the input itself. Set to 'N/A' if the code is incorrect."
     }}
     """
 
+# --- Sandbox Execution ---
+
 def run_in_sandbox(language: str, code: str, stdin: str) -> str:
-    # Create the temp directory one level *above* the current backend directory
     temp_dir = f"../temp_code/{uuid.uuid4()}"
     os.makedirs(temp_dir, exist_ok=True)
 
@@ -121,9 +127,7 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     command = command_map.get(language, "python script.py")
     
     if language == 'java':
-        # Ensure the public class name matches the file name 'MyClass'
         if 'public class' in code and 'public class MyClass' not in code:
-             # A simple heuristic to replace the user's class name
             code = re.sub(r'public class \w+', 'public class MyClass', code, 1)
         elif 'public class' not in code:
             code = f'public class MyClass {{ public static void main(String[] args) {{ {code} }} }}'
@@ -131,15 +135,13 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     code_file_path = os.path.join(temp_dir, file_name)
     input_file_path = os.path.join(temp_dir, "input.txt")
 
-    with open(code_file_path, "w") as f:
+    with open(code_file_path, "w", encoding='utf-8') as f:
         f.write(code)
-    with open(input_file_path, "w") as f:
+    with open(input_file_path, "w", encoding='utf-8') as f:
         f.write(stdin)
 
     client = docker.from_env()
     image_name = f"{language}-runner"
-    
-    # Set volume mode to read-write for compiled languages, otherwise read-only
     mount_mode = 'rw' if language in ['java', 'cpp'] else 'ro'
     
     output = ""
@@ -172,6 +174,8 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
         
     return output
 
+# --- API Endpoints ---
+
 @router.post("/run-code")
 async def run_user_code(req: RunRequest):
     try:
@@ -180,11 +184,19 @@ async def run_user_code(req: RunRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/generate-problem")
-async def generate_coding_problem(req: ProblemRequest):
+@router.post("/generate-level-problems")
+async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
     try:
+        cursor.execute(
+            "SELECT DISTINCT problem_title FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
+            (req.user_id, req.difficulty)
+        )
+        solved_problems = cursor.fetchall()
+        solved_titles = [item['problem_title'] for item in solved_problems]
+
         model = genai.GenerativeModel("gemini-2.5-flash")
-        prompt = create_problem_prompt(req.difficulty)
+        prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
         response = await model.generate_content_async(prompt)
         
         text = response.text
@@ -192,13 +204,16 @@ async def generate_coding_problem(req: ProblemRequest):
         if not match:
             raise HTTPException(status_code=500, detail="Failed to parse valid JSON from AI response.")
         
-        json_str = match.group(0)
-        problem_data = json.loads(json_str)
-        
-        return problem_data
+        data = json.loads(match.group(0))
+        problems_list = data.get("problems")
+
+        if not problems_list or not isinstance(problems_list, list) or len(problems_list) < req.count:
+             raise HTTPException(status_code=500, detail=f"AI did not generate the required number of problems ({len(problems_list)}/{req.count}).")
+
+        return {"problems": problems_list}
     except Exception as e:
-        print(f"Error generating coding problem: {e}")
-        raise HTTPException(status_code=500, detail=f"An error occurred while generating the problem: {str(e)}")
+        print(f"Error generating level problems: {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while generating problems: {str(e)}")
 
 
 @router.post("/evaluate-code")

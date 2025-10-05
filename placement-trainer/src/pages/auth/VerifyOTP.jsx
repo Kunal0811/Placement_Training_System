@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import API_BASE from "../../api";
 
 export default function VerifyOTP() {
@@ -7,11 +7,18 @@ export default function VerifyOTP() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleVerify = async (e) => {
-    e.preventDefault(); setError(""); setMessage("");
-    if (!otp) { setError("OTP is required"); return; }
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    if (!otp) {
+      setError("OTP is required");
+      return;
+    }
+    setLoading(true);
 
     try {
       const res = await fetch(`${API_BASE}/api/verify-otp`, {
@@ -21,37 +28,61 @@ export default function VerifyOTP() {
       });
       const data = await res.json();
 
-      if (!res.ok) { setError(data.detail || "Invalid OTP"); return; }
+      if (!res.ok) {
+        throw new Error(data.detail || "Invalid or expired OTP");
+      }
 
       setMessage("OTP verified! Redirecting...");
-      setTimeout(() => navigate(`/reset-password-otp/${data.user_id}`), 1000);
+      setTimeout(() => navigate(`/reset-password-otp/${data.user_id}`), 1500);
     } catch (err) {
-      console.error(err); setError("Server error, try again later");
+      console.error(err);
+      setError(err.message || "Server error, try again later");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="max-w-md w-full bg-white p-8 rounded shadow">
-        <h2 className="text-3xl font-bold mb-6 text-center">Verify OTP</h2>
-        {message && <p className="text-green-600 mb-4 text-center">{message}</p>}
-        {error && <p className="text-red-600 mb-4 text-center">{error}</p>}
+  const inputStyles = "w-full bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-white text-center text-2xl tracking-[1em] focus:outline-none focus:border-neon-blue transition-colors";
+  const labelStyles = "block mb-2 font-medium text-gray-400 text-center";
 
-        <form onSubmit={handleVerify} className="space-y-5">
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4">
+      <div className="max-w-md w-full bg-dark-card p-8 rounded-xl shadow-2xl border border-neon-blue/20">
+        <h2 className="text-4xl font-bold mb-4 text-center text-white text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
+          Verify OTP
+        </h2>
+        <p className="text-gray-400 text-center mb-8">An OTP has been sent to {email}</p>
+        
+        {message && <p className="bg-green-500/20 text-green-300 border border-green-500/50 p-3 rounded-lg mb-6 text-center font-semibold">{message}</p>}
+        {error && <p className="bg-red-500/20 text-red-400 border border-red-500/50 p-3 rounded-lg mb-6 text-center font-semibold">{error}</p>}
+
+        <form onSubmit={handleVerify} className="space-y-6">
           <div>
-            <label className="block mb-1 font-medium">Enter OTP</label>
+            <label className={labelStyles}>Enter 6-Digit OTP</label>
             <input
               type="text"
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              maxLength="6"
+              className={inputStyles}
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="6-digit OTP"
+              onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+              placeholder="· · · · · ·"
+              required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-            Verify OTP
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none"
+          >
+            {loading ? "Verifying..." : "Verify OTP"}
           </button>
         </form>
+
+        <p className="mt-6 text-center text-sm">
+          <Link to="/login" className="text-gray-400 hover:text-neon-blue hover:underline">
+            ← Back to Login
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -204,7 +204,15 @@ def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page:
         (user_id, limit, offset)
     )
     tests = cursor.fetchall()
-    return {"user": user, "tests": tests}
+
+    # Fetch all coding attempts for the user
+    cursor.execute(
+        "SELECT problem_title, difficulty, is_correct, created_at FROM coding_attempts WHERE user_id=%s ORDER BY created_at DESC",
+        (user_id,)
+    )
+    coding_attempts = cursor.fetchall()
+
+    return {"user": user, "tests": tests, "coding": coding_attempts}
 
 # ---- Test Submission & Mode Unlock Routes ----
 @app.post("/api/test/submit")

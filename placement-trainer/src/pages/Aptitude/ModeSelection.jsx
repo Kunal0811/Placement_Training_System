@@ -1,4 +1,3 @@
-// src/pages/Aptitude/ModeSelection.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -11,27 +10,21 @@ const MODES = [
     title: "Easy Level",
     description: "Perfect for beginners. Start your journey here!",
     icon: "🌱",
-    color: "green",
-    requiredScore: null,
-    previousMode: null
+    color: "neon-green",
   },
   {
     id: "moderate",
     title: "Moderate Level",
     description: "Intermediate challenges. Test your knowledge!",
     icon: "🔥",
-    color: "orange",
-    requiredScore: 15,
-    previousMode: "easy"
+    color: "neon-blue",
   },
   {
     id: "hard",
     title: "Hard Level",
     description: "Expert level. Prove your mastery!",
     icon: "💎",
-    color: "purple",
-    requiredScore: 15,
-    previousMode: "moderate"
+    color: "neon-pink",
   }
 ];
 
@@ -50,9 +43,7 @@ export default function ModeSelection() {
   useEffect(() => {
     const checkAllModes = async () => {
       if (!userId) return;
-  
       setLoading(true);
-  
       try {
         const modePromises = MODES.map(mode => {
           const statusPromise = fetch(`${API_BASE}/api/test/mode-status`, {
@@ -93,142 +84,101 @@ export default function ModeSelection() {
       }
     };
   
-    checkAllModes();
+    if(userId) checkAllModes();
   }, [userId, topic]);
 
-
   const handleModeClick = (modeId, isUnlocked) => {
-    if (!isUnlocked) {
-      alert("Complete the previous level first!");
-      return;
-    }
+    if (!isUnlocked) return;
     navigate(`/${basePath}/test/${encodeURIComponent(topic)}/${modeId}`);
-  };
-
-  const getColorClasses = (color, isUnlocked) => {
-    if (!isUnlocked) {
-      return "bg-gray-300 border-gray-400 cursor-not-allowed";
-    }
-    
-    const colors = {
-      green: "bg-green-100 border-green-500 hover:bg-green-200 hover:shadow-lg",
-      orange: "bg-orange-100 border-orange-500 hover:bg-orange-200 hover:shadow-lg",
-      purple: "bg-purple-100 border-purple-500 hover:bg-purple-200 hover:shadow-lg"
-    };
-    return colors[color] || colors.green;
-  };
-
-  const getButtonColorClasses = (color, isUnlocked) => {
-    if (!isUnlocked) {
-      return "bg-gray-400 cursor-not-allowed";
-    }
-    
-    const colors = {
-      green: "bg-green-600 hover:bg-green-700",
-      orange: "bg-orange-600 hover:bg-orange-700",
-      purple: "bg-purple-600 hover:bg-purple-700"
-    };
-    return colors[color] || colors.green;
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4 animate-spin">⏳</div>
-          <p className="text-xl text-gray-600">Loading Levels...</p>
+          <div className="text-6xl mb-4 animate-spin">⚙️</div>
+          <p className="text-2xl text-gray-400">Loading Levels...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-3 text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
             🎯 {decodeURIComponent(topic)}
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-400">
             Select your difficulty level and start testing!
           </p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 text-blue-600 hover:underline"
+            className="mt-4 text-neon-blue hover:underline"
           >
             ← Back to Notes
           </button>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {MODES.map((mode) => {
             const isUnlocked = mode.id === 'easy' || (modeStatus[mode.id] || false);
             const bestScore = bestScores[mode.id];
             const isPassed = bestScore >= 15;
+            const progress = bestScore ? (bestScore / 20) * 100 : 0;
 
             return (
               <div
                 key={mode.id}
-                className={`border-4 rounded-2xl p-6 transition-all duration-300 ${getColorClasses(
-                  mode.color,
-                  isUnlocked
-                )}`}
+                className={`relative bg-dark-card rounded-2xl p-6 border-2 transition-all duration-300 ${
+                  isUnlocked ? `border-${mode.color}/50 hover:border-${mode.color}` : 'border-gray-700'
+                }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center space-x-6 text-center md:text-left">
                     <div className="text-6xl">{isUnlocked ? mode.icon : "🔒"}</div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-800">
+                      <h2 className={`text-3xl font-bold ${isUnlocked ? 'text-white' : 'text-gray-500'}`}>
                         {mode.title}
                       </h2>
-                      <p className="text-gray-600 mt-1">{mode.description}</p>
+                      <p className="text-gray-400 mt-1">{mode.description}</p>
                       
                       {isUnlocked && bestScore !== null && bestScore !== undefined && (
                         <div className="mt-2">
-                          <span className={`text-sm font-semibold ${isPassed ? 'text-green-600' : 'text-orange-600'}`}>
+                          <span className={`text-md font-semibold ${isPassed ? 'text-neon-green' : 'text-yellow-400'}`}>
                             Best Score: {bestScore}/20 {isPassed ? '✅' : ''}
                           </span>
                         </div>
                       )}
 
-                      {!isUnlocked && mode.previousMode && (
-                        <p className="text-sm text-red-600 mt-2">
+                      {!isUnlocked && mode.id !== 'easy' && (
+                        <p className="text-sm text-red-500 mt-2">
                           🔒 Complete <strong>{mode.previousMode}</strong> level with 15/20 to unlock
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div>
+                  <div className="w-full md:w-auto">
                     <button
                       onClick={() => handleModeClick(mode.id, isUnlocked)}
                       disabled={!isUnlocked}
-                      className={`px-6 py-3 rounded-lg text-white font-semibold text-lg transition-all ${getButtonColorClasses(
-                        mode.color,
-                        isUnlocked
-                      )}`}
+                      className={`w-full px-8 py-3 rounded-lg text-black font-bold text-lg transition-all transform hover:scale-105 ${
+                        isUnlocked ? `bg-${mode.color} shadow-lg animate-glow` : 'bg-gray-600 cursor-not-allowed'
+                      }`}
                     >
-                      {isUnlocked ? (
-                        bestScore !== null && bestScore !== undefined ? (
-                          "Retake Test"
-                        ) : (
-                          "Start Test"
-                        )
-                      ) : (
-                        "Locked"
-                      )}
+                      {isUnlocked ? (bestScore !== null && bestScore !== undefined ? "Retake Test" : "Start Test") : "Locked"}
                     </button>
                   </div>
                 </div>
 
                 {isUnlocked && bestScore !== null && bestScore !== undefined && (
-                  <div className="mt-4">
-                    <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div className="mt-6">
+                    <div className="w-full bg-gray-700 rounded-full h-3">
                       <div
-                        className={`h-3 rounded-full transition-all ${
-                          isPassed ? 'bg-green-500' : 'bg-orange-500'
-                        }`}
-                        style={{ width: `${(bestScore / 20) * 100}%` }}
+                        className={`h-3 rounded-full transition-all bg-gradient-to-r from-${mode.color}/70 to-${mode.color}`}
+                        style={{ width: `${progress}%` }}
                       ></div>
                     </div>
                   </div>

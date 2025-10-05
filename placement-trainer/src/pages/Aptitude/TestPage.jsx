@@ -1,4 +1,3 @@
-// src/pages/Aptitude/TestPage.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -49,6 +48,7 @@ export default function TestPage() {
       setQuestions([]);
       setAnswers({});
       setScore(null);
+      setTimeLeft(initialTime);
       try {
         const res = await fetch(`${API_BASE}/api/${basePath}/mcqs/test`, {
           method: "POST",
@@ -79,7 +79,7 @@ export default function TestPage() {
 
     fetchQuestions();
     return () => controller.abort();
-  }, [topic, mode, userId, questionCount, basePath]);
+  }, [topic, mode, userId, questionCount, basePath, initialTime]);
 
   useEffect(() => {
     if (loading || score !== null) {
@@ -157,8 +157,9 @@ export default function TestPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-2xl font-semibold text-blue-600">Generating your test...</p>
-          <p className="text-gray-500">Our AI is preparing your questions. This might take a moment.</p>
+          <div className="text-6xl mb-4 animate-spin">⚙️</div>
+          <p className="text-2xl font-semibold text-neon-blue">Generating your test...</p>
+          <p className="text-gray-400">Our AI is preparing your questions. This might take a moment.</p>
         </div>
       </div>
     );
@@ -166,16 +167,16 @@ export default function TestPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 mb-10">
-      <h1 className="text-3xl font-bold text-center text-blue-700 mb-2">
+      <h1 className="text-4xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink text-glow">
         🚀 {decodeURIComponent(topic)}
       </h1>
-      <p className="text-center text-gray-600 mb-6">
-        Mode: <span className="font-semibold text-blue-600">{mode.toUpperCase()}</span>
+      <p className="text-center text-gray-400 mb-6">
+        Mode: <span className="font-semibold text-neon-blue">{mode.toUpperCase()}</span>
       </p>
 
       {score === null && (
-        <div className="sticky top-0 bg-white py-2 z-10 shadow-sm mb-4 rounded-lg">
-          <p className="text-center text-2xl font-bold text-red-600">
+        <div className="sticky top-20 bg-dark-card/80 backdrop-blur-sm py-3 z-10 shadow-lg mb-6 rounded-lg border border-neon-pink/30">
+          <p className="text-center text-3xl font-bold text-neon-pink text-glow">
             Time Left: {formatTime(timeLeft)}
           </p>
         </div>
@@ -184,21 +185,21 @@ export default function TestPage() {
       {score === null ? (
         <>
           {questions.map((q, idx) => (
-            <div key={idx} className="mb-6 p-6 bg-white rounded-lg shadow-md">
-              <p className="font-semibold text-lg mb-4">{idx + 1}. {q.question}</p>
+            <div key={idx} className="mb-6 p-6 bg-dark-card rounded-lg shadow-md border border-neon-blue/20">
+              <p className="font-semibold text-lg text-white mb-4">{idx + 1}. {q.question}</p>
               <ul className="space-y-3">
                 {q.options.map((opt, i) => (
                   <li key={i}>
-                    <label className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <label className={`flex items-center space-x-4 p-4 rounded-lg cursor-pointer transition-all border-2 ${answers[idx] === opt ? 'border-neon-blue bg-neon-blue/20' : 'border-gray-700 hover:border-neon-blue/50'}`}>
                       <input
                         type="radio"
                         name={`q-${idx}`}
                         value={opt}
                         checked={answers[idx] === opt}
                         onChange={() => handleSelect(idx, opt)}
-                        className="w-4 h-4"
+                        className="w-5 h-5 accent-neon-blue"
                       />
-                      <span className="text-gray-700">{opt}</span>
+                      <span className="text-gray-300">{opt}</span>
                     </label>
                   </li>
                 ))}
@@ -209,17 +210,17 @@ export default function TestPage() {
           <button
             onClick={() => submitTest(false)}
             disabled={submitting}
-            className="mt-6 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+            className="mt-6 w-full bg-neon-green text-black font-bold py-3 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none"
           >
             {submitting ? "Submitting..." : "✅ Submit Test"}
           </button>
         </>
       ) : (
         <div>
-          <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-lg text-center">
-            <h2 className="text-3xl font-bold text-green-700 mb-2">🎉 Test Complete!</h2>
-            <p className="text-4xl font-bold text-blue-600">{score} / {questions.length}</p>
-            <p className="text-lg text-gray-700 mt-2">
+          <div className="mb-8 p-8 bg-dark-card rounded-lg shadow-lg text-center border-t-4 border-neon-green">
+            <h2 className="text-4xl font-bold text-neon-green text-glow mb-2">🎉 Test Complete!</h2>
+            <p className="text-6xl font-bold text-white my-4">{score} / {questions.length}</p>
+            <p className="text-xl text-gray-300 mt-2">
               {score >= questions.length * 0.75 ? "🌟 Great job! You passed!" : "Keep practicing!"}
             </p>
           </div>
@@ -228,13 +229,13 @@ export default function TestPage() {
             const userAnswer = answers[idx] || answersRef.current[idx];
             const isCorrect = userAnswer === q.answer;
             return (
-              <div key={idx} className={`mb-4 p-6 rounded-lg shadow-md border-l-4 ${isCorrect ? "bg-green-50 border-green-500" : "bg-red-50 border-red-500"}`}>
-                <p className="font-semibold text-lg mb-3">{idx + 1}. {q.question}</p>
-                <p className="mb-2"><span className="font-medium text-gray-700">✅ Correct Answer: </span><span className="font-semibold text-green-700">{q.answer}</span></p>
-                <p className="mb-3"><span className="font-medium text-gray-700">📝 Your Answer: </span><span className={`font-semibold ${isCorrect ? "text-green-700" : "text-red-700"}`}>{userAnswer || "Not Attempted"}</span></p>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <p className="text-sm text-gray-600 font-medium mb-1">💡 Explanation:</p>
-                  <p className="text-gray-700">{q.explanation}</p>
+              <div key={idx} className={`mb-4 p-6 rounded-lg shadow-md border-l-4 ${isCorrect ? "bg-neon-green/10 border-neon-green" : "bg-red-500/10 border-red-500"}`}>
+                <p className="font-semibold text-lg text-white mb-3">{idx + 1}. {q.question}</p>
+                <p className="mb-2"><span className="font-medium text-gray-400">✅ Correct Answer: </span><span className="font-semibold text-neon-green">{q.answer}</span></p>
+                <p className="mb-3"><span className="font-medium text-gray-400">📝 Your Answer: </span><span className={`font-semibold ${isCorrect ? "text-neon-green" : "text-red-500"}`}>{userAnswer || "Not Attempted"}</span></p>
+                <div className="bg-dark-card p-4 rounded border border-gray-700 mt-4">
+                  <p className="text-sm text-neon-blue font-medium mb-1">💡 Explanation:</p>
+                  <p className="text-gray-300">{q.explanation}</p>
                 </div>
               </div>
             );
@@ -242,7 +243,7 @@ export default function TestPage() {
 
           <button
             onClick={handleBackNavigation}
-            className="mt-4 w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 font-semibold"
+            className="mt-8 w-full bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors"
           >
             {isFinalTest ? '← Back to Aptitude' : '← Back to Levels'}
           </button>
