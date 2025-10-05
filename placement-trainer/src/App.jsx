@@ -13,15 +13,14 @@ import Interview from "./pages/Interview.jsx";
 import AptitudeNotes from "./pages/Aptitude/AptitudeNotes.jsx";
 import TestPage from "./pages/Aptitude/TestPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import CNotes from "./pages/Technical/CNotes.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
 import ModeSelection from "./pages/Aptitude/ModeSelection.jsx";
 
 // Technical Notes Components
+import CNotes from "./pages/Technical/CNotes.jsx";
 import CppNotes from "./pages/Technical/CppNotes.jsx";
 import JavaNotes from "./pages/Technical/JavaNotes.jsx";
 import PythonNotes from "./pages/Technical/PythonNotes.jsx";
@@ -29,7 +28,12 @@ import DSANotes from "./pages/Technical/DSANotes.jsx";
 import DBMSNotes from "./pages/Technical/DBMSNotes.jsx";
 import OSNotes from "./pages/Technical/OSNotes.jsx";
 import CNNotes from "./pages/Technical/CNNotes.jsx";
+import CodingPlatform from "./pages/Technical/CodingPlatform.jsx";
+import CodingLevels from "./pages/Technical/CodingLevels.jsx"; // Import the new component
 
+
+
+// Wrapper to extract :section param
 function AptitudeNotesWrapper() {
   const { section } = useParams();
   return <AptitudeNotes section={section} />;
@@ -58,6 +62,7 @@ function App() {
 
           <div className="flex-1 overflow-y-auto p-4">
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -66,15 +71,15 @@ function App() {
               <Route path="/reset-password-otp/:userId" element={<ResetPasswordWithOTP />} />
 
               {/* Protected Routes */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+              {/* Aptitude Section */}
               <Route path="/aptitude" element={<ProtectedRoute><Aptitude /></ProtectedRoute>} />
-              <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
-              <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
               <Route path="/aptitude/notes/:section" element={<ProtectedRoute><AptitudeNotesWrapper /></ProtectedRoute>} />
               <Route path="/aptitude/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
               <Route path="/aptitude/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-              {/* --- NESTED TECHNICAL ROUTES --- */}
+              {/* Technical Section */}
               <Route path="/technical" element={<ProtectedRoute><Technical /></ProtectedRoute>} />
               <Route path="/technical/cnotes" element={<ProtectedRoute><CNotes /></ProtectedRoute>} />
               <Route path="/technical/cpp" element={<ProtectedRoute><CppNotes /></ProtectedRoute>} />
@@ -84,6 +89,18 @@ function App() {
               <Route path="/technical/dbms" element={<ProtectedRoute><DBMSNotes /></ProtectedRoute>} />
               <Route path="/technical/os" element={<ProtectedRoute><OSNotes /></ProtectedRoute>} />
               <Route path="/technical/cn" element={<ProtectedRoute><CNNotes /></ProtectedRoute>} />
+              <Route path="/technical/coding-test" element={<ProtectedRoute><CodingPlatform /></ProtectedRoute>} />
+              
+              {/* --- ADDED TECHNICAL TEST ROUTES --- */}
+               <Route path="/technical/coding-levels" element={<ProtectedRoute><CodingLevels /></ProtectedRoute>} />
+                <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><CodingPlatform /></ProtectedRoute>} />
+
+              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
+              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
+
+              {/* Other Main Sections */}
+              <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
+              <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
             </Routes>
           </div>
         </div>

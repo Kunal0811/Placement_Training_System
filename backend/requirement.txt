@@ -3,5 +3,7 @@ uvicorn[standard]
 python-dotenv
 pydantic
 google-generativeai
+python-jose
+passlib
 
 

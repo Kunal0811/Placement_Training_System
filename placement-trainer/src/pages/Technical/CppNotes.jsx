@@ -1,4 +1,6 @@
 // src/pages/Technical/CppNotes.jsx
+import { Link } from 'react-router-dom';
+
 export default function CppNotes() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white shadow rounded">
@@ -41,6 +43,44 @@ export default function CppNotes() {
           <li><b>Memory Management:</b> Manual memory management using `new` and `delete` operators, as well as smart pointers (`unique_ptr`, `shared_ptr`, `weak_ptr`) for automatic memory management.</li>
           <li><b>Templates:</b> Allow functions and classes to operate with generic types, enabling you to write flexible and reusable code.</li>
         </ul>
+      </section>
+
+       {/* --- Video Tutorials Section --- */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-3">Video Tutorials</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full rounded-lg border"
+              src="https://www.youtube.com/embed/vLnPwxZdW4Y"
+              title="C++ Full Course"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full rounded-lg border"
+              src="https://www.youtube.com/embed/pTB0EiLXUC8"
+              title="C++ OOP Concepts"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 pt-6 border-t-2 border-dashed">
+        <h2 className="text-2xl font-semibold mb-3">Practice Test</h2>
+        <p className="text-gray-700 mb-4">
+          Ready to test your knowledge? Take a practice test with AI-generated questions.
+        </p>
+        <Link
+          to={`/technical/modes/C++ Programming`}
+          className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg transition-transform hover:scale-105"
+        >
+          🚀 Start Test
+        </Link>
       </section>
     </div>
   );

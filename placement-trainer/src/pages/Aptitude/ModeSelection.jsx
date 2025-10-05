@@ -1,6 +1,6 @@
 // src/pages/Aptitude/ModeSelection.jsx
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
@@ -38,14 +38,14 @@ const MODES = [
 export default function ModeSelection() {
   const { topic } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [modeStatus, setModeStatus] = useState({});
   const [loading, setLoading] = useState(true);
   const [bestScores, setBestScores] = useState({});
 
   const userId = user?.id;
-
-  // --- Start of New Changes ---
+  const basePath = location.pathname.startsWith('/technical') ? 'technical' : 'aptitude';
 
   useEffect(() => {
     const checkAllModes = async () => {
@@ -96,15 +96,13 @@ export default function ModeSelection() {
     checkAllModes();
   }, [userId, topic]);
 
-  // --- End of New Changes ---
-
 
   const handleModeClick = (modeId, isUnlocked) => {
     if (!isUnlocked) {
       alert("Complete the previous level first!");
       return;
     }
-    navigate(`/aptitude/test/${encodeURIComponent(topic)}/${modeId}`);
+    navigate(`/${basePath}/test/${encodeURIComponent(topic)}/${modeId}`);
   };
 
   const getColorClasses = (color, isUnlocked) => {
@@ -147,7 +145,6 @@ export default function ModeSelection() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-800 mb-3">
             🎯 {decodeURIComponent(topic)}
@@ -163,13 +160,9 @@ export default function ModeSelection() {
           </button>
         </div>
 
-        {/* Mode Cards */}
         <div className="space-y-6">
           {MODES.map((mode) => {
-            // --- Start of a Change ---
             const isUnlocked = mode.id === 'easy' || (modeStatus[mode.id] || false);
-            // --- End of a Change ---
-            
             const bestScore = bestScores[mode.id];
             const isPassed = bestScore >= 15;
 
@@ -182,7 +175,6 @@ export default function ModeSelection() {
                 )}`}
               >
                 <div className="flex items-center justify-between">
-                  {/* Left side - Info */}
                   <div className="flex items-center space-x-4">
                     <div className="text-6xl">{isUnlocked ? mode.icon : "🔒"}</div>
                     <div>
@@ -191,7 +183,6 @@ export default function ModeSelection() {
                       </h2>
                       <p className="text-gray-600 mt-1">{mode.description}</p>
                       
-                      {/* Score display */}
                       {isUnlocked && bestScore !== null && bestScore !== undefined && (
                         <div className="mt-2">
                           <span className={`text-sm font-semibold ${isPassed ? 'text-green-600' : 'text-orange-600'}`}>
@@ -200,7 +191,6 @@ export default function ModeSelection() {
                         </div>
                       )}
 
-                      {/* Unlock requirement */}
                       {!isUnlocked && mode.previousMode && (
                         <p className="text-sm text-red-600 mt-2">
                           🔒 Complete <strong>{mode.previousMode}</strong> level with 15/20 to unlock
@@ -209,7 +199,6 @@ export default function ModeSelection() {
                     </div>
                   </div>
 
-                  {/* Right side - Button */}
                   <div>
                     <button
                       onClick={() => handleModeClick(mode.id, isUnlocked)}
@@ -232,7 +221,6 @@ export default function ModeSelection() {
                   </div>
                 </div>
 
-                {/* Progress bar (optional) */}
                 {isUnlocked && bestScore !== null && bestScore !== undefined && (
                   <div className="mt-4">
                     <div className="w-full bg-gray-200 rounded-full h-3">
@@ -248,17 +236,6 @@ export default function ModeSelection() {
               </div>
             );
           })}
-        </div>
-
-        {/* Info Box */}
-        <div className="mt-10 bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-3">📋 How it works</h3>
-          <ul className="space-y-2 text-gray-700">
-            <li>• Complete <strong>Easy Level</strong> first to unlock Moderate</li>
-            <li>• Score at least <strong>15/20 (75%)</strong> to pass each level</li>
-            <li>• Complete <strong>Moderate Level</strong> to unlock Hard</li>
-            <li>• You can retake any unlocked level to improve your score</li>
-          </ul>
         </div>
       </div>
     </div>

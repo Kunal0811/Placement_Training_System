@@ -1,6 +1,6 @@
 // src/pages/Aptitude/TestPage.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
@@ -8,10 +8,12 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 export default function TestPage() {
   const { topic, mode } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const basePath = location.pathname.startsWith('/technical') ? 'technical' : 'aptitude';
   const isFinalTest = topic === "Final Aptitude Test";
-  const initialTime = isFinalTest ? 3600 : 1800; // 60 mins for final, 30 for others
-  const questionCount = isFinalTest ? 50 : 20;   // 50 questions for final, 20 for others
+  const initialTime = isFinalTest ? 3600 : 1800;
+  const questionCount = isFinalTest ? 50 : 20;
 
   const { user } = useAuth();
   const userId = user?.id;
@@ -32,28 +34,23 @@ export default function TestPage() {
     answersRef.current = answers;
   }, [answers]);
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!userId) navigate('/login');
   }, [userId, navigate]);
 
-  // Fetch questions
   useEffect(() => {
-    // Debugging: Log when the effect is triggered
-    console.log(`Fetching questions for topic: ${topic}, user: ${userId}`);
-
     if (!userId) return;
 
     const controller = new AbortController();
     const signal = controller.signal;
 
     const fetchQuestions = async () => {
-      setLoading(true); // Ensure loading state is set immediately
+      setLoading(true);
       setQuestions([]);
       setAnswers({});
       setScore(null);
       try {
-        const res = await fetch(`${API_BASE}/api/mcqs/test`, {
+        const res = await fetch(`${API_BASE}/api/${basePath}/mcqs/test`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ topic, count: questionCount, difficulty: mode }),
@@ -61,8 +58,8 @@ export default function TestPage() {
         });
 
         if (!res.ok) {
-            // Throw an error if the response is not successful
-            throw new Error(`HTTP error! status: ${res.status}`);
+            const errorData = await res.json();
+            throw new Error(errorData.detail || `HTTP error! status: ${res.status}`);
         }
 
         const data = await res.json();
@@ -73,7 +70,7 @@ export default function TestPage() {
       } catch (err) {
         if (err.name !== 'AbortError') {
           console.error("Error fetching questions:", err);
-          alert("Error loading test. Please try again.");
+          alert(`Error loading test: ${err.message}`);
         }
       } finally {
         if (!signal.aborted) setLoading(false);
@@ -82,9 +79,8 @@ export default function TestPage() {
 
     fetchQuestions();
     return () => controller.abort();
-  }, [topic, mode, userId, questionCount]); // Keep questionCount here as it's a key parameter
+  }, [topic, mode, userId, questionCount, basePath]);
 
-  // Timer logic
   useEffect(() => {
     if (loading || score !== null) {
       clearInterval(timerRef.current);
@@ -150,21 +146,13 @@ export default function TestPage() {
   };
 
   const handleBackNavigation = () => {
-      if (isFinalTest) {
-          navigate('/aptitude');
-      } else {
-          navigate(`/aptitude/modes/${encodeURIComponent(topic)}`);
-      }
+    if (isFinalTest) {
+        navigate('/aptitude');
+    } else {
+        navigate(`/${basePath}/modes/${encodeURIComponent(topic)}`);
+    }
   };
   
-  if (!userId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg text-red-600">Please login to take tests.</p>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -192,7 +180,6 @@ export default function TestPage() {
           </p>
         </div>
       )}
-
 
       {score === null ? (
         <>

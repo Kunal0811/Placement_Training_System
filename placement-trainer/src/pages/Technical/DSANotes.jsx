@@ -1,4 +1,6 @@
 // src/pages/Technical/DSANotes.jsx
+import { Link } from 'react-router-dom';
+
 export default function DSANotes() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white shadow rounded">
@@ -26,6 +28,44 @@ export default function DSANotes() {
           <li><b>Graph Traversal:</b> <b>Breadth-First Search (BFS)</b> explores neighbor nodes first, while <b>Depth-First Search (DFS)</b> explores as far as possible along each branch before backtracking.</li>
           <li><b>Dynamic Programming:</b> An optimization technique for solving complex problems by breaking them into simpler subproblems and storing the results to avoid redundant calculations.</li>
         </ul>
+      </section>
+
+      {/* --- Video Tutorials Section --- */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-3">Video Tutorials</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full rounded-lg border"
+              src="https://www.youtube.com/embed/8hly31xKli0"
+              title="DSA Full Course"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full rounded-lg border"
+              src="https://www.youtube.com/embed/__vX2sjlpXU"
+              title="Big O Notation Explained"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 pt-6 border-t-2 border-dashed">
+        <h2 className="text-2xl font-semibold mb-3">Practice Test</h2>
+        <p className="text-gray-700 mb-4">
+          Ready to test your knowledge? Take a practice test with AI-generated questions.
+        </p>
+        <Link
+          to={`/technical/modes/Data Structures & Algorithms`}
+          className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg transition-transform hover:scale-105"
+        >
+          🚀 Start Test
+        </Link>
       </section>
     </div>
   );
