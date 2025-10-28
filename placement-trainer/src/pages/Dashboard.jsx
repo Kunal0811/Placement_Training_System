@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { getUserDetails } from "../api";
 import { useAuth } from "../context/AuthContext";
+import API_BASE from "../api";
+import axios from "axios";
 import {
   ResponsiveContainer,
   BarChart,
@@ -13,10 +15,8 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import API_BASE from "../api"; // <-- Import API_BASE
-import axios from "axios"; // <-- Import axios
 
-// Define which topics belong to which category
+// Define topic categories
 const APTITUDE_TOPICS = [
   'Percentages', 'Profit & Loss', 'Time, Speed & Distance', 'Ratio & Proportion', 
   'Number System', 'Simple & Compound Interest', 'Permutation & Combination', 
@@ -29,7 +29,7 @@ const TECHNICAL_TOPICS = [
   'Database Management Systems', 'Operating Systems', 'Computer Networks'
 ];
 
-// Custom Tooltip for charts
+// Custom Tooltip for better styling
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -45,13 +45,14 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function Dashboard() {
-  const { user: authUser, updateUser } = useAuth(); // Already correctly getting updateUser
-  const [user, setUser] = useState(null);
+  const { user: authUser, updateUser } = useAuth();
+  const [user, setUser] = useState(authUser);
   const [tests, setTests] = useState([]);
   const [codingAttempts, setCodingAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedView, setSelectedView] = useState('aptitude');
-
+  
+  // State for profile picture upload
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -59,23 +60,26 @@ export default function Dashboard() {
   const [uploadSuccess, setUploadSuccess] = useState('');
 
   useEffect(() => {
-    if (!authUser) return;
+    if (!authUser?.id) {
+      setLoading(false);
+      return;
+    }
     async function fetchUser() {
       try {
         const data = await getUserDetails(authUser.id);
         setUser(data.user);
-        updateUser(data.user); 
+        updateUser(data.user); // Update global context
         setTests((data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setCodingAttempts((data.coding || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch user details:", err);
       } finally {
         setLoading(false);
       }
     }
     fetchUser();
-    // Add updateUser to the dependency array
-  }, [authUser, updateUser]);
+  }, [authUser?.id, updateUser]);
+
   useEffect(() => {
     if (!selectedFile) {
       setPreview(undefined);
@@ -85,8 +89,7 @@ export default function Dashboard() {
     setPreview(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
-
-  // --- NEW: Handlers for file selection and upload ---
+  
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
@@ -96,10 +99,7 @@ export default function Dashboard() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) {
-      setUploadError("Please select a file first.");
-      return;
-    }
+    if (!selectedFile || !authUser?.id) return;
     setUploading(true);
     setUploadError('');
     setUploadSuccess('');
@@ -108,22 +108,14 @@ export default function Dashboard() {
     formData.append("file", selectedFile);
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/api/user/${authUser.id}/upload-pfp`,
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
-      
-      // Update the user context and local state
-      updateUser({ profile_picture_url: res.data.profile_picture_url });
-      setUser(prev => ({ ...prev, profile_picture_url: res.data.profile_picture_url }));
-
+      const res = await axios.post(`${API_BASE}/api/user/${authUser.id}/upload-pfp`, formData);
+      const updatedUser = { ...user, profile_picture_url: res.data.profile_picture_url };
+      setUser(updatedUser);
+      updateUser(updatedUser);
       setUploadSuccess(res.data.message);
-      setSelectedFile(null); // Clear selection after upload
+      setSelectedFile(null);
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || "Upload failed. Please try again.";
-      setUploadError(errorMsg);
-      console.error(err);
+      setUploadError(err.response?.data?.detail || "Upload failed.");
     } finally {
       setUploading(false);
     }
@@ -131,28 +123,34 @@ export default function Dashboard() {
 
   const { mcqBarChartData, testsByTopic, filteredTests } = useMemo(() => {
     const relevantTopics = selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS;
-    const filteredTests = tests.filter(test => relevantTopics.includes(test.topic));
-    const topicModeStats = {};
-    filteredTests.forEach((test) => {
-      if (!topicModeStats[test.topic]) {
-        topicModeStats[test.topic] = { easy: { s: 0, c: 0 }, moderate: { s: 0, c: 0 }, hard: { s: 0, c: 0 } };
+    const filtered = tests.filter(test => relevantTopics.includes(test.topic));
+    
+    const stats = {};
+    filtered.forEach(test => {
+      if (!stats[test.topic]) {
+        stats[test.topic] = { easy: { s: 0, c: 0 }, moderate: { s: 0, c: 0 }, hard: { s: 0, c: 0 } };
       }
       const mode = test.mode.toLowerCase();
-      topicModeStats[test.topic][mode].s += test.score;
-      topicModeStats[test.topic][mode].c += 1;
+      if (stats[test.topic][mode]) {
+        stats[test.topic][mode].s += test.score;
+        stats[test.topic][mode].c += 1;
+      }
     });
-    const barData = Object.keys(topicModeStats).map(topic => ({
+
+    const barData = Object.keys(stats).map(topic => ({
       topic,
-      easy: topicModeStats[topic].easy.c ? (topicModeStats[topic].easy.s / topicModeStats[topic].easy.c).toFixed(2) : 0,
-      moderate: topicModeStats[topic].moderate.c ? (topicModeStats[topic].moderate.s / topicModeStats[topic].moderate.c).toFixed(2) : 0,
-      hard: topicModeStats[topic].hard.c ? (topicModeStats[topic].hard.s / topicModeStats[topic].hard.c).toFixed(2) : 0,
+      easy: stats[topic].easy.c > 0 ? parseFloat((stats[topic].easy.s / stats[topic].easy.c).toFixed(2)) : 0,
+      moderate: stats[topic].moderate.c > 0 ? parseFloat((stats[topic].moderate.s / stats[topic].moderate.c).toFixed(2)) : 0,
+      hard: stats[topic].hard.c > 0 ? parseFloat((stats[topic].hard.s / stats[topic].hard.c).toFixed(2)) : 0,
     }));
-    const groupedByTopic = filteredTests.reduce((acc, test) => {
+
+    const grouped = filtered.reduce((acc, test) => {
       if (!acc[test.topic]) acc[test.topic] = [];
       acc[test.topic].push(test);
       return acc;
     }, {});
-    return { mcqBarChartData: barData, testsByTopic: groupedByTopic, filteredTests };
+
+    return { mcqBarChartData: barData, testsByTopic: grouped, filteredTests: filtered };
   }, [tests, selectedView]);
 
   const { codingBarChartData, codingLineChartData } = useMemo(() => {
@@ -160,101 +158,100 @@ export default function Dashboard() {
     const uniqueSolved = new Set();
     const solvedAttempts = [];
     codingAttempts.forEach(attempt => {
-      if(attempt.is_correct && !uniqueSolved.has(attempt.problem_title)) {
+      if (attempt.is_correct && !uniqueSolved.has(attempt.problem_title)) {
         uniqueSolved.add(attempt.problem_title);
         solvedAttempts.push(attempt);
-        if (solvedByDifficulty[attempt.difficulty] !== undefined) solvedByDifficulty[attempt.difficulty]++;
+        if (solvedByDifficulty[attempt.difficulty] !== undefined) {
+          solvedByDifficulty[attempt.difficulty]++;
+        }
       }
     });
+
     const barData = [
       { difficulty: 'Easy', solved: solvedByDifficulty.easy },
       { difficulty: 'Medium', solved: solvedByDifficulty.medium },
       { difficulty: 'Hard', solved: solvedByDifficulty.hard },
     ];
+
     let cumulativeSolved = 0;
     const lineData = solvedAttempts.map(attempt => ({
       date: new Date(attempt.created_at).toLocaleDateString(),
       'Problems Solved': ++cumulativeSolved,
     }));
+
     return { codingBarChartData: barData, codingLineChartData: lineData };
   }, [codingAttempts]);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-spin">⚙️</div>
+          <div className="animate-spin text-6xl mb-4">⚙️</div>
           <p className="text-2xl text-gray-400">Loading Dashboard...</p>
         </div>
       </div>
-  );
-
+    );
+  }
+  
   const renderContent = () => {
-    if (selectedView === 'coding') {
-      return (
-        <div>
-          <h2 className="text-xl font-semibold mb-4 text-white">Coding History</h2>
-            {codingAttempts.length === 0 ? <p className="text-gray-400">No coding problems attempted yet.</p> : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-neon-blue/30">
-                      <th className="p-3 text-white">Problem Title</th>
-                      <th className="p-3 text-white">Difficulty</th>
-                      <th className="p-3 text-white">Status</th>
-                      <th className="p-3 text-white">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-300">
-                    {codingAttempts.map((attempt, index) => (
-                      <tr key={index} className="border-b border-gray-800 hover:bg-dark-bg">
-                        <td className="p-3">{attempt.problem_title}</td>
-                        <td className="p-3 capitalize">{attempt.difficulty}</td>
-                        <td className={`p-3 font-semibold ${attempt.is_correct ? 'text-neon-green' : 'text-red-500'}`}>{attempt.is_correct ? 'Solved' : 'Attempted'}</td>
-                        <td className="p-3">{new Date(attempt.created_at).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-        </div>
-      );
+    const testsToDisplay = selectedView === 'coding' ? codingAttempts : filteredTests;
+    const noDataMessage = 
+        selectedView === 'coding' ? "No coding problems attempted yet." : "No tests attempted for this category yet.";
+
+    if (testsToDisplay.length === 0) {
+        return <p className="text-gray-400">{noDataMessage}</p>;
     }
-    
+
     return (
-      <div>
-        <h2 className="text-xl font-semibold mb-4 text-white">Test History ({selectedView})</h2>
-        {filteredTests.length === 0 ? <p className="text-gray-400">No tests attempted for this category yet.</p> : (
-            <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                    <thead>
-                        <tr className="border-b border-neon-blue/30">
-                            <th className="p-3 text-white">Topic</th>
-                            <th className="p-3 text-white">Mode</th>
-                            <th className="p-3 text-white">Score</th>
-                            <th className="p-3 text-white">Total</th>
-                            <th className="p-3 text-white">Date</th>
+        <div className="overflow-x-auto">
+            <table className="w-full text-left">
+                <thead>
+                    <tr className="border-b border-neon-blue/30">
+                        {selectedView === 'coding' ? (
+                            <>
+                                <th className="p-3 text-white">Problem Title</th>
+                                <th className="p-3 text-white">Difficulty</th>
+                                <th className="p-3 text-white">Status</th>
+                            </>
+                        ) : (
+                            <>
+                                <th className="p-3 text-white">Topic</th>
+                                <th className="p-3 text-white">Mode</th>
+                                <th className="p-3 text-white">Score</th>
+                                <th className="p-3 text-white">Total</th>
+                            </>
+                        )}
+                        <th className="p-3 text-white">Date</th>
+                    </tr>
+                </thead>
+                <tbody className="text-gray-300">
+                    {testsToDisplay.map((item, index) => (
+                        <tr key={index} className="border-b border-gray-800 hover:bg-dark-bg">
+                            {selectedView === 'coding' ? (
+                                <>
+                                    <td className="p-3">{item.problem_title}</td>
+                                    <td className="p-3 capitalize">{item.difficulty}</td>
+                                    <td className={`p-3 font-semibold ${item.is_correct ? 'text-neon-green' : 'text-red-500'}`}>{item.is_correct ? 'Solved' : 'Attempted'}</td>
+                                </>
+                            ) : (
+                                <>
+                                    <td className="p-3">{item.topic}</td>
+                                    <td className="p-3 capitalize">{item.mode}</td>
+                                    <td className="p-3">{item.score}</td>
+                                    <td className="p-3">{item.total}</td>
+                                </>
+                            )}
+                            <td className="p-3">{new Date(item.created_at).toLocaleString()}</td>
                         </tr>
-                    </thead>
-                    <tbody className="text-gray-300">
-                        {filteredTests.map((test, index) => (
-                            <tr key={index} className="border-b border-gray-800 hover:bg-dark-bg">
-                                <td className="p-3">{test.topic}</td>
-                                <td className="p-3 capitalize">{test.mode}</td>
-                                <td className="p-3">{test.score}</td>
-                                <td className="p-3">{test.total}</td>
-                                <td className="p-3">{new Date(test.created_at).toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        )}
-      </div>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
   };
 
   const renderGraphs = () => {
+    // ... (coding graphs logic is unchanged)
     if (selectedView === 'coding') {
       return codingAttempts.length === 0 ? <p className="text-gray-400">No data available to display graphs.</p> : (
         <>
@@ -293,21 +290,32 @@ export default function Dashboard() {
         </>
       );
     }
+    
+    if (filteredTests.length === 0) {
+      return <p className="text-gray-400">No data available to display graphs.</p>;
+    }
 
-    return filteredTests.length === 0 ? <p className="text-gray-400">No data available to display graphs.</p> : (
+    return (
       <>
         <div className="mb-12">
           <h3 className="text-lg font-semibold mb-4 text-white">Average Score per Topic (by Mode)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={mcqBarChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-              <XAxis dataKey="topic" tick={{ fill: '#a0a0a0' }} />
-              <YAxis tick={{ fill: '#a0a0a0' }} />
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={mcqBarChartData} margin={{ top: 20, right: 30, left: 0, bottom: 80 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
+              <XAxis 
+                dataKey="topic" 
+                angle={-45} 
+                textAnchor="end" 
+                interval={0}
+                tick={{ fill: '#a0a0a0' }} 
+                stroke="#a0a0a0"
+              />
+              <YAxis tick={{ fill: '#a0a0a0' }} stroke="#a0a0a0" />
               <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff10'}}/>
-              <Legend />
-              <Bar dataKey="easy" fill="#39FF14" />
-              <Bar dataKey="moderate" fill="#00BFFF" />
-              <Bar dataKey="hard" fill="#FF00FF" />
+              <Legend wrapperStyle={{ color: '#ffffff' }} />
+              <Bar dataKey="easy" name="Easy" fill="#39FF14" />
+              <Bar dataKey="moderate" name="Moderate" fill="#00BFFF" />
+              <Bar dataKey="hard" name="Hard" fill="#FF00FF" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -319,19 +327,33 @@ export default function Dashboard() {
             let counters = { easy: 0, moderate: 0, hard: 0 };
             topicTests.forEach(test => {
               const mode = test.mode.toLowerCase();
-              counters[mode]++;
-              attemptData[mode].push({ attempt: counters[mode], score: test.score });
+              if (counters[mode] !== undefined) {
+                counters[mode]++;
+                attemptData[mode].push({ attempt: counters[mode], score: test.score });
+              }
             });
             return (
               <div key={topic} className="mb-8">
                 <h4 className="text-md font-semibold mb-2 text-gray-300">{topic}</h4>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-                    <XAxis dataKey="attempt" type="number" allowDecimals={false} domain={[1, 'dataMax']} tick={{ fill: '#a0a0a0' }} label={{ value: "Attempt", position: "insideBottom", offset: -5, fill: '#a0a0a0' }}/>
-                    <YAxis tick={{ fill: '#a0a0a0' }} label={{ value: "Score", angle: -90, position: "insideLeft", fill: '#a0a0a0' }} />
+                  <LineChart margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
+                    <XAxis 
+                      dataKey="attempt" 
+                      type="number" 
+                      allowDecimals={false} 
+                      domain={[1, 'dataMax']} 
+                      tick={{ fill: '#a0a0a0' }} 
+                      stroke="#a0a0a0"
+                      label={{ value: "Attempt", position: "insideBottom", offset: -15, fill: '#a0a0a0' }}
+                    />
+                    <YAxis 
+                      tick={{ fill: '#a0a0a0' }} 
+                      stroke="#a0a0a0"
+                      label={{ value: "Score", angle: -90, position: "insideLeft", fill: '#a0a0a0' }} 
+                    />
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend />
+                    <Legend wrapperStyle={{ color: '#ffffff' }} />
                     {attemptData.easy.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.easy} name="Easy" stroke="#39FF14" strokeWidth={2} dot />}
                     {attemptData.moderate.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.moderate} name="Moderate" stroke="#00BFFF" strokeWidth={2} dot />}
                     {attemptData.hard.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.hard} name="Hard" stroke="#FF00FF" strokeWidth={2} dot />}
@@ -346,12 +368,11 @@ export default function Dashboard() {
   }
   
   return (
-<div className="p-6">
+    <div className="p-6">
       <h1 className="text-5xl font-bold mb-8 text-glow text-white">Dashboard</h1>
       <div className="bg-dark-card p-6 rounded-xl shadow-lg border border-neon-blue/20 mb-8">
         <h2 className="text-2xl font-semibold mb-3 text-neon-blue">Profile Details</h2>
         <div className="flex flex-col md:flex-row gap-6 items-start">
-            {/* --- NEW: Profile Picture Section --- */}
             <div className="w-full md:w-1/3 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">
                   {preview ? (
@@ -379,12 +400,11 @@ export default function Dashboard() {
               {uploadSuccess && <p className="text-neon-green text-sm mt-2">{uploadSuccess}</p>}
             </div>
 
-            {/* Existing Profile Details */}
             <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-300 pt-4">
-              <p><strong>Name:</strong> {user.fname} {user.lname}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Year:</strong> {user.year}</p>
-              <p><strong>Field:</strong> {user.field}</p>
+              <p><strong>Name:</strong> {user?.fname} {user?.lname}</p>
+              <p><strong>Email:</strong> {user?.email}</p>
+              <p><strong>Year:</strong> {user?.year}</p>
+              <p><strong>Field:</strong> {user?.field}</p>
             </div>
         </div>
       </div>
