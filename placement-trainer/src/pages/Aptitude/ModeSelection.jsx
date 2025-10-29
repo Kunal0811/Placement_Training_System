@@ -42,7 +42,11 @@ export default function ModeSelection() {
 
   useEffect(() => {
     const checkAllModes = async () => {
-      if (!userId) return;
+      if (typeof userId !== 'number') {
+            console.warn("Skipping fetch: userId is not a number yet.");
+            setLoading(false); // Ensure loading stops if we skip
+            return;
+        }
       setLoading(true);
       try {
         const modePromises = MODES.map(mode => {

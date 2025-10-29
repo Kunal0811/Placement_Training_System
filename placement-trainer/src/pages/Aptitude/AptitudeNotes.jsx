@@ -1,235 +1,304 @@
-// src/pages/Aptitude/ModeSelection.jsx
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+
+// src/pages/Aptitude/AptitudeNotes.jsx
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
-const MODES = [
+const syllabus = [
   {
-    id: "easy",
-    title: "Easy Level",
-    description: "Perfect for beginners. Start your journey here!",
-    icon: "🌱",
-    color: "green",
-    requiredScore: null,
-    previousMode: null
+    title: "Quantitative Aptitude",
+    sections: [
+      {
+        subtitle: "Number System",
+        notes: [
+          "Types of numbers: Natural, Whole, Integers, Rational, Irrational, Prime, Composite.",
+          "HCF × LCM = Product of two numbers.",
+          "Sum of first n natural numbers: n(n+1)/2.",
+          "Sum of first n squares: n(n+1)(2n+1)/6.",
+          "Divisibility Rules: 2,3,4,5,6,8,9,11.",
+          "Shortcut for divisibility by 11: (Sum of digits at odd positions − sum at even positions) is divisible by 11.",
+        ],
+        videos: [
+          "https://youtube.com/embed/qlEvy3pgmKU",
+          "https://youtube.com/embed/UKXCnwWSZEI",
+        ],
+      },
+      {
+        subtitle: "Percentages",
+        notes: [
+          "Percentage formula: (Value / Total) × 100.",
+          "1% of a number = number ÷ 100.",
+          "5% of a number = number ÷ 20.",
+          "Successive percentage changes multiply: (1 ± p1/100)(1 ± p2/100) ... − 1",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/_TdyTKpNY8g",
+        ],
+      },
+      {
+        subtitle: "Profit & Loss",
+        notes: [
+          "Profit = Selling Price − Cost Price",
+          "Loss = Cost Price − Selling Price",
+          "Profit % = (Profit / Cost Price) × 100",
+          "Loss % = (Loss / Cost Price) × 100",
+          "Marked Price = Cost Price + Profit",
+        ],
+        videos: [
+          "https://youtube.com/embed/_cW7_BUDYcw",
+        ],
+      },
+      {
+        subtitle: "Simple & Compound Interest",
+        notes: [
+          "Simple Interest (SI) = (P × R × T) / 100",
+          "Compound Interest (CI) = P(1 + R/100)^T − P",
+          "For 2 years CI, add (R²/100) to SI.",
+          "CI is calculated annually/half-yearly/quarterly based on rate divisions.",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/3sRZtUczn-8",
+        ],
+      },
+      {
+        subtitle: "Time, Speed & Distance",
+        notes: [
+          "Speed = Distance / Time",
+          "Distance = Speed × Time",
+          "Time = Distance / Speed",
+          "Relative speed in same direction = |V1 − V2|",
+          "Relative speed in opposite direction = V1 + V2",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/vN7eJw-1MSM",
+        ],
+      },
+      {
+        subtitle: "Ratio & Proportion",
+        notes: [
+          "Ratio = a : b",
+          "If a/b = c/d then ad = bc",
+          "Divide quantity in ratio m:n → parts = m+n",
+          "Each part = total quantity / parts",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/kP7Srz7F5uI",
+        ],
+      },
+      {
+        subtitle: "Permutation & Combination",
+        notes: [
+          "Permutation: nPr = n! / (n−r)!",
+          "Combination: nCr = n! / (r! (n−r)!)",
+          "Factorial (n!) = n × (n−1) × ... × 1",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/8VEug2ZpKQo",
+        ],
+      },
+      {
+        subtitle: "Geometry & Mensuration",
+        notes: [
+          "Triangle area = ½ × base × height",
+          "Circle area = πr², Circumference = 2πr",
+          "Volume of cylinder = πr²h",
+          "Volume of cone = (1/3)πr²h",
+          "Volume of sphere = (4/3)πr³",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/DJYQfBuoWvY",
+        ],
+      },
+    ],
   },
   {
-    id: "moderate",
-    title: "Moderate Level",
-    description: "Intermediate challenges. Test your knowledge!",
-    icon: "🔥",
-    color: "orange",
-    requiredScore: 15,
-    previousMode: "easy"
+    title: "Logical Reasoning",
+    sections: [
+      {
+        subtitle: "Series & Patterns",
+        notes: [
+          "Number series: Arithmetic, Geometric progressions",
+          "Letter series: Alphabet shifting",
+          "Odd one out: Identify the item not following the pattern",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/pbqsT8yqFy8",
+        ],
+      },
+      {
+        subtitle: "Coding-Decoding",
+        notes: [
+          "Substitution methods: letters replaced systematically",
+          "Letter shifting: forward or backward by fixed positions",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/0dB6S98Rrko",
+        ],
+      },
+      {
+        subtitle: "Blood Relations",
+        notes: [
+          "Father, mother, son, daughter, brother, sister relations",
+          "Practice diagrammatic representation",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/hzT7z8jrdGg",
+        ],
+      },
+      {
+        subtitle: "Direction Sense",
+        notes: [
+          "North, South, East, West basics",
+          "Right turn = 90° clockwise, Left turn = 90° anticlockwise",
+          "Relative direction calculation",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/AX9aUQW9fD8",
+        ],
+      },
+    ],
   },
   {
-    id: "hard",
-    title: "Hard Level",
-    description: "Expert level. Prove your mastery!",
-    icon: "💎",
-    color: "purple",
-    requiredScore: 15,
-    previousMode: "moderate"
-  }
+    title: "Verbal Ability",
+    sections: [
+      {
+        subtitle: "Grammar",
+        notes: [
+          "Parts of Speech: Noun, Pronoun, Verb, Adjective, Adverb, Preposition, Conjunction, Interjection",
+          "Tenses: Present, Past, Future (Simple, Continuous, Perfect)",
+          "Subject-Verb Agreement rules",
+          "Active and Passive voice conversion",
+          "Direct and Indirect speech rules",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/0nBAQeUph1w",
+        ],
+      },
+      {
+        subtitle: "Vocabulary",
+        notes: [
+          "Synonyms and Antonyms",
+          "One word substitution",
+          "Idioms and phrases",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/2F07cfZz2xM",
+        ],
+      },
+      {
+        subtitle: "Reading Comprehension",
+        notes: [
+          "Practice passage reading",
+          "Identify main idea, tone, inference",
+        ],
+        videos: [
+          "https://www.youtube.com/embed/TbQp4ij0T44",
+        ],
+      },
+    ],
+  },
 ];
 
-export default function ModeSelection() {
-  const { topic } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { user } = useAuth();
-  const [modeStatus, setModeStatus] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [bestScores, setBestScores] = useState({});
+export default function AptitudeNotes({ section }) {
+  const [open, setOpen] = useState({});
+  const [mcqs, setMcqs] = useState([]);
+  const [loadingTopic, setLoadingTopic] = useState("");
 
-  const userId = user?.id;
-  const basePath = location.pathname.startsWith('/technical') ? 'technical' : 'aptitude';
+  const toggle = (sIdx, tIdx) => {
+    const key = `${sIdx}-${tIdx}`;
+    setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
-  useEffect(() => {
-    const checkAllModes = async () => {
-      if (!userId) return;
-  
-      setLoading(true);
-  
-      try {
-        const modePromises = MODES.map(mode => {
-          const statusPromise = fetch(`${API_BASE}/api/test/mode-status`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, topic, mode: mode.id }),
-          }).then(res => res.json());
-  
-          const scorePromise = fetch(`${API_BASE}/api/test/best-score`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, topic, mode: mode.id }),
-          }).then(res => res.json());
-          
-          return Promise.all([statusPromise, scorePromise]).then(([statusData, scoreData]) => ({
-              modeId: mode.id,
-              unlocked: statusData.unlocked,
-              best_score: scoreData.best_score
-          }));
-        });
-  
-        const results = await Promise.all(modePromises);
-        
-        const newStatus = {};
-        const newScores = {};
-        results.forEach(result => {
-          newStatus[result.modeId] = result.unlocked;
-          newScores[result.modeId] = result.best_score;
-        });
-  
-        setModeStatus(newStatus);
-        setBestScores(newScores);
-  
-      } catch (err) {
-        console.error("Failed to check mode status:", err);
-      } finally {
-        setLoading(false);
+  const generateMCQs = async (topic) => {
+    setLoadingTopic(topic);
+    setMcqs([]);
+    try {
+      const res = await fetch(`${API_BASE}/api/mcqs/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, count: 5 }),
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setMcqs(data);
+      } else {
+        console.error("API error:", data);
+        alert(data.error || "Failed to generate MCQs");
       }
-    };
-  
-    checkAllModes();
-  }, [userId, topic]);
-
-
-  const handleModeClick = (modeId, isUnlocked) => {
-    if (!isUnlocked) {
-      alert("Complete the previous level first!");
-      return;
+    } catch (err) {
+      console.error("MCQ fetch failed:", err);
+      alert("Failed to reach backend");
+    } finally {
+      setLoadingTopic("");
     }
-    navigate(`/${basePath}/test/${encodeURIComponent(topic)}/${modeId}`);
   };
 
-  const getColorClasses = (color, isUnlocked) => {
-    if (!isUnlocked) {
-      return "bg-gray-300 border-gray-400 cursor-not-allowed";
-    }
-    
-    const colors = {
-      green: "bg-green-100 border-green-500 hover:bg-green-200 hover:shadow-lg",
-      orange: "bg-orange-100 border-orange-500 hover:bg-orange-200 hover:shadow-lg",
-      purple: "bg-purple-100 border-purple-500 hover:bg-purple-200 hover:shadow-lg"
-    };
-    return colors[color] || colors.green;
-  };
-
-  const getButtonColorClasses = (color, isUnlocked) => {
-    if (!isUnlocked) {
-      return "bg-gray-400 cursor-not-allowed";
-    }
-    
-    const colors = {
-      green: "bg-green-600 hover:bg-green-700",
-      orange: "bg-orange-600 hover:bg-orange-700",
-      purple: "bg-purple-600 hover:bg-purple-700"
-    };
-    return colors[color] || colors.green;
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4 animate-spin">⏳</div>
-          <p className="text-xl text-gray-600">Loading Levels...</p>
-        </div>
-      </div>
-    );
-  }
+  const filteredSyllabus = section
+    ? syllabus.filter((s) => s.title === section)
+    : syllabus;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">
-            🎯 {decodeURIComponent(topic)}
-          </h1>
-          <p className="text-lg text-gray-600">
-            Select your difficulty level and start testing!
-          </p>
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-4 text-blue-600 hover:underline"
-          >
-            ← Back to Notes
-          </button>
-        </div>
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-4xl font-bold text-center mb-8 text-blue-700">
+        Aptitude Notes - {section || "Complete Syllabus"}
+      </h1>
 
-        <div className="space-y-6">
-          {MODES.map((mode) => {
-            const isUnlocked = mode.id === 'easy' || (modeStatus[mode.id] || false);
-            const bestScore = bestScores[mode.id];
-            const isPassed = bestScore >= 15;
+      {filteredSyllabus.map((section, sIdx) => (
+        <div key={sIdx} className="mb-10">
+          <h2 className="text-3xl font-semibold mb-5 border-b border-blue-300 pb-2">
+            {section.title}
+          </h2>
+
+          {section.sections.map((topic, tIdx) => {
+            const key = `${sIdx}-${tIdx}`;
+            const isOpen = open[key];
+            const busy = loadingTopic === topic.subtitle;
 
             return (
-              <div
-                key={mode.id}
-                className={`border-4 rounded-2xl p-6 transition-all duration-300 ${getColorClasses(
-                  mode.color,
-                  isUnlocked
-                )}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-6xl">{isUnlocked ? mode.icon : "🔒"}</div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-800">
-                        {mode.title}
-                      </h2>
-                      <p className="text-gray-600 mt-1">{mode.description}</p>
-                      
-                      {isUnlocked && bestScore !== null && bestScore !== undefined && (
-                        <div className="mt-2">
-                          <span className={`text-sm font-semibold ${isPassed ? 'text-green-600' : 'text-orange-600'}`}>
-                            Best Score: {bestScore}/20 {isPassed ? '✅' : ''}
-                          </span>
-                        </div>
-                      )}
+              <div key={tIdx} className="bg-white rounded-md shadow mb-3 overflow-hidden">
+                <button
+                  onClick={() => toggle(sIdx, tIdx)}
+                  className="flex justify-between items-center w-full px-5 py-3 text-left text-lg font-medium text-gray-800 hover:bg-blue-100"
+                >
+                  {topic.subtitle}
+                  <span className="text-2xl font-bold">{isOpen ? "−" : "+"}</span>
+                </button>
 
-                      {!isUnlocked && mode.previousMode && (
-                        <p className="text-sm text-red-600 mt-2">
-                          🔒 Complete <strong>{mode.previousMode}</strong> level with 15/20 to unlock
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                {isOpen && (
+                  <div className="px-8 py-4 bg-blue-50 space-y-4">
+                    {/* Notes */}
+                    <ul className="list-disc space-y-1 text-gray-700">
+                      {topic.notes.map((note, nIdx) => (
+                        <li key={nIdx}>{note}</li>
+                      ))}
+                    </ul>
 
-                  <div>
-                    <button
-                      onClick={() => handleModeClick(mode.id, isUnlocked)}
-                      disabled={!isUnlocked}
-                      className={`px-6 py-3 rounded-lg text-white font-semibold text-lg transition-all ${getButtonColorClasses(
-                        mode.color,
-                        isUnlocked
-                      )}`}
-                    >
-                      {isUnlocked ? (
-                        bestScore !== null && bestScore !== undefined ? (
-                          "Retake Test"
-                        ) : (
-                          "Start Test"
-                        )
-                      ) : (
-                        "Locked"
-                      )}
-                    </button>
-                  </div>
-                </div>
+                    {/* Videos */}
+                    {topic.videos && (
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {topic.videos.map((video, vIdx) => (
+                          <div key={vIdx} className="aspect-video">
+                            <iframe
+                              src={video}
+                              title={`Video ${vIdx}`}
+                              className="w-full h-full rounded-lg border"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+                              allowFullScreen
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-                {isUnlocked && bestScore !== null && bestScore !== undefined && (
-                  <div className="mt-4">
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className={`h-3 rounded-full transition-all ${
-                          isPassed ? 'bg-green-500' : 'bg-orange-500'
-                        }`}
-                        style={{ width: `${(bestScore / 20) * 100}%` }}
-                      ></div>
+                    {/* Start Test Button */}
+                    <div className="mt-4">
+                      <Link
+                        to={`/aptitude/test/${encodeURIComponent(topic.subtitle)}`}
+                        className="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
+                      >
+                        🚀 Start Test
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -237,7 +306,7 @@ export default function ModeSelection() {
             );
           })}
         </div>
-      </div>
+      ))}
     </div>
   );
 }
