@@ -48,7 +48,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # --- CORS Middleware ---
-allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173",).split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in allowed if o.strip()],
