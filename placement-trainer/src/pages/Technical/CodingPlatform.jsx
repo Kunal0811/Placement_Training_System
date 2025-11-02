@@ -10,7 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 const boilerplate = {
   python: `import sys\n\ndef solve():\n    # Your solution logic here.\n\n# Main execution block\nif __name__ == "__main__":\n    solve()\n`,
-  java: `import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nimport java.io.IOException;\n\nclass MyClass {\n    public static void main(String[] args) {\n        // Your solution logic here.\n    }\n}`,
+  java: `import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nimport java.io.IOException;\n\npublic class MyClass {\n    public static void main(String[] args) {\n        // Your solution logic here.\n    }\n}`,
   cpp: `#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    // Your solution logic here.\n}`,
 };
 

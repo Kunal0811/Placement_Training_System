@@ -202,36 +202,10 @@ const syllabus = [
 
 export default function AptitudeNotes({ section }) {
   const [open, setOpen] = useState({});
-  const [mcqs, setMcqs] = useState([]);
-  const [loadingTopic, setLoadingTopic] = useState("");
 
   const toggle = (sIdx, tIdx) => {
     const key = `${sIdx}-${tIdx}`;
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const generateMCQs = async (topic) => {
-    setLoadingTopic(topic);
-    setMcqs([]);
-    try {
-      const res = await fetch(`${API_BASE}/api/mcqs/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, count: 5 }),
-      });
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setMcqs(data);
-      } else {
-        console.error("API error:", data);
-        alert(data.error || "Failed to generate MCQs");
-      }
-    } catch (err) {
-      console.error("MCQ fetch failed:", err);
-      alert("Failed to reach backend");
-    } finally {
-      setLoadingTopic("");
-    }
   };
 
   const filteredSyllabus = section
@@ -239,36 +213,37 @@ export default function AptitudeNotes({ section }) {
     : syllabus;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-bold text-center mb-8 text-blue-700">
+    <div className="max-w-5xl mx-auto p-6 min-h-screen">
+      <h1 className="text-5xl font-bold text-center mb-10 text-white text-glow">
         Aptitude Notes - {section || "Complete Syllabus"}
       </h1>
 
       {filteredSyllabus.map((section, sIdx) => (
         <div key={sIdx} className="mb-10">
-          <h2 className="text-3xl font-semibold mb-5 border-b border-blue-300 pb-2">
-            {section.title}
+          <h2 className="text-4xl font-semibold mb-6 border-b-2 border-neon-blue/30 pb-3 text-neon-blue text-glow">
+            
           </h2>
 
           {section.sections.map((topic, tIdx) => {
             const key = `${sIdx}-${tIdx}`;
             const isOpen = open[key];
-            const busy = loadingTopic === topic.subtitle;
 
             return (
-              <div key={tIdx} className="bg-white rounded-md shadow mb-3 overflow-hidden">
+              <div key={tIdx} className="bg-dark-card rounded-lg shadow mb-3 overflow-hidden border border-gray-700/50">
                 <button
                   onClick={() => toggle(sIdx, tIdx)}
-                  className="flex justify-between items-center w-full px-5 py-3 text-left text-lg font-medium text-gray-800 hover:bg-blue-100"
+                  className="flex justify-between items-center w-full px-5 py-4 text-left text-lg font-medium text-white hover:bg-neon-blue/10"
                 >
-                  {topic.subtitle}
-                  <span className="text-2xl font-bold">{isOpen ? "−" : "+"}</span>
+                  <span>{topic.subtitle}</span>
+                  <span className={`text-2xl font-bold transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                    {isOpen ? "−" : "+"}
+                  </span>
                 </button>
 
                 {isOpen && (
-                  <div className="px-8 py-4 bg-blue-50 space-y-4">
+                  <div className="px-8 py-5 bg-dark-bg/50 space-y-5 border-t border-neon-blue/20">
                     {/* Notes */}
-                    <ul className="list-disc space-y-1 text-gray-700">
+                    <ul className="list-disc space-y-2 text-gray-300 pl-5">
                       {topic.notes.map((note, nIdx) => (
                         <li key={nIdx}>{note}</li>
                       ))}
@@ -276,13 +251,13 @@ export default function AptitudeNotes({ section }) {
 
                     {/* Videos */}
                     {topic.videos && (
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-2 gap-4 pt-4">
                         {topic.videos.map((video, vIdx) => (
                           <div key={vIdx} className="aspect-video">
                             <iframe
                               src={video}
                               title={`Video ${vIdx}`}
-                              className="w-full h-full rounded-lg border"
+                              className="w-full h-full rounded-lg border-2 border-neon-blue/30"
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
                               allowFullScreen
                             />
@@ -292,10 +267,10 @@ export default function AptitudeNotes({ section }) {
                     )}
 
                     {/* Start Test Button */}
-                    <div className="mt-4">
+                    <div className="mt-4 pt-4 border-t border-gray-700/50">
                       <Link
-                        to={`/aptitude/test/${encodeURIComponent(topic.subtitle)}`}
-                        className="inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg"
+                        to={`/aptitude/modes/${encodeURIComponent(topic.subtitle)}`}
+                        className="inline-block bg-neon-green text-black font-bold py-2 px-6 rounded-lg hover:scale-105 transition-transform animate-glow"
                       >
                         🚀 Start Test
                       </Link>

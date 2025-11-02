@@ -31,6 +31,8 @@ import CNNotes from "./pages/Technical/CNNotes.jsx";
 import CodingPlatform from "./pages/Technical/CodingPlatform.jsx";
 import CodingLevels from "./pages/Technical/CodingLevels.jsx"; // Import the new component
 
+import ResumeAnalyzer from "./pages/ResumeAnalyzer.jsx";
+
 
 
 // Wrapper to extract :section param
@@ -101,6 +103,7 @@ function App() {
               {/* Other Main Sections */}
               <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
               <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
+              <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
             </Routes>
           </div>
         </div>

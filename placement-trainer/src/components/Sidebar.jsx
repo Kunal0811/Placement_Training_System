@@ -7,6 +7,7 @@ const Sidebar = ({ isOpen }) => {
     { name: "Technical", path: "/technical", icon: "💻" },
     { name: "Group Discussion", path: "/gd", icon: "👥" },
     { name: "Interview", path: "/interview", icon: "🎙️" },
+    { name: "Resume Analyzer", path: "/resume-analyzer", icon: "📄" },
   ];
 
   return (

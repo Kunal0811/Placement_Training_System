@@ -310,7 +310,8 @@ export default function Dashboard() {
                 tick={{ fill: '#a0a0a0' }} 
                 stroke="#a0a0a0"
               />
-              <YAxis tick={{ fill: '#a0a0a0' }} stroke="#a0a0a0" />
+              {/* --- FIX 1: Added domain prop to YAxis --- */}
+              <YAxis tick={{ fill: '#a0a0a0' }} stroke="#a0a0a0" domain={[0, 20]} />
               <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff10'}}/>
               <Legend wrapperStyle={{ color: '#ffffff' }} />
               <Bar dataKey="easy" name="Easy" fill="#39FF14" />
@@ -350,13 +351,15 @@ export default function Dashboard() {
                     <YAxis 
                       tick={{ fill: '#a0a0a0' }} 
                       stroke="#a0a0a0"
+                      domain={[0, 20]} // Added domain here as well for consistency
                       label={{ value: "Score", angle: -90, position: "insideLeft", fill: '#a0a0a0' }} 
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend wrapperStyle={{ color: '#ffffff' }} />
-                    {attemptData.easy.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.easy} name="Easy" stroke="#39FF14" strokeWidth={2} dot />}
-                    {attemptData.moderate.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.moderate} name="Moderate" stroke="#00BFFF" strokeWidth={2} dot />}
-                    {attemptData.hard.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.hard} name="Hard" stroke="#FF00FF" strokeWidth={2} dot />}
+                    {/* --- FIX 2: Added connectNulls prop to all Lines --- */}
+                    {attemptData.easy.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.easy} name="Easy" stroke="#39FF14" strokeWidth={2} dot connectNulls />}
+                    {attemptData.moderate.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.moderate} name="Moderate" stroke="#00BFFF" strokeWidth={2} dot connectNulls />}
+                    {attemptData.hard.length > 0 && <Line type="monotone" dataKey="score" data={attemptData.hard} name="Hard" stroke="#FF00FF" strokeWidth={2} dot connectNulls />}
                   </LineChart>
                 </ResponsiveContainer>
               </div>

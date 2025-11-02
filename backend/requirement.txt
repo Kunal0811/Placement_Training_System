@@ -5,5 +5,8 @@ pydantic
 google-generativeai
 python-jose
 passlib
-
+scikit-learn
+nltk
+pdfplumber
+python-docx
 

@@ -15,16 +15,29 @@ from passlib.hash import argon2
 import google.generativeai as genai
 import shutil  # <-- Import shutil
 import uuid    # <-- Import uuid
+import nltk
 
 # Import from the new database file and other route files
 from database import get_cursor
 from aptitude_routes import router as aptitude_router
 from technical_routes import router as technical_router
 from coding_routes import router as coding_router
+from resume_routes import router as resume_router
 
 # --- Setup ---
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    print("Downloading NLTK 'punkt' package...")
+    nltk.download('punkt_tab')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    print("Downloading NLTK 'stopwords' package...")
+    nltk.download('stopwords')
 
 app = FastAPI(title="Placify Backend", version="1.0.0")
 
@@ -48,6 +61,7 @@ app.add_middleware(
 app.include_router(aptitude_router)
 app.include_router(technical_router)
 app.include_router(coding_router)
+app.include_router(resume_router)
 
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):
