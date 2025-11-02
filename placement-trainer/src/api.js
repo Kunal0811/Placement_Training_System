@@ -10,9 +10,10 @@ export async function registerUser(userData) {
   return res.data;
 }
 
-export async function getUserDetails(userId, page = 1, limit = 20) {
+export async function getUserDetails(userId, page = 1, limit = 20, signal) {
   const res = await axios.get(`${API_BASE}/api/user/${userId}`, {
-    params: { page, limit }
+    params: { page, limit },
+    signal: signal
   });
   return res.data;
 }

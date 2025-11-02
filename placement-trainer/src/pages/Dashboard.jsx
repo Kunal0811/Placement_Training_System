@@ -59,26 +59,55 @@ export default function Dashboard() {
   const [uploadError, setUploadError] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState('');
 
+  // This is the new, fast code with AbortController
   useEffect(() => {
     if (!authUser?.id) {
       setLoading(false);
       return;
     }
+
+    // 1. Create an AbortController
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function fetchUser() {
       try {
-        const data = await getUserDetails(authUser.id);
+        // 2. Pass the signal to the fetch call
+        // (We need to modify `api.js` for this to work, see Fix 2)
+        const data = await getUserDetails(authUser.id, 1, 20, signal);
+        
+        // This state will not be set if the component unmounted
         setUser(data.user);
         updateUser(data.user); // Update global context
         setTests((data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setCodingAttempts((data.coding || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
+      
       } catch (err) {
-        console.error("Failed to fetch user details:", err);
+        if (err.name === 'AbortError') {
+          // This is expected, not an error
+          console.log('Fetch aborted on component unmount');
+        } else {
+          console.error("Failed to fetch user details:", err);
+        }
       } finally {
-        setLoading(false);
+        // Only set loading to false if we haven't aborted
+        if (!signal.aborted) {
+          setLoading(false);
+        }
       }
     }
+
     fetchUser();
-  }, [authUser?.id, updateUser]);
+
+    // 3. Return a cleanup function
+    return () => {
+      // This runs when the component unmounts (i.e., you navigate away)
+      controller.abort();
+    };
+
+    // 4. Remove `updateUser` from dependency array
+    // It's a function that causes re-renders. We only want to fetch when the ID changes.
+  }, [authUser?.id]);
 
   useEffect(() => {
     if (!selectedFile) {
