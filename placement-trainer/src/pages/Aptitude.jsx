@@ -1,21 +1,25 @@
+// src/pages/Aptitude.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
 const sections = [
   {
     title: "Quantitative Aptitude",
+    path: "/aptitude/quantitative", // <-- CHANGED
     desc: "Covers arithmetic, algebra, geometry, probability, and statistics.",
     details: ["25+ Topics", "1000+ Practice Questions", "Step-by-step Solutions"],
     icon: "🧮",
   },
   {
     title: "Logical Reasoning",
+    path: "/aptitude/logical", // <-- CHANGED
     desc: "Practice puzzles, seating arrangements, blood relations, and coding-decoding.",
     details: ["20+ Types of Puzzles", "Timed Tests", "Explanations & Tricks"],
     icon: "🧠",
   },
   {
     title: "Verbal Ability",
+    path: "/aptitude/verbal", // <-- CHANGED
     desc: "Enhance grammar, vocabulary, comprehension, and communication skills.",
     details: ["Grammar Rules", "Reading Comprehension", "Synonyms & Antonyms"],
     icon: "📖",
@@ -38,7 +42,7 @@ export default function Aptitude() {
         {sections.map((sec) => (
           <li key={sec.title}>
             <Link
-              to={`/aptitude/notes/${encodeURIComponent(sec.title)}`}
+              to={sec.path} // <-- CHANGED
               className="group relative block h-full bg-dark-card rounded-2xl p-8 border border-neon-blue/20 hover:border-neon-blue transition-all duration-300 transform hover:-translate-y-2"
             >
               <div className="absolute top-0 left-0 w-full h-full rounded-2xl bg-gradient-to-r from-neon-blue to-neon-pink opacity-0 group-hover:opacity-10 transition duration-500 blur-md"></div>
@@ -62,7 +66,7 @@ export default function Aptitude() {
         ))}
       </ul>
 
-      {/* --- Final Test Section --- */}
+      {/* --- Final Test Section (no change needed) --- */}
       <div className="mt-24 pt-12 border-t-2 border-dashed border-neon-pink/20">
         <h2 className="text-4xl font-bold text-center mb-4 text-neon-pink text-glow">
           Final Challenge 🏆

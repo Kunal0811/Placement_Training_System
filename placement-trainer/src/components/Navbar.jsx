@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Placify from "../assets/Placify.png";
+import Placify from "../assets/Placify1.png";
 import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api"; // <-- 1. IMPORT THE API_BASE URL
 
@@ -39,13 +39,13 @@ const Navbar = ({ toggleSidebar }) => {
       </div>
 
       {/* Centered Logo */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Link to="/" className="flex items-center gap-3">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3">
+        
           <img src={Placify} alt="Placify Logo" className="w-10 h-10" />
           <span className="text-2xl font-bold text-neon-blue" style={{ textShadow: '0 0 5px #00BFFF' }}>
             Placify
           </span>
-        </Link>
+       
       </div>
 
       {/* Right Section */}

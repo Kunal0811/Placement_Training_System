@@ -84,7 +84,7 @@ function Home() {
         <div className="relative z-20">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-glow animate-float">
             AI-Powered <span className="text-neon-blue">Placement Training</span> System
-          </h1>
+          </h1> 
           <p className="text-xl max-w-3xl mx-auto text-gray-300 mb-10">
             Comprehensive, intelligent, and automated training platform that prepares students for campus and off-campus placements with AI-driven feedback.
           </p>
