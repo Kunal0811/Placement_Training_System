@@ -41,9 +41,9 @@ const Navbar = ({ toggleSidebar }) => {
       {/* Centered Logo */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3">
         
-          <img src={Placify} alt="Placify Logo" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-neon-blue" style={{ textShadow: '0 0 5px #00BFFF' }}>
-            Placify
+          <img src={Placify} alt="Placify Logo" className="w-12 h-12" />
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink drop-shadow-glow-blue">
+            PLACIFY
           </span>
        
       </div>

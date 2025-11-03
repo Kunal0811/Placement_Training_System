@@ -10,8 +10,13 @@ export default {
         'neon-blue': '#00BFFF',
         'neon-pink': '#FF00FF',
         'neon-green': '#39FF14',
+        'neon-yellow': '#FFFF33',
         'dark-bg': '#121212',
         'dark-card': '#1E1E1E',
+      },
+      dropShadow: {
+        'glow-blue': '0 0 8px rgba(0, 191, 255, 0.7)',
+        'glow-pink': '0 0 8px rgba(255, 0, 255, 0.7)',
       },
       animation: {
         'float': 'float 4s ease-in-out infinite',
