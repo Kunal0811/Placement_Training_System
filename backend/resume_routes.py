@@ -181,20 +181,31 @@ async def analyze_resume(
     prompt = create_expert_analyzer_prompt(sections, job_description, job_role)
 
     # 4. Call the AI model
+    # 4. Call the AI model
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        # --- FIX: Add GenerationConfig ---
+        config = genai.GenerationConfig(
+            temperature=0.0,  # This makes the output deterministic
+            response_mime_type="application/json" # This forces JSON output
+        )
+        model = genai.GenerativeModel(
+            "gemini-2.5-flash",
+            generation_config=config
+        )
+        # --- END OF FIX ---
+
         response = await model.generate_content_async(prompt)
-        
-        text = response.text.strip().replace("```json", "").replace("```", "")
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        
-        if not match:
-            print("AI_RESPONSE_ERROR:", text) # For debugging on your server
+
+        # --- FIX: Simplify JSON parsing ---
+        try:
+            # No more regex needed. The response.text *is* the JSON string.
+            json_response = json.loads(response.text)
+        except json.JSONDecodeError:
+            print("AI_RESPONSE_ERROR (Invalid JSON):", response.text)
             raise HTTPException(status_code=500, detail="AI analysis failed to return valid JSON.")
-        
-        # 5. Parse and return the structured JSON
-        json_response = json.loads(match.group(0))
+
         return json_response
+        # --- END OF FIX ---
 
     except Exception as e:
         print(f"Error calling Gemini API: {e}")

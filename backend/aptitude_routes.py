@@ -79,3 +79,58 @@ async def generate_aptitude_test(req: MCQRequest):
         return mcqs
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# ... (add this with your other Pydantic models)
+class NoteRequest(BaseModel):
+    topic: str
+
+# --- New Helper Function for AI Notes ---
+# --- New Helper Function for AI Notes ---
+async def generate_notes_for_topic(topic: str):
+    """
+    Generates detailed, high-quality notes for a specific topic using AI.
+    """
+    try:
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        
+        # --- NEW, STRICTER PROMPT ---
+        prompt = f"""
+        You are an expert aptitude trainer. Your goal is to teach a student this topic from scratch.
+        Generate a detailed, high-quality, and easy-to-understand note for the aptitude topic: "{topic}".
+
+        The note MUST include:
+        1.  **Conceptual Overview:** A clear explanation of what the topic is.
+        2.  **Key Formulas:** A list of the most important formulas, clearly explained.
+        3.  **Solved Examples:** At least two step-by-step solved examples.
+        4.  **Tips & Tricks:** Common shortcuts or mistakes to avoid.
+
+        YOU MUST FORMAT the entire response in clean Markdown using these rules ONLY:
+        - Use `###` for main section headings (like '### 1. Conceptual Overview').
+        - Use `####` for sub-headings (like '#### A. Classification of Numbers').
+        - Use `**bold text**` for ALL bolding. Do NOT use single asterisks for bolding.
+        - Use `* ` (an asterisk followed by a space) for ALL bullet points.
+        - Use `1. ` (number, period, space) for ALL numbered lists.
+        - Use `---` for horizontal dividers.
+        """
+        
+        # --- Use a GenerationConfig for clean text output ---
+        config = genai.GenerationConfig(temperature=0.2) # Low temp for less "creativity"
+        resp = await model.generate_content_async(prompt, generation_config=config)
+        
+        # Clean up the markdown response
+        raw_text = resp.text or ""
+        cleaned_text = raw_text.replace("```markdown", "").replace("```", "").strip()
+        
+        return cleaned_text
+        
+    except Exception as e:
+        print(f"Error generating notes for topic {topic}: {e}")
+        return "Error: Could not generate notes for this topic. Please try again."
+# --- New Endpoint (add this inside the file) ---
+@router.post("/notes")
+async def get_aptitude_notes(req: NoteRequest):
+    try:
+        notes = await generate_notes_for_topic(req.topic)
+        return {"notes": notes}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

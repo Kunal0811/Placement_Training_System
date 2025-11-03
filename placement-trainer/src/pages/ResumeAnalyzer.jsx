@@ -84,7 +84,7 @@ export default function ResumeAnalyzer() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         {/* --- Input Form --- */}
         <div className="bg-dark-card p-8 rounded-xl shadow-lg border border-neon-blue/20 self-start">
           <h2 className="text-2xl font-semibold mb-6 text-white">Enter Job Details</h2>
