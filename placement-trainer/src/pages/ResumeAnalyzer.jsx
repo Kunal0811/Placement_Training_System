@@ -2,15 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import API_BASE from '../api';
-import {
-  ResponsiveContainer,
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-} from 'recharts';
+import ScoreDonutChart from '../components/ScoreDonutChart'; // Make sure this is imported
 
-// Star rating component
+// Star rating component (no changes)
 const StarRating = ({ rating }) => {
   return (
     <div className="flex">
@@ -20,7 +14,6 @@ const StarRating = ({ rating }) => {
     </div>
   );
 };
-
 
 export default function ResumeAnalyzer() {
   const [jobDescription, setJobDescription] = useState("");
@@ -68,13 +61,9 @@ export default function ResumeAnalyzer() {
       setIsLoading(false);
     }
   };
-  
-  const scoreData = results ? [
-    { subject: 'Overall Match', value: results.overall_score, fullMark: 100 },
-  ] : [];
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6"> {/* Corrected this from max-w-7xl to 6xl as in your code */ }
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-white mb-3 text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
           📄 AI Resume Analyzer
@@ -84,12 +73,14 @@ export default function ResumeAnalyzer() {
         </p>
       </div>
 
+      {/* This is your single-column grid, as per your code */ }
       <div className="grid grid-cols-1 gap-8">
-        {/* --- Input Form --- */}
+        {/* --- Input Form (no changes) --- */}
         <div className="bg-dark-card p-8 rounded-xl shadow-lg border border-neon-blue/20 self-start">
           <h2 className="text-2xl font-semibold mb-6 text-white">Enter Job Details</h2>
           {error && <p className="bg-red-500/20 text-red-400 border border-red-500/50 p-3 rounded-lg mb-6 text-center font-semibold">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* ... (all your form inputs) ... */}
             <div>
               <label className="block mb-2 font-medium text-gray-400">Job Role</label>
               <input
@@ -139,87 +130,101 @@ export default function ResumeAnalyzer() {
         {/* --- Results Display --- */}
         <div className="bg-dark-card p-8 rounded-xl shadow-lg border border-neon-blue/20">
           <h2 className="text-2xl font-semibold mb-6 text-white text-center">Analysis Report</h2>
-          {isLoading && (
-            <div className="text-center py-20">
-              <div className="text-4xl mb-4 animate-spin">⚙️</div>
-              <p className="text-lg text-gray-400">Running AI analysis... This may take a moment.</p>
-            </div>
-          )}
-          {results && (
-            <div className="space-y-8">
-              {/* Overall Score & Summary */}
-              <div>
-                <h3 className="text-2xl font-semibold text-neon-blue text-center mb-2">Overall Match Score: {results.overall_score}%</h3>
-                
-                <p className="text-gray-300 text italic">{results.overall_summary}</p>
-              </div>
 
-              {/* Skill Match Breakdown */}
-              {results.skill_match_breakdown && (
-                <div>
-                  <h3 className="text-xl font-semibold text-neon-blue mb-3">🧠 Skill Match Breakdown</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                      <thead>
-                        <tr className="border-b border-neon-blue/30">
-                          <th className="p-2 text-white">Skill Area</th>
-                          <th className="p-2 text-white">Job Requirement</th>
-                          <th className="p-2 text-white">Your Resume</th>
-                          <th className="p-2 text-white">Match</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-gray-300">
-                        {results.skill_match_breakdown.map((skill, i) => (
-                          <tr key={i} className="border-b border-gray-800">
-                            <td className="p-2 font-semibold">{skill.skill_area}</td>
-                            <td className="p-2 text-sm">{skill.job_requirement}</td>
-                            <td className="p-2 text-sm" dangerouslySetInnerHTML={{ __html: skill.resume_mention.replace(/✅/g, '<span class="text-neon-green">✅</span>').replace(/❌/g, '<span class="text-red-500">❌</span>') }}></td>
-                            <td className="p-2"><StarRating rating={skill.match_rating} /></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+          {/* --- 1. ADD A WRAPPER with min-height --- */}
+          <div className="relative min-h-[400px]">
+            {isLoading && (
+              // --- 2. MODIFY Loading block to be centered ---
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
+                <div className="text-4xl mb-4 animate-spin">⚙️</div>
+                <p className="text-lg text-gray-400">Running AI analysis... This may take a moment.</p>
+              </div>
+            )}
+            {results && (
+              <div className="space-y-8">
+                
+                {/* Overall Score & Summary */}
+                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+                  <div className="flex-shrink-0">
+                    <ScoreDonutChart score={results.overall_score} />
+                  </div>
+                  <div className="flex-grow max-w-xl">
+                    <p className="text-gray-300 text-lg italic md:text-left text-center">
+                      {results.overall_summary}
+                    </p>
                   </div>
                 </div>
-              )}
 
-              {/* Project Relevance */}
-              {results.project_relevance && (
-                 <div>
-                  <h3 className="text-xl font-semibold text-neon-blue mb-3">💼 Project Relevance</h3>
-                  <p className="text-gray-300 mb-2">{results.project_relevance.summary}</p>
-                  <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
-                    {results.project_relevance.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
-                  </ul>
-                </div>
-              )}
+                {/* Skill Match Breakdown */}
+                {results.skill_match_breakdown && (
+                  <div>
+                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🧠 Skill Match Breakdown</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                        <thead>
+                          <tr className="border-b border-neon-blue/30">
+                            <th className="p-2 text-white">Skill Area</th>
+                            <th className="p-2 text-white">Job Requirement</th>
+                            <th className="p-2 text-white">Your Resume</th>
+                            <th className="p-2 text-white">Match</th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-gray-300">
+                          {results.skill_match_breakdown.map((skill, i) => (
+                            <tr key={i} className="border-b border-gray-800">
+                              <td className="p-2 font-semibold">{skill.skill_area}</td>
+                              <td className="p-2 text-sm">{skill.job_requirement}</td>
+                              <td className="p-2 text-sm" dangerouslySetInnerHTML={{ __html: skill.resume_mention.replace(/✅/g, '<span class="text-neon-green">✅</span>').replace(/❌/g, '<span class="text-red-500">❌</span>') }}></td>
+                              <td className="p-2"><StarRating rating={skill.match_rating} /></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
-              {/* Education Analysis */}
-              {results.education_analysis && (
-                 <div>
-                  <h3 className="text-xl font-semibold text-neon-blue mb-3">🎓 Education & Certifications</h3>
-                  <p className="text-gray-300 mb-2">{results.education_analysis.summary}</p>
-                  <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
-                    {results.education_analysis.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
-                  </ul>
-                </div>
-              )}
+                {/* Project Relevance */}
+                {results.project_relevance && (
+                   <div>
+                    <h3 className="text-xl font-semibold text-neon-blue mb-3">💼 Project Relevance</h3>
+                    <p className="text-gray-300 mb-2">{results.project_relevance.summary}</p>
+                    <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
+                      {results.project_relevance.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
+                    </ul>
+                  </div>
+                )}
 
-              {/* Recommended Improvements */}
-              {results.recommended_improvements && (
-                 <div>
-                  <h3 className="text-xl font-semibold text-neon-blue mb-3">🧩 Recommended Improvements</h3>
-                  <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                    {results.recommended_improvements.map((tip, i) => <li key={i}>{tip}</li>)}
-                  </ul>
-                </div>
-              )}
+                {/* Education Analysis */}
+                {results.education_analysis && (
+                   <div>
+                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🎓 Education & Certifications</h3>
+                    <p className="text-gray-300 mb-2">{results.education_analysis.summary}</p>
+                    <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
+                      {results.education_analysis.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
+                    </ul>
+                  </div>
+                )}
 
-            </div>
-          )}
-          {!isLoading && !results && (
-            <p className="text-gray-500 text-center py-20">Your expert analysis report will appear here.</p>
-          )}
+                {/* Recommended Improvements */}
+                {results.recommended_improvements && (
+                   <div>
+                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🧩 Recommended Improvements</h3>
+                    <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                      {results.recommended_improvements.map((tip, i) => <li key={i}>{tip}</li>)}
+                    </ul>
+                  </div>
+                )}
+
+              </div>
+            )}
+            {!isLoading && !results && (
+              // --- 3. MODIFY Placeholder block to be centered ---
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
+                <p className="text-gray-500 text-lg">Your expert analysis report will appear here.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
