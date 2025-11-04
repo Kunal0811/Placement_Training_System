@@ -1,6 +1,6 @@
 // src/pages/Aptitude/AptitudeNoteLayout.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 // This is the main layout for all aptitude note pages
 export const NoteSection = ({ title, children }) => (
@@ -13,8 +13,21 @@ export const NoteSection = ({ title, children }) => (
 );
 
 export const AptitudeNoteLayout = ({ title, children, topic, videos = [] }) => {
+  const navigate = useNavigate(); // Get navigate function
+
   return (
     <div className="max-w-5xl mx-auto p-8 bg-dark-card rounded-2xl border border-neon-blue/20">
+      
+      {/* --- ADDED BACK BUTTON --- */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-6 inline-flex items-center text-neon-blue hover:text-white transition-colors"
+      >
+        <span className="text-2xl mr-2">←</span>
+        Back
+      </button>
+      {/* --- END OF ADDED BUTTON --- */}
+
       <h1 className="text-5xl font-bold mb-10 text-center text-white text-glow">{title}</h1>
       
       {children}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 const NoteSection = ({ title, children }) => (
   <section className="mb-12">
@@ -11,8 +11,16 @@ const NoteSection = ({ title, children }) => (
 );
 
 export default function DBMSNotes() {
+  const navigate = useNavigate();
   return (
     <div className="max-w-5xl mx-auto p-8 bg-dark-card rounded-2xl border border-neon-blue/20">
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-6 inline-flex items-center text-neon-blue hover:text-white transition-colors"
+      >
+        <span className="text-2xl mr-2">←</span>
+        Back
+      </button>
       <h1 className="text-5xl font-bold mb-10 text-center text-white text-glow">Database Management Systems (DBMS)</h1>
 
       <NoteSection title="Core Relational Database Concepts">
