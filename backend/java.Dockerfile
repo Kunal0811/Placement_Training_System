@@ -1,5 +1,5 @@
 # Use an official OpenJDK image that includes the full JDK
-FROM openjdk:11-jdk-slim
+FROM eclipse-temurin:11-jdk
 
 # Create a non-root user for security
 RUN useradd -m coder

@@ -1,13 +1,117 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { analyzeResumeForRole, analyzeResumeForJD } from "../api";
-import ScoreDonutChart from "../components/ScoreDonutChart"; // Using your existing component
-import { FiUpload, FiFileText, FiBriefcase, FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
+import ScoreDonutChart from "../components/ScoreDonutChart";
+import { FiUpload, FiFileText, FiBriefcase, FiAlertTriangle, FiCheckCircle, FiStar } from "react-icons/fi";
+
+// --- Star Rating Component ---
+const StarRating = ({ rating }) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+  
+  return (
+    <div className="flex text-yellow-400" style={{ minWidth: '100px' }}>
+      {[...Array(fullStars)].map((_, i) => <FiStar key={`f-${i}`} fill="currentColor" />)}
+      {halfStar && <FiStar key="h" fill="currentColor" style={{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }} />}
+      {[...Array(emptyStars)].map((_, i) => <FiStar key={`e-${i}`} />)}
+    </div>
+  );
+};
+
+// --- List of roles from your JSON file ---
+const jobRoles = [
+  "Data Analyst", "Data Scientist", "Machine Learning Engineer", "AI Engineer",
+  "Software Engineer","Python Engineer", "Full Stack Developer", "Frontend Developer", "Backend Developer",
+  "DevOps Engineer", "Cloud Engineer", "Cybersecurity Analyst", "Database Administrator",
+  "UI/UX Designer", "Mobile App Developer", "Game Developer", "Embedded Systems Engineer",
+  "IoT Engineer", "Network Engineer", "System Administrator", "Data Engineer",
+  "Business Analyst", "Project Manager", "QA Engineer", "Product Manager",
+  "Content Writer", "Digital Marketing Specialist", "Graphic Designer", "Blockchain Developer",
+  "Game Designer", "Mechanical Engineer", "Electrical Engineer", "Civil Engineer",
+  "AI Prompt Engineer", "AR/VR Developer", "Research Scientist (AI)", "Operations Manager",
+  "HR Manager", "Financial Analyst", "Customer Support Executive", "Marketing Manager",
+  "Technical Writer", "Automation Engineer", "Robotics Engineer", "Data Architect"
+];
+
+
+// --- NEW SUGGESTIONS COMPONENT ---
+const ResumeSuggestions = ({ formatAnalysis, analysisData }) => {
+  const suggestions = [];
+
+  // 1. Check for missing sections
+  if (formatAnalysis) {
+    if (!formatAnalysis.projects) {
+      suggestions.push({
+        type: 'format',
+        title: 'Missing Projects Section',
+        text: "Your resume doesn't seem to have a dedicated **Projects** section. This is critical for showing your hands-on skills. Add 2-3 relevant projects."
+      });
+    }
+    if (!formatAnalysis.experience) {
+      suggestions.push({
+        type: 'format',
+        title: 'Missing Experience Section',
+        text: "Consider adding an **Experience** or **Internship** section. If you don't have one, this is okay, but it's a major plus for recruiters."
+      });
+    }
+    if (!formatAnalysis.achievements) {
+      suggestions.push({
+        type: 'format',
+        title: 'Missing Achievements Section',
+        text: "An **Achievements** or **Awards** section can help you stand out. Consider adding hackathon wins, high ranks, or scholarships."
+      });
+    }
+  }
+
+  // 2. Check for missing skills in low-scoring areas
+  if (analysisData && analysisData.breakdown) {
+    const lowScoringAreas = analysisData.breakdown
+      .filter(item => item.match_rating < 3 && item.missing_skills.length > 0) // < 3 stars and has missing skills
+      .slice(0, 3); // Get top 3
+    
+    for (const area of lowScoringAreas) {
+      suggestions.push({
+        type: 'skill',
+        title: `Improve Your ${area.skill_area} Skills`,
+        text: `To better match this role, try adding keywords or projects related to: **${area.missing_skills.join(', ')}**.`
+      });
+    }
+  }
+
+  if (suggestions.length === 0) {
+    return (
+      <div className="p-4 bg-green-900/50 border border-green-700 rounded-lg">
+        <h3 className="text-lg font-semibold text-neon-green mb-2">
+          <FiCheckCircle className="inline-block mr-2" /> Great Work!
+        </h3>
+        <p className="text-gray-300">Your resume seems well-structured and covers the key skills for this role. You can always improve by adding more specific project details.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {suggestions.map((sug, i) => (
+        <div key={i} className="p-4 bg-yellow-900/50 border border-yellow-700 rounded-lg">
+          <h3 className="text-lg font-semibold text-yellow-400 mb-2">
+            <FiAlertTriangle className="inline-block mr-2" /> {sug.title}
+          </h3>
+          {/* This renders the **bold** text */}
+          <p className="text-gray-300" dangerouslySetInnerHTML={{ __html: sug.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+        </div>
+      ))}
+    </div>
+  );
+};
+// --- END OF NEW COMPONENT ---
+
 
 const ResumeAnalyzer = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
-  const [analysisType, setAnalysisType] = useState("role"); // 'role' or 'jd'
+  const [analysisType, setAnalysisType] = useState("role");
+  const [jobRole, setJobRole] = useState(jobRoles[0]); 
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,16 +138,15 @@ const ResumeAnalyzer = () => {
       let response;
       if (analysisType === "role") {
         response = await analyzeResumeForRole(resumeFile, token);
-        setAnalysisResult(response.data);
       } else {
         if (!jobDescription.trim()) {
           setError("Please paste a job description.");
           setIsLoading(false);
           return;
         }
-        response = await analyzeResumeForJD(resumeFile, jobDescription, token);
-        setAnalysisResult(response.data);
+        response = await analyzeResumeForJD(resumeFile, jobDescription, jobRole, token);
       }
+      setAnalysisResult(response.data);
     } catch (err) {
       console.error(err);
       setError(
@@ -53,37 +156,6 @@ const ResumeAnalyzer = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  // Helper to render lists
-  const renderList = (title, items, isMissing = false) => {
-    if (!items || items.length === 0) {
-      return (
-        <div>
-          <h4 className="font-semibold text-gray-200">{title}</h4>
-          <p className="text-sm text-gray-500">None found.</p>
-        </div>
-      );
-    }
-    return (
-      <div>
-        <h4 className={`font-semibold ${isMissing ? 'text-red-400' : 'text-green-400'}`}>{title}</h4>
-        <ul className="flex flex-wrap gap-2 mt-2">
-          {items.map((item, index) => (
-            <li 
-              key={index} 
-              className={`text-xs font-medium px-3 py-1 rounded-full ${
-                isMissing 
-                ? 'bg-red-900/50 text-red-300 border border-red-700' 
-                : 'bg-dark-border text-gray-300'
-              }`}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
   };
   
   // Helper to render format checks
@@ -108,6 +180,50 @@ const ResumeAnalyzer = () => {
       </div>
     );
   };
+
+  // Renders the skill breakdown table
+  const renderAnalysisTable = (breakdown) => {
+    if (!breakdown || breakdown.length === 0) {
+      if (analysisType === 'jd' && jobDescription.trim() === "") {
+         return <p className="text-gray-400">Paste a Job Description to see the breakdown.</p>;
+      }
+      return <p className="text-gray-400">No matching skill categories found for this role/JD combination.</p>;
+    }
+    
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-left min-w-[700px]">
+          <thead>
+            <tr className="border-b border-dark-border">
+              <th className="p-3 text-white w-1/4">Skill Area</th>
+              <th className="p-3 text-white w-1/3">Job Requirement</th>
+              <th className="p-3 text-white w-1/3">Your Resume</th>
+              <th className="p-3 text-white w-auto">Match</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-300">
+            {breakdown.map((item, index) => (
+              <tr key={index} className="border-b border-gray-800 hover:bg-dark-bg">
+                <td className="p-3 font-semibold">{item.skill_area}</td>
+                <td className="p-3 text-sm">{item.job_requirement}</td>
+                <td className="p-3 text-sm">{item.your_resume}</td>
+                <td className="p-3"><StarRating rating={item.match_rating} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  // Helper variables to get the correct data object
+  const analysisData = analysisType === 'role' 
+    ? analysisResult?.best_match_details 
+    : analysisResult?.jd_match_details;
+
+  const score = analysisData?.overall_score || 0;
+  const breakdown = analysisData?.breakdown;
+  const roleTitle = analysisData?.role;
 
   return (
     <div className="container mx-auto p-4 md:p-8">
@@ -164,18 +280,36 @@ const ResumeAnalyzer = () => {
             {resumeFile && <p className="text-sm text-green-400 mt-2">File selected: {resumeFile.name}</p>}
 
             {analysisType === "jd" && (
-              <div className="mt-6">
-                <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-400 mb-2">
-                  Paste Job Description
-                </label>
-                <textarea
-                  id="jobDescription"
-                  rows="8"
-                  className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
-                  placeholder="Paste the full job description here..."
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                ></textarea>
+              <div className="mt-6 space-y-4">
+                <div>
+                  <label htmlFor="jobRoleSelect" className="block text-sm font-medium text-gray-400 mb-2">
+                    Select Target Job Role
+                  </label>
+                  <select
+                    id="jobRoleSelect"
+                    value={jobRole}
+                    onChange={(e) => setJobRole(e.target.value)}
+                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
+                  >
+                    {jobRoles.map(role => (
+                      <option key={role} value={role}>{role}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-400 mb-2">
+                    Paste Job Description
+                  </label>
+                  <textarea
+                    id="jobDescription"
+                    rows="8"
+                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
+                    placeholder="Paste the full job description here..."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                  ></textarea>
+                </div>
               </div>
             )}
           </div>
@@ -188,8 +322,8 @@ const ResumeAnalyzer = () => {
               </h3>
               <p className="text-sm text-gray-400 mt-2">
                 {analysisType === "role"
-                  ? "Upload your resume and we'll scan it for skills. Then, we'll compare those skills against our entire job role database (from dataset.csv) to find the role that's your best fit."
-                  : "Upload your resume and paste a job description. We'll extract skills from both and give you a match score, highlighting what skills you have and what you're missing for this specific job."}
+                  ? "Upload your resume and we'll scan it for skills. Then, we'll compare those skills against our job role database to find the role that's your best fit and show a detailed breakdown."
+                  : "Upload your resume, select the target role, and paste a job description. We'll extract skills from the JD and show you how your resume matches against the *specific categories* for that role."}
               </p>
             </div>
             <button
@@ -210,47 +344,44 @@ const ResumeAnalyzer = () => {
       {analysisResult && (
         <div className="mt-10 bg-dark-card shadow-lg rounded-lg p-6 md:p-8 border border-dark-border">
           <h2 className="text-2xl font-bold text-gray-200 mb-6">Analysis Results</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Column 1: Score & Role */}
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="flex flex-col items-center justify-center p-4 bg-dark-bg rounded-lg border border-dark-border">
-              {analysisType === 'role' && (
-                <h3 className="text-lg font-semibold text-gray-200 mb-2">Best Matched Role</h3>
-              )}
-              {analysisType === 'jd' && (
-                <h3 className="text-lg font-semibold text-gray-200 mb-2">Job Description Match</h3>
-              )}
+              <h3 className="text-lg font-semibold text-gray-200 mb-2 text-center">
+                {analysisType === "role" ? "Best Matched Role" : "Job Description Match"}
+              </h3>
               
-              <ScoreDonutChart 
-                score={analysisResult.best_match?.score || analysisResult.jd_match?.score || 0}
-              />
+              <ScoreDonutChart score={score} />
 
-              {analysisType === 'role' && (
-                <span className="text-xl font-bold text-neon-blue mt-2 text-glow">
-                  {analysisResult.best_match?.role}
-                </span>
-              )}
-            </div>
-
-            {/* Column 2: Skills Analysis */}
-            <div className="space-y-6">
-              {renderList(
-                "Skills to Improve (Missing)",
-                analysisResult.best_match?.missing_skills || analysisResult.jd_match?.missing_skills,
-                true // isMissing = true
-              )}
-              {renderList(
-                "Your Matching Skills",
-                analysisResult.best_match?.matching_skills || analysisResult.jd_match?.matching_skills
-              )}
+              <span className="text-xl font-bold text-neon-blue mt-2 text-glow text-center">
+                {roleTitle}
+              </span>
             </div>
             
-            {/* Column 3: Format Check */}
-            <div className="p-4 bg-dark-bg rounded-lg border border-dark-border">
+            <div className="p-4 bg-dark-bg rounded-lg border border-dark-border md:col-span-2">
               {renderFormatCheck(analysisResult.format_analysis)}
             </div>
-
           </div>
+          
+          {/* --- MODIFIED: This section now holds the new 2-column layout --- */}
+          <div className="grid grid-cols-1 gap-8">
+            
+            {/* Column 1: Skill Match Breakdown */}
+            <div>
+              <h3 className="text-xl font-bold text-gray-200 mb-4">Skill Match Breakdown</h3>
+              {renderAnalysisTable(breakdown)}
+            </div>
+            
+            {/* Column 2: Recommended Improvements */}
+            <div>
+              <h3 className="text-xl font-bold text-gray-200 mb-4">Recommended Improvements</h3>
+              <ResumeSuggestions 
+                formatAnalysis={analysisResult.format_analysis} 
+                analysisData={analysisData}
+              />
+            </div>
+          </div>
+
         </div>
       )}
     </div>

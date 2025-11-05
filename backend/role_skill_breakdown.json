@@ -1,0 +1,672 @@
+{
+    "Data Analyst": [
+      {
+        "skill_area": "Core Programming & DB",
+        "job_requirement_skills": ["python", "sql", "pandas", "numpy"]
+      },
+      {
+        "skill_area": "Data Visualization",
+        "job_requirement_skills": ["power bi", "excel", "data visualization", "tableau"]
+      },
+      {
+        "skill_area": "Core Skills",
+        "job_requirement_skills": ["data cleaning", "statistics", "communication", "problem solving"]
+      }
+    ],
+    "Data Scientist": [
+      {
+        "skill_area": "Core Programming & Libraries",
+        "job_requirement_skills": ["python", "pandas", "numpy", "sql"]
+      },
+      {
+        "skill_area": "Machine Learning",
+        "job_requirement_skills": ["machine learning", "scikit-learn", "statistics", "data cleaning"]
+      },
+      {
+        "skill_area": "Deep Learning",
+        "job_requirement_skills": ["deep learning", "tensorflow", "pytorch"]
+      },
+      {
+        "skill_area": "Big Data & Visualization",
+        "job_requirement_skills": ["big data", "data visualization", "communication"]
+      }
+    ],
+    "Machine Learning Engineer": [
+      {
+        "skill_area": "ML/DL Frameworks",
+        "job_requirement_skills": ["python", "tensorflow", "pytorch", "scikit-learn", "deep learning"]
+      },
+      {
+        "skill_area": "Specializations",
+        "job_requirement_skills": ["nlp", "computer vision"]
+      },
+      {
+        "skill_area": "ML Operations (MLOps)",
+        "job_requirement_skills": ["model deployment", "docker", "mlops", "data engineering"]
+      },
+      {
+        "skill_area": "Infrastructure",
+        "job_requirement_skills": ["cloud platforms", "problem solving"]
+      }
+    ],
+    "AI Engineer": [
+      {
+        "skill_area": "Core AI/ML",
+        "job_requirement_skills": ["machine learning", "deep learning", "python", "data science"]
+      },
+      {
+        "skill_area": "Frameworks",
+        "job_requirement_skills": ["tensorflow", "pytorch"]
+      },
+      {
+        "skill_area": "Specializations",
+        "job_requirement_skills": ["nlp", "computer vision", "prompt engineering"]
+      },
+      {
+        "skill_area": "Deployment & APIs",
+        "job_requirement_skills": ["rest api", "cloud ai services", "mlops"]
+      }
+    ],
+    "Software Engineer": [
+      {
+        "skill_area": "Core Programming",
+        "job_requirement_skills": ["java", "c++", "python", "oop", "data structures & algorithms"]
+      },
+      {
+        "skill_area": "Web Frameworks",
+        "job_requirement_skills": ["react", "node.js", "django", "spring boot", "flask"]
+      },
+      {
+        "skill_area": "Version Control & Tools",
+        "job_requirement_skills": ["git", "docker"]
+      },
+      {
+        "skill_area": "Databases",
+        "job_requirement_skills": ["sql", "mysql", "postgresql", "mongodb", "nosql"]
+      },
+      {
+        "skill_area": "Methodologies",
+        "job_requirement_skills": ["rest api", "agile", "sdlc", "problem solving", "debugging"]
+      }
+    ],
+    "Full Stack Developer": [
+      {
+        "skill_area": "Frontend",
+        "job_requirement_skills": ["html", "css", "javascript", "react", "redux", "typescript"]
+      },
+      {
+        "skill_area": "Backend",
+        "job_requirement_skills": ["node.js", "express.js", "rest api"]
+      },
+      {
+        "skill_area": "Databases",
+        "job_requirement_skills": ["mongodb", "sql"]
+      },
+      {
+        "skill_area": "DevOps & Tooling",
+        "job_requirement_skills": ["git", "cloud deployment", "authentication", "problem solving"]
+      }
+    ],
+    "Frontend Developer": [
+      {
+        "skill_area": "Core Web",
+        "job_requirement_skills": ["html", "css", "javascript", "typescript"]
+      },
+      {
+        "skill_area": "Frameworks & Libraries",
+        "job_requirement_skills": ["react", "redux"]
+      },
+      {
+        "skill_area": "Styling",
+        "job_requirement_skills": ["tailwind css", "responsive design"]
+      },
+      {
+        "skill_area": "Tools & Principles",
+        "job_requirement_skills": ["git", "webpack", "accessibility", "ui/ux principles"]
+      }
+    ],
+    "Backend Developer": [
+      {
+        "skill_area": "Frameworks",
+        "job_requirement_skills": ["node.js", "express.js", "django", "flask", "python"]
+      },
+      {
+        "skill_area": "Databases",
+        "job_requirement_skills": ["sql", "mongodb"]
+      },
+      {
+        "skill_area": "API & Security",
+        "job_requirement_skills": ["rest api", "authentication", "security", "api documentation"]
+      },
+      {
+        "skill_area": "Infrastructure",
+        "job_requirement_skills": ["cloud hosting", "server management"]
+      }
+    ],
+    "DevOps Engineer": [
+      {
+        "skill_area": "CI/CD & Automation",
+        "job_requirement_skills": ["ci/cd", "jenkins", "automation", "bash", "git"]
+      },
+      {
+        "skill_area": "Containerization",
+        "job_requirement_skills": ["docker", "kubernetes"]
+      },
+      {
+        "skill_area": "Cloud Platforms",
+        "job_requirement_skills": ["aws", "azure", "gcp"]
+      },
+      {
+        "skill_area": "Infrastructure & Monitoring",
+        "job_requirement_skills": ["terraform", "linux", "monitoring", "networking"]
+      }
+    ],
+    "Cloud Engineer": [
+      {
+        "skill_area": "Cloud Platforms",
+        "job_requirement_skills": ["aws", "azure", "gcp", "cloud architecture"]
+      },
+      {
+        "skill_area": "Containerization",
+        "job_requirement_skills": ["docker", "kubernetes"]
+      },
+      {
+        "skill_area": "Infrastructure & DevOps",
+        "job_requirement_skills": ["terraform", "ci/cd", "networking", "security", "monitoring"]
+      }
+    ],
+    "Cybersecurity Analyst": [
+      {
+        "skill_area": "Core Security",
+        "job_requirement_skills": ["network security", "ethical hacking", "penetration testing", "cryptography"]
+      },
+      {
+        "skill_area": "Tools & Defense",
+        "job_requirement_skills": ["firewalls", "ids/ips", "siem"]
+      },
+      {
+        "skill_area": "Analysis & Compliance",
+        "job_requirement_skills": ["security auditing", "risk assessment", "threat analysis"]
+      }
+    ],
+    "Database Administrator": [
+      {
+        "skill_area": "SQL Databases",
+        "job_requirement_skills": ["sql", "mysql", "postgresql", "oracle"]
+      },
+      {
+        "skill_area": "DB Management",
+        "job_requirement_skills": ["database design", "backup recovery", "data security"]
+      },
+      {
+        "skill_area": "Optimization",
+        "job_requirement_skills": ["query optimization", "indexing", "replication"]
+      }
+    ],
+    "UI/UX Designer": [
+      {
+        "skill_area": "Design Tools",
+        "job_requirement_skills": ["figma", "adobe xd"]
+      },
+      {
+        "skill_area": "Design Process",
+        "job_requirement_skills": ["wireframing", "prototyping", "user research", "design thinking"]
+      },
+      {
+        "skill_area": "Design Principles",
+        "job_requirement_skills": ["ux principles", "typography", "color theory", "responsive design"]
+      }
+    ],
+    "Mobile App Developer": [
+      {
+        "skill_area": "Native Development",
+        "job_requirement_skills": ["java", "kotlin", "swift", "android studio", "xcode"]
+      },
+      {
+        "skill_area": "Cross-Platform",
+        "job_requirement_skills": ["flutter", "react native"]
+      },
+      {
+        "skill_area": "Core Skills",
+        "job_requirement_skills": ["rest apis", "firebase", "ui/ux design", "debugging"]
+      }
+    ],
+    "Game Developer": [
+      {
+        "skill_area": "Game Engines",
+        "job_requirement_skills": ["unity", "unreal engine"]
+      },
+      {
+        "skill_area": "Programming",
+        "job_requirement_skills": ["c#", "c++"]
+      },
+      {
+        "skill_area": "Game Mechanics",
+        "job_requirement_skills": ["game physics", "3d modeling", "animation", "ai for games"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["optimization", "multiplayer networking"]
+      }
+    ],
+    "Embedded Systems Engineer": [
+      {
+        "skill_area": "Core Programming",
+        "job_requirement_skills": ["c", "c++", "firmware development"]
+      },
+      {
+        "skill_area": "Hardware",
+        "job_requirement_skills": ["microcontrollers", "pcb design", "sensors", "hardware debugging"]
+      },
+      {
+        "skill_area": "Protocols & OS",
+        "job_requirement_skills": ["rtos", "uart", "spi", "i2c", "iot"]
+      }
+    ],
+    "IoT Engineer": [
+      {
+        "skill_area": "Hardware & Embedded",
+        "job_requirement_skills": ["iot", "embedded c", "raspberry pi", "arduino", "sensors", "actuators"]
+      },
+      {
+        "skill_area": "Connectivity",
+        "job_requirement_skills": ["mqtt", "networking"]
+      },
+      {
+        "skill_area": "Data & Cloud",
+        "job_requirement_skills": ["cloud integration", "data analytics", "edge computing"]
+      }
+    ],
+    "Network Engineer": [
+      {
+        "skill_area": "Core Protocols",
+        "job_requirement_skills": ["tcp/ip", "dns", "dhcp", "routing", "switching"]
+      },
+      {
+        "skill_area": "Infrastructure",
+        "job_requirement_skills": ["lan", "wan", "firewalls", "cisco devices"]
+      },
+      {
+        "skill_area": "Operations",
+        "job_requirement_skills": ["network security", "troubleshooting"]
+      }
+    ],
+    "System Administrator": [
+      {
+        "skill_area": "Operating Systems",
+        "job_requirement_skills": ["linux", "windows server", "active directory"]
+      },
+      {
+        "skill_area": "Scripting & Networking",
+        "job_requirement_skills": ["shell scripting", "networking"]
+      },
+      {
+        "skill_area": "Operations",
+        "job_requirement_skills": ["backup", "security", "monitoring", "troubleshooting"]
+      }
+    ],
+    "Data Engineer": [
+      {
+        "skill_area": "Core Programming",
+        "job_requirement_skills": ["python", "sql"]
+      },
+      {
+        "skill_area": "Big Data Technologies",
+        "job_requirement_skills": ["spark", "hadoop", "big data", "kafka"]
+      },
+      {
+        "skill_area": "Data Pipelines (ETL)",
+        "job_requirement_skills": ["etl", "airflow", "data pipelines", "data warehousing"]
+      },
+      {
+        "skill_area": "Cloud Platforms",
+        "job_requirement_skills": ["aws", "gcp", "azure"]
+      }
+    ],
+    "Business Analyst": [
+      {
+        "skill_area": "Analysis & Visualization",
+        "job_requirement_skills": ["sql", "excel", "power bi", "tableau", "data visualization"]
+      },
+      {
+        "skill_area": "Core BA Skills",
+        "job_requirement_skills": ["business requirements", "documentation", "stakeholder management"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "problem solving"]
+      }
+    ],
+    "Project Manager": [
+      {
+        "skill_area": "Methodologies",
+        "job_requirement_skills": ["agile", "scrum", "jira"]
+      },
+      {
+        "skill_area": "Core Management",
+        "job_requirement_skills": ["risk management", "time management", "budgeting"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "leadership", "stakeholder management"]
+      }
+    ],
+    "QA Engineer": [
+      {
+        "skill_area": "Testing Types",
+        "job_requirement_skills": ["manual testing", "automation testing", "api testing"]
+      },
+      {
+        "skill_area": "Tools",
+        "job_requirement_skills": ["selenium", "junit", "testng", "bug tracking"]
+      },
+      {
+        "skill_area": "Process",
+        "job_requirement_skills": ["sdlc", "agile", "test documentation"]
+      }
+    ],
+    "Product Manager": [
+      {
+        "skill_area": "Strategy",
+        "job_requirement_skills": ["product roadmap", "market research", "analytics"]
+      },
+      {
+        "skill_area": "Process",
+        "job_requirement_skills": ["agile", "design thinking", "ux"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "stakeholder management"]
+      }
+    ],
+    "Content Writer": [
+      {
+        "skill_area": "Writing Skills",
+        "job_requirement_skills": ["copywriting", "editing", "proofreading", "grammar", "storytelling"]
+      },
+      {
+        "skill_area": "Digital Skills",
+        "job_requirement_skills": ["seo", "research", "wordpress"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["creativity"]
+      }
+    ],
+    "Digital Marketing Specialist": [
+      {
+        "skill_area": "Search Marketing",
+        "job_requirement_skills": ["seo", "sem", "google ads", "keyword research"]
+      },
+      {
+        "skill_area": "Content & Social",
+        "job_requirement_skills": ["social media marketing", "content marketing", "email marketing"]
+      },
+      {
+        "skill_area": "Strategy",
+        "job_requirement_skills": ["analytics", "branding"]
+      }
+    ],
+    "Graphic Designer": [
+      {
+        "skill_area": "Design Tools",
+        "job_requirement_skills": ["photoshop", "illustrator", "canva", "figma"]
+      },
+      {
+        "skill_area": "Core Principles",
+        "job_requirement_skills": ["typography", "color theory", "branding"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["creativity", "visual communication"]
+      }
+    ],
+    "Blockchain Developer": [
+      {
+        "skill_area": "Smart Contracts",
+        "job_requirement_skills": ["solidity", "ethereum", "smart contracts"]
+      },
+      {
+        "skill_area": "Web3",
+        "job_requirement_skills": ["web3.js", "decentralized apps"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["cryptography", "node.js", "blockchain architecture"]
+      }
+    ],
+    "Game Designer": [
+      {
+        "skill_area": "Design Principles",
+        "job_requirement_skills": ["level design", "game mechanics", "storyboarding", "user experience"]
+      },
+      {
+        "skill_area": "Tools",
+        "job_requirement_skills": ["game engines", "playtesting", "creativity"]
+      }
+    ],
+    "Mechanical Engineer": [
+      {
+        "skill_area": "Design Software",
+        "job_requirement_skills": ["autocad", "solidworks", "catia", "matlab"]
+      },
+      {
+        "skill_area": "Core Concepts",
+        "job_requirement_skills": ["thermodynamics", "fluid mechanics", "manufacturing", "gd&t"]
+      },
+      {
+        "skill_area": "Management",
+        "job_requirement_skills": ["project management"]
+      }
+    ],
+    "Electrical Engineer": [
+      {
+        "skill_area": "Design",
+        "job_requirement_skills": ["circuit design", "pcb design"]
+      },
+      {
+        "skill_area": "Systems",
+        "job_requirement_skills": ["matlab", "power systems", "control systems", "embedded systems"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["troubleshooting"]
+      }
+    ],
+    "Civil Engineer": [
+      {
+        "skill_area": "Design Software",
+        "job_requirement_skills": ["autocad", "staad pro", "revit"]
+      },
+      {
+        "skill_area": "Core Concepts",
+        "job_requirement_skills": ["structural analysis", "surveying"]
+      },
+      {
+        "skill_area": "Management",
+        "job_requirement_skills": ["construction management", "estimation", "project planning"]
+      }
+    ],
+    "AI Prompt Engineer": [
+      {
+        "skill_area": "Prompting",
+        "job_requirement_skills": ["prompt writing", "context understanding", "prompt optimization"]
+      },
+      {
+        "skill_area": "Technical",
+        "job_requirement_skills": ["nlp", "large language models", "python", "openai api"]
+      }
+    ],
+    "AR/VR Developer": [
+      {
+        "skill_area": "Engines",
+        "job_requirement_skills": ["unity", "unreal engine"]
+      },
+      {
+        "skill_area": "Programming",
+        "job_requirement_skills": ["c#", "c++"]
+      },
+      {
+        "skill_area": "Core AR/VR",
+        "job_requirement_skills": ["3d modeling", "xr interaction toolkit", "openxr", "motion tracking", "physics simulation"]
+      }
+    ],
+    "Research Scientist (AI)": [
+      {
+        "skill_area": "Programming & Frameworks",
+        "job_requirement_skills": ["python", "tensorflow", "pytorch"]
+      },
+      {
+        "skill_area": "Research",
+        "job_requirement_skills": ["research papers", "experimentation", "statistics"]
+      },
+      {
+        "skill_area": "Core AI",
+        "job_requirement_skills": ["deep learning", "nlp", "data analysis"]
+      }
+    ],
+    "Operations Manager": [
+      {
+        "skill_area": "Process Management",
+        "job_requirement_skills": ["process optimization", "resource management", "kpi tracking", "supply chain"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "leadership", "strategic planning"]
+      }
+    ],
+    "HR Manager": [
+      {
+        "skill_area": "Core HR",
+        "job_requirement_skills": ["recruitment", "payroll", "employee relations", "performance management"]
+      },
+      {
+        "skill_area": "Strategy & Compliance",
+        "job_requirement_skills": ["hr analytics", "policies", "compliance"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication"]
+      }
+    ],
+    "Financial Analyst": [
+      {
+        "skill_area": "Tools",
+        "job_requirement_skills": ["excel", "power bi", "sql"]
+      },
+      {
+        "skill_area": "Analysis",
+        "job_requirement_skills": ["financial modeling", "forecasting", "budgeting", "data visualization"]
+      },
+      {
+        "skill_area": "Fundamentals",
+        "job_requirement_skills": ["accounting", "statistics"]
+      }
+    ],
+    "Customer Support Executive": [
+      {
+        "skill_area": "Tools",
+        "job_requirement_skills": ["crm tools", "ticket management", "email support"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "problem solving", "empathy"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["product knowledge"]
+      }
+    ],
+    "Marketing Manager": [
+      {
+        "skill_area": "Digital Marketing",
+        "job_requirement_skills": ["campaign management", "seo", "branding", "market research"]
+      },
+      {
+        "skill_area": "Strategy",
+        "job_requirement_skills": ["budgeting", "communication", "data analysis", "strategy"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication"]
+      }
+    ],
+    "Technical Writer": [
+      {
+        "skill_area": "Core Writing",
+        "job_requirement_skills": ["documentation", "research", "editing", "api documentation"]
+      },
+      {
+        "skill_area": "Tools",
+        "job_requirement_skills": ["ms word", "markdown"]
+      },
+      {
+        "skill_area": "Soft Skills",
+        "job_requirement_skills": ["communication", "technical understanding"]
+      }
+    ],
+    "Automation Engineer": [
+      {
+        "skill_area": "Industrial Automation",
+        "job_requirement_skills": ["plc", "scada", "hmi", "control systems"]
+      },
+      {
+        "skill_area": "Hardware",
+        "job_requirement_skills": ["sensors", "actuators", "robotics", "electrical design"]
+      },
+      {
+        "skill_area": "Core",
+        "job_requirement_skills": ["troubleshooting"]
+      }
+    ],
+    "Robotics Engineer": [
+      {
+        "skill_area": "Programming",
+        "job_requirement_skills": ["c++", "python", "ros"]
+      },
+      {
+        "skill_area": "Hardware & Sensors",
+        "job_requirement_skills": ["sensors", "actuators", "machine vision"]
+      },
+      {
+        "skill_area": "Core Concepts",
+        "job_requirement_skills": ["kinematics", "control systems", "path planning"]
+      }
+    ],
+    "Data Architect": [
+      {
+        "skill_area": "Database Design",
+        "job_requirement_skills": ["database design", "sql", "etl", "data modeling", "data warehousing"]
+      },
+      {
+        "skill_area": "Big Data",
+        "job_requirement_skills": ["big data", "hadoop", "spark"]
+      },
+      {
+        "skill_area": "Infrastructure",
+        "job_requirement_skills": ["cloud platforms"]
+      }
+    ],
+    "Python Engineer": [
+        {
+          "skill_area": "Core Python & OOP",
+          "job_requirement_skills": ["python", "oop", "programming fundamentals"]
+        },
+        {
+          "skill_area": "Backend Framework",
+          "job_requirement_skills": ["django", "backend development"]
+        },
+        {
+          "skill_area": "Database & ORM",
+          "job_requirement_skills": ["mysql", "sql", "sql queries", "orm", "database management", "mongodb"]
+        },
+        {
+          "skill_area": "API Development",
+          "job_requirement_skills": ["rest services", "rest api", "postman"]
+        },
+        {
+          "skill_area": "Core Abilities",
+          "job_requirement_skills": ["problem solving", "analytical skills", "logical skills", "communication"]
+        }
+      ]
+  }

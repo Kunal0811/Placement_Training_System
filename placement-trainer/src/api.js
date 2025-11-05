@@ -88,12 +88,13 @@ export const analyzeResumeForRole = (resumeFile, token) => {
 
 /**
  * Feature 2: Analyzes resume against a job description.
- * (Uses API_BASE now)
+ * (MODIFIED to accept jobRole)
  */
-export const analyzeResumeForJD = (resumeFile, jobDescription, token) => {
+export const analyzeResumeForJD = (resumeFile, jobDescription, jobRole, token) => {
   const formData = new FormData();
   formData.append("resume", resumeFile);
   formData.append("job_description", jobDescription);
+  formData.append("job_role", jobRole); // <-- ADDED THIS LINE
 
   return axios.post(`${API_BASE}/api/resume/analyze-jd`, formData, {
     headers: {
