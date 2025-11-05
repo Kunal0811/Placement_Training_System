@@ -61,7 +61,7 @@ app.add_middleware(
 app.include_router(aptitude_router)
 app.include_router(technical_router)
 app.include_router(coding_router)
-app.include_router(resume_router)
+app.include_router(resume_router, prefix="/api")
 
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):

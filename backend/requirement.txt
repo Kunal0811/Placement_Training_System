@@ -6,7 +6,9 @@ google-generativeai
 python-jose
 passlib
 mysql-connector-python
-pdfplumber
-python-docx
 nltk
 scikit-learn
+python-multipart
+pdfplumber
+python-docx
+spacy

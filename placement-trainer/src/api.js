@@ -67,3 +67,38 @@ export async function submitAttempt(testId, userId, responses) {
   });
   return res.data;
 }
+
+// --- NEW RESUME FUNCTIONS (Corrected) ---
+
+/**
+ * Feature 1: Analyzes resume for best role match.
+ * (Uses API_BASE now)
+ */
+export const analyzeResumeForRole = (resumeFile, token) => {
+  const formData = new FormData();
+  formData.append("resume", resumeFile);
+
+  return axios.post(`${API_BASE}/api/resume/analyze-role`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+/**
+ * Feature 2: Analyzes resume against a job description.
+ * (Uses API_BASE now)
+ */
+export const analyzeResumeForJD = (resumeFile, jobDescription, token) => {
+  const formData = new FormData();
+  formData.append("resume", resumeFile);
+  formData.append("job_description", jobDescription);
+
+  return axios.post(`${API_BASE}/api/resume/analyze-jd`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

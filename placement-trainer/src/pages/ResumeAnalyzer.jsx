@@ -1,232 +1,260 @@
-// src/pages/ResumeAnalyzer.jsx
-import React, { useState } from 'react';
-import axios from 'axios';
-import API_BASE from '../api';
-import ScoreDonutChart from '../components/ScoreDonutChart'; // Make sure this is imported
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { analyzeResumeForRole, analyzeResumeForJD } from "../api";
+import ScoreDonutChart from "../components/ScoreDonutChart"; // Using your existing component
+import { FiUpload, FiFileText, FiBriefcase, FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
 
-// Star rating component (no changes)
-const StarRating = ({ rating }) => {
-  return (
-    <div className="flex">
-      {[...Array(5)].map((_, i) => (
-        <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-600'}>★</span>
-      ))}
-    </div>
-  );
-};
-
-export default function ResumeAnalyzer() {
-  const [jobDescription, setJobDescription] = useState("");
-  const [jobRole, setJobRole] = useState("");
+const ResumeAnalyzer = () => {
   const [resumeFile, setResumeFile] = useState(null);
-  const [fileName, setFileName] = useState("");
-  const [results, setResults] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [analysisType, setAnalysisType] = useState("role"); // 'role' or 'jd'
+  const [analysisResult, setAnalysisResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { token } = useAuth();
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setResumeFile(file);
-      setFileName(file.name);
-    }
+    setResumeFile(e.target.files[0]);
+    setAnalysisResult(null);
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!jobDescription || !jobRole || !resumeFile) {
-      setError("Please fill in all fields and upload your resume.");
+    if (!resumeFile) {
+      setError("Please upload a resume file (.pdf or .docx).");
       return;
     }
 
     setIsLoading(true);
+    setAnalysisResult(null);
     setError("");
-    setResults(null);
-
-    const formData = new FormData();
-    formData.append('job_description', jobDescription);
-    formData.append('job_role', jobRole);
-    formData.append('resume_file', resumeFile);
 
     try {
-      const res = await axios.post(`${API_BASE}/api/resume/analyze`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setResults(res.data);
+      let response;
+      if (analysisType === "role") {
+        response = await analyzeResumeForRole(resumeFile, token);
+        setAnalysisResult(response.data);
+      } else {
+        if (!jobDescription.trim()) {
+          setError("Please paste a job description.");
+          setIsLoading(false);
+          return;
+        }
+        response = await analyzeResumeForJD(resumeFile, jobDescription, token);
+        setAnalysisResult(response.data);
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || "An error occurred during analysis. Please try again.");
+      console.error(err);
+      setError(
+        err.response?.data?.detail ||
+          "An error occurred during analysis."
+      );
     } finally {
       setIsLoading(false);
     }
   };
+  
+  // Helper to render lists
+  const renderList = (title, items, isMissing = false) => {
+    if (!items || items.length === 0) {
+      return (
+        <div>
+          <h4 className="font-semibold text-gray-200">{title}</h4>
+          <p className="text-sm text-gray-500">None found.</p>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <h4 className={`font-semibold ${isMissing ? 'text-red-400' : 'text-green-400'}`}>{title}</h4>
+        <ul className="flex flex-wrap gap-2 mt-2">
+          {items.map((item, index) => (
+            <li 
+              key={index} 
+              className={`text-xs font-medium px-3 py-1 rounded-full ${
+                isMissing 
+                ? 'bg-red-900/50 text-red-300 border border-red-700' 
+                : 'bg-dark-border text-gray-300'
+              }`}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+  
+  // Helper to render format checks
+  const renderFormatCheck = (sections) => {
+    if (!sections) return null;
+    return (
+      <div>
+        <h3 className="text-lg font-semibold text-gray-200 mb-3">Resume Formatting Check</h3>
+        <ul className="grid grid-cols-2 gap-2">
+          {Object.entries(sections).map(([section, isPresent]) => (
+            <li key={section} className="flex items-center text-sm text-gray-300">
+              {isPresent ? (
+                <FiCheckCircle className="text-green-400 mr-2" />
+              ) : (
+                <FiAlertTriangle className="text-yellow-400 mr-2" />
+              )}
+              <span className="capitalize">{section}</span>
+              {isPresent ? "" : <span className="text-gray-500 ml-1">(Missing)</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
 
   return (
-    <div className="max-w-6xl mx-auto p-6"> {/* Corrected this from max-w-7xl to 6xl as in your code */ }
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-white mb-3 text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
-          📄 AI Resume Analyzer
-        </h1>
-        <p className="text-lg text-gray-400">
-          Get an expert analysis of your resume's match against a job description.
-        </p>
+    <div className="container mx-auto p-4 md:p-8">
+      <h1 className="text-3xl font-bold text-neon-blue text-glow mb-6">
+        Resume Analyzer
+      </h1>
+      
+      {/* Tab Selection */}
+      <div className="flex border-b border-dark-border mb-6">
+        <button
+          onClick={() => { setAnalysisType("role"); setAnalysisResult(null); }}
+          className={`py-3 px-6 font-semibold transition-colors duration-200 ${
+            analysisType === "role"
+              ? "border-b-2 border-neon-blue text-neon-blue"
+              : "text-gray-400 hover:text-gray-200"
+          }`}
+        >
+          <FiBriefcase className="inline-block mr-2" />
+          Match to Job Role
+        </button>
+        <button
+          onClick={() => { setAnalysisType("jd"); setAnalysisResult(null); }}
+          className={`py-3 px-6 font-semibold transition-colors duration-200 ${
+            analysisType === "jd"
+              ? "border-b-2 border-neon-blue text-neon-blue"
+              : "text-gray-400 hover:text-gray-200"
+          }`}
+        >
+          <FiFileText className="inline-block mr-2" />
+          Match to Job Description
+        </button>
       </div>
 
-      {/* This is your single-column grid, as per your code */ }
-      <div className="grid grid-cols-1 gap-8">
-        {/* --- Input Form (no changes) --- */}
-        <div className="bg-dark-card p-8 rounded-xl shadow-lg border border-neon-blue/20 self-start">
-          <h2 className="text-2xl font-semibold mb-6 text-white">Enter Job Details</h2>
-          {error && <p className="bg-red-500/20 text-red-400 border border-red-500/50 p-3 rounded-lg mb-6 text-center font-semibold">{error}</p>}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* ... (all your form inputs) ... */}
-            <div>
-              <label className="block mb-2 font-medium text-gray-400">Job Role</label>
-              <input
-                type="text"
-                value={jobRole}
-                onChange={(e) => setJobRole(e.target.value)}
-                placeholder="e.g., Software Engineer"
-                className="w-full bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block mb-2 font-medium text-gray-400">Job Description</label>
-              <textarea
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                rows="10"
-                placeholder="Paste the full job description here..."
-                className="w-full bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block mb-2 font-medium text-gray-400">Upload Resume (.pdf or .docx)</label>
-              <label htmlFor="resume-upload" className="w-full cursor-pointer bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-gray-400 flex items-center justify-between hover:border-neon-blue">
-                <span>{fileName || "Click to upload file..."}</span>
-                <span className="bg-neon-blue text-black font-bold py-1 px-3 rounded-lg text-sm">
-                  Browse
-                </span>
+      {/* Form Area */}
+      <form onSubmit={handleSubmit} className="bg-dark-card shadow-lg rounded-lg p-6 md:p-8 border border-dark-border">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Column: Inputs */}
+          <div>
+            <label htmlFor="resumeUpload" className="block text-sm font-medium text-gray-400 mb-2">
+              Upload Resume (PDF, DOCX)
+            </label>
+            <div className="flex items-center justify-center w-full">
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dark-border border-dashed rounded-lg cursor-pointer bg-dark-bg hover:bg-opacity-50">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <FiUpload className="w-10 h-10 text-gray-500" />
+                  <p className="mb-2 text-sm text-gray-400">
+                    <span className="font-semibold text-neon-blue">Click to upload</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500">PDF or DOCX</p>
+                </div>
+                <input id="resumeUpload" type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.docx" />
               </label>
-              <input
-                id="resume-upload"
-                type="file"
-                accept=".pdf,.docx"
-                onChange={handleFileChange}
-                className="hidden"
-              />
+            </div>
+            {resumeFile && <p className="text-sm text-green-400 mt-2">File selected: {resumeFile.name}</p>}
+
+            {analysisType === "jd" && (
+              <div className="mt-6">
+                <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-400 mb-2">
+                  Paste Job Description
+                </label>
+                <textarea
+                  id="jobDescription"
+                  rows="8"
+                  className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
+                  placeholder="Paste the full job description here..."
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                ></textarea>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Button & Helper Text */}
+          <div className="flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-200">
+                {analysisType === "role" ? "How it works" : "What this does"}
+              </h3>
+              <p className="text-sm text-gray-400 mt-2">
+                {analysisType === "role"
+                  ? "Upload your resume and we'll scan it for skills. Then, we'll compare those skills against our entire job role database (from dataset.csv) to find the role that's your best fit."
+                  : "Upload your resume and paste a job description. We'll extract skills from both and give you a match score, highlighting what skills you have and what you're missing for this specific job."}
+              </p>
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none"
+              className="w-full py-3 px-6 bg-neon-blue text-black font-semibold rounded-lg shadow hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-opacity-50 disabled:bg-gray-600 disabled:text-gray-400"
             >
-              {isLoading ? "Analyzing..." : "Analyze My Resume"}
+              {isLoading ? "Analyzing..." : "Analyze Now"}
             </button>
-          </form>
-        </div>
-
-        {/* --- Results Display --- */}
-        <div className="bg-dark-card p-8 rounded-xl shadow-lg border border-neon-blue/20">
-          <h2 className="text-2xl font-semibold mb-6 text-white text-center">Analysis Report</h2>
-
-          {/* --- 1. ADD A WRAPPER with min-height --- */}
-          <div className="relative min-h-[400px]">
-            {isLoading && (
-              // --- 2. MODIFY Loading block to be centered ---
-              <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
-                <div className="text-4xl mb-4 animate-spin">⚙️</div>
-                <p className="text-lg text-gray-400">Running AI analysis... This may take a moment.</p>
-              </div>
-            )}
-            {results && (
-              <div className="space-y-8">
-                
-                {/* Overall Score & Summary */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-                  <div className="flex-shrink-0">
-                    <ScoreDonutChart score={results.overall_score} />
-                  </div>
-                  <div className="flex-grow max-w-xl">
-                    <p className="text-gray-300 text-lg italic md:text-left text-center">
-                      {results.overall_summary}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Skill Match Breakdown */}
-                {results.skill_match_breakdown && (
-                  <div>
-                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🧠 Skill Match Breakdown</h3>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left">
-                        <thead>
-                          <tr className="border-b border-neon-blue/30">
-                            <th className="p-2 text-white">Skill Area</th>
-                            <th className="p-2 text-white">Job Requirement</th>
-                            <th className="p-2 text-white">Your Resume</th>
-                            <th className="p-2 text-white">Match</th>
-                          </tr>
-                        </thead>
-                        <tbody className="text-gray-300">
-                          {results.skill_match_breakdown.map((skill, i) => (
-                            <tr key={i} className="border-b border-gray-800">
-                              <td className="p-2 font-semibold">{skill.skill_area}</td>
-                              <td className="p-2 text-sm">{skill.job_requirement}</td>
-                              <td className="p-2 text-sm" dangerouslySetInnerHTML={{ __html: skill.resume_mention.replace(/✅/g, '<span class="text-neon-green">✅</span>').replace(/❌/g, '<span class="text-red-500">❌</span>') }}></td>
-                              <td className="p-2"><StarRating rating={skill.match_rating} /></td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* Project Relevance */}
-                {results.project_relevance && (
-                   <div>
-                    <h3 className="text-xl font-semibold text-neon-blue mb-3">💼 Project Relevance</h3>
-                    <p className="text-gray-300 mb-2">{results.project_relevance.summary}</p>
-                    <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
-                      {results.project_relevance.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Education Analysis */}
-                {results.education_analysis && (
-                   <div>
-                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🎓 Education & Certifications</h3>
-                    <p className="text-gray-300 mb-2">{results.education_analysis.summary}</p>
-                    <ul className="list-disc pl-5 space-y-1 text-gray-400 text-sm">
-                      {results.education_analysis.tips.map((tip, i) => <li key={i}>💡 {tip}</li>)}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Recommended Improvements */}
-                {results.recommended_improvements && (
-                   <div>
-                    <h3 className="text-xl font-semibold text-neon-blue mb-3">🧩 Recommended Improvements</h3>
-                    <ul className="list-disc pl-5 space-y-2 text-gray-300">
-                      {results.recommended_improvements.map((tip, i) => <li key={i}>{tip}</li>)}
-                    </ul>
-                  </div>
-                )}
-
-              </div>
-            )}
-            {!isLoading && !results && (
-              // --- 3. MODIFY Placeholder block to be centered ---
-              <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
-                <p className="text-gray-500 text-lg">Your expert analysis report will appear here.</p>
-              </div>
-            )}
           </div>
         </div>
-      </div>
+        {error && <p className="text-red-400 text-sm mt-4 text-center">{error}</p>}
+      </form>
+
+      {/* Results Area */}
+      {isLoading && <div className="text-center my-8"><p className="text-gray-300">Analyzing your resume, please wait...</p></div>}
+
+      {analysisResult && (
+        <div className="mt-10 bg-dark-card shadow-lg rounded-lg p-6 md:p-8 border border-dark-border">
+          <h2 className="text-2xl font-bold text-gray-200 mb-6">Analysis Results</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* Column 1: Score & Role */}
+            <div className="flex flex-col items-center justify-center p-4 bg-dark-bg rounded-lg border border-dark-border">
+              {analysisType === 'role' && (
+                <h3 className="text-lg font-semibold text-gray-200 mb-2">Best Matched Role</h3>
+              )}
+              {analysisType === 'jd' && (
+                <h3 className="text-lg font-semibold text-gray-200 mb-2">Job Description Match</h3>
+              )}
+              
+              <ScoreDonutChart 
+                score={analysisResult.best_match?.score || analysisResult.jd_match?.score || 0}
+              />
+
+              {analysisType === 'role' && (
+                <span className="text-xl font-bold text-neon-blue mt-2 text-glow">
+                  {analysisResult.best_match?.role}
+                </span>
+              )}
+            </div>
+
+            {/* Column 2: Skills Analysis */}
+            <div className="space-y-6">
+              {renderList(
+                "Skills to Improve (Missing)",
+                analysisResult.best_match?.missing_skills || analysisResult.jd_match?.missing_skills,
+                true // isMissing = true
+              )}
+              {renderList(
+                "Your Matching Skills",
+                analysisResult.best_match?.matching_skills || analysisResult.jd_match?.matching_skills
+              )}
+            </div>
+            
+            {/* Column 3: Format Check */}
+            <div className="p-4 bg-dark-bg rounded-lg border border-dark-border">
+              {renderFormatCheck(analysisResult.format_analysis)}
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default ResumeAnalyzer;
