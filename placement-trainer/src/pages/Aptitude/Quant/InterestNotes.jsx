@@ -58,7 +58,7 @@ export default function InterestNotes() {
       {/* 3. Comparison Table */}
       <NoteSection title="3. Simple Interest vs Compound Interest">
         <table className="border border-gray-500 mt-2 w-full text-sm md:text-base">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-700">
             <tr>
               <th className="border p-2">Basis</th>
               <th className="border p-2">Simple Interest (SI)</th>

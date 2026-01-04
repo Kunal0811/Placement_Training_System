@@ -103,3 +103,29 @@ export const analyzeResumeForJD = (resumeFile, jobDescription, jobRole, token) =
     },
   });
 };
+
+export const processInterviewChat = async (history, userInput, image, type, topic) => {
+  // Parse the JSON response from backend since we forced JSON format
+  const res = await axios.post(`${API_BASE}/api/interview/chat`, {
+    history,
+    user_input: userInput,
+    image, // Pass base64 image
+    interview_type: type,
+    topic
+  });
+  
+  // Try to parse the backend string response into an object
+  try {
+    return typeof res.data.response === 'string' 
+      ? JSON.parse(res.data.response) 
+      : res.data.response;
+  } catch (e) {
+    console.error("Failed to parse AI response", e);
+    return {
+      feedback: "",
+      expression_analysis: "Could not analyze.",
+      next_question: res.data.response, // Fallback to raw text
+      score: 0
+    };
+  }
+};

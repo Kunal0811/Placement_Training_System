@@ -23,6 +23,7 @@ from aptitude_routes import router as aptitude_router
 from technical_routes import router as technical_router
 from coding_routes import router as coding_router
 from resume_routes import router as resume_router
+from interview_routes import router as interview_router
 
 # --- Setup ---
 load_dotenv()
@@ -62,6 +63,7 @@ app.include_router(aptitude_router)
 app.include_router(technical_router)
 app.include_router(coding_router)
 app.include_router(resume_router, prefix="/api")
+app.include_router(interview_router)
 
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):
