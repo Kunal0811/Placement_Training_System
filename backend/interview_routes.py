@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 import base64
+import json
 
 router = APIRouter(prefix="/api/interview", tags=["Interview"])
 
@@ -14,75 +15,55 @@ class ChatMessage(BaseModel):
 class InterviewRequest(BaseModel):
     history: List[ChatMessage]
     user_input: str
-    image: Optional[str] = None # Base64 encoded image
-    interview_type: str
-    topic: str
+    image: Optional[str] = None
+    interview_type: str  # "Technical" or "HR"
+    topic: str           # This will now be the User-provided Job Role
 
 @router.post("/chat")
 async def interview_chat(req: InterviewRequest):
     try:
-        # Use Gemini 1.5 Flash for speed and multimodal capabilities
         model = genai.GenerativeModel("gemini-2.5-flash")
         
+        # Calculate progress based on history (approx 2 messages per turn)
+        turn_count = (len(req.history) // 2) + 1
+
         system_instruction = f"""
-        You are an expert {req.interview_type} interviewer conducting a video interview. 
-        Topic: {req.topic}.
-        
-        Input:
-        1. The candidate's spoken answer (transcribed text).
-        2. A snapshot of the candidate's face during the answer.
+        You are an expert {req.interview_type} interviewer for the position of: {req.topic}.
+        Conduct a realistic video interview. Current Turn: {turn_count}/15.
 
-        Your Task:
-        1. Analyze the Candidate's Facial Expression: Are they confident, nervous, smiling, serious?
-        2. Evaluate the Answer: Is it correct? clear?
-        3. Provide the Next Question.
+        STRICT RULES:
+        1. PROGRESS: Aim for 10-15 questions. On turn 15, set "is_final": true.
+        2. CODING: If this is a Technical interview and you want the user to write code, include "CODE_TASK:" at the start of "next_question".
+        3. EVALUATION: For the user's last answer, provide a score (0-10) and the "ideal_answer" (what they should have said).
+        4. VOICE OPTIMIZATION: Keep "next_question" concise for text-to-speech.
 
-        Response Format (Strict JSON):
+        Response Format (STRICT JSON):
         {{
-            "feedback": "Brief feedback on their answer.",
-            "expression_analysis": "Observation about their body language/facial expression.",
-            "next_question": "The next question to ask.",
-            "score": "Current rating out of 10 based on this turn."
+            "feedback": "Evaluation of previous answer.",
+            "ideal_answer": "Detailed correct/better version of the answer.",
+            "expression_analysis": "Analysis of facial expression/confidence.",
+            "next_question": "Your next question.",
+            "score": 8,
+            "is_final": false
         }}
         """
 
-        # Prepare content for Gemini
-        content_parts = []
-        
-        # 1. Add context/history
-        context_prompt = f"{system_instruction}\n\nChat History:\n"
+        content_parts = [system_instruction]
         for msg in req.history:
-            context_prompt += f"{msg.role}: {msg.content}\n"
+            content_parts.append(f"{msg.role}: {msg.content}")
         
-        content_parts.append(context_prompt)
-
-        # 2. Add the User's Input
         content_parts.append(f"Candidate Answer: {req.user_input}")
 
-        # 3. Add the Image if provided
         if req.image:
-            try:
-                # Remove header if present (e.g., "data:image/jpeg;base64,")
-                if "base64," in req.image:
-                    req.image = req.image.split("base64,")[1]
-                
-                image_data = base64.b64decode(req.image)
-                content_parts.append({
-                    "mime_type": "image/jpeg",
-                    "data": image_data
-                })
-            except Exception as img_err:
-                print(f"Image processing error: {img_err}")
-                # Continue without image if it fails
+            if "base64," in req.image:
+                req.image = req.image.split("base64,")[1]
+            content_parts.append({"mime_type": "image/jpeg", "data": base64.b64decode(req.image)})
 
-        # Generate response
         response = await model.generate_content_async(content_parts)
         
-        # Extract JSON from response (Gemini sometimes wraps in ```json ... ```)
-        text_resp = response.text.replace("```json", "").replace("```", "").strip()
-        
-        return {"response": text_resp}
+        # Clean and parse JSON response
+        raw_text = response.text.replace("```json", "").replace("```", "").strip()
+        return {"response": raw_text}
 
     except Exception as e:
-        print(f"Interview Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

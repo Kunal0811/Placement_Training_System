@@ -1,109 +1,75 @@
 import React, { useState, useRef, useEffect } from "react";
 import { processInterviewChat } from "../api";
-import { FiMic, FiStopCircle } from "react-icons/fi";
-
-const INTERVIEW_TYPES = [
-  { id: "HR", name: "HR Round", topics: ["Introduction", "Strengths", "Why us?"] },
-  { id: "Technical", name: "Technical", topics: ["Java", "React", "Python", "DSA"] },
-  { id: "Behavioral", name: "Behavioral", topics: ["Leadership", "Conflict", "Challenges"] },
-];
+import { FiMic, FiStopCircle, FiCode, FiUser } from "react-icons/fi";
 
 export default function Interview() {
   const [started, setStarted] = useState(false);
-  const [config, setConfig] = useState({ type: "HR", topic: "Introduction" });
+  const [config, setConfig] = useState({ type: "Technical", role: "" });
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  // Media & AI State
+  // States for enhanced feedback
+  const [feedback, setFeedback] = useState({ score: null, ideal: "", analysis: "" });
+  const [isCodingMode, setIsCodingMode] = useState(false);
+  const [codeSnippet, setCodeSnippet] = useState("");
+
+  // Speech & Media States
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [interimText, setInterimText] = useState(""); // For real-time visual feedback
-  const [expressionFeedback, setExpressionFeedback] = useState("");
-  
-  // Refs
   const videoRef = useRef(null);
   const recognitionRef = useRef(null);
-  const chatContainerRef = useRef(null);
 
-  // --- 1. Initialize Speech Recognition Safely ---
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = "en-US";
-
-      recognitionRef.current.onstart = () => {
-        console.log("Mic is on");
-        setIsListening(true);
-      };
-
-      recognitionRef.current.onend = () => {
-        console.log("Mic stopped");
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = (event) => {
-        console.error("Speech Error:", event.error);
-        if (event.error === "not-allowed") {
-          alert("Microphone access blocked. Please allow permissions in your browser settings.");
+      recognitionRef.current.onresult = (e) => {
+        let text = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          text += e.results[i][0].transcript;
         }
-        setIsListening(false);
+        setTranscript(text);
       };
-
-      recognitionRef.current.onresult = (event) => {
-        let final = "";
-        let interim = "";
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final += event.results[i][0].transcript;
-          } else {
-            interim += event.results[i][0].transcript;
-          }
-        }
-
-        if (final) {
-          setTranscript((prev) => prev + " " + final);
-          setInterimText(""); // Clear interim when final is added
-        } else {
-          setInterimText(interim);
-        }
-      };
-    } else {
-      console.warn("Browser does not support Speech Recognition.");
     }
-  }, []);
-
-  // --- 2. Auto-scroll Chat ---
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [messages, interimText]);
-
-  // --- 3. Camera Handling ---
-  useEffect(() => {
     if (started) startCamera();
-    return () => stopCamera();
   }, [started]);
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      if (videoRef.current) videoRef.current.srcObject = stream;
-    } catch (err) {
-      console.error("Camera Error:", err);
-      alert("Could not access camera. Ensure permissions are granted.");
-    }
-  };
+  // 1. Add this useEffect inside your Interview component
+useEffect(() => {
+  if (started && messages.length === 0) {
+    startInterview();
+  }
+}, [started]);
 
-  const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-    }
+// 2. Add the startInterview function
+const startInterview = async () => {
+  setLoading(true);
+  try {
+    // We send an empty user_input or a "Hello" to trigger the first question
+    const data = await processInterviewChat(
+      [], 
+      "I am ready to start the interview.", 
+      null, 
+      config.type, 
+      config.topic
+    );
+
+    const aiText = data.next_question || data.response;
+    setMessages([{ role: "ai", content: aiText }]);
+    speak(aiText); // This makes the AI introduce itself and ask the first question
+
+  } catch (err) {
+    console.error("Failed to start interview:", err);
+    setMessages([{ role: "ai", content: "Hello! I am your interviewer. Let's begin." }]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const startCamera = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    if (videoRef.current) videoRef.current.srcObject = stream;
   };
 
   const speak = (text) => {
@@ -112,149 +78,116 @@ export default function Interview() {
     window.speechSynthesis.speak(utterance);
   };
 
-  const captureImage = () => {
-    if (!videoRef.current) return null;
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
-    return canvas.toDataURL("image/jpeg");
-  };
-
-  const handleStartListening = () => {
-    if (!recognitionRef.current) {
-      alert("Your browser does not support Speech Recognition. Try Google Chrome.");
-      return;
-    }
-    setTranscript("");
-    setInterimText("");
-    try {
-      recognitionRef.current.start();
-    } catch (e) {
-      console.error("Start error:", e); // Handle case where it's already started
-    }
-  };
-
   const handleStopAndSubmit = async () => {
     if (recognitionRef.current) recognitionRef.current.stop();
     setIsListening(false);
-    
-    // Combine final transcript with any lingering interim text
-    const finalAnswer = (transcript + " " + interimText).trim();
+
+    const finalAnswer = isCodingMode ? codeSnippet : transcript;
     if (!finalAnswer) return;
 
     setLoading(true);
-
-    // Add user message immediately
-    const userMsg = { role: "user", content: finalAnswer };
-    setMessages((prev) => [...prev, userMsg]);
-
-    const imageBase64 = captureImage();
+    setMessages(prev => [...prev, { role: "user", content: finalAnswer }]);
 
     try {
-      const data = await processInterviewChat(
-        messages, 
-        finalAnswer, 
-        imageBase64, 
-        config.type, 
-        config.topic
-      );
+      const res = await processInterviewChat(messages, finalAnswer, null, config.type, config.role);
+      const data = JSON.parse(res.response);
 
-      const aiText = data.next_question || data.response;
-      setExpressionFeedback(data.expression_analysis || "Analysis complete.");
+      setFeedback({
+        score: data.score,
+        ideal: data.ideal_answer,
+        analysis: data.expression_analysis
+      });
+
+      setMessages(prev => [...prev, { role: "ai", content: data.next_question }]);
+      speak(data.next_question);
+
+      // Trigger coding mode if AI asks for code
+      setIsCodingMode(data.next_question.includes("CODE_TASK:"));
       
-      setMessages((prev) => [...prev, { role: "ai", content: aiText }]);
-      speak(aiText);
-
     } catch (err) {
-      console.error(err);
-      setMessages((prev) => [...prev, { role: "ai", content: "Error connecting to AI." }]);
+      console.error("Error:", err);
     } finally {
       setLoading(false);
       setTranscript("");
-      setInterimText("");
+      setCodeSnippet("");
     }
   };
 
   if (!started) {
     return (
-      <div className="min-h-screen p-6 flex flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold mb-8 text-white text-glow">Setup Video Interview</h1>
-        <div className="bg-dark-card p-8 rounded-2xl border border-neon-blue/20 w-full max-w-md">
-           <label className="block text-gray-400 mb-2">Type</label>
-           <div className="flex gap-2 mb-4">
-             {INTERVIEW_TYPES.map(t => (
-               <button key={t.id} onClick={() => setConfig({...config, type: t.id, topic: t.topics[0]})}
-                 className={`flex-1 p-2 rounded border ${config.type === t.id ? 'bg-neon-blue text-black' : 'border-gray-600 text-gray-300'}`}>
-                 {t.name}
-               </button>
-             ))}
-           </div>
-           
-           <label className="block text-gray-400 mb-2">Topic</label>
-           <select className="w-full p-2 bg-dark-bg text-white rounded border border-gray-600 mb-6"
-             onChange={(e) => setConfig({...config, topic: e.target.value})}>
-             {INTERVIEW_TYPES.find(t => t.id === config.type).topics.map(t => <option key={t}>{t}</option>)}
-           </select>
-
-           <button onClick={() => setStarted(true)} className="w-full py-3 bg-neon-green text-black font-bold rounded-xl hover:scale-105 transition-all">
-             Enter Interview Room
-           </button>
+      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+        <div className="bg-dark-card p-8 rounded-2xl border border-neon-blue w-96">
+          <h2 className="text-2xl text-white mb-6">Interview Setup</h2>
+          <input 
+            type="text" placeholder="Enter Job Role (e.g. Java Developer)"
+            className="w-full p-3 bg-black text-white rounded mb-4 border border-gray-700"
+            onChange={(e) => setConfig({...config, role: e.target.value})}
+          />
+          <div className="flex gap-2 mb-6">
+            <button onClick={() => setConfig({...config, type: "Technical"})}
+              className={`flex-1 p-2 rounded ${config.type === "Technical" ? "bg-neon-blue text-black" : "border text-white"}`}>Technical</button>
+            <button onClick={() => setConfig({...config, type: "HR"})}
+              className={`flex-1 p-2 rounded ${config.type === "HR" ? "bg-neon-blue text-black" : "border text-white"}`}>HR Round</button>
+          </div>
+          <button onClick={() => setStarted(true)} disabled={!config.role}
+            className="w-full py-3 bg-neon-green text-black font-bold rounded-xl disabled:opacity-50">Start Interview</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] p-4 flex gap-4 max-w-7xl mx-auto">
-      {/* Left: AI & Chat */}
-      <div className="flex-1 flex flex-col bg-dark-card rounded-2xl border border-gray-700 overflow-hidden">
-        <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-4">
-          {messages.length === 0 && <div className="text-gray-500 text-center mt-10">Press the mic to start speaking...</div>}
-          
+    <div className="h-screen p-4 flex gap-4 text-white">
+      {/* LEFT: Chat & Code Area */}
+      <div className="flex-1 flex flex-col bg-dark-card rounded-2xl border border-gray-800 p-6">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`p-4 rounded-xl max-w-[80%] ${msg.role === "user" ? "bg-neon-blue text-black" : "bg-gray-800 text-gray-200"}`}>
+              <div className={`p-4 rounded-xl max-w-[80%] ${msg.role === "user" ? "bg-neon-blue text-black" : "bg-gray-800"}`}>
                 {msg.content}
               </div>
             </div>
           ))}
-          {loading && <div className="text-neon-blue animate-pulse">AI is thinking...</div>}
+        </div>
+
+        {isCodingMode && (
+          <textarea 
+            className="w-full h-48 bg-black p-4 font-mono text-green-400 border border-neon-blue rounded-xl mb-4"
+            placeholder="Type your code here..."
+            value={codeSnippet}
+            onChange={(e) => setCodeSnippet(e.target.value)}
+          />
+        )}
+
+        <div className="flex items-center gap-4">
+          <p className="flex-1 italic text-gray-400">{transcript || "Your speech will appear here..."}</p>
+          {!isListening ? (
+            <button onClick={() => {setIsListening(true); recognitionRef.current.start();}} className="p-4 bg-neon-blue rounded-full text-black"><FiMic size={24}/></button>
+          ) : (
+            <button onClick={handleStopAndSubmit} className="p-4 bg-red-500 rounded-full animate-pulse"><FiStopCircle size={24}/></button>
+          )}
         </div>
       </div>
 
-      {/* Right: Video & Controls */}
+      {/* RIGHT: Video & Feedback */}
       <div className="w-1/3 flex flex-col gap-4">
-        <div className="relative bg-black rounded-2xl overflow-hidden border-2 border-neon-blue h-64">
-           <video ref={videoRef} autoPlay muted className="w-full h-full object-cover transform scale-x-[-1]" />
-           <div className="absolute bottom-2 left-2 bg-black/60 px-2 py-1 rounded text-xs text-neon-green flex items-center gap-2">
-             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div> Live
-           </div>
-        </div>
-
-        <div className="bg-gray-900 p-4 rounded-xl border border-gray-700">
-          <h3 className="text-sm font-bold text-gray-400 mb-1">AI Expression Analysis</h3>
-          <p className="text-neon-purple text-lg font-medium">{expressionFeedback || "Waiting for input..."}</p>
-        </div>
-
-        <div className="bg-dark-card p-6 rounded-2xl border border-gray-700 flex flex-col items-center justify-center gap-4 flex-1">
-           <div className="text-center mb-2 w-full">
-             <p className="text-gray-400 text-sm mb-2">Live Transcript:</p>
-             <p className="text-white italic min-h-[40px] border border-gray-800 p-2 rounded bg-black/30 w-full">
-               {transcript} <span className="text-gray-400">{interimText}</span>
-             </p>
-           </div>
-
-           {!isListening ? (
-             <button onClick={handleStartListening} className="w-16 h-16 rounded-full bg-neon-blue text-black flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(0,255,255,0.5)]">
-               <FiMic size={32} />
-             </button>
-           ) : (
-             <button onClick={handleStopAndSubmit} className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center hover:scale-110 transition-transform animate-pulse">
-               <FiStopCircle size={32} />
-             </button>
-           )}
-           <p className="text-sm text-gray-500">{isListening ? "Listening... (Speak clearly)" : "Click Mic to Speak"}</p>
+        <video ref={videoRef} autoPlay muted className="w-full rounded-2xl border-2 border-neon-blue aspect-video object-cover" />
+        
+        <div className="bg-gray-900 p-4 rounded-xl border border-gray-700 flex-1 overflow-y-auto">
+          <h3 className="font-bold text-neon-purple mb-2">Evaluation Panel</h3>
+          {feedback.score !== null && (
+            <div className="space-y-4">
+              <div className="text-2xl font-bold">Score: {feedback.score}/10</div>
+              <div>
+                <p className="text-sm text-gray-400">Ideal Answer:</p>
+                <p className="text-neon-green text-sm italic">{feedback.ideal}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Analysis:</p>
+                <p className="text-sm">{feedback.analysis}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

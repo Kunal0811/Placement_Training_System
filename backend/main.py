@@ -16,9 +16,10 @@ import google.generativeai as genai
 import shutil  # <-- Import shutil
 import uuid    # <-- Import uuid
 import nltk
+import interview_models
 
 # Import from the new database file and other route files
-from database import get_cursor
+from database import get_cursor, engine, Base
 from aptitude_routes import router as aptitude_router
 from technical_routes import router as technical_router
 from coding_routes import router as coding_router
@@ -28,6 +29,8 @@ from interview_routes import router as interview_router
 # --- Setup ---
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+Base.metadata.create_all(bind=engine)
 
 try:
     nltk.data.find('tokenizers/punkt')
