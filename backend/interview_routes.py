@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import json
 from datetime import datetime
+from database import get_cursor
 
 # Import Database dependencies
 from database import get_session
@@ -30,6 +31,32 @@ class InterviewRequest(BaseModel):
     user_input: str
     history: List[ChatMessage] # For context window
     is_code: bool = False
+
+# Add this model to your interview_routes.py
+class SaveInterviewRequest(BaseModel):
+    user_id: int
+    interview_type: str
+    job_role: str
+    overall_score: int
+    feedback: list # List of objects containing {question, answer, score, ideal_answer}
+
+@router.post("/save-attempt")
+def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        # Convert feedback list to JSON string for MySQL
+        feedback_json = json.dumps(req.feedback)
+        
+        query = """
+            INSERT INTO interview_attempts (user_id, interview_type, job_role, overall_score, feedback)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (req.user_id, req.interview_type, req.job_role, req.overall_score, feedback_json))
+        db.commit()
+        return {"message": "Interview results saved successfully"}
+    except Exception as e:
+        print(f"Error saving interview: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save results")
 
 # --- Routes ---
 
