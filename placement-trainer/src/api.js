@@ -129,3 +129,13 @@ export const processInterviewChat = async (history, userInput, image, type, topi
     };
   }
 };
+
+// placement-trainer/src/api.js
+// ... (keep existing imports and functions)
+
+// Add this new function at the bottom
+export async function saveInterviewResult(data) {
+  // data = { user_id, interview_type, job_role, overall_score, feedback }
+  const res = await axios.post(`${API_BASE}/api/interview/save-attempt`, data);
+  return res.data;
+}

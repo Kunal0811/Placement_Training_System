@@ -80,9 +80,13 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         # Generate Initial Greeting
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = f"""
-        You are an expert {req.interview_type} interviewer for the role of {req.job_role}.
-        Start the interview by introducing yourself and asking the first question.
-        Keep it professional but encouraging.
+        You are a hiring manager for the {req.job_role} position. 
+        Start the interview now.
+        
+        STRICT RULES:
+        1. Keep your greeting under 15 words.
+        2. Your FIRST question MUST be: "Please introduce yourself and tell me a bit about your background."
+        3. Do not ask multiple questions at once.
         """
         response = await model.generate_content_async(prompt)
         
@@ -128,24 +132,29 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
         model = genai.GenerativeModel("gemini-2.5-flash")
         
         system_instruction = f"""
-        You are conducting a {session.interview_type} interview for {session.job_role}.
-        Current Turn: {turn_count}/10.
-        
-        TASK:
-        1. Analyze the candidate's last answer ("{req.user_input}").
-        2. Provide a Score (0-10), Feedback, and the Ideal Answer.
-        3. Generate the NEXT question.
-        4. If {session.interview_type} == "Technical", occasionally ask for code snippets. If you want code, prepend "CODE_TASK:" to the question.
-        5. If turn_count >= 10, set "is_final": true and provide a closing statement instead of a question.
+            You are conducting a {session.interview_type} interview for the {session.job_role} role.
+            Current Progress: Question {turn_count} of 15.
 
-        RESPONSE JSON FORMAT:
-        {{
-            "feedback": "Analysis of their answer...",
-            "ideal_answer": "The perfect response would be...",
-            "score": 8,
-            "next_question": "The next question...",
-            "is_final": {str(is_final_turn).lower()}
-        }}
+            DIFFICULTY LOGIC:
+            - Turns 1-3: Basic/Introductory level.
+            - Turns 4-8: Intermediate level (Scenario-based or core technical concepts).
+            - Turns 9-13: Advanced/Hard level (Complex problem solving or architecture).
+            - Turns 14-15: Closing and final thoughts.
+
+            STRICT RULES:
+            1. Ask ONLY ONE question at a time.
+            2. Keep questions concise (under 30 words) to facilitate voice interaction.
+            3. Increase the technical complexity as the interview progresses based on the "DIFFICULTY LOGIC" above.
+            4. If the turn_count reaches 15, set "is_final": true.
+
+            RESPONSE JSON FORMAT:
+            {{
+                "feedback": "...",
+                "ideal_answer": "...",
+                "score": 0-10,
+                "next_question": "...",
+                "is_final": false
+            }}
         """
 
         # Provide context
