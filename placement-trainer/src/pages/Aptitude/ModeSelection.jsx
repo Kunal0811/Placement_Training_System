@@ -99,8 +99,12 @@ export default function ModeSelection() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4 animate-spin">⚙️</div>
+        <div className="text-center flex flex-col items-center gap-6">
+          <div className="relative w-24 h-24">
+            <div className="absolute inset-0 border-t-4 border-blue-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-2 border-r-4 border-purple-500 rounded-full animate-spin-reverse"></div>
+            <div className="absolute inset-4 border-b-4 border-pink-500 rounded-full animate-spin"></div>
+          </div>
           <p className="text-2xl text-gray-400">Loading Levels...</p>
         </div>
       </div>

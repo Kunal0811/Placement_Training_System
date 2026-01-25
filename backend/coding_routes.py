@@ -50,14 +50,20 @@ def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List
     Generate exactly {count} unique software engineering coding interview problems of {difficulty} difficulty.
     Focus on common topics like arrays, strings, trees, graphs, or dynamic programming.{avoid_instruction}
 
+    **CRITICAL JSON RULES:**
+    1. Return strictly VALID JSON.
+    2. Do NOT use Markdown formatting (no ```json blocks).
+    3. ESCAPE all control characters inside strings. For example, use "\\n" for newlines, NOT actual line breaks.
+    4. The output must be a single line of JSON or properly structured JSON without unescaped control characters.
+
     Return the response as a SINGLE, STRICT JSON object with a key "problems" which is a list of {count} problem objects.
     Each problem object must have the following structure:
     {{
-        "title": "A concise and descriptive title for the problem",
-        "description": "A detailed, paragraph-style description of the problem. Explain the task clearly.",
-        "input_format": "A clear description of the input format. Specify if input is on single or multiple lines.",
-        "output_format": "A clear description of the expected output format.",
-        "constraints": ["A list of constraints as an array of strings."],
+        "title": "A concise and descriptive title",
+        "description": "A detailed description. Use \\n for line breaks.",
+        "input_format": "Description of input format",
+        "output_format": "Description of output format",
+        "constraints": ["Constraint 1", "Constraint 2"],
         "examples": [{{ "input": "...", "output": "...", "explanation": "..." }}]
     }}
     """
@@ -65,44 +71,35 @@ def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List
 def create_evaluation_prompt(problem: dict, code: str, language: str) -> str:
     problem_str = json.dumps(problem, indent=2)
     return f"""
-    You are a strict code linter and logical evaluator. Your primary goal is to act like a compiler or interpreter to first find syntax errors, and only then evaluate the logic.
+    You are a strict code linter and logical evaluator. 
+    
+    **CRITICAL JSON RULES:**
+    1. Return strictly VALID JSON.
+    2. Do NOT use Markdown formatting.
+    3. Escape all newlines in feedback strings (e.g., use "\\n").
 
-    **THE PROBLEM (Pay close attention to the specified Input/Output format):**
-    ```json
+    **THE PROBLEM:**
     {problem_str}
-    ```
 
     **THE USER'S CODE ({language}):**
     ```
     {code}
     ```
 
-    **EVALUATION STEPS (MUST be followed in this order):**
+    **EVALUATION STEPS:**
+    1. Check Syntax & Executability.
+    2. Check I/O Handling.
+    3. Check Logical Correctness.
 
-    1.  **Syntax & Executability Check (CRITICAL FIRST STEP):**
-        -   First, act as a strict compiler. Is the code syntactically valid? (Check Python indentation, Java/C++ syntax, etc.).
-        -   Second, is the main logic of the code actually executable? For example, if the core logic is inside a function, is that function ever called in the global scope? A script that only defines functions but never calls them is incorrect because it does nothing.
-        -   If there is a fatal syntax or executability error, set `is_correct` to `false` and make this the primary feedback point. Do NOT evaluate the logic further.
-
-    2.  **I/O Handling Check (If Step 1 passes):**
-        -   Does the user's code correctly read the *exact* input format described in the problem? If the input is two separate lines, does the code read two lines? If it fails this, the solution is wrong.
-
-    3.  **Logical Correctness (Only if Steps 1 & 2 pass):**
-        -   Analyze the core algorithm. Does it solve the problem accurately for all cases?
-        -   Does it correctly handle the examples and constraints provided?
-        -   Identify any logical flaws or missed edge cases.
-
-    **RESPONSE FORMAT (Strict JSON is required):**
+    **RESPONSE FORMAT (Strict JSON):**
     {{
         "is_correct": boolean,
         "feedback_points": [
-            "If a syntax/executability error is found, this MUST be the first point (e.g., 'Error: The main function is defined but never called.').",
-            "If the I/O handling is wrong, this MUST be the first point (e.g., 'Error: The code does not handle the multi-line input format correctly.').",
-            "If syntax/IO is OK, provide a point on the overall algorithmic approach.",
-            "If syntax/IO is OK, provide a point on implementation details and logic flaws."
+            "Syntax/Logic error point 1",
+            "Feedback point 2"
         ],
-        "time_complexity": "The estimated time complexity (e.g., 'O(n)'). Set to 'N/A' if the code is incorrect.",
-        "space_complexity": "The estimated auxiliary space complexity (e.g., 'O(1)'). This excludes the space taken by the input itself. Set to 'N/A' if the code is incorrect."
+        "time_complexity": "O(n)",
+        "space_complexity": "O(1)"
     }}
     """
 
@@ -135,17 +132,30 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     code_file_path = os.path.join(temp_dir, file_name)
     input_file_path = os.path.join(temp_dir, "input.txt")
 
-    with open(code_file_path, "w", encoding='utf-8') as f:
-        f.write(code)
-    with open(input_file_path, "w", encoding='utf-8') as f:
-        f.write(stdin)
-
-    client = docker.from_env()
-    image_name = f"{language}-runner"
-    mount_mode = 'rw' if language in ['java', 'cpp'] else 'ro'
-    
-    output = ""
     try:
+        # 1. Initialize Docker Client (Robust Method for Windows)
+        client = None
+        try:
+            client = docker.from_env()
+            client.ping()
+        except Exception:
+            try:
+                # Force Windows named pipe connection if default fails
+                client = docker.DockerClient(base_url='npipe:////./pipe/docker_engine')
+                client.ping()
+            except Exception as e:
+                return f"System Error: Docker Desktop is not running. Please start it. (Error: {str(e)})"
+
+        # 2. Prepare Files
+        with open(code_file_path, "w", encoding='utf-8') as f:
+            f.write(code)
+        with open(input_file_path, "w", encoding='utf-8') as f:
+            f.write(stdin)
+
+        image_name = f"{language}-runner"
+        mount_mode = 'rw' if language in ['java', 'cpp'] else 'ro'
+        
+        # 3. Run Container
         container = client.containers.run(
             image=image_name,
             command=f"sh -c '{command} < input.txt'",
@@ -166,13 +176,33 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     except docker.errors.ContainerError as e:
         output = e.stderr.decode('utf-8')
     except docker.errors.ImageNotFound:
-        output = f"Execution environment not found. Please build the '{image_name}' Docker image."
+        output = f"Execution environment '{image_name}' not found. Run 'docker build -t {image_name} ...' in backend folder."
     except Exception as e:
         output = f"An unexpected execution error occurred: {str(e)}"
     finally:
-        shutil.rmtree(temp_dir)
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
         
     return output
+
+# --- Helper: JSON Cleaner ---
+def clean_and_parse_json(text: str):
+    """
+    Cleans AI response text to ensure valid JSON parsing.
+    Removes Markdown code blocks and handles common JSON errors.
+    """
+    text = re.sub(r'```json\s*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'```', '', text)
+    text = text.strip()
+    
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        print(f"JSON Parse Error: {e}")
+        try:
+            return json.loads(text, strict=False)
+        except:
+            raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
 
 # --- API Endpoints ---
 
@@ -199,16 +229,15 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
         prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
         response = await model.generate_content_async(prompt)
         
-        text = response.text
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        if not match:
-            raise HTTPException(status_code=500, detail="Failed to parse valid JSON from AI response.")
+        data = clean_and_parse_json(response.text)
         
-        data = json.loads(match.group(0))
         problems_list = data.get("problems")
 
         if not problems_list or not isinstance(problems_list, list) or len(problems_list) < req.count:
-             raise HTTPException(status_code=500, detail=f"AI did not generate the required number of problems ({len(problems_list)}/{req.count}).")
+             if isinstance(data, list):
+                 problems_list = data
+             else:
+                 raise HTTPException(status_code=500, detail=f"AI generated invalid structure.")
 
         return {"problems": problems_list}
     except Exception as e:
@@ -223,12 +252,8 @@ async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
         response = await model.generate_content_async(prompt)
-        text = response.text
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-        if not match:
-            raise HTTPException(status_code=500, detail="Failed to parse evaluation from AI response.")
         
-        evaluation_data = json.loads(match.group(0))
+        evaluation_data = clean_and_parse_json(response.text)
 
         if evaluation_data.get("is_correct"):
             cursor.execute(

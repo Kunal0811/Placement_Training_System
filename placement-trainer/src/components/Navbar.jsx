@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Placify from "../assets/Placify1.png";
 import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api"; // <-- 1. IMPORT THE API_BASE URL
+import { FiAward } from "react-icons/fi";
 
 const Navbar = ({ toggleSidebar }) => {
   const { user, logout } = useAuth();
@@ -88,6 +89,7 @@ const Navbar = ({ toggleSidebar }) => {
           </div>
         )}
       </div>
+      
     </div>
   );
 };

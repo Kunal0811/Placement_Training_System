@@ -17,6 +17,8 @@ import shutil  # <-- Import shutil
 import uuid    # <-- Import uuid
 import nltk
 import interview_models
+from sqlalchemy import text
+from datetime import datetime, timedelta
 
 # Import from the new database file and other route files
 from database import get_cursor, engine, Base
@@ -323,3 +325,63 @@ def get_best_score(req: BestScoreRequest, db_cursor: tuple = Depends(get_cursor)
     )
     result = cursor.fetchone()
     return {"best_score": result["best_score"] if result and result["best_score"] is not None else None}
+
+@app.get("/api/leaderboard")
+def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    
+    # Time filter logic
+    date_condition = ""
+    if timeframe == "week":
+        date_condition = "AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)"
+    
+    # Complex Query to calculate Total XP (SP) across all activities
+    query = f"""
+    SELECT 
+        u.id, 
+        u.fname, 
+        u.lname, 
+        u.profile_picture_url,
+        (
+            COALESCE((SELECT SUM(score * 10) FROM test_results WHERE user_id = u.id {date_condition}), 0) + 
+            COALESCE((SELECT SUM(CASE 
+                WHEN difficulty = 'easy' THEN 50 
+                WHEN difficulty = 'medium' THEN 100 
+                WHEN difficulty = 'hard' THEN 200 
+                ELSE 0 END) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_condition}), 0) +
+            COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_attempts WHERE user_id = u.id {date_condition}), 0)
+        ) as total_xp,
+        (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_condition}) as problems_solved
+    FROM users u
+    ORDER BY total_xp DESC
+    LIMIT 10;
+    """
+    
+    try:
+        cursor.execute(query)
+        leaderboard = cursor.fetchall()
+        return leaderboard
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/user/{user_id}/gamification")
+def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        # Calculate User Rank
+        # Note: In a real production app, you'd cache this. For now, we calculate on fly.
+        cursor.execute("SELECT id FROM users")
+        all_users = [u['id'] for u in cursor.fetchall()]
+        
+        # This is a simplified logic for "Level". Level = sqrt(XP) / 10
+        # Re-using the XP logic from above would be cleaner in a shared function, 
+        # but for simplicity, we assume frontend fetches leaderboard to find rank.
+        
+        return {
+            "level": 5, # Placeholder: Implement calculation logic based on XP
+            "badges": ["First Code", "Interview Ace"], # Placeholder for Badge table
+            "streak": 3
+        }
+    except Exception as e:
+        print(e)
+        return {"level": 1, "badges": [], "streak": 0}

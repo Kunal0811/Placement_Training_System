@@ -55,6 +55,8 @@ import GrammarNotes from "./pages/Aptitude/Verbal/GrammarNotes.jsx";
 import VocabularyNotes from "./pages/Aptitude/Verbal/VocabularyNotes.jsx";
 import ComprehensionNotes from "./pages/Aptitude/Verbal/ComprehensionNotes.jsx";
 
+import Leaderboard from "./pages/Leaderboard.jsx";
+
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -141,6 +143,7 @@ function App() {
               <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
               <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
               <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
+              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             </Routes>
           </div>
           
