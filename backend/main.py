@@ -329,40 +329,69 @@ def get_best_score(req: BestScoreRequest, db_cursor: tuple = Depends(get_cursor)
 @app.get("/api/leaderboard")
 def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
-    
-    # Time filter logic
-    date_condition = ""
-    if timeframe == "week":
-        date_condition = "AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)"
-    
-    # Complex Query to calculate Total XP (SP) across all activities
-    query = f"""
-    SELECT 
-        u.id, 
-        u.fname, 
-        u.lname, 
-        u.profile_picture_url,
-        (
-            COALESCE((SELECT SUM(score * 10) FROM test_results WHERE user_id = u.id {date_condition}), 0) + 
-            COALESCE((SELECT SUM(CASE 
-                WHEN difficulty = 'easy' THEN 50 
-                WHEN difficulty = 'medium' THEN 100 
-                WHEN difficulty = 'hard' THEN 200 
-                ELSE 0 END) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_condition}), 0) +
-            COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_attempts WHERE user_id = u.id {date_condition}), 0)
-        ) as total_xp,
-        (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_condition}) as problems_solved
-    FROM users u
-    ORDER BY total_xp DESC
-    LIMIT 10;
-    """
-    
     try:
+        # 1. Define Date Filter
+        # If timeframe is 'week', filter for last 7 days. Otherwise, empty string (all time).
+        date_clause = "AND t.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
+        
+        # 2. Execute Query
+        # We use LEFT JOINs to ensure users with 0 attempts still show up (or you can use inner logic)
+        # But this specific query sums up XP from 3 sources: Aptitude, Coding, Interview
+        query = f"""
+        SELECT 
+            u.id, 
+            u.fname, 
+            u.lname, 
+            u.profile_picture_url,
+            (
+                /* 1. Aptitude XP: 10 XP per score point */
+                COALESCE((
+                    SELECT SUM(score * 10) 
+                    FROM test_attempts 
+                    WHERE user_id = u.id {date_clause.replace('t.', '')}
+                ), 0) + 
+                
+                /* 2. Coding XP: Easy=50, Medium=100, Hard=200 */
+                COALESCE((
+                    SELECT SUM(
+                        CASE 
+                            WHEN difficulty = 'easy' THEN 50 
+                            WHEN difficulty = 'medium' THEN 100 
+                            WHEN difficulty = 'hard' THEN 200 
+                            ELSE 0 
+                        END
+                    ) 
+                    FROM coding_attempts 
+                    WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}
+                ), 0) +
+
+                /* 3. Interview XP: 100 base + (Score * 20) */
+                COALESCE((
+                    SELECT SUM(100 + (overall_score * 20)) 
+                    FROM interview_attempts 
+                    WHERE user_id = u.id {date_clause.replace('t.', '')}
+                ), 0)
+            ) as total_xp,
+            
+            /* Count total coding problems solved */
+            (
+                SELECT COUNT(*) 
+                FROM coding_attempts 
+                WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}
+            ) as problems_solved
+
+        FROM users u
+        ORDER BY total_xp DESC
+        LIMIT 10;
+        """
+        
         cursor.execute(query)
         leaderboard = cursor.fetchall()
         return leaderboard
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ Leaderboard Error: {e}") # Check your VS Code terminal for this log
+        raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
 @app.get("/api/user/{user_id}/gamification")
 def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
@@ -385,3 +414,95 @@ def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
     except Exception as e:
         print(e)
         return {"level": 1, "badges": [], "streak": 0}
+    
+# --- ADD TO backend/main.py ---
+
+@app.get("/api/leaderboard/filter")
+def get_filtered_leaderboard(
+    category: str, # 'aptitude', 'technical', 'coding', 'interview'
+    topic: str = None, 
+    difficulty: str = None, 
+    db_cursor: tuple = Depends(get_cursor)
+):
+    cursor, db = db_cursor
+    try:
+        # Base Query Structure
+        query = ""
+        params = []
+
+        # 1. APTITUDE & TECHNICAL LOGIC (Shared Table: test_attempts)
+        if category in ["aptitude", "technical"]:
+            # Determine topics based on category to filter garbage data
+            # Note: In a real app, you might have a 'category' column in test_attempts
+            query = """
+            SELECT 
+                u.id, u.fname, u.lname, u.profile_picture_url,
+                SUM(t.score) as score,
+                COUNT(t.id) as attempts
+            FROM users u
+            JOIN test_attempts t ON u.id = t.user_id
+            WHERE 1=1
+            """
+            
+            if topic and topic != "all":
+                query += " AND t.topic = %s"
+                params.append(topic)
+            
+            if difficulty and difficulty != "all":
+                query += " AND t.mode = %s" # 'mode' stores difficulty (easy/moderate/hard)
+                params.append(difficulty)
+            
+            # Logic to separate Aptitude vs Technical topics could be added here 
+            # if you have a way to distinguish them in DB, otherwise it relies on the 'topic' filter.
+
+            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
+
+        # 2. CODING LOGIC (Table: coding_attempts)
+        elif category == "coding":
+            query = """
+            SELECT 
+                u.id, u.fname, u.lname, u.profile_picture_url,
+                COUNT(DISTINCT c.problem_title) * (CASE WHEN %s = 'hard' THEN 20 WHEN %s = 'medium' THEN 10 ELSE 5 END) as score,
+                COUNT(DISTINCT c.problem_title) as attempts
+            FROM users u
+            JOIN coding_attempts c ON u.id = c.user_id
+            WHERE c.is_correct = 1
+            """
+            # We inject difficulty for score calculation logic
+            params.append(difficulty if difficulty else 'easy') 
+            params.append(difficulty if difficulty else 'easy')
+
+            if difficulty and difficulty != "all":
+                query += " AND c.difficulty = %s"
+                params.append(difficulty)
+            
+            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
+
+        # 3. INTERVIEW LOGIC (Table: interview_attempts)
+        elif category == "interview":
+            query = """
+            SELECT 
+                u.id, u.fname, u.lname, u.profile_picture_url,
+                ROUND(AVG(i.overall_score), 1) as score,
+                COUNT(i.id) as attempts
+            FROM users u
+            JOIN interview_attempts i ON u.id = i.user_id
+            WHERE 1=1
+            """
+            if topic and topic != "all":
+                query += " AND i.job_role = %s" # Filter by Job Role
+                params.append(topic)
+
+            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
+
+        else:
+            return []
+
+        cursor.execute(query, tuple(params))
+        return cursor.fetchall()
+
+    except Exception as e:
+        print(f"Filter Leaderboard Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
