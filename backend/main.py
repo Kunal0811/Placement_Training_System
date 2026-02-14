@@ -415,70 +415,70 @@ def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
         print(e)
         return {"level": 1, "badges": [], "streak": 0}
     
-# --- ADD TO backend/main.py ---
+# In backend/main.py, replace the 'get_filtered_leaderboard' function:
 
 @app.get("/api/leaderboard/filter")
 def get_filtered_leaderboard(
-    category: str, # 'aptitude', 'technical', 'coding', 'interview'
+    category: str, 
     topic: str = None, 
     difficulty: str = None, 
     db_cursor: tuple = Depends(get_cursor)
 ):
     cursor, db = db_cursor
     try:
-        # Base Query Structure
         query = ""
         params = []
 
-        # 1. APTITUDE & TECHNICAL LOGIC (Shared Table: test_attempts)
+        # 1. APTITUDE & TECHNICAL (Sum of Raw Scores)
         if category in ["aptitude", "technical"]:
-            # Determine topics based on category to filter garbage data
-            # Note: In a real app, you might have a 'category' column in test_attempts
             query = """
             SELECT 
                 u.id, u.fname, u.lname, u.profile_picture_url,
-                SUM(t.score) as score,
+                COALESCE(SUM(t.score), 0) as score,
                 COUNT(t.id) as attempts
             FROM users u
             JOIN test_attempts t ON u.id = t.user_id
             WHERE 1=1
             """
-            
             if topic and topic != "all":
                 query += " AND t.topic = %s"
                 params.append(topic)
-            
             if difficulty and difficulty != "all":
-                query += " AND t.mode = %s" # 'mode' stores difficulty (easy/moderate/hard)
+                query += " AND t.mode = %s"
                 params.append(difficulty)
             
-            # Logic to separate Aptitude vs Technical topics could be added here 
-            # if you have a way to distinguish them in DB, otherwise it relies on the 'topic' filter.
+            query += " GROUP BY u.id HAVING score > 0 ORDER BY score DESC LIMIT 10"
 
-            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
-
-        # 2. CODING LOGIC (Table: coding_attempts)
+        # 2. CODING (Weighted XP: Hard=20, Med=10, Easy=5)
         elif category == "coding":
-            query = """
+            # Logic: If specific difficulty selected, filter by it.
+            # If 'all', sum based on difficulty weights.
+            
+            diff_filter = ""
+            if difficulty and difficulty != "all":
+                diff_filter = "AND c.difficulty = %s"
+                params.append(difficulty)
+
+            query = f"""
             SELECT 
                 u.id, u.fname, u.lname, u.profile_picture_url,
-                COUNT(DISTINCT c.problem_title) * (CASE WHEN %s = 'hard' THEN 20 WHEN %s = 'medium' THEN 10 ELSE 5 END) as score,
+                SUM(
+                    CASE 
+                        WHEN c.difficulty = 'hard' THEN 20 
+                        WHEN c.difficulty = 'medium' THEN 10 
+                        ELSE 5 
+                    END
+                ) as score,
                 COUNT(DISTINCT c.problem_title) as attempts
             FROM users u
             JOIN coding_attempts c ON u.id = c.user_id
-            WHERE c.is_correct = 1
+            WHERE c.is_correct = 1 {diff_filter}
+            GROUP BY u.id 
+            ORDER BY score DESC 
+            LIMIT 10
             """
-            # We inject difficulty for score calculation logic
-            params.append(difficulty if difficulty else 'easy') 
-            params.append(difficulty if difficulty else 'easy')
 
-            if difficulty and difficulty != "all":
-                query += " AND c.difficulty = %s"
-                params.append(difficulty)
-            
-            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
-
-        # 3. INTERVIEW LOGIC (Table: interview_attempts)
+        # 3. INTERVIEW (Average Rating)
         elif category == "interview":
             query = """
             SELECT 
@@ -490,9 +490,9 @@ def get_filtered_leaderboard(
             WHERE 1=1
             """
             if topic and topic != "all":
-                query += " AND i.job_role = %s" # Filter by Job Role
+                query += " AND i.job_role = %s"
                 params.append(topic)
-
+            
             query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
 
         else:
@@ -504,5 +504,3 @@ def get_filtered_leaderboard(
     except Exception as e:
         print(f"Filter Leaderboard Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    
-    
