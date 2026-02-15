@@ -1,3 +1,4 @@
+// placement-trainer/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -6,32 +7,39 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        'neon-blue': '#00BFFF',
-        'neon-pink': '#FF00FF',
-        'neon-green': '#39FF14',
-        'neon-yellow': '#FFFF33',
-        'dark-bg': '#121212',
-        'dark-card': '#1E1E1E',
+      fontFamily: {
+        sans: ['"Outfit"', 'sans-serif'],
+        display: ['"Clash Display"', 'sans-serif'],
       },
-      dropShadow: {
-        'glow-blue': '0 0 8px rgba(0, 191, 255, 0.7)',
-        'glow-pink': '0 0 8px rgba(255, 0, 255, 0.7)',
+      colors: {
+        'game-bg': '#09090b', // The main dark background
+        'game-card': '#18181b',
+        'neon-blue': '#2DD4BF', 
+        'neon-purple': '#A855F7',
+        'neon-yellow': '#FACC15',
+        'acid-green': '#bef264',
+        'hot-pink': '#fb7185',
+        'dark-bg': '#09090b', // Fallback for old components
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'neon': '0 0 10px rgba(45, 212, 191, 0.5), 0 0 20px rgba(45, 212, 191, 0.3)',
       },
       animation: {
-        'float': 'float 4s ease-in-out infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
+        'spin-slow': 'spin 10s linear infinite',
+        'bounce-slow': 'bounce 3s infinite',
+        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-15px)' },
-        },
-        glow: {
-          'from': { 'box-shadow': '0 0 5px #00BFFF, 0 0 10px #00BFFF' },
-          'to': { 'box-shadow': '0 0 20px #00BFFF, 0 0 30px #00BFFF' },
-        },
-      },
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' }
+        }
+      }
     },
   },
   plugins: [],

@@ -15,7 +15,7 @@ from interview_models import InterviewSession, InterviewTurn
 
 router = APIRouter(prefix="/api/interview", tags=["Interview"])
 
-# --- Pydantic Models ---
+# ... (Pydantic Models remain unchanged) ...
 class StartInterviewRequest(BaseModel):
     user_id: int
     job_role: str
@@ -29,24 +29,21 @@ class ChatMessage(BaseModel):
 class InterviewRequest(BaseModel):
     session_id: int
     user_input: str
-    history: List[ChatMessage] # For context window
+    history: List[ChatMessage] 
     is_code: bool = False
 
-# Add this model to your interview_routes.py
 class SaveInterviewRequest(BaseModel):
     user_id: int
     interview_type: str
     job_role: str
     overall_score: int
-    feedback: list # List of objects containing {question, answer, score, ideal_answer}
+    feedback: list 
 
 @router.post("/save-attempt")
 def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Convert feedback list to JSON string for MySQL
         feedback_json = json.dumps(req.feedback)
-        
         query = """
             INSERT INTO interview_attempts (user_id, interview_type, job_role, overall_score, feedback)
             VALUES (%s, %s, %s, %s, %s)
@@ -64,12 +61,15 @@ def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends
 async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_session)):
     """Initializes a new interview session in the database."""
     try:
+        # CONFIGURE KEY FOR INTERVIEW
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY_INTERVIEW"))
+
         # Create Session Record
         new_session = InterviewSession(
             user_id=req.user_id,
             job_role=req.job_role,
             interview_type=req.interview_type,
-            difficulty="Medium", # Default
+            difficulty="Medium", 
             topic=req.topic,
             start_time=datetime.utcnow()
         )
@@ -113,6 +113,9 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
 async def interview_chat(req: InterviewRequest, db: Session = Depends(get_session)):
     """Handles the interview loop: Evaluates answer -> Saves -> Generates Next Question."""
     try:
+        # CONFIGURE KEY FOR INTERVIEW
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY_INTERVIEW"))
+
         # 1. Fetch Session
         session = db.query(InterviewSession).filter(InterviewSession.id == req.session_id).first()
         if not session:

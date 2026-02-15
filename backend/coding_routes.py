@@ -1,3 +1,4 @@
+# backend/coding_routes.py
 import os
 import re
 import json
@@ -15,8 +16,7 @@ router = APIRouter(
     tags=["Coding"],
 )
 
-# --- Pydantic Models ---
-
+# ... (Pydantic Models and Prompt Functions remain unchanged) ...
 class LevelProblemRequest(BaseModel):
     difficulty: str
     user_id: int
@@ -37,8 +37,6 @@ class RunRequest(BaseModel):
 class LevelStatusRequest(BaseModel):
     user_id: int
     difficulty: str
-
-# --- Prompt Engineering Functions ---
 
 def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List[str] = None) -> str:
     avoid_instruction = ""
@@ -102,9 +100,8 @@ def create_evaluation_prompt(problem: dict, code: str, language: str) -> str:
         "space_complexity": "O(1)"
     }}
     """
-
-# --- Sandbox Execution ---
-
+    
+# ... (Run in Sandbox and Clean JSON helper remain unchanged) ...
 def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     temp_dir = f"../temp_code/{uuid.uuid4()}"
     os.makedirs(temp_dir, exist_ok=True)
@@ -185,16 +182,10 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
         
     return output
 
-# --- Helper: JSON Cleaner ---
 def clean_and_parse_json(text: str):
-    """
-    Cleans AI response text to ensure valid JSON parsing.
-    Removes Markdown code blocks and handles common JSON errors.
-    """
     text = re.sub(r'```json\s*', '', text, flags=re.IGNORECASE)
     text = re.sub(r'```', '', text)
     text = text.strip()
-    
     try:
         return json.loads(text)
     except json.JSONDecodeError as e:
@@ -204,7 +195,6 @@ def clean_and_parse_json(text: str):
         except:
             raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
 
-# --- API Endpoints ---
 
 @router.post("/run-code")
 async def run_user_code(req: RunRequest):
@@ -218,6 +208,9 @@ async def run_user_code(req: RunRequest):
 async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
+        # CONFIGURE KEY FOR TECHNICAL/CODING
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY_TECHNICAL"))
+        
         cursor.execute(
             "SELECT DISTINCT problem_title FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
             (req.user_id, req.difficulty)
@@ -249,6 +242,9 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
 async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
+        # CONFIGURE KEY FOR TECHNICAL/CODING
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY_TECHNICAL"))
+
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
         response = await model.generate_content_async(prompt)

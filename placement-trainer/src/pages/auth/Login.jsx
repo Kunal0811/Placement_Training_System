@@ -1,7 +1,9 @@
+// placement-trainer/src/pages/auth/Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import API_BASE from "../../api";
+import { FiMail, FiLock, FiArrowRight } from "react-icons/fi"; // Make sure to install react-icons if not present
 
 export default function Login() {
   const { login } = useAuth();
@@ -44,55 +46,88 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4">
-      <div className="max-w-md w-full bg-dark-card p-8 rounded-xl shadow-2xl border border-neon-blue/20">
-        <h2 className="text-4xl font-bold mb-8 text-center text-white text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
-          Login to Placify
-        </h2>
-        {error && <p className="bg-red-500/20 text-red-400 border border-red-500/50 p-3 rounded-lg mb-6 text-center font-semibold">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-game-bg relative overflow-hidden p-4">
+      
+      {/* Ambient Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-purple/20 rounded-full blur-[120px] -z-10 animate-pulse-fast"></div>
+
+      <div className="glass-panel w-full max-w-md p-8 rounded-3xl border border-white/10 shadow-2xl relative z-10 backdrop-blur-xl">
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block mb-2 font-medium text-gray-400">Email</label>
-            <input
-              type="email"
-              className="w-full bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition-colors"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-            />
+        <div className="text-center mb-8">
+            <h2 className="text-4xl font-display font-bold text-white mb-2">
+              Welcome <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Back</span>
+            </h2>
+            <p className="text-gray-400 text-sm">Enter your credentials to access your dashboard.</p>
+        </div>
+
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl mb-6 text-center text-sm font-bold">
+            {error}
           </div>
-          <div>
-            <label className="block mb-2 font-medium text-gray-400">Password</label>
-            <input
-              type="password"
-              className="w-full bg-dark-bg border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition-colors"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-              required
-            />
+        )}
+        
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-wide ml-1">Email Address</label>
+            <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-neon-blue transition-colors">
+                    <FiMail />
+                </div>
+                {/* Updated Input: Explicit Dark Background for Visibility */}
+                <input
+                  type="email"
+                  className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-11 pr-4 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all placeholder:text-gray-600"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+            </div>
           </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center ml-1">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Password</label>
+                <Link to="/forgot-password" className="text-xs text-neon-blue hover:text-white transition-colors">Forgot?</Link>
+            </div>
+            <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-neon-purple transition-colors">
+                    <FiLock />
+                </div>
+                <input
+                  type="password"
+                  className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-11 pr-4 focus:outline-none focus:border-neon-purple focus:ring-1 focus:ring-neon-purple transition-all placeholder:text-gray-600"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none"
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-neon-blue to-neon-purple text-white font-bold shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+                <>
+                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                 Logging In...
+                </>
+            ) : (
+                <>
+                 Login to Placify <FiArrowRight />
+                </>
+            )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-400">
-          <p>
+        <div className="mt-8 text-center">
+          <p className="text-gray-400 text-sm">
             Don't have an account?{" "}
-            <Link to="/register" className="text-neon-blue hover:underline font-semibold">
-              Register here
-            </Link>
-          </p>
-          <p className="mt-2">
-            <Link to="/forgot-password" className="text-neon-blue hover:underline font-semibold">
-              Forgot Password?
+            <Link to="/register" className="text-neon-blue font-bold hover:text-white transition-colors">
+              Create One
             </Link>
           </p>
         </div>

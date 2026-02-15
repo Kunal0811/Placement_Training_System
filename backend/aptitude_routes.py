@@ -37,8 +37,13 @@ def parse_mcqs(raw: str, count: int):
             cleaned.append({k: q.get(k, "") for k in ["question", "options", "answer", "explanation"]})
     return cleaned[:count]
 
-async def generate_single_topic(topic: str, count: int, difficulty: str):
+# UPDATED: Now accepts an api_key argument
+async def generate_single_topic(topic: str, count: int, difficulty: str, api_key: str = None):
     try:
+        # Configure the key specifically for this request/module
+        if api_key:
+            genai.configure(api_key=api_key)
+        
         model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(topic, count, difficulty)
         resp = await model.generate_content_async(prompt)
@@ -58,12 +63,15 @@ class MCQRequest(BaseModel):
 
 @router.post("/mcqs/test")
 async def generate_aptitude_test(req: MCQRequest):
+    # Fetch the Aptitude-specific key
+    aptitude_key = os.getenv("GEMINI_API_KEY_APTITUDE")
+
     if req.topic == "Final Aptitude Test":
         try:
             tasks = [
-                generate_single_topic("Quantitative Aptitude", 20, "hard"),
-                generate_single_topic("Logical Reasoning", 15, "hard"),
-                generate_single_topic("Verbal Ability", 15, "hard"),
+                generate_single_topic("Quantitative Aptitude", 20, "hard", aptitude_key),
+                generate_single_topic("Logical Reasoning", 15, "hard", aptitude_key),
+                generate_single_topic("Verbal Ability", 15, "hard", aptitude_key),
             ]
             results = await asyncio.gather(*tasks)
             all_mcqs = [mcq for result in results for mcq in result]
@@ -74,15 +82,11 @@ async def generate_aptitude_test(req: MCQRequest):
             raise HTTPException(status_code=500, detail=f"Final test generation error: {e}")
 
     try:
-        mcqs = await generate_single_topic(req.topic, req.count, req.difficulty)
+        mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, aptitude_key)
         if not mcqs: raise HTTPException(status_code=500, detail="Failed to generate valid test questions")
         return mcqs
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-# ... (add this with your other Pydantic models)
+
 class NoteRequest(BaseModel):
     topic: str
-
-# --- New Helper Function for AI Notes ---
-# --- New Helper Function for AI Notes ---

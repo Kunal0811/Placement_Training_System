@@ -1,10 +1,11 @@
+# backend/main.py
 import os
 import re
 import json
 import mysql.connector
 from fastapi import FastAPI, Body, HTTPException, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles  # <-- Import StaticFiles
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from dotenv import load_dotenv
 import secrets
@@ -13,12 +14,11 @@ import smtplib
 from email.message import EmailMessage
 from passlib.hash import argon2
 import google.generativeai as genai
-import shutil  # <-- Import shutil
-import uuid    # <-- Import uuid
+import shutil
+import uuid
 import nltk
 import interview_models
 from sqlalchemy import text
-from datetime import datetime, timedelta
 
 # Import from the new database file and other route files
 from database import get_cursor, engine, Base
@@ -30,7 +30,9 @@ from interview_routes import router as interview_router
 
 # --- Setup ---
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+# [REMOVED GLOBAL GENAI CONFIGURATION]
+# genai.configure(api_key=os.getenv("GEMINI_API_KEY")) <-- Removed this line
 
 Base.metadata.create_all(bind=engine)
 
@@ -48,7 +50,6 @@ except LookupError:
 app = FastAPI(title="Placify Backend", version="1.0.0")
 
 # --- Mount Static Files Directory ---
-# This makes files in the 'static' folder accessible via the /static URL
 os.makedirs("static/profile_pics", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -214,27 +215,20 @@ def register_user(user: RegisterUser, db_cursor: tuple = Depends(get_cursor)):
 @app.post("/api/user/{user_id}/upload-pfp")
 async def upload_profile_picture(user_id: int, file: UploadFile = File(...), db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
-    
-    # Validate file type
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload an image.")
 
-    # Generate a unique filename
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = os.path.join("static/profile_pics", unique_filename)
 
-    # Save the file
     try:
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not save file: {e}")
 
-    # Construct the URL
     profile_picture_url = f"/static/profile_pics/{unique_filename}"
-
-    # Update the database
     cursor.execute("UPDATE users SET profile_picture_url = %s WHERE id = %s", (profile_picture_url, user_id))
     db.commit()
 
@@ -330,13 +324,7 @@ def get_best_score(req: BestScoreRequest, db_cursor: tuple = Depends(get_cursor)
 def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # 1. Define Date Filter
-        # If timeframe is 'week', filter for last 7 days. Otherwise, empty string (all time).
         date_clause = "AND t.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
-        
-        # 2. Execute Query
-        # We use LEFT JOINs to ensure users with 0 attempts still show up (or you can use inner logic)
-        # But this specific query sums up XP from 3 sources: Aptitude, Coding, Interview
         query = f"""
         SELECT 
             u.id, 
@@ -344,78 +332,36 @@ def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_curso
             u.lname, 
             u.profile_picture_url,
             (
-                /* 1. Aptitude XP: 10 XP per score point */
-                COALESCE((
-                    SELECT SUM(score * 10) 
-                    FROM test_attempts 
-                    WHERE user_id = u.id {date_clause.replace('t.', '')}
-                ), 0) + 
-                
-                /* 2. Coding XP: Easy=50, Medium=100, Hard=200 */
-                COALESCE((
-                    SELECT SUM(
-                        CASE 
-                            WHEN difficulty = 'easy' THEN 50 
-                            WHEN difficulty = 'medium' THEN 100 
-                            WHEN difficulty = 'hard' THEN 200 
-                            ELSE 0 
-                        END
-                    ) 
-                    FROM coding_attempts 
-                    WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}
-                ), 0) +
-
-                /* 3. Interview XP: 100 base + (Score * 20) */
-                COALESCE((
-                    SELECT SUM(100 + (overall_score * 20)) 
-                    FROM interview_attempts 
-                    WHERE user_id = u.id {date_clause.replace('t.', '')}
-                ), 0)
+                COALESCE((SELECT SUM(score * 10) FROM test_attempts WHERE user_id = u.id {date_clause.replace('t.', '')}), 0) + 
+                COALESCE((SELECT SUM(CASE WHEN difficulty = 'easy' THEN 50 WHEN difficulty = 'medium' THEN 100 WHEN difficulty = 'hard' THEN 200 ELSE 0 END) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}), 0) +
+                COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_attempts WHERE user_id = u.id {date_clause.replace('t.', '')}), 0)
             ) as total_xp,
-            
-            /* Count total coding problems solved */
-            (
-                SELECT COUNT(*) 
-                FROM coding_attempts 
-                WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}
-            ) as problems_solved
-
+            (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}) as problems_solved
         FROM users u
         ORDER BY total_xp DESC
         LIMIT 10;
         """
-        
         cursor.execute(query)
         leaderboard = cursor.fetchall()
         return leaderboard
-
     except Exception as e:
-        print(f"❌ Leaderboard Error: {e}") # Check your VS Code terminal for this log
+        print(f"❌ Leaderboard Error: {e}")
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
 @app.get("/api/user/{user_id}/gamification")
 def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Calculate User Rank
-        # Note: In a real production app, you'd cache this. For now, we calculate on fly.
         cursor.execute("SELECT id FROM users")
         all_users = [u['id'] for u in cursor.fetchall()]
-        
-        # This is a simplified logic for "Level". Level = sqrt(XP) / 10
-        # Re-using the XP logic from above would be cleaner in a shared function, 
-        # but for simplicity, we assume frontend fetches leaderboard to find rank.
-        
         return {
-            "level": 5, # Placeholder: Implement calculation logic based on XP
-            "badges": ["First Code", "Interview Ace"], # Placeholder for Badge table
+            "level": 5,
+            "badges": ["First Code", "Interview Ace"],
             "streak": 3
         }
     except Exception as e:
         print(e)
         return {"level": 1, "badges": [], "streak": 0}
-    
-# In backend/main.py, replace the 'get_filtered_leaderboard' function:
 
 @app.get("/api/leaderboard/filter")
 def get_filtered_leaderboard(
@@ -429,11 +375,9 @@ def get_filtered_leaderboard(
         query = ""
         params = []
 
-        # 1. APTITUDE & TECHNICAL (Sum of Raw Scores)
         if category in ["aptitude", "technical"]:
             query = """
-            SELECT 
-                u.id, u.fname, u.lname, u.profile_picture_url,
+            SELECT u.id, u.fname, u.lname, u.profile_picture_url,
                 COALESCE(SUM(t.score), 0) as score,
                 COUNT(t.id) as attempts
             FROM users u
@@ -446,43 +390,27 @@ def get_filtered_leaderboard(
             if difficulty and difficulty != "all":
                 query += " AND t.mode = %s"
                 params.append(difficulty)
-            
             query += " GROUP BY u.id HAVING score > 0 ORDER BY score DESC LIMIT 10"
 
-        # 2. CODING (Weighted XP: Hard=20, Med=10, Easy=5)
         elif category == "coding":
-            # Logic: If specific difficulty selected, filter by it.
-            # If 'all', sum based on difficulty weights.
-            
             diff_filter = ""
             if difficulty and difficulty != "all":
                 diff_filter = "AND c.difficulty = %s"
                 params.append(difficulty)
 
             query = f"""
-            SELECT 
-                u.id, u.fname, u.lname, u.profile_picture_url,
-                SUM(
-                    CASE 
-                        WHEN c.difficulty = 'hard' THEN 20 
-                        WHEN c.difficulty = 'medium' THEN 10 
-                        ELSE 5 
-                    END
-                ) as score,
+            SELECT u.id, u.fname, u.lname, u.profile_picture_url,
+                SUM(CASE WHEN c.difficulty = 'hard' THEN 20 WHEN c.difficulty = 'medium' THEN 10 ELSE 5 END) as score,
                 COUNT(DISTINCT c.problem_title) as attempts
             FROM users u
             JOIN coding_attempts c ON u.id = c.user_id
             WHERE c.is_correct = 1 {diff_filter}
-            GROUP BY u.id 
-            ORDER BY score DESC 
-            LIMIT 10
+            GROUP BY u.id ORDER BY score DESC LIMIT 10
             """
 
-        # 3. INTERVIEW (Average Rating)
         elif category == "interview":
             query = """
-            SELECT 
-                u.id, u.fname, u.lname, u.profile_picture_url,
+            SELECT u.id, u.fname, u.lname, u.profile_picture_url,
                 ROUND(AVG(i.overall_score), 1) as score,
                 COUNT(i.id) as attempts
             FROM users u
@@ -492,7 +420,6 @@ def get_filtered_leaderboard(
             if topic and topic != "all":
                 query += " AND i.job_role = %s"
                 params.append(topic)
-            
             query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
 
         else:

@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, HTTPException
 import google.generativeai as genai
 from pydantic import BaseModel
 
-# CHANGE THIS LINE: Remove the dot from ".aptitude_routes"
+# Import the updated function from aptitude_routes
 from aptitude_routes import generate_prompt, parse_mcqs, generate_single_topic
 
 # --- Router Setup ---
@@ -20,7 +20,12 @@ class TechnicalMCQRequest(BaseModel):
 @router.post("/mcqs/test")
 async def generate_technical_test(req: TechnicalMCQRequest):
     try:
-        mcqs = await generate_single_topic(req.topic, req.count, req.difficulty)
+        # Fetch the Technical-specific key
+        technical_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
+        
+        # Pass the key to the shared function
+        mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, technical_key)
+        
         if not mcqs:
             raise HTTPException(status_code=500, detail="Failed to generate valid technical test questions")
         random.shuffle(mcqs)
