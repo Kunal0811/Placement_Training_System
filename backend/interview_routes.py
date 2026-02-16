@@ -1,6 +1,6 @@
 # backend/interview_routes.py
 import os
-import google.generativeai as genai
+from google import genai  # UPDATED IMPORT
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -15,7 +15,7 @@ from interview_models import InterviewSession, InterviewTurn
 
 router = APIRouter(prefix="/api/interview", tags=["Interview"])
 
-# ... (Pydantic Models remain unchanged) ...
+# --- Pydantic Models ---
 class StartInterviewRequest(BaseModel):
     user_id: int
     job_role: str
@@ -39,6 +39,8 @@ class SaveInterviewRequest(BaseModel):
     overall_score: int
     feedback: list 
 
+# --- Routes ---
+
 @router.post("/save-attempt")
 def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
@@ -55,14 +57,17 @@ def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends
         print(f"Error saving interview: {e}")
         raise HTTPException(status_code=500, detail="Failed to save results")
 
-# --- Routes ---
-
 @router.post("/start")
 async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_session)):
     """Initializes a new interview session in the database."""
     try:
-        # CONFIGURE KEY FOR INTERVIEW
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY_INTERVIEW"))
+        # Get API Key
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Missing API Key for Interview.")
+
+        # Initialize Client (New SDK)
+        client = genai.Client(api_key=api_key)
 
         # Create Session Record
         new_session = InterviewSession(
@@ -78,7 +83,6 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         db.refresh(new_session)
 
         # Generate Initial Greeting
-        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = f"""
         You are a hiring manager for the {req.job_role} position. 
         Start the interview now.
@@ -88,7 +92,12 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         2. Your FIRST question MUST be: "Please introduce yourself and tell me a bit about your background."
         3. Do not ask multiple questions at once.
         """
-        response = await model.generate_content_async(prompt)
+        
+        # New Async Generation Call
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
         
         # Save first turn (AI Question)
         first_turn = InterviewTurn(
@@ -113,8 +122,13 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
 async def interview_chat(req: InterviewRequest, db: Session = Depends(get_session)):
     """Handles the interview loop: Evaluates answer -> Saves -> Generates Next Question."""
     try:
-        # CONFIGURE KEY FOR INTERVIEW
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY_INTERVIEW"))
+        # Get API Key
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Missing API Key for Interview.")
+
+        # Initialize Client (New SDK)
+        client = genai.Client(api_key=api_key)
 
         # 1. Fetch Session
         session = db.query(InterviewSession).filter(InterviewSession.id == req.session_id).first()
@@ -132,8 +146,6 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
         is_final_turn = turn_count >= 10  # Set limit to 10-15 questions
 
         # 4. Construct Gemini Prompt
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        
         system_instruction = f"""
             You are conducting a {session.interview_type} interview for the {session.job_role} role.
             Current Progress: Question {turn_count} of 15.
@@ -164,9 +176,13 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
         history_text = "\n".join([f"{msg.role}: {msg.content}" for msg in req.history[-6:]]) # Last 3 turns context
         full_prompt = f"{system_instruction}\n\nConversation History:\n{history_text}\n\nCandidate's Last Answer: {req.user_input}"
 
-        # 5. Generate AI Response
-        ai_response = await model.generate_content_async(full_prompt)
-        text_resp = ai_response.text.replace("```json", "").replace("```", "").strip()
+        # 5. Generate AI Response (New SDK)
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt
+        )
+        
+        text_resp = response.text.replace("```json", "").replace("```", "").strip()
         
         try:
             data = json.loads(text_resp)
@@ -176,7 +192,7 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
                 "feedback": "Good attempt.", 
                 "ideal_answer": "N/A", 
                 "score": 5, 
-                "next_question": ai_response.text, 
+                "next_question": response.text, 
                 "is_final": is_final_turn
             }
 

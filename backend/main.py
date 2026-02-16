@@ -13,7 +13,6 @@ from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
 from passlib.hash import argon2
-import google.generativeai as genai
 import shutil
 import uuid
 import nltk

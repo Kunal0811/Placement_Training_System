@@ -5,18 +5,15 @@ import json
 import uuid
 import shutil
 from typing import List
-from fastapi import APIRouter, Body, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends
+from google import genai 
 from pydantic import BaseModel
-import google.generativeai as genai
 import docker
 from database import get_cursor
 
-router = APIRouter(
-    prefix="/api/coding",
-    tags=["Coding"],
-)
+router = APIRouter(prefix="/api/coding", tags=["Coding"])
 
-# ... (Pydantic Models and Prompt Functions remain unchanged) ...
+# --- Pydantic Models ---
 class LevelProblemRequest(BaseModel):
     difficulty: str
     user_id: int
@@ -38,6 +35,7 @@ class LevelStatusRequest(BaseModel):
     user_id: int
     difficulty: str
 
+# --- Helper Functions ---
 def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List[str] = None) -> str:
     avoid_instruction = ""
     if solved_titles:
@@ -100,8 +98,7 @@ def create_evaluation_prompt(problem: dict, code: str, language: str) -> str:
         "space_complexity": "O(1)"
     }}
     """
-    
-# ... (Run in Sandbox and Clean JSON helper remain unchanged) ...
+
 def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     temp_dir = f"../temp_code/{uuid.uuid4()}"
     os.makedirs(temp_dir, exist_ok=True)
@@ -130,7 +127,7 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     input_file_path = os.path.join(temp_dir, "input.txt")
 
     try:
-        # 1. Initialize Docker Client (Robust Method for Windows)
+        # 1. Initialize Docker Client
         client = None
         try:
             client = docker.from_env()
@@ -195,6 +192,7 @@ def clean_and_parse_json(text: str):
         except:
             raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
 
+# --- API Routes ---
 
 @router.post("/run-code")
 async def run_user_code(req: RunRequest):
@@ -208,8 +206,13 @@ async def run_user_code(req: RunRequest):
 async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # CONFIGURE KEY FOR TECHNICAL/CODING
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY_TECHNICAL"))
+        # Get API Key
+        api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
+
+        # Initialize Client
+        client = genai.Client(api_key=api_key)
         
         cursor.execute(
             "SELECT DISTINCT problem_title FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
@@ -218,12 +221,15 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
         solved_problems = cursor.fetchall()
         solved_titles = [item['problem_title'] for item in solved_problems]
 
-        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
-        response = await model.generate_content_async(prompt)
+        
+        # Use new client.aio.models.generate_content
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
         
         data = clean_and_parse_json(response.text)
-        
         problems_list = data.get("problems")
 
         if not problems_list or not isinstance(problems_list, list) or len(problems_list) < req.count:
@@ -242,12 +248,21 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
 async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # CONFIGURE KEY FOR TECHNICAL/CODING
-        genai.configure(api_key=os.getenv("GEMINI_API_KEY_TECHNICAL"))
+        # Get API Key
+        api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
 
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        # Initialize Client
+        client = genai.Client(api_key=api_key)
+
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
-        response = await model.generate_content_async(prompt)
+        
+        # Use new client.aio.models.generate_content
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
         
         evaluation_data = clean_and_parse_json(response.text)
 

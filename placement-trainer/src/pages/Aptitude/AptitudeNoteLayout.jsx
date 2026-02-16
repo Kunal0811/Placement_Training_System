@@ -57,7 +57,7 @@ export const AptitudeNoteLayout = ({ title, children, topic, videos = [] }) => {
         </p>
         <Link
           to={`/aptitude/modes/${encodeURIComponent(topic)}`}
-          className="inline-block bg-neon-pink text-black font-bold py-3 px-8 rounded-lg hover:scale-105 transition-transform animate-glow"
+          className="inline-block bg-neon-blue text-black font-bold py-3 px-8 rounded-lg hover:scale-105 transition-transform border-neon-blue shadow-lg hover:shadow-neon-blue/50"
         >
           🚀 Start Test
         </Link>

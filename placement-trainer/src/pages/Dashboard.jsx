@@ -3,7 +3,7 @@ import { getUserDetails } from "../api";
 import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import Navigation
+import { useNavigate } from "react-router-dom";
 import {
   ResponsiveContainer,
   BarChart,
@@ -18,7 +18,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward } from "react-icons/fi";
+import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload } from "react-icons/fi";
 
 // --- CONSTANTS ---
 const APTITUDE_TOPICS = [
@@ -33,17 +33,17 @@ const TECHNICAL_TOPICS = [
   'Database Management Systems', 'Operating Systems', 'Computer Networks'
 ];
 
-// --- STYLED COMPONENTS ---
+// --- COMPONENTS ---
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-black/90 backdrop-blur-xl p-4 border border-white/10 rounded-2xl shadow-[0_0_20px_rgba(0,191,255,0.3)] z-50">
-        <p className="label text-gray-400 font-bold mb-2 text-xs uppercase tracking-widest">{label}</p>
+      <div className="bg-black/90 backdrop-blur-xl p-4 border border-white/20 rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.2)] z-50">
+        <p className="text-gray-400 font-bold mb-2 text-xs uppercase tracking-widest border-b border-white/10 pb-1">{label}</p>
         {payload.map((p, i) => (
           <div key={i} className="flex items-center gap-3 mb-1">
             <div className="w-2 h-2 rounded-full shadow-[0_0_8px]" style={{ backgroundColor: p.color, boxShadow: `0 0 8px ${p.color}` }} />
-            <span className="text-sm font-medium text-white">{p.name}: <span className="font-bold text-lg" style={{ color: p.color }}>{p.value}</span></span>
+            <span className="text-sm font-medium text-gray-200">{p.name}: <span className="font-bold text-lg" style={{ color: p.color }}>{p.value}</span></span>
           </div>
         ))}
       </div>
@@ -52,24 +52,28 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const StatCard = ({ title, value, icon, gradient }) => (
-  <div className={`relative overflow-hidden p-6 rounded-3xl bg-gray-900/40 backdrop-blur-md border border-white/5 hover:border-white/20 transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl`}>
-    <div className={`absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 rounded-bl-3xl bg-gradient-to-br ${gradient}`}>
-      <div className="text-white text-2xl">{icon}</div>
+const StatCard = ({ title, value, icon, gradient, glowColor }) => (
+  <div className="relative overflow-hidden p-6 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl">
+    {/* Background Glow */}
+    <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity ${glowColor}`} />
+    
+    <div className="flex items-start justify-between relative z-10">
+        <div>
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
+            <h3 className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
+                {value}
+            </h3>
+        </div>
+        <div className={`p-3 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+            <div className="text-white text-xl">{icon}</div>
+        </div>
     </div>
-    <div className="relative z-10">
-      <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">{title}</p>
-      <h3 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 group-hover:from-white group-hover:to-white transition-all">
-        {value}
-      </h3>
-    </div>
-    <div className={`absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity bg-gradient-to-tr ${gradient}`} />
   </div>
 );
 
 export default function Dashboard() {
   const { user: authUser, updateUser } = useAuth();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [user, setUser] = useState(authUser);
   const [tests, setTests] = useState([]);
   const [codingAttempts, setCodingAttempts] = useState([]);
@@ -216,13 +220,13 @@ export default function Dashboard() {
     else if (selectedView === 'interview') { items = interviewAttempts; headers = ['Job Role', 'Type', 'Score', 'Date']; }
     else { items = filteredTests; headers = ['Topic', 'Mode', 'Score', 'Date']; }
 
-    if (items.length === 0) return <div className="p-12 text-center text-gray-500 font-mono text-sm">No data logs found. Start grinding! 🚀</div>;
+    if (items.length === 0) return <div className="p-12 text-center text-gray-500 font-mono text-sm border-t border-white/5">No data logs found. Start grinding! 🚀</div>;
 
     return (
-      <div className="overflow-x-auto rounded-xl border border-white/5">
+      <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white/5 text-gray-400 text-xs uppercase tracking-wider">
+            <tr className="bg-white/5 text-gray-400 text-xs uppercase tracking-wider border-b border-white/10">
               {headers.map(h => <th key={h} className="p-4 font-semibold">{h}</th>)}
             </tr>
           </thead>
@@ -257,243 +261,109 @@ export default function Dashboard() {
     );
   };
 
-  const renderGraphs = () => {
-    if (selectedView === 'interview') {
-      return (
-        <div className="bg-gray-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] -z-10" />
-          <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCamera className="text-blue-400"/> Interview Performance</h3>
-          <div className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={interviewGraphData}>
-                <defs>
-                  <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00BFFF" stopOpacity={0.5}/>
-                    <stop offset="95%" stopColor="#00BFFF" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="score" stroke="#00BFFF" strokeWidth={3} fill="url(#colorScore)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      );
-    }
-
-    if (selectedView === 'coding') {
-      return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gray-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 relative overflow-hidden">
-             <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCpu className="text-pink-400"/> Difficulty Breakdown</h3>
-             <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={codingData.bar}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                    <XAxis dataKey="difficulty" tick={{ fill: '#9ca3af', fontSize: 12, textTransform: 'capitalize' }} axisLine={false} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
-                    <Bar dataKey="solved" name="Solved" radius={[6, 6, 6, 6]} barSize={40}>
-                      {codingData.bar.map((entry, index) => (
-                        <cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-             </div>
-          </div>
-
-          <div className="bg-gray-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 relative overflow-hidden">
-             <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiActivity className="text-green-400"/> Consistency Streak</h3>
-             <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={codingData.line}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                    <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line type="step" dataKey="Problems Solved" stroke="#39FF14" strokeWidth={3} dot={{r:4, fill:'#39FF14'}} activeDot={{r:6}} />
-                  </LineChart>
-                </ResponsiveContainer>
-             </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-8">
-        <div className="bg-gray-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5 relative overflow-hidden shadow-xl">
-          <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] -z-10" />
-          
-          <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-            <div>
-                <h3 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
-                    <FiTrendingUp className="text-purple-400"/> Mastery Tracker
-                </h3>
-                <p className="text-xs text-gray-400 uppercase tracking-widest">Topic Progress Over Time</p>
-            </div>
-            
-            <div className="relative group">
-                <select 
-                    value={graphTopic} 
-                    onChange={(e) => setGraphTopic(e.target.value)}
-                    className="appearance-none bg-black/50 border border-white/10 text-white rounded-xl py-2 pl-4 pr-10 text-sm outline-none focus:border-purple-500 transition-colors cursor-pointer"
-                >
-                    {(selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS).map(t => (
-                        <option key={t} value={t} className="bg-gray-900">{t}</option>
-                    ))}
-                </select>
-                <div className="absolute right-3 top-3 text-gray-400 pointer-events-none group-hover:text-purple-400 transition-colors">▼</div>
-            </div>
-          </div>
-
-          <div className="h-[350px]">
-            {topicTrendData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={topicTrendData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                    <XAxis dataKey="attempt" tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis domain={[0, 20]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                    <Line type="monotone" dataKey="Easy" stroke="#39FF14" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#39FF14'}} connectNulls />
-                    <Line type="monotone" dataKey="Moderate" stroke="#00BFFF" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#00BFFF'}} connectNulls />
-                    <Line type="monotone" dataKey="Hard" stroke="#FF00FF" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#FF00FF'}} connectNulls />
-                </LineChart>
-                </ResponsiveContainer>
-            ) : (
-                <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
-                    <FiZap size={40} className="text-gray-700"/>
-                    <p>No data for {graphTopic}. Start a test to build your graph!</p>
-                </div>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-gray-900/40 backdrop-blur-md p-6 rounded-3xl border border-white/5">
-          <h3 className="text-xl font-bold mb-4 text-white">Performance Overview</h3>
-          <div className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mcqBarChartData} margin={{ top: 20, right: 30, left: 0, bottom: 80 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                <XAxis dataKey="topic" angle={-45} textAnchor="end" interval={0} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} height={80}/>
-                <YAxis domain={[0, 20]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
-                <Legend iconType="circle" />
-                <Bar dataKey="easy" name="Easy" fill="#39FF14" radius={[4, 4, 4, 4]} barSize={8} />
-                <Bar dataKey="moderate" name="Moderate" fill="#00BFFF" radius={[4, 4, 4, 4]} barSize={8} />
-                <Bar dataKey="hard" name="Hard" fill="#FF00FF" radius={[4, 4, 4, 4]} barSize={8} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   if (loading) return (
-    <div className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+    <div className="flex min-h-screen items-center justify-center bg-game-bg text-white">
       <div className="flex flex-col items-center gap-6">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="font-bold tracking-widest animate-pulse">LOADING...</p>
+        <div className="w-12 h-12 border-4 border-neon-blue border-t-transparent rounded-full animate-spin"></div>
+        <p className="font-bold tracking-widest animate-pulse text-neon-blue">LOADING...</p>
       </div>
     </div>
   );
   
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-6 md:p-12 font-sans selection:bg-purple-500/30">
-      <div className="max-w-7xl mx-auto space-y-12 animate-fade-in-up">
+    <div className="min-h-screen bg-game-bg text-white p-6 md:p-12 font-sans">
+      <div className="max-w-7xl mx-auto space-y-12">
         
-        {/* HEADER WITH LEADERBOARD BUTTON */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/5 pb-8">
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-8">
             <div>
-                <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 mb-2 tracking-tighter">
+                <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-2 tracking-tight">
                     DASHBOARD
                 </h1>
-                <p className="text-gray-400 font-mono text-sm">Welcome back, <span className="text-blue-400">{user?.fname}</span>. Let's crush some goals.</p>
+                <p className="text-gray-400 text-sm">Welcome back, <span className="text-neon-blue font-bold">{user?.fname}</span>. Let's crush some goals.</p>
             </div>
             
-            {/* NEW LEADERBOARD BUTTON */}
             <button 
                 onClick={() => navigate('/leaderboard')}
-                className="group relative inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-yellow-400 font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-all duration-300 overflow-hidden"
+                className="group relative inline-flex items-center gap-3 px-6 py-3 bg-neon-yellow/10 border border-neon-yellow/40 rounded-xl text-neon-yellow font-bold uppercase tracking-widest hover:bg-neon-yellow hover:text-black transition-all duration-300 overflow-hidden"
             >
-                <div className="absolute inset-0 bg-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
-                <FiAward size={20} className="relative z-10" />
-                <span className="relative z-10">Hall of Fame</span>
+                <FiAward size={20} />
+                <span>Hall of Fame</span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </button>
         </div>
 
-        {/* 1. BENTO GRID STATS */}
+        {/* 1. STATS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-blue-500 to-cyan-500" />
-          <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-green-400 to-emerald-600" />
-          <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-purple-500 to-pink-500" />
-          <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-red-500" />
+          <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-cyan-500 to-blue-500" glowColor="bg-cyan-500" />
+          <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-emerald-400 to-green-600" glowColor="bg-emerald-500" />
+          <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-purple-500 to-pink-500" glowColor="bg-purple-500" />
+          <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-red-500" glowColor="bg-orange-500" />
         </div>
 
-        {/* 2. PROFILE & MAIN */}
+        {/* 2. PROFILE & MAIN CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
             {/* PROFILE CARD */}
-            <div className="lg:col-span-1 bg-gray-900/40 backdrop-blur-md p-8 rounded-3xl border border-white/5 flex flex-col items-center text-center relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-600/20 to-transparent opacity-50" />
+            <div className="lg:col-span-1 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-white/10 flex flex-col items-center text-center relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-neon-blue/20 to-transparent opacity-50" />
                 
                 <div className="relative w-40 h-40 mb-6 group-hover:scale-105 transition-transform duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                    <div className="w-full h-full rounded-full p-[2px] bg-gradient-to-tr from-blue-400 to-purple-500 relative z-10">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-black border-4 border-black relative z-10">
-                            {preview ? <img src={preview} className="w-full h-full object-cover" /> :
-                            user?.profile_picture_url ? <img src={`${API_BASE}${user.profile_picture_url}`} className="w-full h-full object-cover" /> :
-                            <div className="w-full h-full flex items-center justify-center text-5xl font-black text-gray-800">{user?.fname?.[0]}</div>}
+                    {/* Ring Animation */}
+                    <div className="absolute inset-0 border-2 border-dashed border-neon-blue/50 rounded-full animate-spin-slow"></div>
+                    
+                    <div className="w-full h-full rounded-full p-2 bg-black/50 relative z-10">
+                        <div className="w-full h-full rounded-full overflow-hidden bg-gray-800 relative z-10 border-2 border-white/10">
+                            {preview ? <img src={preview} className="w-full h-full object-cover" alt="Profile" /> :
+                            user?.profile_picture_url ? <img src={`${API_BASE}${user.profile_picture_url}`} className="w-full h-full object-cover" alt="Profile" /> :
+                            <div className="w-full h-full flex items-center justify-center text-5xl font-black text-gray-600">{user?.fname?.[0]}</div>}
                         </div>
                     </div>
                     
-                    <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-white text-black p-3 rounded-full cursor-pointer hover:bg-blue-400 hover:text-white transition-all shadow-lg transform hover:rotate-12">
+                    <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-neon-blue text-black p-3 rounded-xl cursor-pointer hover:bg-white transition-colors shadow-lg shadow-neon-blue/30">
                         <FiCamera size={18} />
                     </label>
                     <input type="file" id="pfp" className="hidden" onChange={(e) => { if(e.target.files[0]) setSelectedFile(e.target.files[0]) }} />
                 </div>
 
                 {selectedFile && (
-                    <button onClick={handleUpload} className="mb-4 px-6 py-2 bg-blue-600 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
-                        {uploading ? "Uploading..." : "Save Photo"}
+                    <button onClick={handleUpload} className="mb-6 px-6 py-2 bg-neon-blue text-black rounded-lg text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
+                        {uploading ? "Uploading..." : <><FiUpload /> Save Photo</>}
                     </button>
                 )}
 
-                <h2 className="text-3xl font-bold text-white mb-1">{user?.fname} {user?.lname}</h2>
-                <p className="text-gray-400 text-sm mb-6">{user?.email}</p>
+                <h2 className="text-2xl font-bold text-white mb-1">{user?.fname} {user?.lname}</h2>
+                <p className="text-gray-400 text-sm mb-6 font-mono">{user?.email}</p>
 
-                <div className="w-full grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-black/30 rounded-2xl border border-white/5">
-                        <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Year</p>
-                        <p className="text-lg font-bold text-white">{user?.year}</p>
+                <div className="w-full grid grid-cols-2 gap-3">
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Year</p>
+                        <p className="text-xl font-bold text-white">{user?.year}</p>
                     </div>
-                    <div className="p-4 bg-black/30 rounded-2xl border border-white/5">
-                        <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Field</p>
-                        <p className="text-lg font-bold text-white truncate">{user?.field}</p>
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Field</p>
+                        <p className="text-xl font-bold text-white truncate">{user?.field}</p>
                     </div>
                 </div>
             </div>
 
-            {/* MAIN CONTENT TABS */}
+            {/* CHARTS SECTION */}
             <div className="lg:col-span-2 space-y-8">
-                {/* Custom Tab Switcher */}
-                <div className="p-1 bg-gray-900/60 backdrop-blur rounded-2xl border border-white/5 inline-flex w-full overflow-x-auto">
+                
+                {/* TABS */}
+                <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto">
                     {['aptitude', 'technical', 'coding', 'interview'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => { 
                                 setSelectedView(tab); 
-                                // Only update graphTopic if switching to a tab that uses it
                                 if(tab === 'technical') setGraphTopic(TECHNICAL_TOPICS[0]); 
                                 else if(tab === 'aptitude') setGraphTopic(APTITUDE_TOPICS[0]); 
                             }}
                             className={`flex-1 py-3 px-4 min-w-[100px] text-xs md:text-sm font-bold uppercase tracking-wider rounded-xl transition-all duration-300 ${
-                                selectedView === tab ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-500 hover:text-white hover:bg-white/5'
+                                selectedView === tab 
+                                ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.4)]' 
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                         >
                             {tab}
@@ -501,17 +371,104 @@ export default function Dashboard() {
                     ))}
                 </div>
 
-                {renderGraphs()}
+                {/* GRAPH CONTAINER */}
+                {selectedView === 'interview' ? (
+                   <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden h-[400px]">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 rounded-full blur-[80px] -z-10" />
+                      <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCamera className="text-neon-blue"/> Interview Mastery</h3>
+                      <ResponsiveContainer width="100%" height="90%">
+                        <AreaChart data={interviewGraphData}>
+                          <defs>
+                            <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#2DD4BF" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#2DD4BF" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                          <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                   </div>
+                ) : selectedView === 'coding' ? (
+                   <div className="grid grid-cols-1 gap-6 h-[400px]">
+                      <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 h-full">
+                         <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2"><FiCode className="text-neon-purple"/> Problems Solved</h3>
+                         <ResponsiveContainer width="100%" height="90%">
+                            <BarChart data={codingData.bar} layout="vertical">
+                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" horizontal={false} />
+                                <XAxis type="number" hide />
+                                <YAxis dataKey="difficulty" type="category" width={60} tick={{fill:'#fff', fontSize:12}} axisLine={false} tickLine={false}/>
+                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
+                                <Bar dataKey="solved" radius={[0, 10, 10, 0]} barSize={30}>
+                                   {codingData.bar.map((entry, index) => <cell key={`cell-${index}`} fill={entry.fill} />)}
+                                </Bar>
+                            </BarChart>
+                         </ResponsiveContainer>
+                      </div>
+                   </div>
+                ) : (
+                  <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl h-[450px]">
+                    <div className="absolute -top-20 -left-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] -z-10" />
+                    
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 z-20 relative">
+                        <div>
+                            <h3 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
+                                <FiTrendingUp className="text-neon-green"/> Topic Progress
+                            </h3>
+                            <p className="text-xs text-gray-400">Track your score history.</p>
+                        </div>
+                        
+                        {/* FIXED INVISIBLE DROPDOWN */}
+                        <div className="relative group min-w-[200px]">
+                            <select 
+                                value={graphTopic} 
+                                onChange={(e) => setGraphTopic(e.target.value)}
+                                className="w-full appearance-none bg-black border border-white/20 text-white rounded-xl py-3 pl-4 pr-10 text-sm outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors cursor-pointer"
+                            >
+                                {(selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS).map(t => (
+                                    <option key={t} value={t} className="bg-black text-gray-200">{t}</option>
+                                ))}
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</div>
+                        </div>
+                    </div>
+
+                    <div className="h-[320px] w-full">
+                        {topicTrendData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={topicTrendData}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                                <XAxis dataKey="attempt" tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                <YAxis domain={[0, 20]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                <Tooltip content={<CustomTooltip />} />
+                                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+                                <Line type="monotone" dataKey="Easy" stroke="#4ade80" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#4ade80'}} connectNulls />
+                                <Line type="monotone" dataKey="Moderate" stroke="#60a5fa" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#60a5fa'}} connectNulls />
+                                <Line type="monotone" dataKey="Hard" stroke="#f472b6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#f472b6'}} connectNulls />
+                            </LineChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
+                                <FiZap size={40} className="text-gray-700 opacity-50"/>
+                                <p>No data recorded for {graphTopic}.</p>
+                            </div>
+                        )}
+                    </div>
+                  </div>
+                )}
             </div>
         </div>
 
-        {/* 3. RECENT ACTIVITY LOG */}
-        <div className="bg-gray-900/40 backdrop-blur-md rounded-3xl border border-white/5 overflow-hidden">
-            <div className="p-6 border-b border-white/5 flex items-center gap-3">
-                <FiActivity className="text-green-400" />
-                <h3 className="text-lg font-bold text-white">Activity Log</h3>
+        {/* 3. ACTIVITY LOG TABLE */}
+        <div className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-12">
+            <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
+                <FiActivity className="text-neon-blue" />
+                <h3 className="text-lg font-bold text-white">Recent Activity Log</h3>
             </div>
-            <div className="p-6">
+            <div className="p-2">
                 {renderTable()}
             </div>
         </div>
