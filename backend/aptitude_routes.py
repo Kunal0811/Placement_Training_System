@@ -3,10 +3,10 @@ import os
 import asyncio
 import random
 from fastapi import APIRouter, Body, HTTPException
-import google.generativeai as genai
+from google import genai  # UPDATED IMPORT
 from pydantic import BaseModel
 
-# --- Helper Functions (could be in a utils.py) ---
+# --- Helper Functions ---
 def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
     difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
     return f"""
@@ -28,29 +28,49 @@ def parse_mcqs(raw: str, count: int):
         else: return []
     else:
         arr_text = m.group(0)
-    try: data = json.loads(arr_text)
-    except json.JSONDecodeError: return []
+    
+    try: 
+        data = json.loads(arr_text)
+    except json.JSONDecodeError: 
+        print(f"JSON Decode Error. Raw text: {raw[:100]}...")
+        return []
+        
     cleaned = []
     for q in data:
         if (isinstance(q.get("question"), str) and isinstance(q.get("options"), list) and 
-            len(q["options"]) == 4 and isinstance(q.get("answer"), str) and q["answer"] in q["options"]):
+            len(q["options"]) == 4 and isinstance(q.get("answer"), str)):
+            if q["answer"] not in q["options"]: continue 
             cleaned.append({k: q.get(k, "") for k in ["question", "options", "answer", "explanation"]})
+            
     return cleaned[:count]
 
-# UPDATED: Now accepts an api_key argument
+# UPDATED: Using new google-genai Client
 async def generate_single_topic(topic: str, count: int, difficulty: str, api_key: str = None):
     try:
-        # Configure the key specifically for this request/module
-        if api_key:
-            genai.configure(api_key=api_key)
+        if not api_key:
+            print("⚠️ Warning: No API Key provided")
+            return []
+
+        # NEW SDK USAGE
+        client = genai.Client(api_key=api_key)
         
-        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = generate_prompt(topic, count, difficulty)
-        resp = await model.generate_content_async(prompt)
-        raw = resp.text or ""
-        return parse_mcqs(raw, count)
+        
+        # 'client.aio' is the async interface
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+        
+        raw = response.text or ""
+        parsed = parse_mcqs(raw, count)
+        
+        if not parsed:
+            print(f"❌ Failed to parse MCQs for {topic}.")
+            
+        return parsed
     except Exception as e:
-        print(f"Error generating questions for topic {topic}: {e}")
+        print(f"❌ Error generating questions for topic {topic}: {e}")
         return []
 
 # --- Router Setup ---
@@ -63,8 +83,7 @@ class MCQRequest(BaseModel):
 
 @router.post("/mcqs/test")
 async def generate_aptitude_test(req: MCQRequest):
-    # Fetch the Aptitude-specific key
-    aptitude_key = os.getenv("GEMINI_API_KEY_APTITUDE")
+    aptitude_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
 
     if req.topic == "Final Aptitude Test":
         try:
@@ -75,18 +94,16 @@ async def generate_aptitude_test(req: MCQRequest):
             ]
             results = await asyncio.gather(*tasks)
             all_mcqs = [mcq for result in results for mcq in result]
-            if not all_mcqs: raise Exception("No questions generated.")
+            
+            if not all_mcqs: raise Exception("AI returned 0 questions.")
             random.shuffle(all_mcqs)
             return all_mcqs
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Final test generation error: {e}")
+            raise HTTPException(status_code=500, detail=f"Final test error: {str(e)}")
 
     try:
         mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, aptitude_key)
-        if not mcqs: raise HTTPException(status_code=500, detail="Failed to generate valid test questions")
+        if not mcqs: raise HTTPException(status_code=500, detail="Failed to generate questions.")
         return mcqs
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-class NoteRequest(BaseModel):
-    topic: str

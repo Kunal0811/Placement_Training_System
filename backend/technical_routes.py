@@ -3,11 +3,8 @@ import os
 import asyncio
 import random
 from fastapi import APIRouter, Body, HTTPException
-import google.generativeai as genai
 from pydantic import BaseModel
-
-# Import the updated function from aptitude_routes
-from aptitude_routes import generate_prompt, parse_mcqs, generate_single_topic
+from aptitude_routes import generate_single_topic
 
 # --- Router Setup ---
 router = APIRouter(prefix="/api/technical", tags=["Technical"])
