@@ -289,7 +289,7 @@ const ResumeAnalyzer = () => {
                     id="jobRoleSelect"
                     value={jobRole}
                     onChange={(e) => setJobRole(e.target.value)}
-                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
+                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-game-card text-gray-200"
                   >
                     {jobRoles.map(role => (
                       <option key={role} value={role}>{role}</option>
@@ -304,7 +304,7 @@ const ResumeAnalyzer = () => {
                   <textarea
                     id="jobDescription"
                     rows="8"
-                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-dark-bg text-gray-200"
+                    className="w-full p-3 border border-dark-border rounded-lg focus:ring-neon-blue focus:border-neon-blue bg-game-card text-gray-200"
                     placeholder="Paste the full job description here..."
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}

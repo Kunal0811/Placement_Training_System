@@ -1,4 +1,3 @@
-// placement-trainer/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -12,20 +11,17 @@ export default {
         display: ['"Clash Display"', 'sans-serif'],
       },
       colors: {
-        'game-bg': '#09090b',
-        'game-card': '#18181b',
+        'game-bg': '#09090b', // Main background
+        'game-card': '#18181b', // Card background
         'neon-blue': '#2DD4BF', 
         'neon-purple': '#A855F7',
         'neon-yellow': '#FACC15',
         'neon-green': '#22C55E',
         'neon-orange': '#F97316',
         'neon-red': '#EF4444',
-        'acid-green': '#bef264',
-        'hot-pink': '#fb7185',
-        'dark-bg': '#09090b',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'dark-bg': '#0f0f13', 
+        'dark-card': '#1c1c24',
+        'neon-pink': '#EC4899',
       },
       boxShadow: {
         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
@@ -38,7 +34,6 @@ export default {
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'shimmer': 'shimmer 2s linear infinite',
         'fade-in': 'fadeIn 0.5s ease-out forwards',
-        'fade-out': 'fadeOut 0.5s ease-out forwards',
         'glow-pulse': 'glowPulse 2s ease-in-out infinite',
       },
       keyframes: {
@@ -54,13 +49,9 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        fadeOut: {
-          '0%': { opacity: '1' },
-          '100%': { opacity: '0' },
-        },
         glowPulse: {
-          '0%, 100%': { boxShadow: '0 0 10px rgba(34, 197, 94, 0.2)' }, // Greenish base
-          '50%': { boxShadow: '0 0 25px rgba(34, 197, 94, 0.6)' },
+          '0%, 100%': { boxShadow: '0 0 10px rgba(45, 212, 191, 0.2)' },
+          '50%': { boxShadow: '0 0 25px rgba(45, 212, 191, 0.6)' },
         }
       }
     },

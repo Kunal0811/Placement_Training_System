@@ -35,7 +35,7 @@ const sections = [
 
 export default function Aptitude() {
   return (
-    <div className="min-h-screen bg-game-bg p-6 md:p-12">
+    <div className="min-h-screen p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         
         <div className="text-center mb-16">

@@ -1,85 +1,159 @@
-// src/pages/Aptitude.jsx
-import React from "react";
-import { Link } from "react-router-dom";
-import { FiPercent, FiCpu, FiBookOpen, FiArrowRight } from "react-icons/fi";
+// src/pages/Leaderboard.jsx
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import API_BASE from "../api";
+import { FiAward, FiCpu, FiCode, FiMessageCircle, FiBookOpen, FiZap, FiLayers } from "react-icons/fi";
 
-const sections = [
-  {
-    title: "Quantitative Aptitude",
-    desc: "Master numbers, algebra, and geometry concepts.",
-    path: "quantitative", 
-    icon: <FiPercent size={32} />,
-    color: "text-neon-blue",
-    border: "group-hover:border-neon-blue",
-    glow: "group-hover:shadow-[0_0_30px_rgba(45,212,191,0.3)]"
-  },
-  {
-    title: "Logical Reasoning",
-    desc: "Enhance your critical thinking and problem-solving.",
-    path: "logical",
-    icon: <FiCpu size={32} />,
-    color: "text-neon-purple",
-    border: "group-hover:border-neon-purple",
-    glow: "group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]"
-  },
-  {
-    title: "Verbal Ability",
-    desc: "Improve your vocabulary, grammar, and comprehension.",
-    path: "verbal",
-    icon: <FiBookOpen size={32} />,
-    color: "text-neon-yellow",
-    border: "group-hover:border-neon-yellow",
-    glow: "group-hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
-  },
-];
+const TOPICS = {
+  aptitude: ['Percentages', 'Profit & Loss', 'Number System', 'Time, Speed & Distance'],
+  technical: ['C Programming', 'Java', 'Python', 'DBMS', 'OS'],
+  interview: ['Full Stack Developer', 'Data Scientist', 'SDE', 'HR'],
+  coding: [] 
+};
 
-export default function Aptitude() {
+const DIFFICULTIES = ['easy', 'moderate', 'hard'];
+
+export default function Leaderboard() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState("aptitude");
+  const [topic, setTopic] = useState("all");
+  const [difficulty, setDifficulty] = useState("all");
+
+  useEffect(() => {
+    fetchFilteredLeaderboard();
+  }, [category, topic, difficulty]);
+
+  const fetchFilteredLeaderboard = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.append("category", category);
+      if (topic !== "all") params.append("topic", topic);
+      if (difficulty !== "all") params.append("difficulty", difficulty);
+
+      const res = await axios.get(`${API_BASE}/api/leaderboard/filter?${params.toString()}`);
+      setUsers(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCategoryIcon = () => {
+    if (category === 'aptitude') return <FiBookOpen className="text-neon-yellow" />;
+    if (category === 'technical') return <FiCpu className="text-neon-blue" />;
+    if (category === 'coding') return <FiCode className="text-neon-green" />;
+    if (category === 'interview') return <FiMessageCircle className="text-neon-purple" />;
+  };
+
   return (
-    <div className="min-h-screen bg-game-bg p-6 md:p-12">
+    <div className="min-h-screen bg-game-bg text-white p-6 md:p-12 font-sans">
       <div className="max-w-7xl mx-auto">
         
-        <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-4">
-                Aptitude <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Arena</span>
-            </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Sharpen your mind. Select a domain to begin your training.
-            </p>
+        {/* HEADER */}
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-2 tracking-tight">
+            HALL OF <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-yellow to-neon-orange text-glow">FAME</span>
+          </h1>
+          <p className="text-gray-400">Compete against the best and earn your rank.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {sections.map((section, index) => (
-            <Link
-              key={index}
-              to={section.path}
-              className={`group relative overflow-hidden rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 p-8 transition-all duration-500 hover:-translate-y-2 ${section.border}`}
-            >
-              {/* Hover Glow */}
-              <div className={`absolute inset-0 opacity-0 transition-opacity duration-500 ${section.glow}`}></div>
-              
-              <div className="relative z-10 flex flex-col h-full justify-between">
-                <div>
-                    <div className={`mb-6 p-4 rounded-2xl bg-white/5 w-fit ${section.color}`}>
-                        {section.icon}
-                    </div>
-                    <h2 className="text-3xl font-bold text-white mb-3">{section.title}</h2>
-                    <p className="text-gray-400 leading-relaxed mb-8">{section.desc}</p>
-                </div>
-                
-                <div className={`flex items-center gap-2 font-bold uppercase tracking-wider text-sm ${section.color}`}>
-                    Start Practice <FiArrowRight className="group-hover:translate-x-1 transition-transform"/>
-                </div>
-              </div>
-            </Link>
-          ))}
+        {/* CONTROLS */}
+        <div className="glass-panel p-4 rounded-2xl border border-white/10 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-black/40">
+            <div className="flex bg-black/60 rounded-xl p-1 border border-white/10">
+                {['aptitude', 'technical', 'coding', 'interview'].map((cat) => (
+                    <button
+                        key={cat}
+                        onClick={() => { setCategory(cat); setTopic("all"); setDifficulty("all"); }}
+                        className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                            category === cat 
+                            ? 'bg-neon-blue text-black shadow-[0_0_10px_rgba(45,212,191,0.4)]' 
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                        {cat}
+                    </button>
+                ))}
+            </div>
+
+            <div className="flex gap-3">
+                {TOPICS[category]?.length > 0 && (
+                    <select 
+                        value={topic} 
+                        onChange={(e) => setTopic(e.target.value)} 
+                        className="bg-black text-white text-sm px-4 py-2.5 rounded-xl border border-white/20 outline-none focus:border-neon-blue transition-colors"
+                    >
+                        <option value="all">All Topics</option>
+                        {TOPICS[category].map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                )}
+                {category !== 'interview' && (
+                    <select 
+                        value={difficulty} 
+                        onChange={(e) => setDifficulty(e.target.value)} 
+                        className="bg-black text-white text-sm px-4 py-2.5 rounded-xl border border-white/20 outline-none focus:border-neon-purple capitalize transition-colors"
+                    >
+                        <option value="all">All Levels</option>
+                        {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                )}
+            </div>
         </div>
 
-        {/* Final Test CTA */}
-        <div className="mt-16 text-center">
-            <Link to="/test/Final Aptitude Test/hard" className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-red-500/40 hover:scale-105 transition-all">
-                <span>🔥 Take the Grand Master Test</span>
-                <FiArrowRight />
-            </Link>
+        {/* LEADERBOARD TABLE */}
+        <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden bg-black/40 shadow-2xl">
+            <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
+                {getCategoryIcon()}
+                <h3 className="text-lg font-bold text-white uppercase tracking-widest">
+                    Top Performers
+                </h3>
+            </div>
+            
+            <table className="w-full text-left">
+                <thead className="bg-white/5 text-gray-400 text-xs uppercase tracking-widest">
+                    <tr>
+                        <th className="p-6 font-semibold">Rank</th>
+                        <th className="p-6 font-semibold">Player</th>
+                        <th className="p-6 font-semibold text-right">XP / Score</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-sm">
+                    {users.map((u, index) => (
+                        <tr key={u.id} className="hover:bg-white/5 transition-colors group">
+                            <td className="p-6">
+                                <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${
+                                    index === 0 ? 'bg-neon-yellow text-black shadow-[0_0_10px_#FACC15]' : 
+                                    index === 1 ? 'bg-gray-300 text-black' : 
+                                    index === 2 ? 'bg-orange-500 text-white' : 
+                                    'text-gray-500 bg-white/5'
+                                }`}>
+                                    {index + 1}
+                                </div>
+                            </td>
+                            <td className="p-6 flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center overflow-hidden">
+                                    {u.profile_picture_url ? (
+                                        <img src={`${API_BASE}${u.profile_picture_url}`} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-gray-500 font-bold">{u.fname[0]}</span>
+                                    )}
+                                </div>
+                                <span className="font-bold text-gray-200 group-hover:text-white transition-colors">{u.fname} {u.lname}</span>
+                            </td>
+                            <td className="p-6 text-right">
+                                <span className="font-mono font-bold text-neon-blue text-lg">{Math.round(u.score)}</span>
+                            </td>
+                        </tr>
+                    ))}
+                    {users.length === 0 && !loading && (
+                        <tr>
+                            <td colSpan="3" className="p-12 text-center text-gray-500">No records found. Be the first!</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
         </div>
 
       </div>

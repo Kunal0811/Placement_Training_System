@@ -3,37 +3,42 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API_BASE from '../../api';
 
+// ✅ FIXED: Defined full Tailwind class strings so the compiler detects them.
+// Changed 'Hard' to use 'neon-red' since 'neon-pink' does not exist in your config.
 const LEVELS = [
-    { id: 'easy', title: 'Easy', problems: 5, icon: '🌱', color: 'neon-green' },
-    { id: 'medium', title: 'Medium', problems: 5, icon: '🔥', color: 'neon-blue' },
-    { id: 'hard', title: 'Hard', problems: 5, icon: '💎', color: 'neon-pink' }
+  { 
+    id: 'easy', 
+    title: 'Easy', 
+    problems: 5, 
+    icon: '🌱', 
+    borderClass: "border-neon-green/50 group-hover:border-neon-green",
+    // Button: Solid neon background, black text for contrast, glow effect
+    buttonClass: "bg-neon-green text-black hover:bg-[#bef264] shadow-[0_0_15px_rgba(34,197,94,0.4)]", 
+    gradientClass: "from-neon-green/70 to-neon-green",
+    shadowClass: "group-hover:shadow-[0_0_30px_rgba(34,197,94,0.2)]"
+  },
+  { 
+    id: 'medium', 
+    title: 'Medium', 
+    problems: 5, 
+    icon: '🔥', 
+    borderClass: "border-neon-blue/50 group-hover:border-neon-blue",
+    buttonClass: "bg-neon-blue text-black hover:bg-cyan-300 shadow-[0_0_15px_rgba(45,212,191,0.4)]",
+    gradientClass: "from-neon-blue/70 to-neon-blue",
+    shadowClass: "group-hover:shadow-[0_0_30px_rgba(45,212,191,0.2)]"
+  },
+  { 
+    id: 'hard', 
+    title: 'Hard', 
+    problems: 5, 
+    icon: '💎', 
+    // Switched to neon-red (or you can use hot-pink if you prefer)
+    borderClass: "border-neon-red/50 group-hover:border-neon-red",
+    buttonClass: "bg-neon-red text-white hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]",
+    gradientClass: "from-neon-red/70 to-neon-red",
+    shadowClass: "group-hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]"
+  }
 ];
-
-// Tailwind CSS classes need to be complete strings to be detected.
-const borderColors = {
-  "neon-green": "border-neon-green/50 group-hover:border-neon-green",
-  "neon-blue": "border-neon-blue/50 group-hover:border-neon-blue",
-  "neon-pink": "border-neon-pink/50 group-hover:border-neon-pink",
-};
-
-const bgColors = {
-  "neon-green": "bg-neon-green",
-  "neon-blue": "bg-neon-blue",
-  "neon-pink": "bg-neon-pink",
-};
-
-const shadowColors = {
-    "neon-green": "group-hover:shadow-neon-green/20",
-    "neon-blue": "group-hover:shadow-neon-blue/20",
-    "neon-pink": "group-hover:shadow-neon-pink/20",
-};
-
-const gradientColors = {
-    "neon-green": "from-neon-green/70 to-neon-green",
-    "neon-blue": "from-neon-blue/70 to-neon-blue",
-    "neon-pink": "from-neon-pink/70 to-neon-pink",
-};
-
 
 export default function CodingLevels() {
     const { user } = useAuth();
@@ -83,32 +88,32 @@ export default function CodingLevels() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-game-bg">
                 <div className="text-center flex flex-col items-center gap-6">
                     <div className="relative w-24 h-24">
-                        <div className="absolute inset-0 border-t-4 border-blue-500 rounded-full animate-spin"></div>
-                        <div className="absolute inset-2 border-r-4 border-purple-500 rounded-full animate-spin-reverse"></div>
-                        <div className="absolute inset-4 border-b-4 border-pink-500 rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 border-t-4 border-neon-blue rounded-full animate-spin"></div>
+                        <div className="absolute inset-2 border-r-4 border-neon-purple rounded-full animate-spin-reverse"></div>
+                        <div className="absolute inset-4 border-b-4 border-hot-pink rounded-full animate-spin"></div>
                     </div>
-                    <p className="text-2xl text-gray-400">Loading Levels...</p>
+                    <p className="text-2xl text-gray-400 font-display">Loading Levels...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <div className="text-center mb-12">
-                <h1 className="text-5xl font-bold text-white mb-3 text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-neon-pink">
-                    Coding Practice Levels
+        <div className="max-w-5xl mx-auto p-6 md:p-12">
+            <div className="text-center mb-16 animate-fade-in">
+                <h1 className="text-5xl md:text-6xl font-bold font-display text-white mb-4 text-glow bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-hot-pink">
+                    Coding Arena
                 </h1>
-                <p className="text-lg text-gray-400">
-                    Solve {LEVELS[0].problems} unique problems in each level to unlock the next.
+                <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                    Master Data Structures & Algorithms. Solve <span className="text-white font-bold">{LEVELS[0].problems}</span> problems to unlock the next tier.
                 </p>
             </div>
 
             <div className="space-y-8">
-                {LEVELS.map(level => {
+                {LEVELS.map((level, index) => {
                     const unlocked = isLevelUnlocked(level.id);
                     const solved = solvedCounts[level.id];
                     const progress = Math.min((solved / level.problems) * 100, 100);
@@ -116,47 +121,65 @@ export default function CodingLevels() {
                     return (
                         <Link 
                             key={level.id}
-                            to={unlocked ? `/technical/coding-test/${level.id}` : '#'}
-                            className={`group relative block bg-dark-card rounded-2xl p-6 border-2 transition-all duration-300 transform ${
+                            to={unlocked ? `/technical/coding-test/${level.id}` : '#'} // Ensure this route exists in App.jsx
+                            className={`group relative block bg-game-card rounded-3xl p-8 border-2 transition-all duration-500 transform ${
                                 unlocked 
-                                ? `${borderColors[level.color]} hover:-translate-y-2 shadow-lg ${shadowColors[level.color]}` 
-                                : 'border-gray-800'
+                                ? `${level.borderClass} hover:-translate-y-2 ${level.shadowClass}` 
+                                : 'border-white/5 opacity-70 grayscale'
                             }`}
                         >
-                            {!unlocked && <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-2xl z-10"></div>}
+                            {/* Lock Overlay */}
+                            {!unlocked && (
+                                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] rounded-3xl z-10 flex items-center justify-center">
+                                    <div className="bg-black/80 px-6 py-3 rounded-xl border border-white/10 flex items-center gap-3">
+                                        <span className="text-2xl">🔒</span>
+                                        <span className="text-gray-400 font-mono text-sm">
+                                            Complete <strong>{LEVELS[index-1].title}</strong> first
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
                             
-                            <div className="relative z-20 flex flex-col md:flex-row items-center justify-between gap-6">
-                                <div className="flex items-center space-x-6 text-center md:text-left">
-                                    <div className={`text-6xl transition-transform duration-300 ${unlocked ? 'group-hover:scale-110' : ''}`}>{unlocked ? level.icon : '🔒'}</div>
+                            <div className="relative z-20 flex flex-col md:flex-row items-center justify-between gap-8">
+                                <div className="flex items-center space-x-8 text-center md:text-left w-full md:w-auto">
+                                    <div className={`text-7xl transition-transform duration-500 filter drop-shadow-lg ${unlocked ? 'group-hover:scale-110 group-hover:rotate-6' : ''}`}>
+                                        {level.icon}
+                                    </div>
                                     <div>
-                                        <h2 className={`text-3xl font-bold ${unlocked ? 'text-white' : 'text-gray-600'}`}>{level.title}</h2>
-                                        <p className={`mt-1 ${unlocked ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {solved >= level.problems ? "Level Completed!" : `${solved} / ${level.problems} Problems Solved`}
+                                        <h2 className={`text-4xl font-bold font-display tracking-tight ${unlocked ? 'text-white' : 'text-gray-500'}`}>
+                                            {level.title}
+                                        </h2>
+                                        <p className={`mt-2 font-mono text-sm ${unlocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {solved >= level.problems 
+                                                ? <span className="text-neon-green">★ Level Completed</span> 
+                                                : `${solved} / ${level.problems} Solved`
+                                            }
                                         </p>
                                     </div>
                                 </div>
+
                                 <div className="w-full md:w-auto">
-                                    <div
-                                        className={`w-full text-center px-8 py-3 rounded-lg text-black font-bold text-lg transition-all transform group-hover:scale-105 ${
+                                    <button
+                                        className={`w-full md:w-48 py-4 rounded-xl font-bold text-lg transition-all duration-300 tracking-wide ${
                                             unlocked 
-                                            ? `${bgColors[level.color]} shadow-lg shadow-${level.color}/30` 
-                                            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                                            ? `${level.buttonClass} animate-glow-pulse hover:scale-105` 
+                                            : 'bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed'
                                         }`}
                                     >
-                                        {solved >= level.problems ? 'Practice More' : 'Start'}
-                                    </div>
+                                        {solved >= level.problems ? 'Practice' : 'Start'}
+                                    </button>
                                 </div>
                             </div>
-                            <div className="relative z-20 mt-6">
-                                <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
+
+                            {/* Progress Bar */}
+                            <div className="relative z-20 mt-8">
+                                <div className="w-full bg-black/50 rounded-full h-3 overflow-hidden border border-white/5">
                                     <div 
-                                        className={`h-4 rounded-full transition-all duration-500 bg-gradient-to-r ${
-                                            unlocked
-                                            ? (gradientColors[level.color] || 'from-gray-500 to-gray-400') 
-                                            : 'from-gray-700 to-gray-600'
+                                        className={`h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r ${
+                                            unlocked ? level.gradientClass : 'from-gray-700 to-gray-600'
                                         }`} 
-                                        style={{ width: `${progress}%` }}>
-                                    </div>
+                                        style={{ width: `${progress}%` }}
+                                    ></div>
                                 </div>
                             </div>
                         </Link>

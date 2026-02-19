@@ -207,7 +207,7 @@ export default function Interview() {
                     <div>
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 block">Interview Type</label>
                         <div className="flex gap-4">
-                            {['Technical', 'HR', 'Behavioral'].map(t => (
+                            {['Technical', 'HR'].map(t => (
                                 <button 
                                     key={t}
                                     onClick={() => setConfig({...config, type: t})}

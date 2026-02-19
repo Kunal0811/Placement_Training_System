@@ -1,16 +1,16 @@
 # backend/interview_routes.py
 import os
-from google import genai  # UPDATED IMPORT
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import List, Optional
 import json
 from datetime import datetime
-from database import get_cursor
+from typing import List
 
-# Import Database dependencies
-from database import get_session
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from google import genai  # ✅ Using the NEW SDK
+
+# Database & Models
+from database import get_session, get_cursor
 from interview_models import InterviewSession, InterviewTurn
 
 router = APIRouter(prefix="/api/interview", tags=["Interview"])
@@ -61,15 +61,18 @@ def save_interview_attempt(req: SaveInterviewRequest, db_cursor: tuple = Depends
 async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_session)):
     """Initializes a new interview session in the database."""
     try:
-        # Get API Key
+        # 1. Get API Key
         api_key = os.getenv("GEMINI_API_KEY_INTERVIEW")
+        if not api_key:
+            api_key = os.getenv("GEMINI_API_KEY") # Fallback
+        
         if not api_key:
             raise HTTPException(status_code=500, detail="Missing API Key for Interview.")
 
-        # Initialize Client (New SDK)
+        # 2. Initialize Client
         client = genai.Client(api_key=api_key)
 
-        # Create Session Record
+        # 3. Create Session Record
         new_session = InterviewSession(
             user_id=req.user_id,
             job_role=req.job_role,
@@ -82,7 +85,7 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         db.commit()
         db.refresh(new_session)
 
-        # Generate Initial Greeting
+        # 4. Generate Initial Greeting
         prompt = f"""
         You are a hiring manager for the {req.job_role} position. 
         Start the interview now.
@@ -93,13 +96,13 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         3. Do not ask multiple questions at once.
         """
         
-        # New Async Generation Call
+        # ✅ Using gemini-2.5-flash as requested
         response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash", 
             contents=prompt
         )
         
-        # Save first turn (AI Question)
+        # 5. Save first turn (AI Question)
         first_turn = InterviewTurn(
             session_id=new_session.id,
             question_text=response.text,
@@ -116,18 +119,17 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ Start Interview Error (Likely Quota/Model Issue): {e}") 
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
 
 @router.post("/chat")
 async def interview_chat(req: InterviewRequest, db: Session = Depends(get_session)):
     """Handles the interview loop: Evaluates answer -> Saves -> Generates Next Question."""
     try:
-        # Get API Key
-        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW")
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise HTTPException(status_code=500, detail="Missing API Key for Interview.")
 
-        # Initialize Client (New SDK)
         client = genai.Client(api_key=api_key)
 
         # 1. Fetch Session
@@ -143,24 +145,24 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
 
         # 3. Determine Progress
         turn_count = db.query(InterviewTurn).filter(InterviewTurn.session_id == req.session_id).count()
-        is_final_turn = turn_count >= 10  # Set limit to 10-15 questions
+        is_final_turn = turn_count >= 10  # Ends at 10 questions
 
         # 4. Construct Gemini Prompt
         system_instruction = f"""
             You are conducting a {session.interview_type} interview for the {session.job_role} role.
-            Current Progress: Question {turn_count} of 15.
+            Current Progress: Question {turn_count} of 10.
 
             DIFFICULTY LOGIC:
             - Turns 1-3: Basic/Introductory level.
-            - Turns 4-8: Intermediate level (Scenario-based or core technical concepts).
-            - Turns 9-13: Advanced/Hard level (Complex problem solving or architecture).
-            - Turns 14-15: Closing and final thoughts.
+            - Turns 4-7: Intermediate level (Scenario-based or core technical concepts).
+            - Turns 8-9: Advanced/Hard level (Complex problem solving).
+            - Turn 10: Closing and final thoughts.
 
             STRICT RULES:
             1. Ask ONLY ONE question at a time.
             2. Keep questions concise (under 30 words) to facilitate voice interaction.
-            3. Increase the technical complexity as the interview progresses based on the "DIFFICULTY LOGIC" above.
-            4. If the turn_count reaches 15, set "is_final": true.
+            3. Increase the technical complexity as the interview progresses.
+            4. If the turn_count reaches 10, set "is_final": true.
 
             RESPONSE JSON FORMAT:
             {{
@@ -172,22 +174,22 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
             }}
         """
 
-        # Provide context
-        history_text = "\n".join([f"{msg.role}: {msg.content}" for msg in req.history[-6:]]) # Last 3 turns context
+        history_text = "\n".join([f"{msg.role}: {msg.content}" for msg in req.history[-6:]]) 
         full_prompt = f"{system_instruction}\n\nConversation History:\n{history_text}\n\nCandidate's Last Answer: {req.user_input}"
 
-        # 5. Generate AI Response (New SDK)
+        # 5. Generate AI Response
+        # ✅ Using gemini-2.5-flash
         response = await client.aio.models.generate_content(
             model="gemini-2.5-flash",
             contents=full_prompt
         )
         
+        # Clean Markdown if present
         text_resp = response.text.replace("```json", "").replace("```", "").strip()
         
         try:
             data = json.loads(text_resp)
         except:
-            # Fallback if JSON fails
             data = {
                 "feedback": "Good attempt.", 
                 "ideal_answer": "N/A", 
@@ -202,14 +204,14 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
             last_turn.ai_feedback = data.get("feedback")
             last_turn.ai_suggested_answer = data.get("ideal_answer")
         
-        # 7. Create Next Turn (if not over) OR Close Session
+        # 7. Create Next Turn OR Close Session
         if data.get("is_final"):
             session.end_time = datetime.utcnow()
-            # Calculate Average Score
             avg_score = db.query(InterviewTurn).with_entities(InterviewTurn.ai_score).filter(InterviewTurn.session_id==session.id).all()
-            total = sum([x[0] for x in avg_score if x[0]])
-            count = len(avg_score)
-            session.overall_score = round(total/count, 1) if count > 0 else 0
+            if avg_score:
+                valid_scores = [x[0] for x in avg_score if x[0] is not None]
+                session.overall_score = round(sum(valid_scores) / len(valid_scores), 1) if valid_scores else 0
+            
             session.feedback_summary = f"Interview Completed. Final Score: {session.overall_score}/10"
         else:
             new_turn = InterviewTurn(
@@ -225,5 +227,5 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
         return data
 
     except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ Chat Error (Likely Quota/Model Issue): {e}")
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")

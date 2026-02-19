@@ -221,7 +221,7 @@ export default function TestPage() {
         </>
       ) : (
         <div>
-          <div className="mb-8 p-8 bg-dark-card rounded-lg shadow-lg text-center border-t-4 border-neon-green">
+          <div className="mb-8 p-8 bg-dark-bg rounded-lg shadow-lg text-center border-t-4 border-neon-green">
             <h2 className="text-4xl font-bold text-neon-green text-glow mb-2">🎉 Test Complete!</h2>
             <p className="text-6xl font-bold text-white my-4">{score} / {questions.length}</p>
             <p className="text-xl text-gray-300 mt-2">

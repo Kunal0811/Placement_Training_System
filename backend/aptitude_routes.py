@@ -2,78 +2,13 @@
 import os
 import asyncio
 import random
+import re
+import json
+import ast
 from fastapi import APIRouter, Body, HTTPException
-from google import genai  # UPDATED IMPORT
+from google import genai
 from pydantic import BaseModel
 
-# --- Helper Functions ---
-def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
-    difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
-    return f"""
-    Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
-    {difficulty_line}
-    Return STRICT JSON (no markdown, no text outside JSON) as a list of objects with fields:
-    - "question" (string)
-    - "options" (array of exactly 4 distinct strings)
-    - "answer" (one of the options, string)
-    - "explanation" (string explaining why the answer is correct in 2–3 lines)
-    """
-
-def parse_mcqs(raw: str, count: int):
-    import re, json
-    m = re.search(r"\[\s*\{.*?\}\s*\]", raw, re.S)
-    if not m:
-        m2 = re.search(r"\{.*\}", raw, re.S)
-        if m2: arr_text = "[" + m2.group(0) + "]"
-        else: return []
-    else:
-        arr_text = m.group(0)
-    
-    try: 
-        data = json.loads(arr_text)
-    except json.JSONDecodeError: 
-        print(f"JSON Decode Error. Raw text: {raw[:100]}...")
-        return []
-        
-    cleaned = []
-    for q in data:
-        if (isinstance(q.get("question"), str) and isinstance(q.get("options"), list) and 
-            len(q["options"]) == 4 and isinstance(q.get("answer"), str)):
-            if q["answer"] not in q["options"]: continue 
-            cleaned.append({k: q.get(k, "") for k in ["question", "options", "answer", "explanation"]})
-            
-    return cleaned[:count]
-
-# UPDATED: Using new google-genai Client
-async def generate_single_topic(topic: str, count: int, difficulty: str, api_key: str = None):
-    try:
-        if not api_key:
-            print("⚠️ Warning: No API Key provided")
-            return []
-
-        # NEW SDK USAGE
-        client = genai.Client(api_key=api_key)
-        
-        prompt = generate_prompt(topic, count, difficulty)
-        
-        # 'client.aio' is the async interface
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-        
-        raw = response.text or ""
-        parsed = parse_mcqs(raw, count)
-        
-        if not parsed:
-            print(f"❌ Failed to parse MCQs for {topic}.")
-            
-        return parsed
-    except Exception as e:
-        print(f"❌ Error generating questions for topic {topic}: {e}")
-        return []
-
-# --- Router Setup ---
 router = APIRouter(prefix="/api/aptitude", tags=["Aptitude"])
 
 class MCQRequest(BaseModel):
@@ -81,29 +16,130 @@ class MCQRequest(BaseModel):
     count: int = 20
     difficulty: str | None = None
 
+# --- Helper Functions ---
+def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
+    difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
+    return f"""
+    Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
+    {difficulty_line}
+    
+    CRITICAL INSTRUCTIONS:
+    1. Return STRICT JSON array.
+    2. 'options' must be a list of 4 strings.
+    3. 'answer' must be the EXACT string text from the 'options' list, NOT just the letter 'A' or index.
+    
+    Format:
+    [
+      {{
+        "question": "...",
+        "options": ["Option 1 Text", "Option 2 Text", "Option 3 Text", "Option 4 Text"],
+        "answer": "Option 1 Text",
+        "explanation": "..."
+      }}
+    ]
+    """
+
+def clean_and_parse_json(text: str):
+    text = re.sub(r'```json\s*', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'```', '', text)
+    text = text.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        try:
+            return ast.literal_eval(text)
+        except:
+            return []
+
+def validate_mcqs(data, count):
+    if not isinstance(data, list): return []
+    cleaned = []
+    
+    for q in data:
+        # Key normalization
+        q = {k.lower(): v for k, v in q.items()}
+        
+        question = q.get("question")
+        options = q.get("options")
+        answer = q.get("answer")
+        explanation = q.get("explanation", "")
+
+        if (isinstance(question, str) and isinstance(options, list) and 
+            len(options) >= 2 and isinstance(answer, str)):
+            
+            # --- FIX: SMART ANSWER MAPPING ---
+            # If answer is not in options, check if it's a letter (A, B, C, D) or index (0, 1, 2, 3)
+            if answer not in options:
+                # Check for "A", "B", "C", "D" mapping
+                letter_map = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'a': 0, 'b': 1, 'c': 2, 'd': 3}
+                clean_answer = answer.strip().split('.')[0].strip() # Handle "A." or "A"
+                
+                if clean_answer in letter_map and letter_map[clean_answer] < len(options):
+                    # Remap answer "A" to the actual option text "A. $80"
+                    answer = options[letter_map[clean_answer]]
+                
+                # Check for numeric index (0, 1, 2)
+                elif answer.isdigit():
+                    idx = int(answer)
+                    if 0 <= idx < len(options):
+                        answer = options[idx]
+
+            # Final check: only add if we successfully resolved the answer
+            if answer in options:
+                cleaned.append({
+                    "question": question,
+                    "options": options,
+                    "answer": answer,
+                    "explanation": explanation
+                })
+                
+    return cleaned[:count]
+
+async def generate_single_topic(topic: str, count: int, difficulty: str, api_key: str = None):
+    try:
+        if not api_key: return []
+        
+        client = genai.Client(api_key=api_key)
+        prompt = generate_prompt(topic, count, difficulty)
+        
+        response = await client.aio.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+        
+        raw_text = response.text or ""
+        data = clean_and_parse_json(raw_text)
+        return validate_mcqs(data, count)
+
+    except Exception as e:
+        print(f"❌ Error generating {topic}: {e}")
+        return []
+
+# --- Routes ---
 @router.post("/mcqs/test")
 async def generate_aptitude_test(req: MCQRequest):
-    aptitude_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
 
     if req.topic == "Final Aptitude Test":
         try:
             tasks = [
-                generate_single_topic("Quantitative Aptitude", 20, "hard", aptitude_key),
-                generate_single_topic("Logical Reasoning", 15, "hard", aptitude_key),
-                generate_single_topic("Verbal Ability", 15, "hard", aptitude_key),
+                generate_single_topic("Quantitative Aptitude", 20, "hard", api_key),
+                generate_single_topic("Logical Reasoning", 15, "hard", api_key),
+                generate_single_topic("Verbal Ability", 15, "hard", api_key),
             ]
             results = await asyncio.gather(*tasks)
             all_mcqs = [mcq for result in results for mcq in result]
             
-            if not all_mcqs: raise Exception("AI returned 0 questions.")
+            if not all_mcqs: 
+                raise HTTPException(status_code=500, detail="AI returned 0 questions.")
+            
             random.shuffle(all_mcqs)
             return all_mcqs
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Final test error: {str(e)}")
+            raise HTTPException(status_code=500, detail=str(e))
 
-    try:
-        mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, aptitude_key)
-        if not mcqs: raise HTTPException(status_code=500, detail="Failed to generate questions.")
-        return mcqs
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, api_key)
+    if not mcqs:
+        raise HTTPException(status_code=500, detail="Failed to parse valid questions from AI response.")
+    
+    return mcqs

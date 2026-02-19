@@ -30,9 +30,6 @@ from interview_routes import router as interview_router
 # --- Setup ---
 load_dotenv()
 
-# [REMOVED GLOBAL GENAI CONFIGURATION]
-# genai.configure(api_key=os.getenv("GEMINI_API_KEY")) <-- Removed this line
-
 Base.metadata.create_all(bind=engine)
 
 try:
@@ -51,7 +48,6 @@ app = FastAPI(title="Placify Backend", version="1.0.0")
 # --- Mount Static Files Directory ---
 os.makedirs("static/profile_pics", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 # --- CORS Middleware ---
 allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173",).split(",")
@@ -135,9 +131,7 @@ def validate_password(password: str):
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password): return False, "Password must contain at least one special character"
     return True, ""
 
-
 # ---- API Routes ----
-
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -159,7 +153,6 @@ def forgot_password(req: ForgotPasswordRequest, db_cursor: tuple = Depends(get_c
     send_email(req.email, "Your OTP for Password Reset", f"Hello {user['fname']},\n\nYour OTP is: {otp}\nIt expires in 10 minutes.")
     return {"message": "OTP sent to your email"}
 
-
 @app.post("/api/verify-otp")
 def verify_otp(req: VerifyOTPRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
@@ -176,7 +169,6 @@ def verify_otp(req: VerifyOTPRequest, db_cursor: tuple = Depends(get_cursor)):
     if not record:
         raise HTTPException(status_code=400, detail="Invalid or expired OTP")
     return {"message": "OTP verified", "user_id": record["user_id"]}
-
 
 @app.post("/api/reset-password")
 def reset_password_with_otp(req: ResetPasswordWithIDRequest, db_cursor: tuple = Depends(get_cursor)):
@@ -233,7 +225,6 @@ async def upload_profile_picture(user_id: int, file: UploadFile = File(...), db_
 
     return {"message": "Profile picture updated successfully", "profile_picture_url": profile_picture_url}
 
-
 @app.post("/api/login")
 def login_user(user: LoginUser, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
@@ -264,8 +255,14 @@ def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page:
     )
     coding_attempts = cursor.fetchall()
 
+    # ✅ FIXED: Now reads from interview_sessions directly, ensuring data shows up on Dashboard!
     cursor.execute(
-        "SELECT id, interview_type, job_role, overall_score, created_at FROM interview_attempts WHERE user_id=%s ORDER BY created_at DESC",
+        """
+        SELECT id, interview_type, job_role, overall_score, start_time as created_at 
+        FROM interview_sessions 
+        WHERE user_id=%s AND end_time IS NOT NULL 
+        ORDER BY start_time DESC
+        """,
         (user_id,)
     )
     interviews = cursor.fetchall()
@@ -324,6 +321,9 @@ def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_curso
     cursor, db = db_cursor
     try:
         date_clause = "AND t.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
+        date_clause_interviews = "AND start_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
+        
+        # ✅ FIXED: Now reads XP correctly from interview_sessions
         query = f"""
         SELECT 
             u.id, 
@@ -333,7 +333,7 @@ def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_curso
             (
                 COALESCE((SELECT SUM(score * 10) FROM test_attempts WHERE user_id = u.id {date_clause.replace('t.', '')}), 0) + 
                 COALESCE((SELECT SUM(CASE WHEN difficulty = 'easy' THEN 50 WHEN difficulty = 'medium' THEN 100 WHEN difficulty = 'hard' THEN 200 ELSE 0 END) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}), 0) +
-                COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_attempts WHERE user_id = u.id {date_clause.replace('t.', '')}), 0)
+                COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL {date_clause_interviews}), 0)
             ) as total_xp,
             (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}) as problems_solved
         FROM users u
@@ -408,13 +408,14 @@ def get_filtered_leaderboard(
             """
 
         elif category == "interview":
+            # ✅ FIXED: Filters from interview_sessions instead of interview_attempts
             query = """
             SELECT u.id, u.fname, u.lname, u.profile_picture_url,
                 ROUND(AVG(i.overall_score), 1) as score,
                 COUNT(i.id) as attempts
             FROM users u
-            JOIN interview_attempts i ON u.id = i.user_id
-            WHERE 1=1
+            JOIN interview_sessions i ON u.id = i.user_id
+            WHERE i.end_time IS NOT NULL
             """
             if topic and topic != "all":
                 query += " AND i.job_role = %s"

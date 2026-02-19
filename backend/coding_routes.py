@@ -223,22 +223,29 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
 
         prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
         
-        # Use new client.aio.models.generate_content
+        # ✅ FIXED: Correct Model Name
         response = await client.aio.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt
         )
         
         data = clean_and_parse_json(response.text)
-        problems_list = data.get("problems")
+        
+        # ✅ FIXED: Handle both List and Object responses
+        problems_list = []
+        if isinstance(data, dict):
+            problems_list = data.get("problems", [])
+        elif isinstance(data, list):
+            problems_list = data
+        else:
+            print(f"Invalid AI Data Type: {type(data)}")
 
-        if not problems_list or not isinstance(problems_list, list) or len(problems_list) < req.count:
-             if isinstance(data, list):
-                 problems_list = data
-             else:
-                 raise HTTPException(status_code=500, detail=f"AI generated invalid structure.")
+        # Validation
+        if not problems_list or not isinstance(problems_list, list):
+             raise HTTPException(status_code=500, detail="AI generated invalid structure (not a list or missing 'problems' key).")
 
         return {"problems": problems_list}
+        
     except Exception as e:
         print(f"Error generating level problems: {e}")
         raise HTTPException(status_code=500, detail=f"An error occurred while generating problems: {str(e)}")
@@ -258,7 +265,7 @@ async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(
 
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
         
-        # Use new client.aio.models.generate_content
+        # ✅ FIXED: Correct Model Name
         response = await client.aio.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt
