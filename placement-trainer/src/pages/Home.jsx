@@ -119,18 +119,18 @@ function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-blue/20 rounded-full blur-[120px] -z-10 opacity-50 animate-pulse-fast"></div>
         
         <div className="inline-block px-4 py-1.5 rounded-full border border-neon-purple/30 bg-neon-purple/10 text-neon-purple text-sm font-bold mb-6 animate-bounce-slow">
-           🚀 The #1 AI Placement Trainer
+          AI Placement Trainer - Your Ultimate Job Prep Companion
         </div>
         
         <h1 className="text-6xl md:text-8xl font-display font-bold text-white tracking-tight mb-6 leading-[0.9]">
-          CRACK THE <br />
+          CRACK YOUR <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-white to-neon-purple text-glow">
             DREAM JOB
           </span>
         </h1>
         
         <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Gamified learning, AI-powered mock interviews, and real-time analytics to make you placement-ready.
+          Smart placement prep with gamified learning, AI mock interviews, and real-time analytics.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">

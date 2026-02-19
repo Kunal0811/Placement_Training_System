@@ -12,7 +12,7 @@ load_dotenv()
 # --- Configuration ---
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "Leeladhar&01")
 DB_NAME = os.getenv("DB_NAME", "placify")
 
 # 1. Config for Legacy (mysql.connector)
