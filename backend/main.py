@@ -18,6 +18,7 @@ import uuid
 import nltk
 import interview_models
 from sqlalchemy import text
+from typing import List
 
 # Import from the new database file and other route files
 from database import get_cursor, engine, Base
@@ -54,7 +55,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # --- CORS Middleware ---
-allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173",).split(",")
+allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5174",).split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in allowed if o.strip()],
@@ -79,6 +80,9 @@ class RegisterUser(BaseModel):
     field: str
     password: str
 
+class GDInviteRequest(BaseModel):
+    emails: List[EmailStr]
+    room_link: str
 class LoginUser(BaseModel):
     email: EmailStr
     password: str
@@ -430,3 +434,18 @@ def get_filtered_leaderboard(
     except Exception as e:
         print(f"Filter Leaderboard Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/api/gd/invite")
+def invite_to_gd(req: GDInviteRequest):
+    # Enforce max 4 members (1 host + 3 guests)
+    if len(req.emails) > 3:
+        raise HTTPException(status_code=400, detail="Maximum 3 guests allowed for a 4-person GD.")
+    
+    for email in req.emails:
+        subject = "You are invited to a Group Discussion!"
+        body = f"Hello,\n\nYou have been invited to join a Mock Group Discussion.\n\nPlease click the link below to join the room (Laptop Camera and Mic required):\n\n{req.room_link}\n\nBest,\nPlacify Team"
+        
+        # Using your existing send_email function
+        send_email(email, subject, body)
+        
+    return {"message": "Invitations sent successfully!"}
