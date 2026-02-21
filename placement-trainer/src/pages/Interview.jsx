@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API_BASE, { saveInterviewResult } from "../api";
 
-// ... (Keep your PREP_CONTENT constant as is) ...
 const PREP_CONTENT = {
   tips: [
     "Research the company and role beforehand.",
@@ -166,6 +165,21 @@ export default function Interview() {
     }
   };
 
+  // ✅ New function to gracefully close the session and calculate score on Dashboard
+  const handleManualEnd = async () => {
+    if (sessionId) {
+      try {
+        await axios.post(`${API_BASE}/api/interview/end`, {
+          session_id: sessionId
+        });
+      } catch (err) {
+        console.error("Failed to end session on backend", err);
+      }
+    }
+    stopCamera();
+    navigate('/dashboard');
+  };
+
   const toggleListening = () => {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -207,7 +221,7 @@ export default function Interview() {
                     <div>
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 block">Interview Type</label>
                         <div className="flex gap-4">
-                            {['Technical', 'HR'].map(t => (
+                            {['Technical', 'HR', 'Behavioral'].map(t => (
                                 <button 
                                     key={t}
                                     onClick={() => setConfig({...config, type: t})}
@@ -311,7 +325,10 @@ export default function Interview() {
                 <span className="font-mono text-neon-blue font-bold">LIVE SESSION</span>
                 <span className="text-gray-500 text-sm">| {config.role}</span>
             </div>
-            <button onClick={() => navigate('/dashboard')} className="text-xs font-bold text-red-400 hover:text-red-300 border border-red-500/30 px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors">End Session</button>
+            {/* ✅ FIXED BUTTON: Now triggers handleManualEnd to save partial score */}
+            <button onClick={handleManualEnd} className="text-xs font-bold text-red-400 hover:text-red-300 border border-red-500/30 px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors">
+                End Session
+            </button>
         </div>
 
         <div className="flex-1 flex overflow-hidden">

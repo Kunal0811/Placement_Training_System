@@ -6,7 +6,7 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx"; // <--- 1. IMPORT FOOTER
+import Footer from "./components/Footer.jsx";
 import Home from "./pages/Home.jsx";
 import Aptitude from "./pages/Aptitude.jsx";
 import Technical from "./pages/Technical.jsx";
@@ -20,6 +20,7 @@ import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
 import ModeSelection from "./pages/Aptitude/ModeSelection.jsx";
 import ResumeAnalyzer from "./pages/ResumeAnalyzer.jsx";
+import GDRoom from "./pages/GDRoom.jsx";
 
 // Technical Notes Components
 import CNotes from "./pages/Technical/CNotes.jsx";
@@ -54,7 +55,6 @@ import DirectionSenseNotes from "./pages/Aptitude/Logical/DirectionSenseNotes.js
 import GrammarNotes from "./pages/Aptitude/Verbal/GrammarNotes.jsx";
 import VocabularyNotes from "./pages/Aptitude/Verbal/VocabularyNotes.jsx";
 import ComprehensionNotes from "./pages/Aptitude/Verbal/ComprehensionNotes.jsx";
-
 import Leaderboard from "./pages/Leaderboard.jsx";
 
 function App() {
@@ -144,6 +144,7 @@ function App() {
               <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
               <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
               <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+              <Route path="/gd/room/:id" element={<ProtectedRoute><GDRoom /></ProtectedRoute>} />
             </Routes>
           </div>
           

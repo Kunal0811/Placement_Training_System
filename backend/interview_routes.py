@@ -39,6 +39,9 @@ class SaveInterviewRequest(BaseModel):
     overall_score: int
     feedback: list 
 
+class EndSessionRequest(BaseModel):
+    session_id: int
+
 # --- Routes ---
 
 @router.post("/save-attempt")
@@ -96,7 +99,7 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
         3. Do not ask multiple questions at once.
         """
         
-        # ✅ Using gemini-2.5-flash as requested
+        # ✅ Using gemini-2.5-flash
         response = await client.aio.models.generate_content(
             model="gemini-2.5-flash", 
             contents=prompt
@@ -229,3 +232,31 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
     except Exception as e:
         print(f"❌ Chat Error (Likely Quota/Model Issue): {e}")
         raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
+
+@router.post("/end")
+def end_interview_session(req: EndSessionRequest, db: Session = Depends(get_session)):
+    """Manually ends an interview session and calculates the partial score."""
+    try:
+        session = db.query(InterviewSession).filter(InterviewSession.id == req.session_id).first()
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Only close it if it hasn't been closed yet
+        if session.end_time is None:
+            session.end_time = datetime.utcnow()
+            
+            # Calculate average score based on completed turns so far
+            avg_score = db.query(InterviewTurn).with_entities(InterviewTurn.ai_score).filter(InterviewTurn.session_id==session.id).all()
+            if avg_score:
+                valid_scores = [x[0] for x in avg_score if x[0] is not None]
+                session.overall_score = round(sum(valid_scores) / len(valid_scores), 1) if valid_scores else 0
+            else:
+                session.overall_score = 0
+                
+            session.feedback_summary = f"Interview Ended Early. Partial Score: {session.overall_score}/10"
+            db.commit()
+
+        return {"message": "Session ended successfully"}
+    except Exception as e:
+        print(f"End Session Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
