@@ -176,8 +176,11 @@ function Home() {
             {/* Left Content */}
             <div className="flex-1 z-10" style={{ transform: 'translateZ(30px)' }}>
                 <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">
-                  Track Your <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-pink to-neon-purple text-glow">Evolution</span>
-                </h2>
+                  Track Your <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-hot-pink to-neon-purple drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+                    Evolution
+                  </span>
+                </h2> 
                 <ul className="space-y-6">
                     {[
                         { title: "Daily Streaks", desc: "Keep the fire alive to earn badges.", color: "bg-orange-500", glow: "shadow-[0_0_15px_#f97316]" },

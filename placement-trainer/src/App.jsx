@@ -62,25 +62,26 @@ function App() {
 
   return (
     <Router>
-      <div className="flex">
+      {/* FIX 1: Added overflow-x-hidden to the absolute root */}
+      <div className="flex bg-game-bg min-h-screen text-gray-200 font-sans overflow-x-hidden">
         <div
           className={`fixed top-0 left-0 h-screen transition-all duration-300 ${
             sidebarOpen ? "w-64" : "w-0"
-          } overflow-hidden`}
+          } overflow-hidden z-40`} // Added z-index just in case
         >
           <Sidebar isOpen={sidebarOpen} />
         </div>
 
-        {/* --- 2. MAKE THIS A FLEX COLUMN --- */}
+        {/* FIX 2: Added min-w-0 to prevent flexbox from stretching beyond screen width */}
         <div
-          className={`flex-1 min-h-screen flex flex-col transition-all duration-300 ${
+          className={`flex-1 min-h-screen flex flex-col min-w-0 transition-all duration-300 ${
             sidebarOpen ? "ml-64" : "ml-0"
           }`}
         >
           <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-          {/* --- 3. THIS DIV NOW HOLDS THE PAGE CONTENT --- */}
-          <div className="flex-1 overflow-y-auto p-4">
+          {/* FIX 3: Added overflow-x-hidden to the main content area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -148,7 +149,6 @@ function App() {
             </Routes>
           </div>
           
-          {/* --- 4. ADD THE FOOTER COMPONENT --- */}
           <Footer />
 
         </div>

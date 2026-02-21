@@ -122,10 +122,14 @@ async def generate_aptitude_test(req: MCQRequest):
 
     if req.topic == "Final Aptitude Test":
         try:
+            # We break 50 questions into chunks of 10 and 5 to prevent the AI from stopping early!
             tasks = [
-                generate_single_topic("Quantitative Aptitude", 20, "hard", api_key),
-                generate_single_topic("Logical Reasoning", 15, "hard", api_key),
-                generate_single_topic("Verbal Ability", 15, "hard", api_key),
+                generate_single_topic("Quantitative Aptitude", 10, "hard", api_key),
+                generate_single_topic("Quantitative Aptitude", 10, "hard", api_key),
+                generate_single_topic("Logical Reasoning", 10, "hard", api_key),
+                generate_single_topic("Logical Reasoning", 5, "hard", api_key),
+                generate_single_topic("Verbal Ability", 10, "hard", api_key),
+                generate_single_topic("Verbal Ability", 5, "hard", api_key),
             ]
             results = await asyncio.gather(*tasks)
             all_mcqs = [mcq for result in results for mcq in result]
@@ -134,10 +138,13 @@ async def generate_aptitude_test(req: MCQRequest):
                 raise HTTPException(status_code=500, detail="AI returned 0 questions.")
             
             random.shuffle(all_mcqs)
-            return all_mcqs
+            
+            # Failsafe: Ensure we only return exactly 50 if it over-generated
+            return all_mcqs[:50] 
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
+    # Standard Topic Test (Non-Final)
     mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, api_key)
     if not mcqs:
         raise HTTPException(status_code=500, detail="Failed to parse valid questions from AI response.")

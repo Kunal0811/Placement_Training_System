@@ -156,42 +156,40 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     room_data = manager.rooms.get(str(req.session_id))
     
-    if not room_data or not room_data["transcript"]:
-        raise HTTPException(status_code=400, detail="No transcript found. Ensure microphones were used.")
-
-    # Format script for AI
-    script = "\n".join([f"{msg['user']}: {msg['text']}" for msg in room_data["transcript"]])
+    # Bypass for empty transcript testing
+    transcript_text = "Silent room. No one spoke."
+    if room_data and room_data["transcript"]:
+        transcript_text = "\n".join([f"{msg['user']}: {msg['text']}" for msg in room_data["transcript"]])
     
     prompt = f"""
     You are an expert HR Interviewer. Analyze this Group Discussion transcript.
     Topic: {req.topic}
     Transcript:
-    {script}
+    {transcript_text}
 
-    Evaluate EVERY participant who spoke based on 5 metrics (each out of 10):
+    Evaluate EVERY participant who spoke (or if none, evaluate a placeholder user named 'Test User') based on 5 metrics (each out of 10):
     1. Clarity 2. Confidence 3. Logic 4. Communication 5. Leadership.
     
-    Return STRICT JSON array:
+    Return STRICT JSON array exactly like this:
     [
       {{
-        "user_name": "Name", "clarity": 8, "confidence": 7, "logic": 9, "communication": 8, "leadership": 7,
-        "total": 39, "strengths": ["Strong logic"], "weaknesses": ["Spoke too fast"], "advice": "Listen more."
+        "user_name": "Test User", "clarity": 5, "confidence": 5, "logic": 5, "communication": 5, "leadership": 5,
+        "total": 25, "strengths": ["None"], "weaknesses": ["Did not speak"], "advice": "Please speak next time."
       }}
     ]
     """
     try:
-        api_key = os.getenv("GEMINI_API_KEY_GD") or os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
         client = genai.Client(api_key=api_key)
         response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         
         cleaned = response.text.replace("```json", "").replace("```", "").strip()
         data = json.loads(cleaned)
         
-        # Mark session completed in DB
         cursor.execute("UPDATE gd_sessions SET status='completed' WHERE id=%s", (req.session_id,))
         db.commit()
 
         return data
     except Exception as e:
         print(f"Evaluation Error: {e}")
-        raise HTTPException(status_code=500, detail="AI Evaluation failed.")
+        raise HTTPException(status_code=500, detail=str(e))

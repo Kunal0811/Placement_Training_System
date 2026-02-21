@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 body {
-  @apply bg-dark-bg text-gray-200 overflow-x-hidden;
+  /* FIXED: Changed bg-dark-bg to bg-game-bg */
+  @apply bg-game-bg text-gray-200 overflow-x-hidden;
   font-family: 'Outfit', sans-serif;
   background-image: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 40%),
                     radial-gradient(circle at 0% 50%, rgba(45, 212, 191, 0.1), transparent 30%);

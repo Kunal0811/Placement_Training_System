@@ -16,12 +16,14 @@ export default {
       colors: {
         'game-bg': '#09090b', 
         'game-card': '#18181b', 
+        'dark-card': '#18181b',
         'game-border': '#27272a', // Subtle borders for card separation
         'neon-blue': '#2DD4BF', 
         'neon-purple': '#A855F7', 
         'neon-yellow': '#FACC15',
         'acid-green': '#bef264', 
         'hot-pink': '#fb7185',
+        'neon-green': '#4ade80',
         'dark-accent': '#1e1e2e', // For sidebar/header distinction
       },
       backgroundImage: {
@@ -41,6 +43,7 @@ export default {
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'shimmer': 'shimmer 2.5s linear infinite',
         'border-flow': 'border-flow 4s linear infinite', // Added for "moving" borders
+        'glow': 'glow 2s ease-in-out infinite',
       },
       keyframes: {
         shimmer: {
@@ -54,6 +57,10 @@ export default {
         'border-flow': {
           '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
           '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+        },
+        glow: { // ADDED THIS BLOCK
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7', filter: 'brightness(1.2)' },
         }
       }
     },
