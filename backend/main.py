@@ -110,10 +110,6 @@ class ResetPasswordWithIDRequest(BaseModel):
     user_id: int
     password: str
 
-class LevelStatusRequest(BaseModel):
-    user_id: int
-    difficulty: str
-
 # ---- Utility Functions ----
 def send_email(to_email: str, subject: str, body: str):
     msg = EmailMessage()
@@ -257,7 +253,6 @@ def get_user_details(user_id: int, db_cursor: tuple = Depends(get_cursor), page:
     )
     coding_attempts = cursor.fetchall()
 
-    # ✅ FIXED: Now reads from interview_sessions directly, ensuring data shows up on Dashboard!
     cursor.execute(
         """
         SELECT id, interview_type, job_role, overall_score, start_time as created_at 
@@ -318,118 +313,160 @@ def get_best_score(req: BestScoreRequest, db_cursor: tuple = Depends(get_cursor)
     result = cursor.fetchone()
     return {"best_score": result["best_score"] if result and result["best_score"] is not None else None}
 
-@app.get("/api/leaderboard")
-def get_leaderboard(timeframe: str = "all", db_cursor: tuple = Depends(get_cursor)):
+# =========================================================================
+# ---- NEW GAMIFICATION & LEADERBOARD SYSTEM (XP, LEVELS, BADGES) ----
+# =========================================================================
+
+def calculate_level(xp):
+    if xp >= 1500: return 5
+    if xp >= 700: return 4
+    if xp >= 300: return 3
+    if xp >= 100: return 2
+    return 1
+
+@app.get("/api/user/{user_id}/gamification")
+def get_user_gamification(user_id: int, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        date_clause = "AND t.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
-        date_clause_interviews = "AND start_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)" if timeframe == "week" else ""
+        # Calculate Total XP & Dynamic Streak
+        query = """
+        SELECT 
+            (
+                COALESCE((SELECT SUM(CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END + CASE WHEN (score / total) >= 0.9 THEN 15 ELSE 0 END) FROM test_attempts WHERE user_id = %s), 0) + 
+                COALESCE((SELECT SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END) FROM coding_attempts WHERE user_id = %s AND is_correct = 1), 0) +
+                COALESCE((SELECT SUM(50 + (overall_score * 5)) FROM interview_sessions WHERE user_id = %s AND end_time IS NOT NULL), 0)
+            ) as total_xp,
+            (SELECT COUNT(DISTINCT DATE(created_at)) FROM test_attempts WHERE user_id = %s) as streak
+        """
+        cursor.execute(query, (user_id, user_id, user_id, user_id))
+        res = cursor.fetchone()
         
-        # ✅ FIXED: Now reads XP correctly from interview_sessions
-        query = f"""
+        xp = int(res['total_xp']) if res else 0
+        streak = res['streak'] if res else 0
+        level = calculate_level(xp)
+        next_level_xp = 100 if level == 1 else (300 if level == 2 else (700 if level == 3 else (1500 if level == 4 else 3000)))
+        
+        # NEW: Fetch counts for Level 4 Attempt Limits
+        cursor.execute("SELECT COUNT(*) as c FROM interview_sessions WHERE user_id=%s", (user_id,))
+        interviews_taken = cursor.fetchone()['c']
+
+        cursor.execute("SELECT COUNT(*) as c FROM gd_participants WHERE user_id=%s", (user_id,))
+        gds_taken = cursor.fetchone()['c']
+
+        return { 
+            "xp": xp, "level": level, "next_level_xp": next_level_xp, "streak": streak, 
+            "interviews_taken": interviews_taken, "gds_taken": gds_taken 
+        }
+    except Exception as e:
+        print(f"Gamification Error: {e}")
+        return { "xp": 0, "level": 1, "next_level_xp": 100, "streak": 0, "interviews_taken": 0, "gds_taken": 0 }
+
+@app.get("/api/leaderboard")
+def get_leaderboard(db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        # Dynamic calculation of XP based on LeetCode/Gamification logic for Global Leaderboard
+        query = """
         SELECT 
             u.id, 
             u.fname, 
             u.lname, 
             u.profile_picture_url,
             (
-                COALESCE((SELECT SUM(score * 10) FROM test_attempts WHERE user_id = u.id {date_clause.replace('t.', '')}), 0) + 
-                COALESCE((SELECT SUM(CASE WHEN difficulty = 'easy' THEN 50 WHEN difficulty = 'medium' THEN 100 WHEN difficulty = 'hard' THEN 200 ELSE 0 END) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}), 0) +
-                COALESCE((SELECT SUM(100 + (overall_score * 20)) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL {date_clause_interviews}), 0)
+                COALESCE((SELECT SUM(
+                    CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END +
+                    CASE WHEN (score / total) >= 0.9 THEN 15 ELSE 0 END
+                ) FROM test_attempts WHERE user_id = u.id), 0) + 
+                
+                COALESCE((SELECT SUM(
+                    CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END
+                ) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1), 0) +
+                
+                COALESCE((SELECT SUM(50 + (overall_score * 5)) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL), 0)
             ) as total_xp,
-            (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1 {date_clause.replace('t.', '')}) as problems_solved
+            (SELECT COUNT(*) FROM test_attempts WHERE user_id = u.id) as aptitude_tests,
+            (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1) as coding_solved,
+            (SELECT COUNT(*) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL) as interviews
         FROM users u
+        HAVING total_xp > 0
         ORDER BY total_xp DESC
-        LIMIT 10;
+        LIMIT 50;
         """
         cursor.execute(query)
-        leaderboard = cursor.fetchall()
+        rows = cursor.fetchall()
+        
+        leaderboard = []
+        for rank, row in enumerate(rows):
+            xp = int(row['total_xp'])
+            level = calculate_level(xp)
+            
+            # Dynamic Badges
+            badges = []
+            if row['aptitude_tests'] >= 5: badges.append("🧠 Aptitude Master")
+            if row['coding_solved'] >= 5: badges.append("💻 Tech Ninja")
+            if row['interviews'] >= 2: badges.append("🗣️ GD Star")
+            if not badges: badges.append("🌱 Rising Star")
+            
+            next_level_xp = 100 if level == 1 else (300 if level == 2 else (700 if level == 3 else (1500 if level == 4 else 3000)))
+
+            leaderboard.append({
+                "rank": rank + 1,
+                "id": row['id'],
+                "name": f"{row['fname']} {row['lname']}",
+                "profile_picture_url": row['profile_picture_url'],
+                "xp": xp,
+                "level": level,
+                "next_level_xp": next_level_xp,
+                "badges": badges,
+                "streak": min((row['aptitude_tests'] + row['coding_solved']), 30) # Dynamic mock streak
+            })
+            
         return leaderboard
     except Exception as e:
         print(f"❌ Leaderboard Error: {e}")
         raise HTTPException(status_code=500, detail=f"Database Error: {str(e)}")
 
-@app.get("/api/user/{user_id}/gamification")
-def get_user_stats(user_id: int, db_cursor: tuple = Depends(get_cursor)):
-    cursor, db = db_cursor
-    try:
-        cursor.execute("SELECT id FROM users")
-        all_users = [u['id'] for u in cursor.fetchall()]
-        return {
-            "level": 5,
-            "badges": ["First Code", "Interview Ace"],
-            "streak": 3
-        }
-    except Exception as e:
-        print(e)
-        return {"level": 1, "badges": [], "streak": 0}
-
 @app.get("/api/leaderboard/filter")
-def get_filtered_leaderboard(
-    category: str, 
-    topic: str = None, 
-    difficulty: str = None, 
-    db_cursor: tuple = Depends(get_cursor)
-):
+def get_filtered_leaderboard(category: str, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
+        if category == "global": return get_leaderboard(db_cursor)
+
         query = ""
-        params = []
-
+        # Skill-Specific Leaderboard Queries
         if category in ["aptitude", "technical"]:
-            query = """
-            SELECT u.id, u.fname, u.lname, u.profile_picture_url,
-                COALESCE(SUM(t.score), 0) as score,
-                COUNT(t.id) as attempts
-            FROM users u
-            JOIN test_attempts t ON u.id = t.user_id
-            WHERE 1=1
-            """
-            if topic and topic != "all":
-                query += " AND t.topic = %s"
-                params.append(topic)
-            if difficulty and difficulty != "all":
-                query += " AND t.mode = %s"
-                params.append(difficulty)
-            query += " GROUP BY u.id HAVING score > 0 ORDER BY score DESC LIMIT 10"
-
-        elif category == "coding":
-            diff_filter = ""
-            if difficulty and difficulty != "all":
-                diff_filter = "AND c.difficulty = %s"
-                params.append(difficulty)
-
+            topics = "('C Programming', 'C++ Programming', 'Java Programming', 'Python Programming', 'Data Structures & Algorithms', 'Database Management Systems', 'Operating Systems', 'Computer Networks')" if category == "technical" else "('Percentages', 'Profit & Loss', 'Time, Speed & Distance', 'Ratio & Proportion', 'Number System', 'Simple & Compound Interest', 'Permutation & Combination', 'Geometry & Mensuration', 'Series & Patterns', 'Coding-Decoding', 'Blood Relations', 'Direction Sense', 'Grammar', 'Vocabulary', 'Reading Comprehension', 'Final Aptitude Test')"
             query = f"""
             SELECT u.id, u.fname, u.lname, u.profile_picture_url,
-                SUM(CASE WHEN c.difficulty = 'hard' THEN 20 WHEN c.difficulty = 'medium' THEN 10 ELSE 5 END) as score,
-                COUNT(DISTINCT c.problem_title) as attempts
-            FROM users u
-            JOIN coding_attempts c ON u.id = c.user_id
-            WHERE c.is_correct = 1 {diff_filter}
-            GROUP BY u.id ORDER BY score DESC LIMIT 10
+                   COALESCE(SUM(CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END), 0) as total_xp
+            FROM users u JOIN test_attempts t ON u.id = t.user_id WHERE t.topic IN {topics}
+            GROUP BY u.id HAVING total_xp > 0 ORDER BY total_xp DESC LIMIT 50;
             """
-
-        elif category == "interview":
-            # ✅ FIXED: Filters from interview_sessions instead of interview_attempts
+        elif category == "coding":
             query = """
             SELECT u.id, u.fname, u.lname, u.profile_picture_url,
-                ROUND(AVG(i.overall_score), 1) as score,
-                COUNT(i.id) as attempts
-            FROM users u
-            JOIN interview_sessions i ON u.id = i.user_id
-            WHERE i.end_time IS NOT NULL
+                   COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END), 0) as total_xp
+            FROM users u JOIN coding_attempts c ON u.id = c.user_id WHERE c.is_correct = 1
+            GROUP BY u.id HAVING total_xp > 0 ORDER BY total_xp DESC LIMIT 50;
             """
-            if topic and topic != "all":
-                query += " AND i.job_role = %s"
-                params.append(topic)
-            query += " GROUP BY u.id ORDER BY score DESC LIMIT 10"
+        elif category == "interview" or category == "gd":
+            query = """
+            SELECT u.id, u.fname, u.lname, u.profile_picture_url, COALESCE(SUM(50 + (overall_score * 5)), 0) as total_xp
+            FROM users u JOIN interview_sessions i ON u.id = i.user_id WHERE i.end_time IS NOT NULL
+            GROUP BY u.id HAVING total_xp > 0 ORDER BY total_xp DESC LIMIT 50;
+            """
 
-        else:
-            return []
-
-        cursor.execute(query, tuple(params))
-        return cursor.fetchall()
-
+        cursor.execute(query)
+        leaderboard = []
+        for rank, row in enumerate(cursor.fetchall()):
+            xp = int(row['total_xp'])
+            level = calculate_level(xp)
+            next_level_xp = 100 if level == 1 else (300 if level == 2 else (700 if level == 3 else (1500 if level == 4 else 3000)))
+            leaderboard.append({
+                "rank": rank + 1, "id": row['id'], "name": f"{row['fname']} {row['lname']}",
+                "profile_picture_url": row['profile_picture_url'], "xp": xp, "level": level,
+                "next_level_xp": next_level_xp, "badges": [f"{category.capitalize()} Specialist"], "streak": 0
+            })
+        return leaderboard
     except Exception as e:
-        print(f"Filter Leaderboard Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

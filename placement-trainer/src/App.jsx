@@ -15,6 +15,7 @@ import Interview from "./pages/Interview.jsx";
 import TestPage from "./pages/Aptitude/TestPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ModuleLock from "./components/ModuleLock.jsx"; // ✅ IMPORTED MODULE LOCK
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
@@ -55,24 +56,22 @@ import DirectionSenseNotes from "./pages/Aptitude/Logical/DirectionSenseNotes.js
 import GrammarNotes from "./pages/Aptitude/Verbal/GrammarNotes.jsx";
 import VocabularyNotes from "./pages/Aptitude/Verbal/VocabularyNotes.jsx";
 import ComprehensionNotes from "./pages/Aptitude/Verbal/ComprehensionNotes.jsx";
-import Leaderboard from "./pages/Leaderboard.jsx";
+import Leaderboard from "./pages/Leaderboard.jsx"; // fixed typo here
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <Router>
-      {/* FIX 1: Added overflow-x-hidden to the absolute root */}
       <div className="flex bg-game-bg min-h-screen text-gray-200 font-sans overflow-x-hidden">
         <div
           className={`fixed top-0 left-0 h-screen transition-all duration-300 ${
             sidebarOpen ? "w-64" : "w-0"
-          } overflow-hidden z-40`} // Added z-index just in case
+          } overflow-hidden z-40`}
         >
           <Sidebar isOpen={sidebarOpen} />
         </div>
 
-        {/* FIX 2: Added min-w-0 to prevent flexbox from stretching beyond screen width */}
         <div
           className={`flex-1 min-h-screen flex flex-col min-w-0 transition-all duration-300 ${
             sidebarOpen ? "ml-64" : "ml-0"
@@ -80,7 +79,6 @@ function App() {
         >
           <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-          {/* FIX 3: Added overflow-x-hidden to the main content area */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
             <Routes>
               {/* Public Routes */}
@@ -91,10 +89,12 @@ function App() {
               <Route path="/verify-otp/:email" element={<VerifyOTP />} />
               <Route path="/reset-password-otp/:userId" element={<ResetPasswordWithOTP />} />
 
-              {/* Protected Routes */}
+              {/* Protected Routes - LEVEL 1 (Open to all) */}
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+              <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
 
-              {/* Aptitude Section */}
+              {/* Aptitude Section - LEVEL 1 (Open to all) */}
               <Route path="/aptitude" element={<ProtectedRoute><Aptitude /></ProtectedRoute>} />
               <Route path="/aptitude/quantitative" element={<ProtectedRoute><QuantitativePage /></ProtectedRoute>} />
               <Route path="/aptitude/logical" element={<ProtectedRoute><LogicalPage /></ProtectedRoute>} />
@@ -124,28 +124,30 @@ function App() {
               <Route path="/aptitude/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
               <Route path="/aptitude/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
               
-              {/* Technical Section */}
-              <Route path="/technical" element={<ProtectedRoute><Technical /></ProtectedRoute>} />
-              <Route path="/technical/cnotes" element={<ProtectedRoute><CNotes /></ProtectedRoute>} />
-              <Route path="/technical/cpp" element={<ProtectedRoute><CppNotes /></ProtectedRoute>} />
-              <Route path="/technical/java" element={<ProtectedRoute><JavaNotes /></ProtectedRoute>} />
-              <Route path="/technical/python" element={<ProtectedRoute><PythonNotes /></ProtectedRoute>} />
-              <Route path="/technical/dsa" element={<ProtectedRoute><DSANotes /></ProtectedRoute>} />
-              <Route path="/technical/dbms" element={<ProtectedRoute><DBMSNotes /></ProtectedRoute>} />
-              <Route path="/technical/os" element={<ProtectedRoute><OSNotes /></ProtectedRoute>} />
-              <Route path="/technical/cn" element={<ProtectedRoute><CNNotes /></ProtectedRoute>} />
-              <Route path="/technical/coding-test" element={<ProtectedRoute><CodingPlatform /></ProtectedRoute>} />
-              <Route path="/technical/coding-levels" element={<ProtectedRoute><CodingLevels /></ProtectedRoute>} />
-              <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><CodingPlatform /></ProtectedRoute>} />
-              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
-              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
+              {/* Technical Section - LEVEL 2 (Requires Level 2) */}
+              <Route path="/technical" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cnotes" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cpp" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/java" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/python" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/dsa" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/dbms" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/os" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cn" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute>} />
 
-              {/* Other Main Sections */}
-              <Route path="/gd" element={<ProtectedRoute><GD /></ProtectedRoute>} />
-              <Route path="/interview" element={<ProtectedRoute><Interview /></ProtectedRoute>} />
-              <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
-              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-              <Route path="/gd/room/:id" element={<ProtectedRoute><GDRoom /></ProtectedRoute>} />
+              {/* Coding Section - LEVEL 3 (Requires Level 3) */}
+              <Route path="/coding" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-levels" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-test" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
+
+              {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
+              <Route path="/interview" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute>} />
+              <Route path="/gd" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute>} />
+              <Route path="/gd/room/:id" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute>} />
+              
             </Routes>
           </div>
           

@@ -1,20 +1,33 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+import API_BASE from "../api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // FIXED: Synchronously initialize state from sessionStorage. 
-  // This ensures 'user' is populated on the very first render before ProtectedRoute checks it,
-  // but it will be forgotten as soon as the browser tab is closed.
   const [user, setUser] = useState(() => {
     try {
       const storedUser = sessionStorage.getItem("user");
       return storedUser ? JSON.parse(storedUser) : null;
-    } catch (error) {
-      console.error("Error parsing user from sessionStorage", error);
-      return null;
-    }
+    } catch (error) { return null; }
   });
+
+  // GLOBAL GAMIFICATION STATE
+  const [stats, setStats] = useState({ 
+      xp: 0, level: 1, next_level_xp: 100, streak: 0, interviews_taken: 0, gds_taken: 0 
+  });
+
+  const fetchStats = async () => {
+    if (user?.id) {
+        try {
+            const res = await axios.get(`${API_BASE}/api/user/${user.id}/gamification`);
+            setStats(res.data);
+        } catch (err) { console.error("Failed to fetch gamification stats", err); }
+    }
+  };
+
+  // Fetch stats whenever the user logs in
+  useEffect(() => { fetchStats(); }, [user]);
 
   const login = (userData) => {
     setUser(userData);
@@ -23,8 +36,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setStats({ xp: 0, level: 1, next_level_xp: 100, streak: 0, interviews_taken: 0, gds_taken: 0 });
     sessionStorage.removeItem("user");
-    sessionStorage.removeItem("user_id"); // optional
   };
 
   const updateUser = (updatedData) => {
@@ -36,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, stats, fetchStats }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import LevelLock from "../../components/LevelLock"; // ✅ GAMIFICATION LOCK IMPORTED
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
-// ✅ UPDATED: Explicit Tailwind classes to avoid dynamic string issues
+// Explicit Tailwind classes to avoid dynamic string issues
 const MODES = [
   {
     id: "easy",
@@ -146,9 +147,9 @@ export default function ModeSelection() {
             const isPassed = bestScore >= 15;
             const progress = bestScore ? (bestScore / 20) * 100 : 0;
 
-            return (
+            // Define the Card UI logic
+            const ModeCardContent = (
               <div
-                key={mode.id}
                 className={`relative bg-dark-card rounded-2xl p-6 border-2 transition-all duration-300 hover:shadow-2xl hover:shadow-neon-blue/20 ${
                   isUnlocked ? `${mode.borderClass} hover:opacity-100` : 'border-gray-700 opacity-70'
                 }`}
@@ -205,6 +206,17 @@ export default function ModeSelection() {
                 )}
               </div>
             );
+
+            // ✅ GAMIFICATION CHECK: Wrap Hard mode in the LevelLock
+            if (mode.id === 'hard') {
+              return (
+                <LevelLock key={mode.id} requiredLevel={2} featureName="Hard Mode">
+                  {ModeCardContent}
+                </LevelLock>
+              );
+            }
+
+            return <React.Fragment key={mode.id}>{ModeCardContent}</React.Fragment>;
           })}
         </div>
       </div>
