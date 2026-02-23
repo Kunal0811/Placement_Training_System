@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+google-generativeai
+python-jose
+passlib
+mysql-connector-python
+nltk
+scikit-learn
+python-multipart
+pdfplumber
+python-docx
+spacy
