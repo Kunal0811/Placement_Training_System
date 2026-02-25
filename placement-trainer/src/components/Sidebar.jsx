@@ -8,20 +8,25 @@ const Sidebar = ({ isOpen }) => {
 
   // Define modules and their required levels
   const MENUS = [
-    { title: "Dashboard", path: "/dashboard", icon: <FiHome />, reqLevel: 1 },
-    { title: "Leaderboard", path: "/leaderboard", icon: <FiAward />, reqLevel: 1 },
-    { title: "Resume AI", path: "/resume-analyzer", icon: <FiFileText />, reqLevel: 1 },
-    { title: "Aptitude Hub", path: "/aptitude", icon: <FiBookOpen />, reqLevel: 1 },
-    { title: "Technical Hub", path: "/technical", icon: <FiCpu />, reqLevel: 2 },
+    { title: "Home", path: "/", icon: "🏠", reqLevel: 1 },
+    { title: "Resume AI", path: "/resume-analyzer", icon: "📄", reqLevel: 1 },
+    { title: "Aptitude Hub", path: "/aptitude", icon: "📖", reqLevel: 1 },
+    { title: "Technical Hub", path: "/technical", icon: "💻", reqLevel: 2 },
     { title: "Coding Arena", path: "/coding", icon: <FiCode />, reqLevel: 3 },
     { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 4 },
     { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 4 },
   ];
 
   return (
-    <div className={`h-full bg-black/60 backdrop-blur-xl border-r border-white/10 text-white flex flex-col shadow-2xl transition-all duration-300 relative`}>
-      <div className="flex-1 overflow-y-auto py-8 px-4 space-y-3 custom-scrollbar">
-        <p className={`text-xs font-bold text-gray-500 uppercase tracking-widest mb-6 px-4 ${!isOpen && "hidden"}`}>Modules</p>
+    <div
+      className={`h-[calc(100vh-2rem)] fixed left-2 top-4 transition-all duration-300 z-40
+        ${isOpen ? "w-64" : "w-0 opacity-0 overflow-hidden"}`}
+    >
+      <div className="glass-panel h-full rounded-2xl p-4 flex flex-col border border-white/10">
+        
+        <div className="mb-0 px-4">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Main Menu</p>
+          
         
         {MENUS.map((menu, index) => {
           const isLocked = level < menu.reqLevel;
@@ -66,6 +71,7 @@ const Sidebar = ({ isOpen }) => {
           );
         })}
       </div>
+    </div>
     </div>
   );
 };
