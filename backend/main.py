@@ -328,13 +328,39 @@ def calculate_level(xp):
 def get_user_gamification(user_id: int, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Calculate Total XP & Dynamic Streak
+        # ANTI-FARMING: Only count MAX score for each unique test, and only if score >= 15
         query = """
         SELECT 
             (
-                COALESCE((SELECT SUM(CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END + CASE WHEN (score / total) >= 0.9 THEN 15 ELSE 0 END) FROM test_attempts WHERE user_id = %s), 0) + 
-                COALESCE((SELECT SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END) FROM coding_attempts WHERE user_id = %s AND is_correct = 1), 0) +
-                COALESCE((SELECT SUM(50 + (overall_score * 5)) FROM interview_sessions WHERE user_id = %s AND end_time IS NOT NULL), 0)
+                COALESCE((
+                    SELECT SUM(
+                        CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END + 
+                        CASE WHEN max_total > 0 AND (max_score / max_total) >= 0.9 THEN 15 ELSE 0 END
+                    ) 
+                    FROM (
+                        SELECT topic, mode, MAX(score) as max_score, MAX(total) as max_total 
+                        FROM test_attempts 
+                        WHERE user_id = %s 
+                        GROUP BY topic, mode
+                    ) as best_tests
+                    WHERE max_score >= 15
+                ), 0) 
+                + 
+                COALESCE((
+                    SELECT SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END) 
+                    FROM (
+                        SELECT problem_title, difficulty 
+                        FROM coding_attempts 
+                        WHERE user_id = %s AND is_correct = 1 
+                        GROUP BY problem_title, difficulty
+                    ) as unique_coding
+                ), 0) 
+                +
+                COALESCE((
+                    SELECT SUM(50 + (overall_score * 5)) 
+                    FROM interview_sessions 
+                    WHERE user_id = %s AND end_time IS NOT NULL
+                ), 0)
             ) as total_xp,
             (SELECT COUNT(DISTINCT DATE(created_at)) FROM test_attempts WHERE user_id = %s) as streak
         """
@@ -346,7 +372,7 @@ def get_user_gamification(user_id: int, db_cursor: tuple = Depends(get_cursor)):
         level = calculate_level(xp)
         next_level_xp = 100 if level == 1 else (300 if level == 2 else (700 if level == 3 else (1500 if level == 4 else 3000)))
         
-        # NEW: Fetch counts for Level 4 Attempt Limits
+        # Fetch counts for Level 4 Attempt Limits
         cursor.execute("SELECT COUNT(*) as c FROM interview_sessions WHERE user_id=%s", (user_id,))
         interviews_taken = cursor.fetchone()['c']
 
@@ -365,31 +391,51 @@ def get_user_gamification(user_id: int, db_cursor: tuple = Depends(get_cursor)):
 def get_leaderboard(db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Dynamic calculation of XP based on LeetCode/Gamification logic for Global Leaderboard
+        # ANTI-FARMING: Global Leaderboard Query Fix
         query = """
         SELECT 
             u.id, 
             u.fname, 
             u.lname, 
             u.profile_picture_url,
-            (
-                COALESCE((SELECT SUM(
+            
+            COALESCE((
+                SELECT SUM(
                     CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END +
-                    CASE WHEN (score / total) >= 0.9 THEN 15 ELSE 0 END
-                ) FROM test_attempts WHERE user_id = u.id), 0) + 
-                
-                COALESCE((SELECT SUM(
-                    CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END
-                ) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1), 0) +
-                
-                COALESCE((SELECT SUM(50 + (overall_score * 5)) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL), 0)
-            ) as total_xp,
-            (SELECT COUNT(*) FROM test_attempts WHERE user_id = u.id) as aptitude_tests,
-            (SELECT COUNT(*) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1) as coding_solved,
+                    CASE WHEN max_total > 0 AND (max_score / max_total) >= 0.9 THEN 15 ELSE 0 END
+                )
+                FROM (
+                    SELECT user_id, topic, mode, MAX(score) as max_score, MAX(total) as max_total
+                    FROM test_attempts
+                    GROUP BY user_id, topic, mode
+                ) t
+                WHERE t.user_id = u.id AND t.max_score >= 15
+            ), 0) as test_xp,
+            
+            COALESCE((
+                SELECT SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END)
+                FROM (
+                    SELECT user_id, problem_title, difficulty
+                    FROM coding_attempts
+                    WHERE is_correct = 1
+                    GROUP BY user_id, problem_title, difficulty
+                ) c
+                WHERE c.user_id = u.id
+            ), 0) as coding_xp,
+            
+            COALESCE((
+                SELECT SUM(50 + (overall_score * 5)) 
+                FROM interview_sessions 
+                WHERE user_id = u.id AND end_time IS NOT NULL
+            ), 0) as interview_xp,
+            
+            (SELECT COUNT(DISTINCT topic, mode) FROM test_attempts WHERE user_id = u.id AND score >= 15) as aptitude_tests,
+            (SELECT COUNT(DISTINCT problem_title) FROM coding_attempts WHERE user_id = u.id AND is_correct = 1) as coding_solved,
             (SELECT COUNT(*) FROM interview_sessions WHERE user_id = u.id AND end_time IS NOT NULL) as interviews
+            
         FROM users u
-        HAVING total_xp > 0
-        ORDER BY total_xp DESC
+        HAVING (test_xp + coding_xp + interview_xp) > 0
+        ORDER BY (test_xp + coding_xp + interview_xp) DESC
         LIMIT 50;
         """
         cursor.execute(query)
@@ -397,10 +443,9 @@ def get_leaderboard(db_cursor: tuple = Depends(get_cursor)):
         
         leaderboard = []
         for rank, row in enumerate(rows):
-            xp = int(row['total_xp'])
+            xp = int(row['test_xp']) + int(row['coding_xp']) + int(row['interview_xp'])
             level = calculate_level(xp)
             
-            # Dynamic Badges
             badges = []
             if row['aptitude_tests'] >= 5: badges.append("🧠 Aptitude Master")
             if row['coding_solved'] >= 5: badges.append("💻 Tech Ninja")
@@ -410,15 +455,9 @@ def get_leaderboard(db_cursor: tuple = Depends(get_cursor)):
             next_level_xp = 100 if level == 1 else (300 if level == 2 else (700 if level == 3 else (1500 if level == 4 else 3000)))
 
             leaderboard.append({
-                "rank": rank + 1,
-                "id": row['id'],
-                "name": f"{row['fname']} {row['lname']}",
-                "profile_picture_url": row['profile_picture_url'],
-                "xp": xp,
-                "level": level,
-                "next_level_xp": next_level_xp,
-                "badges": badges,
-                "streak": min((row['aptitude_tests'] + row['coding_solved']), 30) # Dynamic mock streak
+                "rank": rank + 1, "id": row['id'], "name": f"{row['fname']} {row['lname']}",
+                "profile_picture_url": row['profile_picture_url'], "xp": xp, "level": level,
+                "next_level_xp": next_level_xp, "badges": badges, "streak": min((row['aptitude_tests'] + row['coding_solved']), 30)
             })
             
         return leaderboard
@@ -433,21 +472,41 @@ def get_filtered_leaderboard(category: str, db_cursor: tuple = Depends(get_curso
         if category == "global": return get_leaderboard(db_cursor)
 
         query = ""
-        # Skill-Specific Leaderboard Queries
+        # ANTI-FARMING: Filtered Leaderboard Fixes
         if category in ["aptitude", "technical"]:
             topics = "('C Programming', 'C++ Programming', 'Java Programming', 'Python Programming', 'Data Structures & Algorithms', 'Database Management Systems', 'Operating Systems', 'Computer Networks')" if category == "technical" else "('Percentages', 'Profit & Loss', 'Time, Speed & Distance', 'Ratio & Proportion', 'Number System', 'Simple & Compound Interest', 'Permutation & Combination', 'Geometry & Mensuration', 'Series & Patterns', 'Coding-Decoding', 'Blood Relations', 'Direction Sense', 'Grammar', 'Vocabulary', 'Reading Comprehension', 'Final Aptitude Test')"
             query = f"""
             SELECT u.id, u.fname, u.lname, u.profile_picture_url,
-                   COALESCE(SUM(CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END), 0) as total_xp
-            FROM users u JOIN test_attempts t ON u.id = t.user_id WHERE t.topic IN {topics}
-            GROUP BY u.id HAVING total_xp > 0 ORDER BY total_xp DESC LIMIT 50;
+                   COALESCE((
+                       SELECT SUM(CASE WHEN mode = 'hard' THEN 40 WHEN mode = 'moderate' THEN 20 ELSE 10 END)
+                       FROM (
+                           SELECT user_id, topic, mode, MAX(score) as max_score 
+                           FROM test_attempts 
+                           WHERE topic IN {topics}
+                           GROUP BY user_id, topic, mode
+                       ) t
+                       WHERE t.user_id = u.id AND t.max_score >= 15
+                   ), 0) as total_xp
+            FROM users u 
+            HAVING total_xp > 0 
+            ORDER BY total_xp DESC LIMIT 50;
             """
         elif category == "coding":
             query = """
             SELECT u.id, u.fname, u.lname, u.profile_picture_url,
-                   COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END), 0) as total_xp
-            FROM users u JOIN coding_attempts c ON u.id = c.user_id WHERE c.is_correct = 1
-            GROUP BY u.id HAVING total_xp > 0 ORDER BY total_xp DESC LIMIT 50;
+                   COALESCE((
+                       SELECT SUM(CASE WHEN difficulty = 'hard' THEN 40 WHEN difficulty = 'medium' THEN 20 ELSE 10 END)
+                       FROM (
+                           SELECT user_id, problem_title, difficulty 
+                           FROM coding_attempts 
+                           WHERE is_correct = 1
+                           GROUP BY user_id, problem_title, difficulty
+                       ) c
+                       WHERE c.user_id = u.id
+                   ), 0) as total_xp
+            FROM users u 
+            HAVING total_xp > 0 
+            ORDER BY total_xp DESC LIMIT 50;
             """
         elif category == "interview" or category == "gd":
             query = """

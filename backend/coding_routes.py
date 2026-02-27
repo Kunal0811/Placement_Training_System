@@ -4,6 +4,7 @@ import re
 import json
 import uuid
 import shutil
+import asyncio
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from google import genai 
@@ -206,12 +207,10 @@ async def run_user_code(req: RunRequest):
 async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Get API Key
         api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
         if not api_key:
             raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
 
-        # Initialize Client
         client = genai.Client(api_key=api_key)
         
         cursor.execute(
@@ -223,24 +222,33 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
 
         prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
         
-        # ✅ FIXED: Correct Model Name
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        # --- ADDED RETRY LOGIC FOR 503 ERRORS ---
+        max_retries = 3
+        response = None
+        
+        for attempt in range(max_retries):
+            try:
+                # You can change this to "gemini-1.5-flash" if 2.5 remains consistently overloaded
+                response = await client.aio.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
+                break # Success, break out of the loop
+            except Exception as api_err:
+                if "503" in str(api_err) and attempt < max_retries - 1:
+                    print(f"⚠️ Gemini API overloaded (503). Retrying in 2 seconds... (Attempt {attempt + 1}/{max_retries})")
+                    await asyncio.sleep(2)
+                else:
+                    raise api_err # If it's not a 503, or we ran out of retries, crash normally.
         
         data = clean_and_parse_json(response.text)
         
-        # ✅ FIXED: Handle both List and Object responses
         problems_list = []
         if isinstance(data, dict):
             problems_list = data.get("problems", [])
         elif isinstance(data, list):
             problems_list = data
-        else:
-            print(f"Invalid AI Data Type: {type(data)}")
 
-        # Validation
         if not problems_list or not isinstance(problems_list, list):
              raise HTTPException(status_code=500, detail="AI generated invalid structure (not a list or missing 'problems' key).")
 
@@ -255,21 +263,31 @@ async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = D
 async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Get API Key
         api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
         if not api_key:
             raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
 
-        # Initialize Client
         client = genai.Client(api_key=api_key)
 
         prompt = create_evaluation_prompt(req.problem, req.code, req.language)
         
-        # ✅ FIXED: Correct Model Name
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        # --- ADDED RETRY LOGIC FOR 503 ERRORS ---
+        max_retries = 3
+        response = None
+        
+        for attempt in range(max_retries):
+            try:
+                response = await client.aio.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
+                break
+            except Exception as api_err:
+                if "503" in str(api_err) and attempt < max_retries - 1:
+                    print(f"⚠️ Gemini API overloaded (503). Retrying in 2 seconds... (Attempt {attempt + 1}/{max_retries})")
+                    await asyncio.sleep(2)
+                else:
+                    raise api_err
         
         evaluation_data = clean_and_parse_json(response.text)
 

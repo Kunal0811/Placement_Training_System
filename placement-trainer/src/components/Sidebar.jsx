@@ -12,7 +12,6 @@ const Sidebar = ({ isOpen }) => {
     { title: "Resume AI", path: "/resume-analyzer", icon: "📄", reqLevel: 1 },
     { title: "Aptitude Hub", path: "/aptitude", icon: "📖", reqLevel: 1 },
     { title: "Technical Hub", path: "/technical", icon: "💻", reqLevel: 2 },
-    { title: "Coding Arena", path: "/coding", icon: <FiCode />, reqLevel: 3 },
     { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 4 },
     { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 4 },
   ];

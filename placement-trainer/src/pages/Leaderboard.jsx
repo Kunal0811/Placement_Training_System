@@ -1,18 +1,50 @@
+// placement-trainer/src/pages/Leaderboard.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE from "../api";
-import { FiAward, FiZap, FiStar, FiTrendingUp } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext";
+import { FiClock, FiChevronUp, FiChevronDown, FiShield } from "react-icons/fi";
+
+// Simulate Duolingo Leagues based on User Level
+const LEAGUES = [
+  { name: "Bronze League", color: "text-amber-700", bg: "bg-amber-700/20", border: "border-amber-700/50", icon: "🥉" },
+  { name: "Silver League", color: "text-gray-300", bg: "bg-gray-300/20", border: "border-gray-300/50", icon: "🥈" },
+  { name: "Gold League", color: "text-yellow-400", bg: "bg-yellow-400/20", border: "border-yellow-400/50", icon: "🥇" },
+  { name: "Sapphire League", color: "text-blue-400", bg: "bg-blue-400/20", border: "border-blue-400/50", icon: "💎" },
+  { name: "Diamond League", color: "text-cyan-300", bg: "bg-cyan-300/20", border: "border-cyan-300/50", icon: "💠" },
+];
 
 export default function Leaderboard() {
+  const { user, stats } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("global");
+  
+  // Countdown Timer Logic (Simulating weekly reset on Sunday midnight)
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0 });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const nextSunday = new Date();
+      nextSunday.setDate(now.getDate() + (7 - now.getDay()));
+      nextSunday.setHours(23, 59, 59, 999);
+      
+      const diff = nextSunday - now;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      setTimeLeft({ days, hours });
+    };
+    
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000 * 60 * 60); // update every hour
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
-        // Hit appropriate endpoints based on tab
         const endpoint = category === "global" 
             ? `${API_BASE}/api/leaderboard` 
             : `${API_BASE}/api/leaderboard/filter?category=${category}`;
@@ -28,76 +60,45 @@ export default function Leaderboard() {
     fetchLeaderboard();
   }, [category]);
 
-  const topThree = users.slice(0, 3);
-  const restUsers = users.slice(3);
-
-  // Helper to render the Podium for Top 3
-  const renderPodiumCard = (user, pos) => {
-    if (!user) return null;
-    
-    const isGold = pos === 1;
-    const isSilver = pos === 2;
-    const isBronze = pos === 3;
-
-    const colors = isGold 
-        ? "from-yellow-400 to-yellow-600 border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.4)]" 
-        : isSilver 
-        ? "from-gray-300 to-gray-500 border-gray-300 shadow-[0_0_20px_rgba(209,213,219,0.3)]"
-        : "from-amber-600 to-amber-800 border-amber-600 shadow-[0_0_20px_rgba(217,119,6,0.3)]";
-
-    const height = isGold ? "h-64 scale-110 z-20" : "h-56 z-10 mt-8";
-
-    // ✅ SAFE FALLBACKS (Prevents the crash!)
-    const displayName = user.name || user.fname || "Student";
-    const initial = displayName[0] ? displayName[0].toUpperCase() : "U";
-    const displayXP = user.xp !== undefined ? user.xp : (user.score || 0);
-    const displayLevel = user.level || 1;
-
-    return (
-        <div className={`relative flex flex-col items-center justify-end w-1/3 ${height} transition-transform`}>
-            {isGold && <div className="absolute -top-10 text-4xl animate-bounce">👑</div>}
-            
-            <div className={`w-20 h-20 mb-4 rounded-full border-4 flex items-center justify-center text-2xl font-bold bg-black object-cover overflow-hidden ${isGold ? 'border-yellow-400' : isSilver ? 'border-gray-300' : 'border-amber-600'}`}>
-                {user.profile_picture_url ? (
-                    <img src={`${API_BASE}${user.profile_picture_url}`} alt="PFP" className="w-full h-full object-cover"/>
-                ) : (
-                    initial
-                )}
-            </div>
-            
-            <div className={`w-full flex-1 rounded-t-3xl border-t-4 border-l border-r flex flex-col items-center pt-4 bg-gradient-to-b ${colors} opacity-90 backdrop-blur-xl`}>
-                <h3 className="font-bold text-white text-lg truncate w-full text-center px-2">{displayName}</h3>
-                <div className="flex items-center gap-1 text-black font-black mt-1">
-                    <FiStar /> {displayXP} XP
-                </div>
-                <div className="mt-2 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                    Level {displayLevel}
-                </div>
-            </div>
-        </div>
-    );
-  };
+  // Determine user's simulated league based on their global level
+  const userLevel = stats?.level || 1;
+  const currentLeague = LEAGUES[Math.min(userLevel - 1, 4)];
 
   return (
-    <div className="min-h-screen bg-game-bg text-white p-6 pb-20">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-game-bg text-white p-4 md:p-8 pb-32">
+      <div className="max-w-3xl mx-auto">
         
-        {/* Header */}
-        <div className="text-center mb-16 animate-fade-in">
-          <h1 className="text-6xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-4 tracking-tight drop-shadow-lg">
-            Hall of Fame
-          </h1>
-          <p className="text-gray-400 text-lg">Earn XP. Level Up. Claim your rank.</p>
+        {/* --- DUOLINGO LEAGUE HEADER --- */}
+        <div className="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center text-center mb-10 border border-white/5 relative overflow-hidden bg-black/40">
+            {/* Background Glow */}
+            <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full opacity-20 blur-[100px] ${currentLeague.bg}`}></div>
+            
+            <div className="text-8xl mb-4 relative z-10 animate-float drop-shadow-2xl">
+                {currentLeague.icon}
+            </div>
+            
+            <h1 className={`text-4xl font-black font-display tracking-tight relative z-10 ${currentLeague.color} drop-shadow-lg`}>
+                {currentLeague.name}
+            </h1>
+            
+            <div className="flex flex-col items-center mt-6 relative z-10">
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mb-2">Weekly Reset In</p>
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-5 py-2 rounded-xl text-lg font-mono text-neon-blue font-bold shadow-inner">
+                    <FiClock /> {timeLeft.days}d {timeLeft.hours}h
+                </div>
+            </div>
         </div>
 
-        {/* Categories / Tabs */}
-        <div className="flex justify-center gap-2 mb-16 overflow-x-auto">
+        {/* --- CATEGORY PILLS --- */}
+        <div className="flex overflow-x-auto gap-3 mb-8 pb-2 custom-scrollbar justify-start md:justify-center">
             {['global', 'aptitude', 'technical', 'coding', 'interview'].map(cat => (
                 <button 
                     key={cat}
                     onClick={() => setCategory(cat)}
-                    className={`px-6 py-3 rounded-2xl uppercase font-bold text-xs tracking-widest transition-all ${
-                        category === cat ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.5)] scale-105' : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                    className={`whitespace-nowrap px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all ${
+                        category === cat 
+                        ? 'bg-neon-blue text-black border-b-4 border-teal-600 hover:-translate-y-1 active:border-b-0 active:translate-y-1' 
+                        : 'bg-white/5 text-gray-400 border-b-4 border-transparent hover:bg-white/10'
                     }`}
                 >
                     {cat}
@@ -105,97 +106,112 @@ export default function Leaderboard() {
             ))}
         </div>
 
+        {/* --- LEADERBOARD LIST --- */}
         {loading ? (
-            <div className="flex justify-center items-center h-64"><div className="w-12 h-12 border-4 border-neon-blue border-t-transparent rounded-full animate-spin"></div></div>
+            <div className="flex justify-center items-center h-48"><div className="w-12 h-12 border-4 border-neon-blue border-t-transparent rounded-full animate-spin"></div></div>
         ) : (
-            <>
-                {/* 🏆 Top 3 Podium */}
-                {topThree.length > 0 && (
-                    <div className="flex justify-center items-end max-w-3xl mx-auto mb-16 px-4 mt-12">
-                        {renderPodiumCard(topThree[1], 2)} {/* Silver */}
-                        {renderPodiumCard(topThree[0], 1)} {/* Gold */}
-                        {renderPodiumCard(topThree[2], 3)} {/* Bronze */}
+            <div className="space-y-1">
+                {users.map((u, index) => {
+                    const isPromotionZone = index < 5;
+                    const isDemotionZone = index >= users.length - 5 && users.length > 10;
+                    const isCurrentUser = user?.id === u.id;
+
+                    // Fallbacks for data format
+                    const displayName = u.name || u.fname || "Student";
+                    const initial = displayName[0] ? displayName[0].toUpperCase() : "U";
+                    const displayXP = u.xp !== undefined ? u.xp : (u.score || 0);
+                    const rank = u.rank || (index + 1);
+
+                    // Rank Color Logic
+                    let rankStyle = "text-gray-500 font-bold";
+                    if (rank === 1) rankStyle = "text-yellow-400 font-black text-xl drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]";
+                    if (rank === 2) rankStyle = "text-gray-300 font-black text-xl";
+                    if (rank === 3) rankStyle = "text-amber-600 font-black text-xl";
+
+                    return (
+                        <React.Fragment key={u.id || index}>
+                            
+                            {/* PROMOTION ZONE DIVIDER */}
+                            {index === 5 && (
+                                <div className="flex items-center gap-4 py-4 animate-fade-in">
+                                    <hr className="flex-1 border-green-500/30" />
+                                    <span className="flex items-center gap-2 text-green-500 font-black uppercase text-xs tracking-widest bg-green-500/10 px-4 py-1 rounded-full border border-green-500/20">
+                                        <FiChevronUp size={16}/> Promotion Zone
+                                    </span>
+                                    <hr className="flex-1 border-green-500/30" />
+                                </div>
+                            )}
+
+                            {/* DEMOTION ZONE DIVIDER */}
+                            {index === users.length - 5 && users.length > 10 && (
+                                <div className="flex items-center gap-4 py-4 mt-4 animate-fade-in">
+                                    <hr className="flex-1 border-red-500/30" />
+                                    <span className="flex items-center gap-2 text-red-500 font-black uppercase text-xs tracking-widest bg-red-500/10 px-4 py-1 rounded-full border border-red-500/20">
+                                        <FiChevronDown size={16}/> Demotion Zone
+                                    </span>
+                                    <hr className="flex-1 border-red-500/30" />
+                                </div>
+                            )}
+
+                            {/* USER ROW */}
+                            <div 
+                                className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
+                                    isCurrentUser 
+                                        ? 'bg-neon-blue/10 border-2 border-neon-blue/50 shadow-[0_0_20px_rgba(45,212,191,0.1)] scale-[1.02] z-10 relative' 
+                                        : 'bg-white/5 border border-transparent hover:bg-white/10'
+                                }`}
+                            >
+                                {/* Rank */}
+                                <div className={`w-8 text-center ${rankStyle}`}>
+                                    {rank}
+                                </div>
+
+                                {/* Avatar */}
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg overflow-hidden border-2 ${
+                                    isPromotionZone ? 'border-green-500' : isDemotionZone ? 'border-red-500' : 'border-gray-600'
+                                }`}>
+                                    {u.profile_picture_url ? (
+                                        <img src={`${API_BASE}${u.profile_picture_url}`} className="w-full h-full object-cover"/>
+                                    ) : (
+                                        <div className="w-full h-full bg-gray-800 flex items-center justify-center">{initial}</div>
+                                    )}
+                                </div>
+
+                                {/* Name & Badges */}
+                                <div className="flex-1 min-w-0">
+                                    <p className={`font-bold text-lg truncate ${isCurrentUser ? 'text-neon-blue' : 'text-white'}`}>
+                                        {displayName} {isCurrentUser && "(You)"}
+                                    </p>
+                                    <div className="flex gap-2 mt-1">
+                                        {u.badges?.slice(0, 1).map((badge, i) => (
+                                            <span key={i} className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-400 font-bold uppercase tracking-wider truncate">
+                                                {badge}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* XP Score */}
+                                <div className="text-right">
+                                    <p className={`font-black text-xl ${isCurrentUser ? 'text-white' : 'text-gray-300'}`}>
+                                        {displayXP} <span className="text-xs text-gray-500 font-bold">XP</span>
+                                    </p>
+                                    {isPromotionZone && <p className="text-xs text-green-500 font-bold flex items-center justify-end gap-1"><FiChevronUp/> Advancing</p>}
+                                    {isDemotionZone && <p className="text-xs text-red-500 font-bold flex items-center justify-end gap-1"><FiChevronDown/> Falling</p>}
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    );
+                })}
+
+                {users.length === 0 && (
+                    <div className="text-center p-12 bg-white/5 rounded-3xl border border-white/10">
+                        <FiShield className="text-6xl text-gray-600 mx-auto mb-4" />
+                        <h3 className="text-xl font-bold text-white mb-2">No data yet</h3>
+                        <p className="text-gray-400">Complete a lesson to join the league!</p>
                     </div>
                 )}
-
-                {/* 📋 Rank 4 and below Table */}
-                <div className="glass-panel rounded-3xl overflow-hidden bg-black/40 border border-white/10">
-                    <table className="w-full text-left border-collapse">
-                        <thead className="bg-white/5 text-gray-400 text-xs uppercase tracking-widest border-b border-white/10">
-                            <tr>
-                                <th className="p-6">Rank</th>
-                                <th className="p-6">Candidate</th>
-                                <th className="p-6 hidden md:table-cell">Progression</th>
-                                <th className="p-6 hidden lg:table-cell">Badges</th>
-                                <th className="p-6 text-right">Total XP</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                            {restUsers.map((u, index) => {
-                                // ✅ SAFE FALLBACKS
-                                const displayName = u.name || u.fname || "Student";
-                                const initial = displayName[0] ? displayName[0].toUpperCase() : "U";
-                                const displayXP = u.xp !== undefined ? u.xp : (u.score || 0);
-                                const displayLevel = u.level || 1;
-                                const streak = u.streak || 0;
-                                const badges = u.badges || ["🌱 Rising Star"];
-                                
-                                const next_level_xp = u.next_level_xp || 100;
-                                const progress = Math.min((displayXP / next_level_xp) * 100, 100);
-                                
-                                const rank = u.rank || (index + 4);
-                                
-                                return (
-                                <tr key={u.id || index} className="hover:bg-white/5 transition-colors group">
-                                    <td className="p-6 font-black text-xl text-gray-500">#{rank}</td>
-                                    
-                                    <td className="p-6 flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center font-bold text-lg overflow-hidden border border-white/10">
-                                            {u.profile_picture_url ? <img src={`${API_BASE}${u.profile_picture_url}`} className="w-full h-full object-cover"/> : initial}
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-white text-lg">{displayName}</p>
-                                            <p className="text-xs text-neon-orange font-mono flex items-center gap-1">
-                                                <FiZap /> {streak} Day Streak
-                                            </p>
-                                        </div>
-                                    </td>
-
-                                    <td className="p-6 hidden md:table-cell w-1/4">
-                                        <div className="flex justify-between text-xs mb-1">
-                                            <span className="font-bold text-neon-blue">Level {displayLevel}</span>
-                                            <span className="text-gray-500">{displayXP} / {next_level_xp}</span>
-                                        </div>
-                                        <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                                            <div className="h-full bg-gradient-to-r from-cyan-400 to-neon-blue transition-all" style={{ width: `${progress}%` }}></div>
-                                        </div>
-                                    </td>
-
-                                    <td className="p-6 hidden lg:table-cell">
-                                        <div className="flex gap-2">
-                                            {badges.slice(0, 2).map((badge, i) => (
-                                                <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-gray-300 whitespace-nowrap">
-                                                    {badge}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </td>
-
-                                    <td className="p-6 text-right font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
-                                        {displayXP}
-                                    </td>
-                                </tr>
-                            )})}
-                            
-                            {users.length === 0 && (
-                                <tr>
-                                    <td colSpan="5" className="p-12 text-center text-gray-500 font-mono">No data available yet. Start practicing!</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </>
+            </div>
         )}
       </div>
     </div>

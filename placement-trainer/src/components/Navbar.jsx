@@ -72,6 +72,7 @@ const Navbar = ({ toggleSidebar }) => {
                 {!user ? (
                   <div className="p-2 space-y-1">
                     <Link to="/login" onClick={() => setDropdownOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors">Login</Link>
+                    <Link to="/register" onClick={() => setDropdownOpen(false)} className="block px-4 py-3 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors">Register</Link>
                   </div>
                 ) : (
                   <div className="p-2 space-y-1">
