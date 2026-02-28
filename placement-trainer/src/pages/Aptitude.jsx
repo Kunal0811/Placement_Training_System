@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiPercent, FiCpu, FiBookOpen, FiArrowRight } from "react-icons/fi";
+import { FiPercent, FiCpu, FiBookOpen, FiArrowRight, FiAward, FiClock, FiTarget } from "react-icons/fi";
 
 const sections = [
   {
@@ -119,19 +119,66 @@ export default function Aptitude() {
           ))}
         </div>
 
-        {/* FINAL GRAND MASTER TEST CTA */}
-        <div className="mt-20 text-center relative z-10">
-            <Link 
-              to={`/aptitude/test/${encodeURIComponent("Final Aptitude Test")}/hard`} 
-              className="group relative inline-flex items-center gap-3 px-8 py-5 bg-surface/40 backdrop-blur-md border border-danger/30 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.2)] hover:shadow-[0_0_40px_rgba(239,68,68,0.6)] hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-            >
-                {/* Red hover background fill */}
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+        {/* --- ULTIMATE BOSS LEVEL: GRAND MASTER TEST --- */}
+        <div className="mt-24 pt-10">
+          <div className="group relative overflow-hidden rounded-[2rem] border border-red-500/30 bg-[#0F172A]/80 backdrop-blur-md p-1 shadow-[0_0_40px_rgba(239,68,68,0.15)] transition-all duration-500 hover:shadow-[0_0_60px_rgba(239,68,68,0.3)] hover:border-red-500/60">
+            
+            {/* Animated Border Glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-700 animate-pulse"></div>
+            
+            <div className="relative bg-[#121215]/90 backdrop-blur-xl rounded-[1.9rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10">
                 
-                <span className="text-xl">🔥</span>
-                <span className="text-lg tracking-wide">Take the Grand Master Test</span>
-                <FiArrowRight className="group-hover:translate-x-2 transition-transform duration-300" size={22} />
-            </Link>
+                {/* Text Content */}
+                <div className="flex-1 z-10 text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase tracking-widest mb-6">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Boss Level
+                    </div>
+                    
+                    <h2 className="text-4xl md:text-5xl font-display font-black text-white mb-4 leading-tight">
+                        The Grandmaster <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Challenge</span>
+                    </h2>
+                    
+                    <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto md:mx-0">
+                        Think you're ready for placements? Face the ultimate endurance test. A grueling mix of Quantitative, Logical, and Verbal questions designed to push you to your absolute limits.
+                    </p>
+
+                    {/* Stats Row */}
+                    <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-10">
+                        <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-sm font-bold text-gray-300 border border-white/10">
+                            <FiClock className="text-gray-400" /> 75 Minutes
+                        </div>
+                        <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-sm font-bold text-gray-300 border border-white/10">
+                            <FiTarget className="text-gray-400" /> 50 Mixed Questions
+                        </div>
+                        <div className="flex items-center gap-2 bg-yellow-500/10 px-4 py-2 rounded-xl text-sm font-bold text-yellow-500 border border-yellow-500/20">
+                            <FiAward /> Maximum XP Reward
+                        </div>
+                    </div>
+                    
+                    <Link 
+                      to={`/aptitude/test/${encodeURIComponent("Final Aptitude Test")}/hard`} 
+                      className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-red-600 to-orange-600 text-white font-black rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.4)] hover:shadow-[0_0_50px_rgba(239,68,68,0.6)] hover:-translate-y-1 transition-all duration-300 text-lg uppercase tracking-widest w-full md:w-auto"
+                    >
+                        Accept The Trial
+                        <FiArrowRight className="group-hover:translate-x-2 transition-transform duration-300" size={22} />
+                    </Link>
+                </div>
+
+                {/* Decorative Right Side (Giant Trophy/Fire) */}
+                <div className="hidden lg:flex w-[300px] h-[300px] bg-red-900/10 rounded-full items-center justify-center border-4 border-red-500/20 shadow-[inset_0_0_80px_rgba(239,68,68,0.1)] relative">
+                    {/* Inner glowing orb */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-orange-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+                    {/* Floating emoji */}
+                    <span className="text-9xl drop-shadow-[0_0_50px_rgba(239,68,68,0.8)] relative z-10 animate-bounce-slow" style={{ animationDuration: '3s' }}>
+                        🔥
+                    </span>
+                    {/* Orbiting rings */}
+                    <div className="absolute w-[350px] h-[350px] border border-red-500/20 rounded-full animate-spin-slow" style={{ animationDuration: '10s' }}></div>
+                    <div className="absolute w-[400px] h-[400px] border border-orange-500/10 rounded-full animate-spin-reverse" style={{ animationDuration: '15s' }}></div>
+                </div>
+                
+            </div>
+          </div>
         </div>
 
       </div>
