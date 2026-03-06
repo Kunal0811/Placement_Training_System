@@ -145,10 +145,10 @@ export default function Aptitude() {
                     {/* Stats Row */}
                     <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-10">
                         <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-sm font-bold text-gray-300 border border-white/10">
-                            <FiClock className="text-gray-400" /> 75 Minutes
+                            <FiClock className="text-gray-400" /> 60 Minutes
                         </div>
                         <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl text-sm font-bold text-gray-300 border border-white/10">
-                            <FiTarget className="text-gray-400" /> 50 Mixed Questions
+                            <FiTarget className="text-gray-400" /> 60 Questions
                         </div>
                         <div className="flex items-center gap-2 bg-yellow-500/10 px-4 py-2 rounded-xl text-sm font-bold text-yellow-500 border border-yellow-500/20">
                             <FiAward /> Maximum XP Reward
