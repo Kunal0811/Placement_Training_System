@@ -63,7 +63,8 @@ def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> st
     2. 'options' must be exactly 4 strings.
     3. 'answer' must be the EXACT text from the 'options' list.
     4. NO LATEX OR BACKSLASHES. Use standard text.
-    5. Ensure explanations include a "Standard Method" and a "⚡ SHORTCUT Trick".
+    5. 'explanation' MUST be formatted with exact headers "*Standard method*:" and "*SHORTCUT Trick*:".
+    6. In the 'explanation', you MUST insert a newline character (\\n) after EACH full stop (.) so every sentence/step is on a new line.
     
     Format:
     [
@@ -74,7 +75,7 @@ def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> st
         "question": "...",
         "options": ["A. Option 1", "B. Option 2", "C. Option 3", "D. Option 4"],
         "answer": "A. Option 1",
-        "explanation": "Standard Method: ... \\n\\n⚡ SHORTCUT: ..."
+        "explanation": "*Standard method*:\\nThe formula for circumference is C = 2 * pi * r.\\nGiven r = 7 cm, C = 2 * (22/7) * 7.\\nThe 7 cancels out.\\nC = 44 cm.\\n\\n*SHORTCUT Trick*:\\nMemorize base values for r=7.\\nCircumference is 44 cm.\\nArea is 154 sq cm.\\n"
       }}
     ]
     """
