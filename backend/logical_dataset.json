@@ -1273,5 +1273,1700 @@
     "answer": "B. D is the tallest",
     "explanation": "Standard Method: F is 4th tallest. D>B>F. E>C>A. E is not tallest. The three persons taller than F must be D, B, E. Since E is not the tallest, D must be the tallest. \n\n\u26a1 SHORTCUT: F's position (4th) is key. D, B, E must occupy the top 3 spots. E cannot be 1st, so D must be the tallest. This makes D>E or D>B.",
     "id": 85
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogisms",
+    "difficulty": "hard",
+    "question": "Statements: 'Some lamps are pillars. All pillars are stars. No star is a planet. Some planets are moons.' Conclusions: I. 'Some lamps are stars.' II. 'No pillar is a planet.' III. 'Some moons are not stars.' IV. 'All stars are lamps is a possibility.'",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only I, II and III follow",
+      "C. Only I, II and IV follow",
+      "D. All I, II, III and IV follow"
+    ],
+    "answer": "D. All I, II, III and IV follow",
+    "explanation": "Standard Method: Draw Venn diagrams or use A/E/I/O logic. Check each conclusion against statements for validity. \n\n\u26a1 SHORTCUT: Combine statements. 'Lamps-Pillars-Stars' for I, IV. 'Pillars-Stars-Planets' for II. 'Moons-Planets-Stars' for III. All conclusions logically follow.",
+    "id": 86
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency - Seating Arrangement",
+    "difficulty": "hard",
+    "question": "Seven friends P, Q, R, S, T, U, V are sitting in a row facing North. What is R's position from the left end? Statement I: 'U is third to the left of P, who is second to the right of Q. R is not an immediate neighbour of Q or U.' Statement II: 'S is at one of the extreme ends. T is second to the left of S. V is not an immediate neighbour of P.'",
+    "options": [
+      "A. Statement I alone is sufficient",
+      "B. Statement II alone is sufficient",
+      "C. Both statements I and II together are sufficient",
+      "D. Neither statement I nor statement II is sufficient"
+    ],
+    "answer": "C. Both statements I and II together are sufficient",
+    "explanation": "Standard Method: Attempt to form arrangements with each statement. Statement I gives relative positions but R's exact position remains ambiguous. Statement II places S and T and V. Combining both allows for a unique arrangement and R's position. \n\n\u26a1 SHORTCUT: Statement I: Q _ P _ U (or U _ Q _ P). R cannot be near Q or U. Not enough. Statement II: S is end, T_S. Not enough. Combining fixes positions.",
+    "id": 87
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Puzzles - Circular Arrangement",
+    "difficulty": "hard",
+    "question": "Eight friends A, B, C, D, E, F, G, H are sitting around a circular table facing the centre. Each likes a different color: Red, Blue, Green, Yellow, Orange, Pink, Black, White. 'A' sits opposite 'D'. The person who likes Blue is second to the right of 'A'. 'F' is an immediate neighbour of the person who likes Blue. 'H' likes White and sits second to the left of 'C'. 'G' likes Green and is not an immediate neighbour of 'A'. The person who likes Orange sits opposite the person who likes Green. 'B' sits third to the right of 'E'. 'D' does not like Yellow or Pink. The person who likes Red sits immediately left of 'D'. What color does 'B' like?",
+    "options": [
+      "A. Yellow",
+      "B. Pink",
+      "C. Black",
+      "D. Orange"
+    ],
+    "answer": "A. Yellow",
+    "explanation": "Standard Method: Draw a circular table and place conditions one by one, deducing positions and colors. Start with fixed points ('A' opposite 'D') and strong connections. Eliminate possibilities based on negative constraints. \n\n\u26a1 SHORTCUT: Systematically map positions and colors. Blue (2R A), F (N Blue). H (White) 2L C. G (Green) not N A. Orange opposite Green. B 3R E. D not Yellow/Pink. Red (IL D). Fill in gaps to find B=Yellow.",
+    "id": 88
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Critical Reasoning - Assumption",
+    "difficulty": "hard",
+    "question": "A recent study showed that students who consume a balanced breakfast perform significantly better on standardized tests than those who skip breakfast. Therefore, schools should implement mandatory breakfast programs to improve overall student test scores. Which of the following is an assumption underlying the argument?",
+    "options": [
+      "A. Standardized tests are the best measure of student performance.",
+      "B. The content of the balanced breakfast provided by schools will be nutritionally superior.",
+      "C. Students who skip breakfast are unable to obtain a balanced breakfast at home.",
+      "D. The improved test scores from mandatory breakfast programs will outweigh the associated costs."
+    ],
+    "answer": "D. The improved test scores from mandatory breakfast programs will outweigh the associated costs.",
+    "explanation": "Standard Method: Identify the conclusion (implement programs) and premises (breakfast improves scores). An assumption connects them. For a policy recommendation, the unstated belief is that the benefits justify the costs. \n\n\u26a1 SHORTCUT: The argument proposes a *solution*. For any solution to be viable, its positive outcomes must exceed its negative impacts (costs, logistical issues etc.).",
+    "id": 89
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "hard",
+    "question": "In a certain code language, if 'PLANT' is coded as '2016211824' and 'FRUIT' is coded as '1022412924', how will 'MANGO' be coded?",
+    "options": [
+      "A. 1721181135",
+      "B. 1721181535",
+      "C. 132114715",
+      "D. 1718211135"
+    ],
+    "answer": "A. 1721181135",
+    "explanation": "Standard Method: Analyze transformations. Consonants: (alphabetical position + 4). Vowels: (alphabetical position + 20). Concatenate these numbers. \n\n\u26a1 SHORTCUT: 'PLANT' P(16+4=20) L(12+4=16) A(1+20=21) N(14+4=18) T(20+4=24). 'MANGO': M(13+4=17) A(1+20=21) N(14+4=18) G(7+4=11) O(15+20=35). Concatenate: 1721181135.",
+    "id": 90
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "'A+B' means 'A is the mother of B'. 'A-B' means 'A is the brother of B'. 'A*B' means 'A is the sister of B'. 'A/B' means 'A is the father of B'. 'A=B' means 'A is the husband of B'. If 'P/Q+R-S=T', how is 'T' related to 'P'?",
+    "options": [
+      "A. Daughter-in-law",
+      "B. Mother",
+      "C. Sister",
+      "D. Wife"
+    ],
+    "answer": "A. Daughter-in-law",
+    "explanation": "Standard Method: Draw a family tree. P/Q (P is father of Q). Q+R (Q is mother of R). R-S (R is brother of S). S=T (S is husband of T). So, P is father of Q, Q is mother of R and S, S is husband of T. Thus P is T's father-in-law, so T is P's daughter-in-law. \n\n\u26a1 SHORTCUT: Trace relations backward from T. T is S's wife. S's father is P (P/Q, Q+R, R-S). So T is P's daughter-in-law.",
+    "id": 91
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "hard",
+    "question": "A person starts from point A, walks 5 km North, turns right and walks 12 km. He then turns left and walks 3 km. Again, he turns left and walks 17 km. Finally, he turns right and walks 4 km, reaching point B. How far and in which direction is point B from point A?",
+    "options": [
+      "A. 13 km, North-West",
+      "B. 10 km, North-East",
+      "C. 13 km, North-East",
+      "D. 10 km, South-East"
+    ],
+    "answer": "A. 13 km, North-West",
+    "explanation": "Standard Method: Track net North-South and East-West movements. North: 5+3+4 = 12 km. West: 17 km. East: 12 km. Net 12 km North and (17-12) = 5 km West. Use Pythagoras: sqrt(12^2 + 5^2) = sqrt(144+25) = sqrt(169) = 13 km. \n\n\u26a1 SHORTCUT: Visualise path. Net N/S movement is 12 km North. Net E/W movement is 5 km West. (12,5) forms a 13 km hypotenuse in the North-West direction.",
+    "id": 92
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Input-Output",
+    "difficulty": "hard",
+    "question": "An input line of numbers is arranged step-by-step according to a certain rule. Study the following information and answer the given question. \nInput: '85 16 73 24 59 38 47'\nStep I: '16 85 73 24 59 38 47'\nStep II: '16 24 85 73 59 38 47'\nStep III: '16 24 38 85 73 59 47'\nStep IV: '16 24 38 47 85 73 59'\nStep V: '16 24 38 47 59 85 73'\nStep VI: '16 24 38 47 59 73 85'\nWhich step will be the last step for the input: '92 18 64 35 71 27 53'?",
+    "options": [
+      "A. Step V",
+      "B. Step VI",
+      "C. Step VII",
+      "D. Step VIII"
+    ],
+    "answer": "B. Step VI",
+    "explanation": "Standard Method: Analyze the rule. The input is sorted in ascending order from left to right, one number per step, by finding the smallest unsorted number and moving it to its correct sorted position. For 7 numbers, (7-1) = 6 steps are needed to fully sort. \n\n\u26a1 SHORTCUT: This is a selection sort pattern. The number of steps equals N-1, where N is the total count of numbers. For 7 numbers, the last step is Step VI.",
+    "id": 93
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Clocks and Calendars",
+    "difficulty": "hard",
+    "question": "What was the day of the week on 15th August, 1947?",
+    "options": [
+      "A. Monday",
+      "B. Tuesday",
+      "C. Friday",
+      "D. Sunday"
+    ],
+    "answer": "C. Friday",
+    "explanation": "Standard Method: Use calendar formula: (Date + Month Code + LastTwoDigitsOfYear + (LastTwoDigitsOfYear/4) + Century Code) mod 7. For 15 Aug 1947: (15 + 2 + 47 + 11 + 0) = 75. 75 mod 7 = 5. (Day 0=Sunday, 5=Friday). \n\n\u26a1 SHORTCUT: Recall 26 Jan 1950 (Republic Day) was a Thursday. Work backward or forward adjusting for days and leap years to reach 15 Aug 1947.",
+    "id": 94
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "hard",
+    "question": "A cube is painted blue on all its faces. It is then cut into 125 smaller identical cubes. How many of the smaller cubes have exactly two faces painted blue?",
+    "options": [
+      "A. 48",
+      "B. 36",
+      "C. 24",
+      "D. 12"
+    ],
+    "answer": "B. 36",
+    "explanation": "Standard Method: Total cubes (N^3) = 125, so N=5. Cubes with exactly two faces painted are located on the edges, excluding the corner cubes. Each edge has (N-2) such cubes. Since a cube has 12 edges, the total is 12 * (N-2). \n\n\u26a1 SHORTCUT: For N=5, (N-2) = 3. Number of edges is 12. So, 12 * 3 = 36 cubes have exactly two faces painted blue.",
+    "id": 95
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "easy",
+    "question": "If 'BRIGHT' is coded as 'CSJHIU', how would 'CLEVER' be coded?",
+    "options": [
+      "A. DMFWFS",
+      "B. DLFWFS",
+      "C. DMGBWS",
+      "D. DLFWFR"
+    ],
+    "answer": "A. DMFWFS",
+    "explanation": "Standard Method: Each letter in 'BRIGHT' is shifted by +1 to get 'CSJHIU' (B->C, R->S, I->J, G->H, H->I, T->U). Applying this to 'CLEVER': C->D, L->M, E->F, V->W, E->F, R->S, resulting in 'DMFWFS'. \n\n\u26a1 SHORTCUT: Observe the +1 shift for all letters. 'C' becomes 'D', 'L' becomes 'M'. Only option 'A' starts with 'DM'.",
+    "id": 96
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "easy",
+    "question": "Find the next term in the series: 3, 7, 11, 15, ?",
+    "options": [
+      "A. 17",
+      "B. 18",
+      "C. 19",
+      "D. 20"
+    ],
+    "answer": "C. 19",
+    "explanation": "Standard Method: The difference between consecutive terms is constant. 7-3=4, 11-7=4, 15-11=4. This is an arithmetic progression with a common difference of +4. So, the next term is 15+4=19. \n\n\u26a1 SHORTCUT: Quickly spot the pattern: each number is 4 more than the previous one. Add 4 to the last number.",
+    "id": 97
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Alphabet Series",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: A, C, E, G, ?",
+    "options": [
+      "A. H",
+      "B. I",
+      "C. J",
+      "D. K"
+    ],
+    "answer": "B. I",
+    "explanation": "Standard Method: The sequence consists of alternate letters of the English alphabet. Each letter is succeeded by the letter two positions after it (A+2=C, C+2=E, E+2=G). Following this pattern, G+2=I. \n\n\u26a1 SHORTCUT: The pattern skips one letter each time (B, D, F). The letter after G, skipping H, is I.",
+    "id": 98
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "easy",
+    "question": "'A' is the father of 'B'. 'B' is the sister of 'C'. 'C' is the son of 'D'. How is 'A' related to 'D'?",
+    "options": [
+      "A. Son",
+      "B. Father",
+      "C. Husband",
+      "D. Brother"
+    ],
+    "answer": "C. Husband",
+    "explanation": "Standard Method: 'A' is father of 'B'. 'B' is sister of 'C', so 'A' is also father of 'C'. 'C' is the son of 'D'. Since 'A' is 'C's father, 'D' must be 'C's mother. Therefore, 'A' is the husband of 'D'. \n\n\u26a1 SHORTCUT: 'A' is the father of 'B' and 'C'. 'C' has two parents, 'A' and 'D'. If 'A' is the father, 'D' must be the mother, making 'A' 'D's husband.",
+    "id": 99
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Directions",
+    "difficulty": "easy",
+    "question": "A person walks 5 km East, then turns right and walks 3 km. Which direction is he facing now?",
+    "options": [
+      "A. North",
+      "B. South",
+      "C. East",
+      "D. West"
+    ],
+    "answer": "B. South",
+    "explanation": "Standard Method: The person starts walking East. When you face East and turn right, you will be facing South. The distance walked after turning does not affect the direction currently being faced. \n\n\u26a1 SHORTCUT: The final facing direction depends only on the sequence of turns from the initial direction. East -> Right = South.",
+    "id": 100
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogisms",
+    "difficulty": "easy",
+    "question": "Statements: Some pens are pencils. All pencils are erasers. Conclusion: Some pens are erasers.",
+    "options": [
+      "A. Conclusion does not follow",
+      "B. Conclusion follows",
+      "C. Data insufficient",
+      "D. Conclusion is opposite"
+    ],
+    "answer": "B. Conclusion follows",
+    "explanation": "Standard Method: Using Venn diagrams, draw a circle for 'pens' overlapping with 'pencils'. Draw the 'pencils' circle entirely inside the 'erasers' circle. This clearly shows that the 'pens' circle also overlaps with the 'erasers' circle. \n\n\u26a1 SHORTCUT: 'Some A are B' + 'All B are C' always implies 'Some A are C'. The common term 'pencils' acts as a link between 'pens' and 'erasers'.",
+    "id": 101
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy",
+    "difficulty": "easy",
+    "question": "Book : Author :: Food : ?",
+    "options": [
+      "A. Chef",
+      "B. Waiter",
+      "C. Restaurant",
+      "D. Eat"
+    ],
+    "answer": "A. Chef",
+    "explanation": "Standard Method: An author is a person who creates or writes a book. Similarly, a chef is a person who creates or prepares food. The relationship is 'creator of'. \n\n\u26a1 SHORTCUT: Identify the primary relationship in the first pair (creator/product). Apply the same relationship to the second pair to find the missing term.",
+    "id": 102
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Logical Sequence of Words",
+    "difficulty": "easy",
+    "question": "Arrange the following words in a meaningful sequence: \n1. Study \n2. Job \n3. Apply \n4. Education \n5. Income",
+    "options": [
+      "A. 4, 1, 3, 2, 5",
+      "B. 1, 4, 3, 2, 5",
+      "C. 4, 1, 2, 3, 5",
+      "D. 1, 3, 4, 2, 5"
+    ],
+    "answer": "A. 4, 1, 3, 2, 5",
+    "explanation": "Standard Method: The most logical and common sequence of events is to first obtain 'Education' (4), then 'Study' (1) to gain knowledge, then 'Apply' (3) for a 'Job' (2), and finally earn 'Income' (5). \n\n\u26a1 SHORTCUT: Start with the most fundamental step (Education) and follow the natural progression to the ultimate outcome (Income), eliminating options that break this flow.",
+    "id": 103
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Ranking and Order",
+    "difficulty": "easy",
+    "question": "In a row of 10 students, 'A' is 6th from the left end. What is 'A's position from the right end?",
+    "options": [
+      "A. 3rd",
+      "B. 4th",
+      "C. 5th",
+      "D. 6th"
+    ],
+    "answer": "C. 5th",
+    "explanation": "Standard Method: Use the formula: Total = Rank from Left + Rank from Right - 1. So, 10 = 6 + Rank from Right - 1. 10 = 5 + Rank from Right. Rank from Right = 10 - 5 = 5th. \n\n\u26a1 SHORTCUT: If 'A' is 6th from the left, there are 5 students to 'A's left. In a row of 10, there are 10 - 6 = 4 students to 'A's right. Therefore, 'A's position from the right is 4 + 1 = 5th.",
+    "id": 104
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "easy",
+    "question": "If 'A' is the father of 'B', and 'B' is the sister of 'C', how is 'A' related to 'C'?",
+    "options": [
+      "A. Brother",
+      "B. Uncle",
+      "C. Father",
+      "D. Son"
+    ],
+    "answer": "C. Father",
+    "explanation": "Standard Method: Draw a family tree. A is above B. B and C are on the same level, B is C's sister. So A is C's father.\n\n\u26a1 SHORTCUT: A is B's father. B is C's sister. So C is A's child. Thus A is C's father.",
+    "id": 105
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Directions",
+    "difficulty": "easy",
+    "question": "John walks 5 km East, then turns right and walks 3 km. In which direction is he facing now?",
+    "options": [
+      "A. North",
+      "B. South",
+      "C. East",
+      "D. West"
+    ],
+    "answer": "B. South",
+    "explanation": "Standard Method: Start facing East. Turning right from East means you turn towards South.\n\n\u26a1 SHORTCUT: East -> Right Turn = South. Visualize the compass directions.",
+    "id": 106
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Alphabet Series",
+    "difficulty": "easy",
+    "question": "What comes next in the series: A, C, E, G, ?",
+    "options": [
+      "A. H",
+      "B. I",
+      "C. J",
+      "D. K"
+    ],
+    "answer": "B. I",
+    "explanation": "Standard Method: The series follows alternate letters of the alphabet (A+2=C, C+2=E, E+2=G).\n\n\u26a1 SHORTCUT: G is the 7th letter. The pattern is +2. So 7+2=9, which is 'I'.",
+    "id": 107
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy",
+    "difficulty": "easy",
+    "question": "Book : Page :: House : ?",
+    "options": [
+      "A. Door",
+      "B. Window",
+      "C. Room",
+      "D. Roof"
+    ],
+    "answer": "C. Room",
+    "explanation": "Standard Method: A book is made up of pages. Similarly, a house is made up of rooms.\n\n\u26a1 SHORTCUT: Part-whole relationship. Pages are parts of a book; rooms are parts of a house.",
+    "id": 108
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "easy",
+    "question": "Statements: All cats are animals. Some animals are black. Conclusion: Some cats are black. Is the conclusion true?",
+    "options": [
+      "A. Yes",
+      "B. No",
+      "C. Cannot be determined",
+      "D. Irrelevant"
+    ],
+    "answer": "C. Cannot be determined",
+    "explanation": "Standard Method: Draw Venn diagrams. Cats are inside animals. Black animals can be cats or not. We don't know if the 'some animals' that are black include cats.\n\n\u26a1 SHORTCUT: 'Some' in the second statement doesn't guarantee overlap with 'All' in the first.",
+    "id": 109
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "easy",
+    "question": "Three friends, 'P', 'Q', and 'R', are sitting in a row. 'P' is sitting next to 'Q', and 'R' is not sitting next to 'Q'. Who is in the middle?",
+    "options": [
+      "A. P",
+      "B. Q",
+      "C. R",
+      "D. Cannot be determined"
+    ],
+    "answer": "A. P",
+    "explanation": "Standard Method: P and Q are together (PQ or QP). R is not next to Q, so R must be on the other side of P (R P Q).\n\n\u26a1 SHORTCUT: If P is next to Q, and R isn't next to Q, P must be between R and Q.",
+    "id": 110
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "easy",
+    "question": "If 'BAT' is coded as 2120, and 'CAT' is coded as 3120, how would 'MAT' be coded?",
+    "options": [
+      "A. 13120",
+      "B. 13201",
+      "C. 12130",
+      "D. 12013"
+    ],
+    "answer": "A. 13120",
+    "explanation": "Standard Method: Each letter is replaced by its alphabetical position (A=1, B=2,...). B=2, A=1, T=20 -> 2120.\n\n\u26a1 SHORTCUT: M=13, A=1, T=20. Concatenate them: 13120.",
+    "id": 111
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "medium",
+    "question": "Statements:\nAll 'A' are 'B'.\nSome 'B' are 'C'.\nNo 'C' is 'D'.\n\nConclusions:\nI. Some 'B' are not 'D'.\nII. Some 'A' are 'C'.\nIII. All 'B' are 'A'.\n\nWhich conclusion(s) logically follow?",
+    "options": [
+      "A. Only I",
+      "B. Only II",
+      "C. Only I and II",
+      "D. None follow"
+    ],
+    "answer": "A. Only I",
+    "explanation": "Standard Method: Draw Venn diagrams. 'B' overlap with 'C', and 'C' don't overlap with 'D'. Thus, the 'B' part that is 'C' is not 'D'. Conclusion I follows. II and III do not.\n\n\u26a1 SHORTCUT: Focus on definite relations. Some 'B' are 'C', No 'C' is 'D' implies that some 'B' (the part that is 'C') cannot be 'D'. I is definite. II and III are possibilities, not definite.",
+    "id": 112
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "medium",
+    "question": "'P' is the father of 'Q'. 'R' is the daughter of 'S'. 'S' is the wife of 'P'. 'T' is the brother of 'Q'. How is 'T' related to 'R'?",
+    "options": [
+      "A. Brother",
+      "B. Uncle",
+      "C. Son",
+      "D. Father"
+    ],
+    "answer": "A. Brother",
+    "explanation": "Standard Method: 'P' and 'S' are parents. 'Q', 'T', 'R' are their children. Since 'T' is male (brother of 'Q') and 'R' is female (daughter of 'S'), 'T' and 'R' are siblings, so 'T' is 'R's brother.\n\n\u26a1 SHORTCUT: 'P' and 'S' are parents. 'Q', 'T', 'R' are their children. Since 'T' is 'Q's brother and 'R' is 'S's daughter, 'T' and 'R' must be siblings.",
+    "id": 113
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "medium",
+    "question": "If 'CRICKET' is coded as '3189311520', how would 'FOOTBALL' be coded? (Hint: 'C' is 3, 'R' is 18, 'I' is 9, 'K' is 11, 'E' is 5, 'T' is 20, representing alphabetical positions.)",
+    "options": [
+      "A. 6151520211212",
+      "B. 6151520212112",
+      "C. 6151520121122",
+      "D. 6151520121212"
+    ],
+    "answer": "D. 6151520121212",
+    "explanation": "Standard Method: Each letter is replaced by its alphabetical position (A=1, B=2,...). 'CRICKET' -> C(3) R(18) I(9) C(3) K(11) E(5) T(20) -> 3189311520. Apply the same for 'FOOTBALL'.\n\n\u26a1 SHORTCUT: Directly map letters to their 1-26 position and concatenate. F=6, O=15, T=20, B=2, A=1, L=12. Combine for 'FOOTBALL'.",
+    "id": 114
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "medium",
+    "question": "Eight friends 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' are sitting around a circular table facing the center. 'A' is third to the right of 'C'. 'G' is second to the left of 'A'. 'B' is not an immediate neighbor of 'A' or 'C'. 'D' is third to the right of 'B'. 'H' is second to the right of 'F'. 'E' is not an immediate neighbor of 'A'. Who is sitting exactly between 'E' and 'G' (counting clockwise from 'E')?",
+    "options": [
+      "A. B",
+      "B. F",
+      "C. H",
+      "D. D"
+    ],
+    "answer": "A. B",
+    "explanation": "Standard Method: Place 'C', then 'A' (C_ _A). Place 'G' relative to 'A' (G_A). Use negative constraints for 'B' and 'E'. Then place 'D' relative to 'B' and 'H' relative to 'F'. Systematically fill in positions to find 'B' between 'E' and 'G'.\n\n\u26a1 SHORTCUT: Use definite placements first. C- -A, then G- -A. Exclude 'B' from A/C spots. D- -B helps place 'B'. H- -F. E not next to A. Fill remaining to find the answer.",
+    "id": 115
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "medium",
+    "question": "'A' starts from his home and walks 5 km East, then turns right and walks 3 km. He then turns left and walks 4 km, and again turns left and walks 3 km. Finally, he turns right and walks 3 km. In which direction and how far is he from his starting point?",
+    "options": [
+      "A. 12 km East",
+      "B. 12 km West",
+      "C. 9 km East",
+      "D. 9 km West"
+    ],
+    "answer": "A. 12 km East",
+    "explanation": "Standard Method: Plot movements: 5E, 3S, 4E, 3N, 3E. Calculate net displacement. East: 5 + 4 + 3 = 12 km. North/South: 3S and 3N cancel out. Result is 12 km East from start.\n\n\u26a1 SHORTCUT: Separate E/W and N/S movements. East: 5 + 4 + 3 = 12 km. South: 3 km, North: 3 km. Net N/S = 0. Final position: 12 km East.",
+    "id": 116
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series Completion",
+    "difficulty": "medium",
+    "question": "Complete the series: '2A', '4C', '7F', '11J', '?'",
+    "options": [
+      "A. 15N",
+      "B. 16N",
+      "C. 16O",
+      "D. 17O"
+    ],
+    "answer": "C. 16O",
+    "explanation": "Standard Method: Analyze number and letter patterns separately. Numbers: +2, +3, +4, so next is +5 (11+5=16). Letters: A(+2)C(+3)F(+4)J(+5)O (A=1, C=3, F=6, J=10, O=15).\n\n\u26a1 SHORTCUT: Number sequence: 2 (+2) 4 (+3) 7 (+4) 11 (+5) 16. Letter sequence: A (skip 1) C (skip 2) F (skip 3) J (skip 4) O. Combine for '16O'.",
+    "id": 117
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Clocks and Calendars",
+    "difficulty": "medium",
+    "question": "At what time between 4 and 5 o'clock will the hands of a clock be at right angles (90 degrees) for the first time?",
+    "options": [
+      "A. 4:05 and 5/11 minutes",
+      "B. 4:21 and 9/11 minutes",
+      "C. 4:22 and 1/11 minutes",
+      "D. 4:25 and 5/11 minutes"
+    ],
+    "answer": "A. 4:05 and 5/11 minutes",
+    "explanation": "Standard Method: Use angle formula: Angle = |30H - (11/2)M|. For 90 degrees and H=4, 90 = |30*4 - (11/2)M|. 90 = |120 - (11/2)M|. First time: 120 - (11/2)M = 90 => (11/2)M = 30 => M = 60/11 = 5 and 5/11 minutes.\n\n\u26a1 SHORTCUT: Formula M = (2/11)*(H*30 +/- A). Here, H=4, A=90. M = (2/11)*(4*30 - 90) = (2/11)*(120-90) = (2/11)*30 = 60/11 = 5 5/11 minutes.",
+    "id": 118
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "medium",
+    "question": "Three positions of a single dice are shown below. Which number will be on the face opposite to the face with number '3'?\n(Assume visible faces for positions are):\nDice 1: 2, 4, 5\nDice 2: 1, 4, 6\nDice 3: 1, 3, 5",
+    "options": [
+      "A. 1",
+      "B. 2",
+      "C. 4",
+      "D. 5"
+    ],
+    "answer": "C. 4",
+    "explanation": "Standard Method: Compare Dice 1 (2,4,5) and Dice 2 (1,4,6). Common face is '4'. Moving clockwise: 4->5->2 (D1) and 4->6->1 (D2). Thus, 5 is opposite 6, and 2 is opposite 1. The remaining numbers are 3 and 4, so 3 is opposite 4.\n\n\u26a1 SHORTCUT: Identify common face ('4' in D1 and D2). Clockwise sequence from '4' (D1:5,2; D2:6,1) gives opposite pairs (5 vs 6, 2 vs 1). The only remaining pair is (3 vs 4).",
+    "id": 119
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "medium",
+    "question": "In a group of 5 friends 'A', 'B', 'C', 'D', 'E', who is the tallest?\nStatement I: 'C' is taller than 'A' and 'E', but shorter than 'D'.\nStatement II: 'B' is not the shortest. 'D' is taller than 'B'.",
+    "options": [
+      "A. Statement I alone is sufficient.",
+      "B. Statement II alone is sufficient.",
+      "C. Both statements I and II are needed.",
+      "D. Both statements I and II are not sufficient."
+    ],
+    "answer": "C. Both statements I and II are needed.",
+    "explanation": "Standard Method: From I: D > C > A, D > C > E. 'D' is tallest among A, C, E, D, but 'B' is unknown. From II: D > B, 'B' is not shortest. Combining I and II: D > C > A, D > C > E, D > B. This confirms 'D' is the tallest.\n\n\u26a1 SHORTCUT: Statement I establishes D > C > {A,E}. Statement II establishes D > B. Combined, D is taller than C, A, E, and B, making 'D' the tallest.",
+    "id": 120
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Assumptions/Inferences",
+    "difficulty": "medium",
+    "question": "Statement: 'Our company has always valued innovation, and that is why we have decided to invest heavily in research and development this quarter.'\nWhich of the following assumptions is implicit in the statement?",
+    "options": [
+      "A. Other companies in the sector are not investing in R&D.",
+      "B. Innovation is directly proportional to investment in R&D.",
+      "C. The company had not invested heavily in R&D in previous quarters.",
+      "D. Investment in R&D is the only way to achieve innovation."
+    ],
+    "answer": "B. Innovation is directly proportional to investment in R&D.",
+    "explanation": "Standard Method: An assumption is an unstated premise. The link between 'valuing innovation' and 'investing in R&D' is the belief that R&D investment leads to (or promotes) innovation. Option 'B' best captures this implicit connection.\n\n\u26a1 SHORTCUT: The statement implies a cause-effect relationship: more R&D (cause) leads to more innovation (effect). This means a direct relationship is assumed for the decision.",
+    "id": 121
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "medium",
+    "question": "Statements: Some cars are trucks. All trucks are buses. No bus is a cycle. Conclusions: I. Some cars are buses. II. No truck is a cycle. III. Some buses are cycles.",
+    "options": [
+      "A. Only conclusion I follows.",
+      "B. Only conclusions I and II follow.",
+      "C. Only conclusions II and III follow.",
+      "D. Only conclusion II follows."
+    ],
+    "answer": "B. Only conclusions I and II follow.",
+    "explanation": "Standard Method: Draw Venn diagrams. Some cars are buses (C T B). No truck is a cycle (T B X C). Some buses are cycles (B X C is false). I and II follow. \n\n\u26a1 SHORTCUT: I (Some C are B) is true from C-T-B link. II (No T is C) is true from T-B-C link. III (Some B are C) contradicts No B is C.",
+    "id": 122
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "medium",
+    "question": "'A' is the mother of 'B'. 'C' is the son of 'A'. 'D' is the brother of 'E'. 'E' is the daughter of 'B'. How is 'D' related to 'A'?",
+    "options": [
+      "A. Grandson",
+      "B. Son",
+      "C. Brother",
+      "D. Nephew"
+    ],
+    "answer": "A. Grandson",
+    "explanation": "Standard Method: 'A' is mother of 'B' and 'C'. 'E' is daughter of 'B'. 'D' is brother of 'E'. So 'D' is son of 'B'. 'B' is 'A's child, thus 'D' is 'A's grandson. \n\n\u26a1 SHORTCUT: Trace: A->B->D. D is B's son. B is A's child. So D is A's grandson (male). If D was female, it would be granddaughter.",
+    "id": 123
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "medium",
+    "question": "If 'CLOUD' is coded as '59341' and 'RAIN' is coded as '8627', then how is 'DRAIN' coded?",
+    "options": [
+      "A. 18627",
+      "B. 16827",
+      "C. 18267",
+      "D. 12867"
+    ],
+    "answer": "A. 18627",
+    "explanation": "Standard Method: Map letters to digits directly. C=5, L=9, O=3, U=4, D=1. R=8, A=6, I=2, N=7. For DRAIN, combine D=1, R=8, A=6, I=2, N=7. Result is 18627. \n\n\u26a1 SHORTCUT: Identify direct substitution. Extract codes for D, R, A, I, N from the given words and assemble them in sequence.",
+    "id": 124
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "medium",
+    "question": "What number should come next in the series: 4, 18, 48, 100, 180, ...?",
+    "options": [
+      "A. 294",
+      "B. 280",
+      "C. 320",
+      "D. 308"
+    ],
+    "answer": "A. 294",
+    "explanation": "Standard Method: Calculate successive differences until a constant difference (6 in 3rd level) is found. Extrapolate to find the next first difference (114) then the next term (180+114=294). \n\n\u26a1 SHORTCUT: Recognize the pattern: the n-th term is n * (n+1)^2. For n=6, the next term is 6 * (6+1)^2 = 6 * 7^2 = 6 * 49 = 294.",
+    "id": 125
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "medium",
+    "question": "Seven friends 'P', 'Q', 'R', 'S', 'T', 'U', 'V' are sitting in a straight line facing North. 'P' is at one end of the line. 'Q' is sitting second to the left of 'S'. 'R' is sitting at the exact center. 'T' is an immediate neighbor of 'R'. 'V' is not an immediate neighbor of 'P'. 'S' is sitting to the right of 'R'. Who is sitting at the other end of the line?",
+    "options": [
+      "A. 'Q'",
+      "B. 'U'",
+      "C. 'S'",
+      "D. 'V'"
+    ],
+    "answer": "C. 'S'",
+    "explanation": "Standard Method: R is 4th. S is right of R. Q is at S-2. T neighbor R (T=3). P at end (P=1). V not neighbor P (V!=2, so V=6). U is 2. Arrangement: P U T R Q V S. Other end is S. \n\n\u26a1 SHORTCUT: Start with fixed positions (R=4). Use relative positions (S right of R, Q_S, T_R) to narrow down. Finally, place P, then use V's restriction to place V and U.",
+    "id": 126
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "medium",
+    "question": "Is 'A' the brother of 'B'?",
+    "options": [
+      "A. Statement I alone is sufficient.",
+      "B. Statement II alone is sufficient.",
+      "C. Both statements I and II together are sufficient.",
+      "D. Neither statement I nor II is sufficient."
+    ],
+    "answer": "D. Neither statement I nor II is sufficient.",
+    "explanation": "Standard Method: From I, 'A' and 'B' are siblings, but 'A's gender is unknown. Insufficient. From II, 'C's only daughter 'D' is identified, but 'A' and 'B's relation is unknown. Insufficient. Combining I and II: 'A' and 'B' are 'C's children. 'A' could be 'D' (female) or a son. So, insufficient. \n\n\u26a1 SHORTCUT: I gives sibling status but not 'A's gender. II gives gender of 'D' but no relation to 'A'/'B'. Combined, 'A's gender still cannot be definitively male.",
+    "id": 127
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Deductive Logic / Statement-Assumption",
+    "difficulty": "medium",
+    "question": "Statement: 'Please switch off the mobile phones while inside the examination hall.' - An instruction in an examination. Assumption I: Mobile phones distract students during exams. Assumption II: Students carry mobile phones to the examination hall.",
+    "options": [
+      "A. Only assumption I is implicit.",
+      "B. Only assumption II is implicit.",
+      "C. Both assumptions I and II are implicit.",
+      "D. Neither assumption I nor II is implicit."
+    ],
+    "answer": "C. Both assumptions I and II are implicit.",
+    "explanation": "Standard Method: For an instruction to switch off phones to be given, it's assumed students have phones (II) and that they would cause an issue if on (I, e.g., distraction/cheating). \n\n\u26a1 SHORTCUT: An instruction implies the existence of the object (phones) and a valid reason for the action (preventing distraction).",
+    "id": 128
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy (Word)",
+    "difficulty": "medium",
+    "question": "'Architect' is to 'Building' as 'Sculptor' is to '_______'.",
+    "options": [
+      "A. 'Statue'",
+      "B. 'Chisel'",
+      "C. 'Marble'",
+      "D. 'Museum'"
+    ],
+    "answer": "A. 'Statue'",
+    "explanation": "Standard Method: The analogy establishes a 'creator : creation' relationship. An Architect creates a Building. Similarly, a Sculptor creates a Statue. \n\n\u26a1 SHORTCUT: Identify the relationship type: Creator produces Creation. Apply this type to the second pair to find the missing creation.",
+    "id": 129
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Odd One Out / Classification",
+    "difficulty": "medium",
+    "question": "Identify the odd one out: 'Flute', 'Guitar', 'Violin', 'Drum'.",
+    "options": [
+      "A. 'Flute'",
+      "B. 'Guitar'",
+      "C. 'Violin'",
+      "D. 'Drum'"
+    ],
+    "answer": "D. 'Drum'",
+    "explanation": "Standard Method: Flute (wind), Guitar (string), and Violin (string) are instruments primarily used for playing melodic lines or chords. A Drum is a percussion instrument, generating sound by striking, making it different in fundamental type. \n\n\u26a1 SHORTCUT: Group by instrument type. Flute, Guitar, Violin are melodic instruments. Drum is a percussive instrument.",
+    "id": 130
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Directions",
+    "difficulty": "medium",
+    "question": "'A' walks 10m North, turns right and walks 20m, then turns right and walks 10m, then turns left and walks 10m. In which direction is 'A' from the starting point?",
+    "options": [
+      "A. East",
+      "B. West",
+      "C. North-East",
+      "D. South-East"
+    ],
+    "answer": "A. East",
+    "explanation": "Standard Method: Draw path: 10N -> 20E -> 10S -> 10E. Net movement: 10m North + 10m South = 0m vertical. 20m East + 10m East = 30m East. So, 30m East from start. \n\n\u26a1 SHORTCUT: Cancel opposing directions. 10m North cancels 10m South. Remaining is 20m East + 10m East = 30m East. Final direction is East.",
+    "id": 131
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "medium",
+    "question": "Statements:\n1. 'Some apples are bananas.'\n2. 'All bananas are cherries.'\nConclusions:\nI. 'Some apples are cherries.'\nII. 'All cherries are bananas.'",
+    "options": [
+      "A. Only conclusion I follows.",
+      "B. Only conclusion II follows.",
+      "C. Both conclusions I and II follow.",
+      "D. Neither conclusion I nor II follows."
+    ],
+    "answer": "A. Only conclusion I follows.",
+    "explanation": "Standard Method: Draw Venn diagrams for the statements. 'Some apples are bananas', 'All bananas are cherries'. Diagram shows some apples overlap with cherries. 'All cherries are bananas' is not necessarily true. \n\n\u26a1 SHORTCUT: Focus on term overlap. If 'A' relates to 'B', and 'B' is entirely within 'C', then 'A' must relate to 'C' where 'A' and 'B' overlap.",
+    "id": 132
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "medium",
+    "question": "What is the age of 'P'?\nStatement I: 'P' is 5 years older than 'Q'.\nStatement II: 'Q' is 3 years younger than 'R', and 'R's age is 20.",
+    "options": [
+      "A. Statement I alone is sufficient.",
+      "B. Statement II alone is sufficient.",
+      "C. Both statements I and II are necessary.",
+      "D. Neither statement I nor II is sufficient."
+    ],
+    "answer": "C. Both statements I and II are necessary.",
+    "explanation": "Standard Method: Statement I gives P's age relative to Q. Statement II gives R's absolute age, from which Q's age can be found. Both statements combined allow calculation of P's absolute age. \n\n\u26a1 SHORTCUT: Identify what information is missing. Statement I needs Q's age. Statement II provides Q's age. Thus, both are needed.",
+    "id": 133
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "medium",
+    "question": "In a certain code, 'SMART' is written as 'TNAQS'. How is 'GREAT' written in that code?",
+    "options": [
+      "A. HSEAT",
+      "B. HSEAS",
+      "C. FTFBS",
+      "D. HREAS"
+    ],
+    "answer": "B. HSEAS",
+    "explanation": "Standard Method: Analyze the pattern for 'SMART' to 'TNAQS'. Vowels (A) remain unchanged. Consonants at odd positions (+1), consonants at even positions (-1). S(+1)=T, M(+1)=N (not -1 for 2nd pos), A(no change), R(-1)=Q, T(-1)=S. No, it is: S(+1), M(+1), A(no change), R(-1), T(-1). Applying this: G(+1)=H, R(+1)=S, E(no change)=E, A(no change)=A, T(-1)=S. \n\n\u26a1 SHORTCUT: Identify immediate shifts. S->T, M->N, A->A, R->Q, T->S. This means +1 for first two, no change for middle, -1 for last two. Apply this sequence to 'GREAT'.",
+    "id": 134
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "medium",
+    "question": "If 'P + Q' means 'P is the brother of Q', 'P - Q' means 'P is the sister of Q', 'P * Q' means 'P is the father of Q', and 'P / Q' means 'P is the mother of Q', then how is 'R' related to 'T' in 'R / S * T + U'?",
+    "options": [
+      "A. Mother",
+      "B. Grandmother",
+      "C. Grandfather",
+      "D. Aunt"
+    ],
+    "answer": "B. Grandmother",
+    "explanation": "Standard Method: R / S means 'R is mother of S'. S * T means 'S is father of T'. T + U means 'T is brother of U'. Combining these: R is mother of S, and S is father of T. Therefore, R is the paternal grandmother of T. \n\n\u26a1 SHORTCUT: Trace relations backward from 'T'. T's father is S. S's mother is R. Thus, R is T's paternal grandmother.",
+    "id": 135
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "medium",
+    "question": "A person walks 10m North, then turns right and walks 5m. Then turns left and walks 10m. Then turns left and walks 5m. How far and in which direction is he from the starting point?",
+    "options": [
+      "A. 20m East",
+      "B. 20m North",
+      "C. 10m North",
+      "D. 10m East"
+    ],
+    "answer": "B. 20m North",
+    "explanation": "Standard Method: Draw the path. N 10m. Right turn (East) 5m. Left turn (North) 10m. Left turn (West) 5m. Net North movement: 10m + 10m = 20m. Net East-West movement: 5m East - 5m West = 0m. So, 20m North. \n\n\u26a1 SHORTCUT: Resolve movements into North/South and East/West components. North: +10, +10 = +20. East: +5, -5 = 0. Result: 20m North.",
+    "id": 136
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "medium",
+    "question": "Six friends, 'A', 'B', 'C', 'D', 'E', 'F' are sitting in a circle facing the center. 'D' is to the immediate left of 'B'. 'C' is between 'E' and 'F'. 'A' is between 'E' and 'D'. Who is to the immediate right of 'C'?",
+    "options": [
+      "A. A",
+      "B. B",
+      "C. D",
+      "D. F"
+    ],
+    "answer": "D. F",
+    "explanation": "Standard Method: Build the arrangement step-by-step. 'D' is left of 'B' (B D). 'A' is between 'E' and 'D' (E A D). Combine: B D A E. 'C' is between 'E' and 'F' (E C F). So the arrangement is B D A E C F (clockwise). 'F' is to the immediate right of 'C'. \n\n\u26a1 SHORTCUT: Link statements with common elements. 'D' is next to 'B' and 'A'. 'E' is next to 'A' and 'C/F'. Connect D-A-E. Then E-C-F. Finally fit B.",
+    "id": 137
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "medium",
+    "question": "Identify the missing number in the series: '4, 9, 25, 49, ?, 169'",
+    "options": [
+      "A. 81",
+      "B. 100",
+      "C. 121",
+      "D. 144"
+    ],
+    "answer": "C. 121",
+    "explanation": "Standard Method: Analyze the numbers: 4 = 2^2, 9 = 3^2, 25 = 5^2, 49 = 7^2, 169 = 13^2. The bases (2, 3, 5, 7, 13) are prime numbers in increasing order. The next prime after 7 is 11. So, the missing number is 11^2 = 121. \n\n\u26a1 SHORTCUT: Recognize squares. Then check the bases (2,3,5,7,X,13). Realize they are sequential prime numbers. Find the missing prime and square it.",
+    "id": 138
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Statement & Conclusion",
+    "difficulty": "medium",
+    "question": "Statement: 'All cars are vehicles. All vehicles are engines.'\nConclusions:\nI. 'All cars are engines.'\nII. 'All engines are cars.'",
+    "options": [
+      "A. Only conclusion I follows.",
+      "B. Only conclusion II follows.",
+      "C. Both conclusions I and II follow.",
+      "D. Neither conclusion I nor II follows."
+    ],
+    "answer": "A. Only conclusion I follows.",
+    "explanation": "Standard Method: If 'A' is entirely 'B', and 'B' is entirely 'C', then 'A' must be entirely 'C'. So, 'All cars are engines' follows. The reverse ('All engines are cars') does not logically follow as there might be vehicles/engines that are not cars. \n\n\u26a1 SHORTCUT: 'All A are B' and 'All B are C' implies 'All A are C'. The converse is generally not true.",
+    "id": 139
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Clocks",
+    "difficulty": "medium",
+    "question": "At what time between 4 and 5 o'clock will the hands of a clock be at a right angle (90 degrees) for the second time?",
+    "options": [
+      "A. 4 o'clock 5 5/11 minutes",
+      "B. 4 o'clock 38 2/11 minutes",
+      "C. 4 o'clock 20 minutes",
+      "D. 4 o'clock 45 minutes"
+    ],
+    "answer": "B. 4 o'clock 38 2/11 minutes",
+    "explanation": "Standard Method: Use formula M = (2/11) * (30H +/- A). For H=4, A=90. Second time uses '+'. M = (2/11) * (30*4 + 90) = (2/11) * (120+90) = (2/11) * 210 = 420/11 = 38 2/11 minutes. \n\n\u26a1 SHORTCUT: At 4 o'clock, hour hand is at 120 degrees. For 90 degrees, minute hand needs to be at 30 or 210 degrees. For second time, 210 degrees. (210/6) = 35 minutes. Adjust for relative speed: 35 * (12/11) = 420/11.",
+    "id": 140
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "medium",
+    "question": "Two positions of a dice are shown below:\n[Image 1: Faces 1, 3, 5 are visible]\n[Image 2: Faces 3, 4, 6 are visible]\nIf '2' is at the bottom, which number will be on the top?",
+    "options": [
+      "A. 1",
+      "B. 3",
+      "C. 4",
+      "D. 6"
+    ],
+    "answer": "B. 3",
+    "explanation": "Standard Method: Compare both dice. '3' is common. From '3', moving clockwise: Die 1: 3-5-1. Die 2: 3-6-4. Thus, 5 is opposite 6, and 1 is opposite 4. The remaining number '2' must be opposite the common face '3'. So, if '2' is at the bottom, '3' is on top. \n\n\u26a1 SHORTCUT: Identify the common face ('3'). The unseen face in both views is '2'. Thus, '3' and '2' must be opposite each other.",
+    "id": 141
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "hard",
+    "question": "Statements: \n1. Only a few 'A' are 'B'.\n2. All 'B' are 'C'.\n3. No 'C' is 'D'.\nConclusions:\nI. Some 'D' can be 'A'.\nII. All 'B' are definitely not 'D'.\nIII. All 'A' can be 'C'.",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only II and III follow",
+      "C. Only I and III follow",
+      "D. All I, II and III follow"
+    ],
+    "answer": "D. All I, II and III follow",
+    "explanation": "Standard Method: 'Only a few A are B' means Some A are B and Some A are not B. From this, and the other statements, all three conclusions can be derived as possible or definite. \n\n\u26a1 SHORTCUT: Draw Venn diagrams. For 'Only a few', show partial overlap and distinct non-overlap. Test each conclusion against all valid diagrams.",
+    "id": 142
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "hard",
+    "question": "Eight friends 'P', 'Q', 'R', 'S', 'T', 'U', 'V', and 'W' are sitting around a circular table facing the centre, but not necessarily in the same order. \n- 'P' sits third to the right of 'R'.\n- Only two people sit between 'P' and 'S'.\n- 'T' sits second to the left of 'W'.\n- 'W' is not an immediate neighbour of 'P' or 'S'.\n- 'U' sits opposite 'Q'.\n- 'V' is not an immediate neighbour of 'S'.\nWho sits third to the left of 'Q'?",
+    "options": [
+      "A. 'V'",
+      "B. 'T'",
+      "C. 'P'",
+      "D. 'W'"
+    ],
+    "answer": "B. 'T'",
+    "explanation": "Standard Method: Start with 'P' and 'R', then place 'S'. Use 'W' not adjacent to 'P'/'S' to fix 'W' and 'T'. Place 'U' opposite 'Q' and 'V' not adjacent to 'S' to complete. The order is P-V-W-S-U-R-Q-T. \n\n\u26a1 SHORTCUT: Visualise the circle. Key is placing 'W' correctly. 'W' has 4 non-neighbouring spots from 'P'/'S' combo; only one fits 'T' constraint. Final arrangement: P-V-W-S-U-R-Q-T.",
+    "id": 143
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "In a code language: \n'A + B' means 'A is the father of B'. \n'A - B' means 'A is the wife of B'. \n'A * B' means 'A is the brother of B'. \n'A / B' means 'A is the daughter of B'. \nIf 'P + Q - R * S / T', how is 'P' related to 'S'?",
+    "options": [
+      "A. Father",
+      "B. Father-in-law",
+      "C. Uncle",
+      "D. Grandfather"
+    ],
+    "answer": "D. Grandfather",
+    "explanation": "Standard Method: 'P+Q' => P is father of Q. 'Q-R' => Q is wife of R. 'R*S' => R is brother of S. Thus, P is R's father. As R is S's brother, P is S's father's father, making P the grandfather of S. \n\n\u26a1 SHORTCUT: Trace generations: P (+1) Q (-0) R (-0) S. P is two generations above S, male. So Grandfather.",
+    "id": 144
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "hard",
+    "question": "In a certain code, 'PROMPT' is coded as '26', 'STRAY' as '35'. How will 'CHANCE' be coded? (Assume A=1, B=2, ... Z=26)",
+    "options": [
+      "A. '29'",
+      "B. '31'",
+      "C. '33'",
+      "D. '34'"
+    ],
+    "answer": "D. '34'",
+    "explanation": "Standard Method: The code is (Sum of letter positions) - (Number of consonants * 24) + (Number of vowels * 48). \nPROMPT: Sum=98, 5 C, 1 V => 98-(5*24)+(1*48) = 26. \nSTRAY: Sum=83, 4 C, 1 V => 83-(4*24)+(1*48) = 35. \nCHANCE: Sum=34, 4 C, 2 V => 34-(4*24)+(2*48) = 34. \n\n\u26a1 SHORTCUT: Pattern involves sum of positions and differentiated multipliers for vowels/consonants. Set up simultaneous equations or quickly test multipliers (24 & 48) after calculating letter sums.",
+    "id": 145
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Puzzles - Ordering",
+    "difficulty": "hard",
+    "question": "Six boxes 'A', 'B', 'C', 'D', 'E', 'F' are kept one above another, not necessarily in the same order. \n- Three boxes are between 'A' and 'D'.\n- 'E' is immediately above 'F'.\n- 'F' is not at the bottom.\n- 'B' is above 'C' but not immediately above.\n- 'A' is not above 'C'.\nWhich box is at the third position from the top?",
+    "options": [
+      "A. 'E'",
+      "B. 'F'",
+      "C. 'C'",
+      "D. 'B'"
+    ],
+    "answer": "C. 'C'",
+    "explanation": "Standard Method: 'A' not above 'C' means 'C' is above 'A'. 'B' above 'C' (not immediate). 'D' with 3 between 'A'. 'E' above 'F', 'F' not bottom. This leads to unique order: B-D-C-E-F-A (top to bottom). \n\n\u26a1 SHORTCUT: Start with the most constrained pair ('E' immediately above 'F', 'F' not bottom) and the most restrictive condition ('A' not above 'C', 'B' above 'C'). Systematically eliminate possibilities. (B,D,C,E,F,A).",
+    "id": 146
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "hard",
+    "question": "There are 7 persons 'P', 'Q', 'R', 'S', 'T', 'U', 'V' standing in a straight line, facing North. Who among them is standing exactly in the middle? \nStatement I: 'S' is standing to the immediate right of 'Q'. Three persons are standing between 'P' and 'T'. 'P' is not standing at any of the extreme ends. \nStatement II: 'R' is standing to the left of 'V'. 'U' is standing to the immediate right of 'T'. 'Q' is standing at one of the ends.",
+    "options": [
+      "A. Statement I alone is sufficient",
+      "B. Statement II alone is sufficient",
+      "C. Both statements I and II are necessary",
+      "D. Neither statement I nor statement II is sufficient"
+    ],
+    "answer": "C. Both statements I and II are necessary",
+    "explanation": "Standard Method: Statement I gives multiple arrangements for P,T,Q,S. Statement II also allows multiple. Combining: Q at left end (due to QS block and P not extreme). This fixes Q-S, P-T, T-U blocks and allows unique placement for all 7. \n\n\u26a1 SHORTCUT: Look for definitive constraints. I gives P is not extreme and P-T gap. II gives Q is an end, T-U block. Only combined do they force a unique arrangement (Q S R P V T U).",
+    "id": 147
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Critical Reasoning - Assumption",
+    "difficulty": "hard",
+    "question": "A government committee recommended that all public schools in the city introduce an arts appreciation program for students aged 10-14. This is because studies show that early exposure to arts significantly improves critical thinking skills in young adults.\nWhich of the following is an assumption made by the committee?",
+    "options": [
+      "A. The city's public schools currently lack any arts appreciation program for students aged 10-14.",
+      "B. Improving critical thinking skills in young adults is a primary goal of public education.",
+      "C. Teachers in public schools are adequately trained to deliver arts appreciation programs effectively.",
+      "D. Students aged 10-14 in private schools also need exposure to arts for critical thinking development."
+    ],
+    "answer": "B. Improving critical thinking skills in young adults is a primary goal of public education.",
+    "explanation": "Standard Method: An assumption is an unstated premise needed for the conclusion to hold. The committee recommends a program because it improves critical thinking. This implies they believe improving critical thinking is a desirable outcome for public education. \n\n\u26a1 SHORTCUT: Ask 'What if this were false?'. If critical thinking isn't a primary goal, the reason for the program (improving critical thinking) becomes irrelevant.",
+    "id": 148
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Logical Deduction - Conditional",
+    "difficulty": "hard",
+    "question": "Six statements are given: \nI. If 'P' is true, then 'Q' is false. \nII. If 'Q' is true, then 'R' is true. \nIII. If 'R' is false, then 'S' is true. \nIV. If 'S' is true, then 'T' is false. \nIf 'T' is found to be true, which of the following must be false?",
+    "options": [
+      "A. 'P' is true",
+      "B. 'Q' is true",
+      "C. 'R' is true",
+      "D. 'S' is false"
+    ],
+    "answer": "A. 'P' is true",
+    "explanation": "Standard Method: Work backward from 'T' is true. From IV: T(T) => S(F). From III: S(F) => R(T). From II: R(T) => Q(T). From I: Q(T) => P(F). So 'P' is true must be false. \n\n\u26a1 SHORTCUT: Trace the chain of implications in reverse. T(True) -> S(False) -> R(True) -> Q(True) -> P(False). Therefore, 'P' is true must be false.",
+    "id": 149
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coded Inequalities",
+    "difficulty": "hard",
+    "question": "In the following question, the symbols '?', '&', '#', '@', '%' are used with the following meanings: \n'A ? B' means 'A is not smaller than B'.\n'A & B' means 'A is neither smaller than nor equal to B'.\n'A # B' means 'A is not greater than B'.\n'A @ B' means 'A is neither greater than nor equal to B'.\n'A % B' means 'A is neither smaller than nor greater than B'.\n\nStatements: 'W ? X', 'X # Y', 'Y & Z'\nConclusions:\nI. 'W & Z'\nII. 'Z @ W'\nIII. 'Y ? W'",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only II and III follow",
+      "C. Only I follows",
+      "D. None follow"
+    ],
+    "answer": "D. None follow",
+    "explanation": "Standard Method: Convert symbols: ?=>'>=', &=>'>', #=>'<=' , @=>'<', %=>'='. \nStatements: W >= X, X <= Y, Y > Z. \nCombined: W >= X <= Y > Z. No definite relation between W and Z, or Y and W. Thus, none of the conclusions follow definitely. \n\n\u26a1 SHORTCUT: Immediately convert to standard inequality symbols. Chain the statements. Visually check for definite relationships. If any ambiguity or opposing possibility exists, the conclusion doesn't follow.",
+    "id": 150
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Visual Reasoning - Cubes and Dice",
+    "difficulty": "hard",
+    "question": "A cube is formed by folding a paper sheet with six faces marked 'P', 'Q', 'R', 'S', 'T', 'U'. \nIf 'P' is adjacent to 'Q' and 'R'; 'S' is adjacent to 'T' and 'U'; and 'Q' is opposite 'S', which of the following pairs of faces will be opposite to each other?",
+    "options": [
+      "A. 'P' and 'T'",
+      "B. 'Q' and 'R'",
+      "C. 'R' and 'U'",
+      "D. 'P' and 'U'"
+    ],
+    "answer": "D. 'P' and 'U'",
+    "explanation": "Standard Method: 'Q' is opposite 'S'. P, R, T, U are the four faces surrounding Q/S. Since 'P' is adjacent to 'R', 'P' cannot be opposite 'R'. Since 'T' is adjacent to 'U' (implied from 'S' adjacent to 'T' and 'U' as they are the remaining two), 'T' cannot be opposite 'U'. This forces (P,U) and (R,T) as the opposite pairs. \n\n\u26a1 SHORTCUT: Deduce 'Q' opposite 'S'. The remaining four (P,R,T,U) form two opposite pairs. 'P' adjacent 'R' means they aren't opposite. Similarly 'T' and 'U' being adjacent (given common adjacent 'S') means they aren't opposite. This uniquely forces (P,U) and (R,T).",
+    "id": 151
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "hard",
+    "question": "Eight friends - 'P', 'Q', 'R', 'S', 'T', 'U', 'V', and 'W' - are sitting around a circular table. Some face the center, some face outside. 'R' sits third to the right of 'Q'. 'P' is not an immediate neighbor of 'Q' or 'R'. 'S' sits second to the left of 'P'. 'T' and 'U' are immediate neighbors and face the same direction. 'W' is not an immediate neighbor of 'S'. 'V' faces the center. 'P' faces outside. The neighbors of 'Q' face opposite directions to each other. 'T' sits third to the right of 'V'. 'Q' faces the center. 'S' and 'W' face the same direction. 'U' does not sit opposite 'R'. How many people face outside?",
+    "options": [
+      "A. Two",
+      "B. Three",
+      "C. Four",
+      "D. Five"
+    ],
+    "answer": "C. Four",
+    "explanation": "Standard Method: Draw a circle and place people step-by-step, using conditional logic for unknown directions. Build configurations until all conditions are met. \n\n\u26a1 SHORTCUT: Fix 'Q' and 'R'. Use 'P's non-neighbor constraint. Then use 'T'/'U' and 'V' clues. Determine directions by relative positions and opposite/same direction rules.",
+    "id": 152
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "hard",
+    "question": "Statements: \n1. Some bags are not chairs. \n2. All chairs are tables. \n3. No table is a desk. \nConclusions: \nI. Some desks are not chairs. \nII. No chair is a desk. \nIII. All tables are chairs is a possibility. \nWhich of the conclusions logically follow?",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only II and III follow",
+      "C. Only I and III follow",
+      "D. All follow"
+    ],
+    "answer": "A. Only I and II follow",
+    "explanation": "Standard Method: Use Venn diagrams for all statements. Analyze each conclusion against the diagrams. 'Some bags are not chairs' means there's a part of bags not intersecting chairs. \n\n\u26a1 SHORTCUT: 'No table is a desk' and 'All chairs are tables' directly imply 'No chair is a desk' (II). If no chair is a desk, then 'Some desks are not chairs' (I) must be true. III contradicts 'All chairs are tables'.",
+    "id": 153
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "Pointing to a photograph, 'Akash' said, 'She is the only daughter of the only son of my mother's father'. How is the person in the photograph related to 'Akash'?",
+    "options": [
+      "A. Daughter",
+      "B. Sister",
+      "C. Niece",
+      "D. Cousin"
+    ],
+    "answer": "D. Cousin",
+    "explanation": "Standard Method: Trace relations backward from 'Akash'. 'My mother's father' is 'Akash's maternal grandfather'. 'Only son of my mother's father' is 'Akash's maternal uncle'. 'Only daughter of my maternal uncle' is 'Akash's cousin'. \n\n\u26a1 SHORTCUT: Focus on 'only son of my mother's father' = 'Akash's uncle'. Then 'only daughter' means 'Akash's cousin'. Simplifies complex phrase to direct relation.",
+    "id": 154
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Input-Output",
+    "difficulty": "hard",
+    "question": "An input-output machine processes numbers as follows: \nInput: 85  23  91  14  68  37 \nStep I: 14  85  23  91  68  37 (Smallest moved to front) \nStep II: 14  91  85  23  68  37 (Largest of remaining moved to 2nd position) \nStep III: 14  91  23  85  68  37 (2nd smallest of remaining moved to 3rd position) \nAnd so on, alternating between smallest and largest of the remaining numbers. \nWhat will be Step IV for the input: 72  19  81  34  65  28?",
+    "options": [
+      "A. 19  81  28  72  34  65",
+      "B. 19  81  28  72  65  34",
+      "C. 19  81  28  65  72  34",
+      "D. 19  81  28  34  72  65"
+    ],
+    "answer": "B. 19  81  28  72  65  34",
+    "explanation": "Standard Method: Step-by-step application of rules: \nInput: 72 19 81 34 65 28 \nStep I: 19 72 81 34 65 28 (Smallest) \nStep II: 19 81 72 34 65 28 (Largest of remaining) \nStep III: 19 81 28 72 34 65 (Smallest of remaining) \nStep IV: 19 81 28 72 65 34 (Largest of remaining: 72) \n\n\u26a1 SHORTCUT: Track the position of sorted numbers. For Step IV, the 4th element will be the largest among the remaining (72, 34, 65). So, 72. Then find 2nd largest of remaining (65).",
+    "id": 155
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Puzzles (Box-based)",
+    "difficulty": "hard",
+    "question": "Seven boxes 'A', 'B', 'C', 'D', 'E', 'F', 'G' are stacked one above another. Each box contains a different fruit: Apple, Banana, Cherry, Date, Grape, Mango, Orange. \n'C' is immediately above 'F'. 'E' contains Mango. There are two boxes between 'E' and the box with Apple. 'G' is not at the top or bottom. The box with Banana is immediately above 'D'. 'A' is immediately below the box with Orange. 'F' does not contain Grape. The box with Date is above 'C'. Neither 'A' nor 'D' contains Grape. 'B' is at the bottom. The box with Grape is not at the top. \nWhich box contains Cherry?",
+    "options": [
+      "A. Box C",
+      "B. Box G",
+      "C. Box A",
+      "D. Box F"
+    ],
+    "answer": "A. Box C",
+    "explanation": "Standard Method: Create a table for boxes and fruits. Use fixed points ('B' at bottom) and relative positions ('C' above 'F', 'Banana' above 'D'). Systematically fill in based on direct and indirect clues. \n\n\u26a1 SHORTCUT: Fix 'B' at 7. From 'E' (Mango) and 'Apple' with 2 boxes between, list possibilities. 'Banana' above 'D' is strong. 'A' below 'Orange'. 'Date' above 'C'. Deduce placement of fruits and boxes, leading to 'C' having Cherry.",
+    "id": 156
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "hard",
+    "question": "In a certain code language, \n'ALWAYS BE CAREFUL' is coded as 'BMXBZT CFSPGVM'. \n'WORK HARD TODAY' is coded as 'XPSL IBSE UPEBZ'. \nWhat is the code for 'STUDY SMART EXAM'?",
+    "options": [
+      "A. TUVEZ TNBSU FYBN",
+      "B. TUVEX TNBSU FZBN",
+      "C. TUVEZ TNBSV FZBN",
+      "D. STVDY SMBRT EXAM"
+    ],
+    "answer": "A. TUVEZ TNBSU FYBN",
+    "explanation": "Standard Method: Analyze patterns. For 'ALWAYS' to 'BMXBZT': +1 for 'A', -1 for 'L', +1 for 'W', -1 for 'A', +1 for 'Y', -1 for 'S'. It alternates +1/-1 for letters. Apply this pattern to 'STUDY SMART EXAM'. \n\n\u26a1 SHORTCUT: Observe the pattern is +1 for the 1st, 3rd, 5th... letters and -1 for the 2nd, 4th, 6th... letters of each word. Apply this directly to 'STUDY SMART EXAM'.",
+    "id": 157
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "hard",
+    "question": "'P' starts from his home, walks 10 km South. He then turns right and walks 15 km. He again turns right and walks 20 km. Then he turns left and walks 5 km. Finally, he turns left and walks 10 km. In which direction and how far is he from his home?",
+    "options": [
+      "A. 20 km West",
+      "B. 20 km East",
+      "C. 10 km West",
+      "D. 15 km North-West"
+    ],
+    "answer": "A. 20 km West",
+    "explanation": "Standard Method: Draw the path segment by segment. Keep track of North/South and East/West components. \n\n\u26a1 SHORTCUT: \nNorth-South: -10 (S) + 20 (N) + 10 (N) = +20 km (North from start point of 20km N walk, which is 10km N from home, so +20-10 = +10 N from home). \nEast-West: -15 (W) - 5 (W) = -20 km (West). So 20km West. Wait, let me re-calculate the shortcut to be precise and short. \nN-S displacement: -10 (S) + 20 (N) + 10 (N) = +20 from his last South turn point. So total North displacement relative to start is 20-10 = 10N. \nE-W displacement: -15 (W) - 5 (W) = -20 km (West). So total 20km West and 10km North. This means it is sqrt(10^2+20^2) from home, and North-West. \nRe-evaluating the question for a simpler interpretation or my initial calculation error. \n1. 10S \n2. Right (W) 15W \n3. Right (N) 20N \n4. Left (W) 5W \n5. Left (S) 10S \nNet North: -10 (initial S) + 20 (N) - 10 (S) = 0. \nNet West: 15 (W) + 5 (W) = 20W. \nHence, 20 km West. \n\n\u26a1 SHORTCUT: Decompose movements into N/S and E/W vectors. N: 20, S: 10+10=20. So, N-S net = 0. E: 0, W: 15+5=20. So, E-W net = 20 West. Result: 20 km West.",
+    "id": 158
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Scheduling Puzzle",
+    "difficulty": "hard",
+    "question": "Eight events 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W' are held on eight consecutive days from Monday to Monday of the next week (starting with Monday). \n'R' is held on Thursday. Three events are held between 'R' and 'V'. 'Q' is held immediately after 'P'. 'T' is held on one of the days after 'V'. Two events are held between 'T' and 'W'. 'S' is held immediately before 'U'. 'U' is not held on a weekend. The number of events before 'P' is the same as the number of events after 'W'. \nWhich event is held on Saturday?",
+    "options": [
+      "A. Event Q",
+      "B. Event S",
+      "C. Event U",
+      "D. Event P"
+    ],
+    "answer": "A. Event Q",
+    "explanation": "Standard Method: Create a schedule table (Mon-Mon). Place 'R' (Thursday). Deduce 'V' (Monday or Monday next week). Use 'P'/'Q' and 'S'/'U' blocks. Place 'T' and 'W'. Check 'U' not weekend. \n\n\u26a1 SHORTCUT: Fix 'R' (Thu). 'V' is Mon or Mon (next). 'U' not weekend, 'S' before 'U'. 'P'/'Q' together. 'P' count = 'W' count after 'W'. This quickly places 'V' on Mon (next), allowing 'Q' to be Sat.",
+    "id": 159
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coded Inequality",
+    "difficulty": "hard",
+    "question": "Directions: \n'P % Q' means 'P is not smaller than Q'. \n'P @ Q' means 'P is neither smaller than nor equal to Q'. \n'P # Q' means 'P is not greater than Q'. \n'P $ Q' means 'P is neither greater than nor equal to Q'. \n'P * Q' means 'P is neither smaller than nor greater than Q'. \n\nStatements: 'R # T', 'T @ N', 'N % B', 'B $ M' \nConclusions: \nI. 'R $ N' \nII. 'M @ N' \nIII. 'B * R' \nWhich of the conclusions are definitely true?",
+    "options": [
+      "A. Only I is true",
+      "B. Only II is true",
+      "C. Only I and II are true",
+      "D. None is true"
+    ],
+    "answer": "D. None is true",
+    "explanation": "Standard Method: Convert symbols to standard inequalities: \n% = \u2265, @ = >, # = \u2264, $ = <, * = =. \nStatements: R \u2264 T, T > N, N \u2265 B, B < M. \nConclusions: \nI. R < N (False, R \u2264 T > N, so R < N is not definite) \nII. M > N (False, N \u2265 B < M, no definite relation) \nIII. B = R (False, N \u2265 B, R \u2264 T > N, no definite relation). \n\n\u26a1 SHORTCUT: Focus on the direction of inequality signs. R \u2264 T > N implies no definite R-N relation. N \u2265 B < M implies no definite M-N relation. The chain does not connect B and R strongly enough for equality.",
+    "id": 160
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Linear Arrangement (Double Row)",
+    "difficulty": "hard",
+    "question": "Ten friends are sitting in two parallel rows containing five people each. In Row 1: 'A', 'B', 'C', 'D', 'E' are seated and all of them are facing South. In Row 2: 'P', 'Q', 'R', 'S', 'T' are seated and all of them are facing North. Each person in Row 1 faces a person in Row 2. \n'C' sits third to the left of 'A'. 'Q' faces the one who sits third to the right of 'B'. 'R' is an immediate neighbor of 'Q'. Only one person sits between 'T' and 'S'. 'E' is not an immediate neighbor of 'C'. The one who faces 'D' sits to the left of 'P'. 'T' does not face 'C'. \nWho faces 'E'?",
+    "options": [
+      "A. P",
+      "B. Q",
+      "C. R",
+      "D. S"
+    ],
+    "answer": "D. S",
+    "explanation": "Standard Method: Draw two rows. Place 'C' and 'A' (Row 1). Deduce 'Q's position (Row 2) from 'B' (Row 1). Place 'R'. Use 'T'/'S' constraint and 'E' not neighbor of 'C'. Then 'D's opposite person. \n\n\u26a1 SHORTCUT: Fix 'C', 'A' in Row 1. From 'Q' facing third right of 'B', identify the pairs. 'R' neighbor of 'Q'. 'E' not near 'C'. Use 'D's opposite on left of 'P'. 'T' not facing 'C' fixes 'T' and 'S' positions. 'E' then faces 'S'.",
+    "id": 161
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "hard",
+    "question": "Statements: 'Some pens are pencils. No pencil is an eraser. All erasers are sharpener-boxes. Some sharpener-boxes are not ink-bottles.'\nConclusions:\n'I. Some pens are not erasers.'\n'II. Some ink-bottles are not pencils.'\n'III. Some sharpeners are pens.'\n'IV. No sharpener-box is a pencil.'\nWhich of the following conclusions logically follow?",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only I and IV follow",
+      "C. Only II and III follow",
+      "D. Only I follows"
+    ],
+    "answer": "D. Only I follows",
+    "explanation": "Standard Method: Draw Venn diagrams. 'Pens are pencils' and 'No pencil is eraser' directly implies 'Some pens are not erasers' (I follows). Others ('II', 'III', 'IV') cannot be definitively concluded from the given premises. \n\n\u26a1 SHORTCUT: Focus on definite negative connections. 'Pens-Pencils-Erasers' chain directly yields I due to 'No pencil is eraser' impacting 'Some pens'. Others require inferential leaps not supported.",
+    "id": 162
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Critical Reasoning - Assumption",
+    "difficulty": "hard",
+    "question": "A financial analyst stated, 'The recent surge in high-frequency trading has undeniably increased market volatility. Therefore, to stabilize our markets, we must impose strict regulatory limits on such trading activities.'\nWhich of the following is an assumption the analyst makes?",
+    "options": [
+      "A. High-frequency trading is the sole cause of market volatility.",
+      "B. Reducing market volatility is the primary goal of market regulation.",
+      "C. Strict regulatory limits on high-frequency trading will effectively decrease market volatility.",
+      "D. Market stability is inherently desirable for all investors."
+    ],
+    "answer": "C. Strict regulatory limits on high-frequency trading will effectively decrease market volatility.",
+    "explanation": "Standard Method: The analyst proposes a solution (limits) to achieve an outcome (stabilize markets). The unstated link is that the proposed solution will actually work and achieve the desired effect. If not, the conclusion fails. \n\n\u26a1 SHORTCUT: The assumption is the necessary condition for the conclusion to follow from the premise. Negate options; if negating makes the conclusion fall apart, it's the assumption.",
+    "id": 163
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "'A' is the mother of 'B'. 'C' is the brother of 'A'. 'D' is the only son of 'C'. 'E' is the husband of 'A'. 'F' is the daughter of 'B'. 'G' is the paternal grandfather of 'D'. 'H' is 'G's only daughter-in-law. 'I' is the son of 'H'. How is 'I' related to 'F'?",
+    "options": [
+      "A. Paternal Uncle",
+      "B. Maternal Uncle",
+      "C. Cousin",
+      "D. Nephew"
+    ],
+    "answer": "C. Cousin",
+    "explanation": "Standard Method: 'G' is 'C's father. 'H' is 'G's only daughter-in-law, so 'H' is 'C's wife. 'I' is 'H's son, so 'I' is 'C's son. 'C' is 'A's brother. 'B' is 'A's child. 'F' is 'B's child. Thus, 'I' is 'B's paternal cousin, making 'I' a cousin of 'F'. \n\n\u26a1 SHORTCUT: Trace direct lines. 'I' is 'C's son. 'C' is 'A's brother. 'B' is 'A's child, 'F' is 'B's child. This establishes 'I' and 'B' as cousins, hence 'I' and 'F' are cousins.",
+    "id": 164
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "hard",
+    "question": "In a certain code language, 'PRINTER' is coded as 'OTHPSGQ', and 'SCREEN' is coded as 'REQGDP'. How would 'CHALLENGE' be coded?",
+    "options": [
+      "A. BJZNKGMID",
+      "B. BJZNKLNID",
+      "C. BIZNKGMID",
+      "D. BJYNLHMID"
+    ],
+    "answer": "A. BJZNKGMID",
+    "explanation": "Standard Method: The rule is: for letters at odd positions (1st, 3rd, 5th...), shift -1 (wrap Z to A); for letters at even positions (2nd, 4th, 6th...), shift +2 (wrap Z to A). Apply this to 'CHALLENGE' to get 'BJZNKGMID'. \n\n\u26a1 SHORTCUT: C(-1)B, H(+2)J, A(-1)Z, L(+2)N, L(-1)K, E(+2)G, N(-1)M, G(+2)I, E(-1)D. Combine results to form the coded word 'BJZNKGMID'.",
+    "id": 165
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Statement & Inference",
+    "difficulty": "hard",
+    "question": "Statement: 'A significant increase in raw material costs, coupled with a stagnant market demand, has led to substantial losses for the manufacturing sector this quarter.'\nWhich of the following can be most logically inferred from the statement?",
+    "options": [
+      "A. The manufacturing sector will likely reduce its workforce in the next quarter.",
+      "B. Consumer spending on manufactured goods has not increased in the current quarter.",
+      "C. The profit margins of companies in the manufacturing sector have been negatively impacted.",
+      "D. Raw material costs are the primary factor influencing market demand."
+    ],
+    "answer": "C. The profit margins of companies in the manufacturing sector have been negatively impacted.",
+    "explanation": "Standard Method: 'Substantial losses' for a sector directly and unequivocally means that the profit margins of the companies within that sector have been negatively affected. Options A, B, and D are speculative or not the most direct inferences. \n\n\u26a1 SHORTCUT: Look for a conclusion that is a direct, unavoidable consequence of 'substantial losses' in a business context. Reduced profit margin is definitionally linked to losses.",
+    "id": 166
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "hard",
+    "question": "'P' starts walking towards North, walks 10m, then turns right and walks 15m. He then turns 45 degrees clockwise and walks 10m. After that, he turns 135 degrees anti-clockwise and walks 20m. Finally, he turns right and walks 5m. In which direction is 'P' now with respect to his starting point?",
+    "options": [
+      "A. North-West",
+      "B. North-East",
+      "C. South-East",
+      "D. West"
+    ],
+    "answer": "B. North-East",
+    "explanation": "Standard Method: Path: N(10), E(15). From E, 45-deg CW (now facing SE), walks 10m. From SE, 135-deg ACW (now facing W), walks 20m. From W, turns right (now facing N), walks 5m. The net movement is North and East of the starting point. \n\n\u26a1 SHORTCUT: Focus on the resultant displacement. The turns (SE, W, N headings) are complex but the net position from start is determined by sum of vectors. Overall, more East and North, thus North-East.",
+    "id": 167
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Ranking and Ordering",
+    "difficulty": "hard",
+    "question": "In a class, 'A' is 6th from the top and 'B' is 10th from the bottom. 'C' is exactly in the middle of 'A' and 'B'. If 'D's rank is 15th from the top, and there are 3 students between 'D' and 'C' (where 'D' is above 'C'), what is the total number of students in the class?",
+    "options": [
+      "A. 39",
+      "B. 41",
+      "C. 43",
+      "D. 45"
+    ],
+    "answer": "B. 41",
+    "explanation": "Standard Method: D is 15th from top. 3 students between D and C (D above C), so C is 15+3+1 = 19th from top. A is 6th from top. Students between A and C = 19-6-1 = 12. C is in middle of A and B, so 12 students between C and B. B is 19+12+1 = 32nd from top. B is 10th from bottom. Total = 32+10-1 = 41. \n\n\u26a1 SHORTCUT: C's rank (19th) is fixed from D's rank. A (6th) and C (19th) implies 12 students between them. Since C is in the middle, B must be 12 students after C, making B 32nd from top. Total = (32 + 10 - 1) = 41.",
+    "id": 168
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analytical Reasoning",
+    "difficulty": "hard",
+    "question": "Five friends, 'P', 'Q', 'R', 'S', 'T', each specialize in a different subject among History, Math, Physics, Chemistry, and Biology. Each prefers a different color: Red, Blue, Green, Yellow, and White. 'P' prefers Red but not Chemistry or Biology. The one who prefers Green specializes in History. 'Q' does not specialize in Math or Chemistry, nor does he prefer Yellow or White. 'R' specializes in Biology and prefers Blue. 'S' prefers White but does not specialize in Math. Which friend specializes in Math?",
+    "options": [
+      "A. P",
+      "B. Q",
+      "C. S",
+      "D. T"
+    ],
+    "answer": "D. T",
+    "explanation": "Standard Method: 1. R: Biology, Blue. 2. P: Red (not Chem/Bio). 3. Q: Not Math/Chem, Not Yellow/White. Colors left for Q: Green. So Q: Green, History. 4. P: Red (not Chem/Bio/History). So P: Red, Physics. 5. S: White (not Math). Subjects left for S: Chemistry. So S: White, Chemistry. 6. Remaining is T. Subject left for T: Math. \n\n\u26a1 SHORTCUT: Use elimination grid. R=Bio,Blue. P=Red, not Chem/Bio/Hist => P=Phys,Red. Q not Math/Chem, not Y/W/Red/Blue => Q=Green,History. S=White, not Math. S must be Chemistry. Therefore, T must be Math.",
+    "id": 169
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Input-Output",
+    "difficulty": "hard",
+    "question": "Input: 'orange 19 apple 31 grape 45 banana 28 mango 36'\nStep I: 'apple orange 19 31 grape 45 banana 28 mango 36'\nStep II: 'apple banana orange 19 31 grape 45 28 mango 36'\nStep III: 'apple banana grape orange 19 31 45 28 mango 36'\n...and so on, until all words are sorted alphabetically and all numbers are sorted in ascending order. If the final output is 'apple banana grape mango orange 19 28 31 36 45', what would be the Step IV for the input: 'fan 25 window 17 door 32 house 49 gate 12'?",
+    "options": [
+      "A. door fan gate 25 window 17 32 house 49 12",
+      "B. door fan gate house 25 window 17 32 49 12",
+      "C. door fan gate 12 25 window 17 32 house 49",
+      "D. door fan 12 window 17 door 32 house 49 gate"
+    ],
+    "answer": "B. door fan gate house 25 window 17 32 49 12",
+    "explanation": "Standard Method: The machine sorts words alphabetically first, moving them to the left. Once all words are sorted, it then sorts the numbers in ascending order. For the given input, words are 'door', 'fan', 'gate', 'house', 'window'. Step IV will place 'house'. \n\n\u26a1 SHORTCUT: Observe the pattern: words are sorted alphabetically from left. Numbers are not touched until all words are sorted. Apply this word-sorting rule: Step I: door... Step II: door fan... Step III: door fan gate... Step IV: door fan gate house...",
+    "id": 170
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "hard",
+    "question": "A cube has all its faces painted blue. It is then cut into 125 smaller cubes of equal size. How many of the smaller cubes have exactly two faces painted blue?",
+    "options": [
+      "A. 8",
+      "B. 24",
+      "C. 36",
+      "D. 48"
+    ],
+    "answer": "C. 36",
+    "explanation": "Standard Method: A cube cut into 125 smaller cubes means it's a 5x5x5 cube (since 5^3=125). Cubes with exactly two painted faces are located along the edges, excluding the corner cubes. Each edge has (n-2) such cubes. There are 12 edges in a cube. So, 12 * (5-2) = 12 * 3 = 36. \n\n\u26a1 SHORTCUT: For an n x n x n cube, the number of cubes with exactly two faces painted is given by the formula 12 * (n-2). Here, n=5 (since 5^3=125). So, 12 * (5-2) = 12 * 3 = 36.",
+    "id": 171
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "hard",
+    "question": "Statements: Some 'A' are 'B'. No 'B' is 'C'. All 'C' are 'D'. Conclusions: I. Some 'A' are not 'C'. II. Some 'D' are not 'B'. Which conclusion(s) logically follow(s)?",
+    "options": [
+      "A. Only I follows",
+      "B. Only II follows",
+      "C. Both I and II follow",
+      "D. Neither I nor II follows"
+    ],
+    "answer": "C. Both I and II follow",
+    "explanation": "Standard Method: Draw Venn diagrams. 'Some A are B' and 'No B is C' implies some A (the part in B) are not C. 'No B is C' and 'All C are D' implies all C are D, and no B is C, so some D (all of C) are not B. \n\n\u26a1 SHORTCUT: For I: A subset of A is B; no B is C means that subset of A is not C. For II: All C are D; no B is C means no B is any part of C, thus no B is the part of D that is C.",
+    "id": 172
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Linear Arrangement",
+    "difficulty": "hard",
+    "question": "Eight persons 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W' sit in a line facing North. 'S' is third to the left of 'W'. Neither 'S' nor 'W' is at an end. 'P' is not an immediate neighbor of 'S' or 'W'. 'U' sits exactly between 'P' and 'V'. 'Q' is second to the right of 'T'. 'T' is at one of the ends. How many people sit between 'P' and 'Q'?",
+    "options": [
+      "A. Zero",
+      "B. One",
+      "C. Two",
+      "D. Three"
+    ],
+    "answer": "A. Zero",
+    "explanation": "Standard Method: T is at left end (pos 1). Q is at pos 3. S is at pos 4, W at pos 7. P is at pos 2 (not neighbor of S or W). U is between P(2) and V(8), so U is at pos 5. R is at pos 6. Sequence: T P Q S U R W V. \n\n\u26a1 SHORTCUT: Fix T and Q first. Then S _ _ W (not ends). P is forced to pos 2. U between P and V forces U, V to positions 5 and 8. The rest fall in place.",
+    "id": 173
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "hard",
+    "question": "A solid cube is painted blue on all faces. It is then cut into 125 smaller cubes of equal size. How many of the smaller cubes have exactly two faces painted?",
+    "options": [
+      "A. 36",
+      "B. 24",
+      "C. 48",
+      "D. 60"
+    ],
+    "answer": "A. 36",
+    "explanation": "Standard Method: The cube is cut into 125 smaller cubes, meaning it's a 5x5x5 cube (n=5). Cubes with exactly two faces painted are located on the edges, excluding the corner cubes. The formula is 12 * (n-2). \n\n\u26a1 SHORTCUT: Apply the direct formula: 12 * (5-2) = 12 * 3 = 36. Memorize formulas for N x N x N cubes: (N-2) for edges.",
+    "id": 174
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Statement and Assumption",
+    "difficulty": "hard",
+    "question": "Statement: 'To improve the quality of college education, it is essential that the salaries of college teachers be increased.' Which of the following assumptions is implicit in the statement?",
+    "options": [
+      "A. College teachers are not currently motivated to teach effectively.",
+      "B. Higher salaries would attract more qualified individuals to the teaching profession.",
+      "C. An increase in salary is the only way to improve teaching quality.",
+      "D. Improving teaching quality is the sole factor for better college education."
+    ],
+    "answer": "B. Higher salaries would attract more qualified individuals to the teaching profession.",
+    "explanation": "Standard Method: 'Essential' implies a necessary condition. For quality to 'improve', there must be a mechanism. Attracting better talent (B) is a direct mechanism. (A) is too specific about current motivation. (C) and (D) use 'only/sole', which are too strong. \n\n\u26a1 SHORTCUT: 'Essential for improvement' often implies salary addresses a talent or retention issue. Attracting 'more qualified' people directly translates to 'improved quality' in the long term.",
+    "id": 175
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Critical Reasoning - Inference",
+    "difficulty": "hard",
+    "question": "A recent study showed that people who regularly consume dark chocolate have lower rates of heart disease than those who do not. Researchers hypothesize that antioxidants in dark chocolate contribute to this effect. However, the study also noted that dark chocolate consumers tend to have healthier lifestyles overall, including more exercise and balanced diets. What can be most reasonably inferred from the passage?",
+    "options": [
+      "A. Consuming dark chocolate directly causes a reduction in heart disease.",
+      "B. Antioxidants are the primary factor in reducing heart disease for dark chocolate consumers.",
+      "C. The healthier lifestyles of dark chocolate consumers may confound the observed correlation.",
+      "D. People who do not consume dark chocolate are inherently less healthy."
+    ],
+    "answer": "C. The healthier lifestyles of dark chocolate consumers may confound the observed correlation.",
+    "explanation": "Standard Method: Avoid strong causal claims ('directly causes', 'primary factor') when confounding variables are mentioned. The passage explicitly states other lifestyle factors, suggesting they might influence the correlation. \n\n\u26a1 SHORTCUT: When a passage highlights alternative explanations for an observed correlation, the most reasonable inference often relates to those alternatives acting as confounding factors, weakening the direct causal link.",
+    "id": 176
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "hard",
+    "question": "What is the value of the integer 'N'? Statement I: 'N' is a two-digit prime number, and the sum of its digits is 10. Statement II: 'N' is less than 50, and 'N' has exactly two distinct prime factors.",
+    "options": [
+      "A. Statement I alone is sufficient.",
+      "B. Statement II alone is sufficient.",
+      "C. Both statements I and II together are sufficient.",
+      "D. Neither statement I nor statement II alone is sufficient, and both together are not sufficient."
+    ],
+    "answer": "D. Neither statement I nor statement II alone is sufficient, and both together are not sufficient.",
+    "explanation": "Standard Method: S1: N can be 19, 37, 73 (all are prime, sum 10). Not sufficient. S2: N<50, two distinct prime factors (e.g., 6, 10, 12). Not sufficient. Combined: From S1, 19, 37 are <50. But primes have only one prime factor, not two. So no such N exists. \n\n\u26a1 SHORTCUT: Quickly test conditions. S1 gives multiple primes. S2 gives multiple composite numbers. When combined, check for contradictions. If no number satisfies all, it's 'not sufficient'.",
+    "id": 177
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Input-Output",
+    "difficulty": "hard",
+    "question": "A machine given 'apple 23 orange 56 grape 17 mango 88' arranges to 'grape 88 mango 56 orange 23 apple 17' in its last step. If input is 'pen 45 book 12 ink 99 diary 33', what will be Step III? Words: sorted alphabetically (apple, book, diary, grape, ink, mango, orange, pen). Numbers: sorted descending (99, 88, 56, 45, 33, 23, 17, 12). Rule: Pair words (2nd, 3rd, 4th, 1st alphabetical) with numbers (1st, 2nd, 3rd, 4th descending). Steps place pairs from left.",
+    "options": [
+      "A. diary 99 pen 45 ink 33 book 12",
+      "B. diary 99 ink 45 pen 33 book 12",
+      "C. pen 99 diary 45 book 33 ink 12",
+      "D. ink 99 pen 45 diary 33 book 12"
+    ],
+    "answer": "B. diary 99 ink 45 pen 33 book 12",
+    "explanation": "Standard Method: Deduce the word-number pairing for the example: (88, grape), (56, mango), (23, orange), (17, apple). Words are 2nd, 3rd, 4th, 1st alphabetically. Numbers are 1st, 2nd, 3rd, 4th descending. Apply to 'pen 45 book 12 ink 99 diary 33'. \n\n\u26a1 SHORTCUT: Sorted words: book(1), diary(2), ink(3), pen(4). Sorted numbers: 99(1), 45(2), 33(3), 12(4). Pairs: (diary, 99), (ink, 45), (pen, 33), (book, 12). Step III places first three pairs.",
+    "id": 178
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "If 'A + B' means 'A is the brother of B', 'A - B' means 'A is the mother of B', 'A * B' means 'A is the son of B', 'A / B' means 'A is the sister of B'. Which of the following expressions shows that 'P is the maternal uncle of S'?",
+    "options": [
+      "A. P + Q - R * S",
+      "B. S / Q + P - R",
+      "C. T - P / Q + S",
+      "D. R + Q - P / S"
+    ],
+    "answer": "A. P + Q - R * S",
+    "explanation": "Standard Method: P is maternal uncle of S means P is male and is S's mother's brother. Trace option A: P+Q (P brother of Q, P male). Q-R (Q mother of R, Q female). R*S (R son of S, R male). So, Q is R's mother, S is R's father, P is Q's brother. Thus, P is S's mother's brother. \n\n\u26a1 SHORTCUT: Quickly check P's gender. P+Q and P*X implies P male. Eliminate others. Then trace relations for few remaining options.",
+    "id": 179
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Calendar",
+    "difficulty": "hard",
+    "question": "If 17th March 2008 was a Monday, what day of the week was 15th August 2012?",
+    "options": [
+      "A. Wednesday",
+      "B. Thursday",
+      "C. Friday",
+      "D. Saturday"
+    ],
+    "answer": "B. Thursday",
+    "explanation": "Standard Method: Calculate odd days from 17th March 2008 to 17th March 2012. (2008-09: 2, 2009-10: 1, 2010-11: 1, 2011-12: 2) = 6 odd days. So 17th March 2012 is Sunday. Then add odd days from 17th March 2012 to 15th August 2012 (Mar:14, Apr:30, May:31, Jun:30, Jul:31, Aug:15) = 151 days = 21 weeks 4 days = 4 odd days. Sunday + 4 days = Thursday. \n\n\u26a1 SHORTCUT: Count leap years (2008, 2012) for their 2 odd days within the span, else 1. Break period into full years and remaining months/days. Sum odd days and find remainder modulo 7. Sunday + 4 = Thursday.",
+    "id": 180
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "hard",
+    "question": "Find the missing term in the series: 3, 7, 16, 35, ?, 153.",
+    "options": [
+      "A. 70",
+      "B. 72",
+      "C. 74",
+      "D. 78"
+    ],
+    "answer": "C. 74",
+    "explanation": "Standard Method: Observe the pattern for differences: 4, 9, 19. This suggests a pattern involving multiplication and addition. \n\n\u26a1 SHORTCUT: The pattern is (Previous Term * 2) + N, where N increments by 1 for each step. 3*2+1=7; 7*2+2=16; 16*2+3=35. So, 35*2+4=74. Check: 74*2+5=153.",
+    "id": 181
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "easy",
+    "question": "In a certain code, 'APPLE' is written as 'BQQMF'. How is 'GRAPE' written in that code?",
+    "options": [
+      "A. HSBUQ",
+      "B. HSBQP",
+      "C. HTBUQ",
+      "D. HRBQV"
+    ],
+    "answer": "A. HSBUQ",
+    "explanation": "Standard Method: Each letter shifts +1 (A->B, P->Q, L->M, E->F). Apply this to GRAPE: G+1=H, R+1=S, A+1=B, P+1=Q, E+1=F. So GRAPE -> HSBUQ. \n\n\u26a1 SHORTCUT: Focus on the first and last letters. G+1=H, E+1=F. Option 'A' is the only one starting with H and ending with F.",
+    "id": 182
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "easy",
+    "question": "Find the next number in the series: 2, 4, 6, 8, ?",
+    "options": [
+      "A. 9",
+      "B. 10",
+      "C. 12",
+      "D. 11"
+    ],
+    "answer": "B. 10",
+    "explanation": "Standard Method: The series consists of consecutive even numbers. Each number is 2 greater than the previous one (2+2=4, 4+2=6, 6+2=8). So, 8+2=10. \n\n\u26a1 SHORTCUT: Immediately recognize the pattern as even numbers. The next even number after 8 is 10.",
+    "id": 183
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Directions",
+    "difficulty": "easy",
+    "question": "A person walks 5 km East, then turns right and walks 3 km. In which direction is he now from his starting point?",
+    "options": [
+      "A. North-East",
+      "B. South-East",
+      "C. North-West",
+      "D. South-West"
+    ],
+    "answer": "B. South-East",
+    "explanation": "Standard Method: Walks East (->). Turns right means turns South (v). So the final position is South and East from the start. This is South-East. \n\n\u26a1 SHORTCUT: Visualize a '+' sign. East is right, South is down. Right then down means bottom-right quadrant, which is South-East.",
+    "id": 184
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "easy",
+    "question": "Statements: All pens are pencils. All pencils are erasers. Conclusion: All pens are erasers. Is the conclusion valid?",
+    "options": [
+      "A. Yes, it is valid.",
+      "B. No, it is not valid.",
+      "C. Cannot be determined.",
+      "D. Only some pens are erasers."
+    ],
+    "answer": "A. Yes, it is valid.",
+    "explanation": "Standard Method: Use Venn diagrams. 'Pens' circle is inside 'Pencils' circle. 'Pencils' circle is inside 'Erasers' circle. Therefore, 'Pens' circle is inside 'Erasers' circle. \n\n\u26a1 SHORTCUT: If A->B and B->C, then A->C is always true (transitivity). Pens -> Pencils -> Erasers, so Pens -> Erasers.",
+    "id": 185
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy",
+    "difficulty": "easy",
+    "question": "'Bird' is to 'Nest' as 'Human' is to '?'",
+    "options": [
+      "A. House",
+      "B. Cave",
+      "C. City",
+      "D. Apartment"
+    ],
+    "answer": "A. House",
+    "explanation": "Standard Method: A bird lives in a nest. Similarly, a human lives in a house. The relationship is 'animal and its dwelling'. \n\n\u26a1 SHORTCUT: Identify the core relationship (dwelling). Nest is a bird's dwelling. Find the most common dwelling for a human.",
+    "id": 186
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Classification",
+    "difficulty": "easy",
+    "question": "Choose the word which is least like the other words in the group: 'Chair', 'Table', 'Sofa', 'Car'.",
+    "options": [
+      "A. Chair",
+      "B. Table",
+      "C. Sofa",
+      "D. Car"
+    ],
+    "answer": "D. Car",
+    "explanation": "Standard Method: Chair, Table, Sofa are all items of furniture commonly found inside a home. A car is a vehicle used for transportation. \n\n\u26a1 SHORTCUT: Quickly categorize: three are furniture, one is a vehicle. The vehicle is the odd one out.",
+    "id": 187
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Clocks",
+    "difficulty": "easy",
+    "question": "At 3 o'clock, what is the angle between the hour hand and the minute hand?",
+    "options": [
+      "A. 0 degrees",
+      "B. 30 degrees",
+      "C. 60 degrees",
+      "D. 90 degrees"
+    ],
+    "answer": "D. 90 degrees",
+    "explanation": "Standard Method: At 3 o'clock, the minute hand points to 12 and the hour hand points to 3. Each hour mark is 30 degrees (360/12). From 12 to 3 is 3 divisions, so 3 * 30 = 90 degrees. \n\n\u26a1 SHORTCUT: A clock face is a circle (360 degrees). 3 o'clock forms a perfect right angle, which is 1/4 of the circle. 360/4 = 90 degrees.",
+    "id": 188
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "easy",
+    "question": "Five friends 'A', 'B', 'C', 'D', 'E' are sitting in a row. 'C' is in the middle. 'B' is to the left of 'C'. 'D' is to the right of 'C'. 'A' is to the left of 'B'. Who is sitting at the extreme right end?",
+    "options": [
+      "A. A",
+      "B. B",
+      "C. D",
+      "D. E"
+    ],
+    "answer": "D. E",
+    "explanation": "Standard Method: 'C' is middle. 'B' Left of 'C' (B C). 'D' Right of 'C' (C D). 'A' Left of 'B' (A B C). So far: A B C D. The only one left is 'E', who must be at the extreme right. \n\n\u26a1 SHORTCUT: Arrange them: A-B-C-D. One spot left. 'E' must fill the remaining end spot.",
+    "id": 189
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "easy",
+    "question": "If TRAIN is coded as UQBHJ, then how is BOOK coded?",
+    "options": [
+      "A. CNPJ",
+      "B. DNQJ",
+      "C. CMOI",
+      "D. BNPI"
+    ],
+    "answer": "A. CNPJ",
+    "explanation": "Standard Method: The pattern for TRAIN to UQBHJ is +1, -1, +1, -1, +1 for each letter. Applying this to BOOK: B+1='C', O-1='N', O+1='P', K-1='J'. So, BOOK becomes CNPJ. \n\n\u26a1 SHORTCUT: Quickly identify the alternating +1/-1 pattern and apply directly to 'BOOK'.",
+    "id": 190
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "easy",
+    "question": "Pointing to a photograph, a woman says, 'This man's son's sister is my mother-in-law.' How is the woman related to the man in the photograph?",
+    "options": [
+      "A. Daughter",
+      "B. Granddaughter",
+      "C. Granddaughter-in-law",
+      "D. Daughter-in-law"
+    ],
+    "answer": "C. Granddaughter-in-law",
+    "explanation": "Standard Method: 'Man's son's sister' means 'Man's daughter'. So, the man's daughter is the woman's mother-in-law. This implies the woman's husband is the son of the man's daughter. Therefore, the woman is the man's granddaughter-in-law. \n\n\u26a1 SHORTCUT: Break down the relationship from 'my' backward: my mother-in-law's mother is the man's daughter. My husband's mother is the man's daughter. So my husband is man's daughter's son.",
+    "id": 191
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series Completion",
+    "difficulty": "easy",
+    "question": "Complete the series: 2, 5, 9, 14, 20, ?",
+    "options": [
+      "A. 26",
+      "B. 27",
+      "C. 28",
+      "D. 29"
+    ],
+    "answer": "B. 27",
+    "explanation": "Standard Method: Find the differences between consecutive terms: 5-2=3, 9-5=4, 14-9=5, 20-14=6. The pattern of differences is +3, +4, +5, +6. The next difference should be +7. So, 20+7=27. \n\n\u26a1 SHORTCUT: Spot the increasing difference pattern (consecutive natural numbers) and add the next number to the last term.",
+    "id": 192
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "easy",
+    "question": "A man walks 5 km East, then turns South and walks 4 km. He then turns West and walks 5 km. In which direction is he from his starting point?",
+    "options": [
+      "A. North",
+      "B. South",
+      "C. East",
+      "D. West"
+    ],
+    "answer": "B. South",
+    "explanation": "Standard Method: The man walks 5 km East and then 5 km West. These movements cancel each other out horizontally. He then walks 4 km South. So, he is 4 km South from his starting point. \n\n\u26a1 SHORTCUT: Visualize the path. East and West movements of equal distance cancel. The net displacement is only due to the Southward movement.",
+    "id": 193
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "easy",
+    "question": "Statements: All books are pens. Some pens are pencils. \nConclusions: I. Some books are pencils. II. All pencils are pens.",
+    "options": [
+      "A. Only conclusion I follows",
+      "B. Only conclusion II follows",
+      "C. Both I and II follow",
+      "D. Neither I nor II follows"
+    ],
+    "answer": "D. Neither I nor II follows",
+    "explanation": "Standard Method: Draw Venn diagrams. 'Books' is inside 'Pens'. 'Pencils' overlaps 'Pens'. 'Pencils' may or may not overlap 'Books', so I is not definite. 'All pencils are pens' is not given, only 'Some pens are pencils', so II is not definite. \n\n\u26a1 SHORTCUT: 'Some pens are pencils' doesn't imply 'All pencils are pens'. For I, 'Books' are a subset of 'Pens'; 'Pencils' are only 'some' of 'Pens', so 'Books' may not touch 'Pencils'.",
+    "id": 194
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy (Words)",
+    "difficulty": "easy",
+    "question": "Bird : Nest :: Dog : ?",
+    "options": [
+      "A. Stable",
+      "B. Kennel",
+      "C. Den",
+      "D. Cave"
+    ],
+    "answer": "B. Kennel",
+    "explanation": "Standard Method: Identify the relationship: A 'Bird' lives in a 'Nest'. Apply the same relationship to the second pair. A 'Dog' lives in a 'Kennel'. \n\n\u26a1 SHORTCUT: Directly recall the common dwelling for a dog.",
+    "id": 195
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Classification (Odd One Out)",
+    "difficulty": "easy",
+    "question": "Find the odd one out: 12, 25, 36, 49",
+    "options": [
+      "A. 12",
+      "B. 25",
+      "C. 36",
+      "D. 49"
+    ],
+    "answer": "A. 12",
+    "explanation": "Standard Method: Analyze the properties of each number. 25 is 5^2, 36 is 6^2, and 49 is 7^2. These are all perfect squares. 12 is not a perfect square. Thus, 12 is the odd one out. \n\n\u26a1 SHORTCUT: Quickly scan for obvious mathematical properties; perfect squares are easily identifiable.",
+    "id": 196
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Calendar",
+    "difficulty": "easy",
+    "question": "If today is Monday, what day of the week will it be 60 days from now?",
+    "options": [
+      "A. Thursday",
+      "B. Friday",
+      "C. Saturday",
+      "D. Sunday"
+    ],
+    "answer": "B. Friday",
+    "explanation": "Standard Method: To find the day of the week, calculate the number of odd days. Divide 60 by 7: 60 \u00f7 7 = 8 with a remainder of 4. This means there are 4 odd days. Add 4 days to Monday: Monday + 4 days = Friday. \n\n\u26a1 SHORTCUT: Quickly calculate 60 mod 7, which is 4. Count 4 days forward from Monday.",
+    "id": 197
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "easy",
+    "question": "Five friends 'A', 'B', 'C', 'D', 'E' are sitting in a row facing North. 'C' is to the immediate left of 'D'. 'B' is to the immediate right of 'A'. 'E' is at the extreme right end. If 'A' is second from the left, who is sitting exactly in the middle?",
+    "options": [
+      "A. A",
+      "B. B",
+      "C. C",
+      "D. D"
+    ],
+    "answer": "B. B",
+    "explanation": "Standard Method: Positions are \\_ \\_ \\_ \\_ \\_. 'E' is at the extreme right: \\_ \\_ \\_ \\_ E. 'A' is second from left: \\_ A \\_ \\_ E. 'B' is right of 'A': \\_ A B \\_ E. 'C' is left of 'D'. The only remaining slots are 1st and 4th, so 'C' must be first, 'D' fourth: C A B D E. 'B' is in the middle. \n\n\u26a1 SHORTCUT: Fill in fixed positions ('E' right end, 'A' second left) first. Then relative positions ('B' next to 'A', 'CD' block) to complete the arrangement.",
+    "id": 198
   }
 ]

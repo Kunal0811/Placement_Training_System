@@ -4,7 +4,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import API_BASE from "../../api";
-import { FiX, FiChevronRight, FiChevronLeft, FiCheckCircle, FiXCircle, FiGrid, FiShield, FiAlertTriangle, FiClock, FiBookmark, FiRefreshCcw } from "react-icons/fi";
+import { FiX, FiChevronRight, FiChevronLeft, FiCheckCircle, FiGrid, FiShield, FiAlertTriangle, FiClock, FiBookmark, FiRefreshCcw, FiDownload, FiHome } from "react-icons/fi";
+import html2pdf from "html2pdf.js";
 
 export default function TestPage() {
   const { topic, mode } = useParams();
@@ -13,34 +14,30 @@ export default function TestPage() {
   const navigate = useNavigate();
   const { user, fetchStats } = useAuth();
 
-  // Test Architecture State
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Interactive State
   const [activeSectionId, setActiveSectionId] = useState(0);
   const [currentIdx, setCurrentIdx] = useState(0);
   
-  // Tracking Maps (Keys are formatted as "sectionId-questionIdx")
   const [userAnswers, setUserAnswers] = useState({});
   const [visited, setVisited] = useState({});
   const [marked, setMarked] = useState({});
   
   const [showMobilePalette, setShowMobilePalette] = useState(false);
   
-  // Proctoring, Security & Timer State
   const [hasStarted, setHasStarted] = useState(false);
   const [violations, setViolations] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(decodedTopic === "Final Aptitude Test" ? 3600 : 1800); 
 
-  // Submission State
   const [isFinished, setIsFinished] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  // --- 1. FETCH & ORGANIZE QUESTIONS ---
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -54,7 +51,6 @@ export default function TestPage() {
           count: count,
         });
 
-        // Split into sections for the UI
         let processedSections = [];
         if (decodedTopic === "Final Aptitude Test") {
             const quant = res.data.filter(q => q.module === 'Quantitative Aptitude' || q.topic === 'Quantitative Aptitude');
@@ -85,14 +81,12 @@ export default function TestPage() {
     fetchQuestions();
   }, [decodedTopic, mode, location.pathname, navigate]);
 
-  // Mark question as visited whenever active index changes
   useEffect(() => {
       if (sections.length > 0 && hasStarted && !isFinished) {
           setVisited(prev => ({ ...prev, [`${activeSectionId}-${currentIdx}`]: true }));
       }
   }, [activeSectionId, currentIdx, sections, hasStarted, isFinished]);
 
-  // --- 2. ANTI-CHEAT LISTENERS ---
   useEffect(() => {
     if (!hasStarted || isFinished) return;
     const handleViolationTrigger = () => setViolations(prev => prev + 1);
@@ -106,7 +100,6 @@ export default function TestPage() {
     };
   }, [hasStarted, isFinished]);
 
-  // --- 3. TIMER LOGIC ---
   useEffect(() => {
     if (!hasStarted || isFinished || submitting) return;
     const timer = setInterval(() => {
@@ -124,7 +117,6 @@ export default function TestPage() {
     return `${m}:${s}`;
   };
 
-  // --- 4. VIOLATION LOGIC ---
   useEffect(() => {
     if (violations === 1) setShowWarning(true);
     else if (violations >= 2 && !isFinished && !submitting) {
@@ -145,9 +137,7 @@ export default function TestPage() {
     setShowWarning(false);
   };
 
-  // --- 5. TEST NAVIGATION & SUBMISSION ---
   const currentKey = `${activeSectionId}-${currentIdx}`;
-
   const handleSelectOption = (opt) => setUserAnswers(prev => ({ ...prev, [currentKey]: opt }));
   const handleClearResponse = () => setUserAnswers(prev => { const next = {...prev}; delete next[currentKey]; return next; });
   const handleMarkForReview = () => setMarked(prev => ({ ...prev, [currentKey]: !prev[currentKey] }));
@@ -208,7 +198,33 @@ export default function TestPage() {
     }
   };
 
-  // --- RENDERS ---
+  // --- NEW: PDF GENERATION LOGIC ---
+  const handleDownloadPDF = () => {
+    setIsDownloading(true);
+    
+    // Target the specific HIDDEN clean document div
+    const element = document.getElementById("clean-pdf-report");
+    
+    // Dynamic Naming: StudentName_Topic_Mode.pdf
+    const safeName = `${user?.fname || 'Student'}_${user?.lname || ''}`.trim().replace(/\s+/g, '_');
+    const safeTopic = decodedTopic.replace(/\s+/g, '_');
+    const filename = `${safeName}_${safeTopic}_${mode.toUpperCase()}.pdf`;
+
+    const opt = {
+        // FIX 1: Margin set to 0. We use CSS padding inside the hidden div instead!
+        margin:       0, 
+        filename:     filename,
+        image:        { type: 'jpeg', quality: 1 }, 
+        // FIX 2: Removed forced windowWidth which was causing the slice effect
+        html2canvas:  { scale: 2, useCORS: true, logging: false }, 
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        setIsDownloading(false);
+    });
+  };
 
   if (loading || !sections.length) {
     return (
@@ -240,39 +256,58 @@ export default function TestPage() {
     );
   }
 
+  // --- RESULT SCREEN ---
   if (isFinished) {
       const accuracy = totalQuestions > 0 ? Math.round((finalScore / totalQuestions) * 100) : 0;
       const passed = accuracy >= 75;
 
       return (
-        <div className="min-h-screen bg-game-bg text-white p-4 md:p-8 animate-fade-in">
-          <div className="max-w-5xl mx-auto">
-            <div className="glass-panel p-8 rounded-3xl text-center mb-10 border border-white/10 bg-black/40 mt-10">
+        <div className="min-h-screen bg-[#0a0a0c] text-white p-4 md:p-8 animate-fade-in custom-scrollbar">
+          
+          {/* Action Bar */}
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end gap-4 mb-6">
+             <button onClick={() => navigate('/dashboard')} className="px-6 py-2.5 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                 <FiHome/> Dashboard
+             </button>
+             <button onClick={handleDownloadPDF} disabled={isDownloading} className="px-6 py-2.5 bg-neon-purple text-white font-bold rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:hover:scale-100">
+                 <FiDownload /> {isDownloading ? "Generating PDF..." : "Download Clean Report"}
+             </button>
+          </div>
+
+          {/* --- WHAT THE USER SEES (DARK THEME) --- */}
+          <div className="max-w-5xl mx-auto bg-[#0a0a0c] p-6 md:p-10 rounded-3xl border border-white/5 shadow-2xl">
+            <div className="glass-panel p-8 rounded-3xl text-center mb-10 border border-white/10 bg-black/40">
               <div className="text-6xl mb-4">{passed ? '🏆' : '🎯'}</div>
               <h1 className={`text-4xl font-black mb-2 ${passed ? 'text-yellow-400' : 'text-neon-blue'}`}>{passed ? 'Test Passed!' : 'Keep Practicing!'}</h1>
-              <div className="flex justify-center gap-4 mt-6">
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
                 <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-2xl p-6 w-48">
-                  <p className="text-yellow-500 font-bold uppercase text-xs">Score</p>
+                  <p className="text-yellow-500 font-bold uppercase text-xs tracking-widest mb-1">Final Score</p>
                   <p className="text-4xl font-black">{finalScore} / {totalQuestions}</p>
                 </div>
+                <div className="bg-neon-blue/10 border-2 border-neon-blue/30 rounded-2xl p-6 w-48">
+                  <p className="text-neon-blue font-bold uppercase text-xs tracking-widest mb-1">Accuracy</p>
+                  <p className="text-4xl font-black">{accuracy}%</p>
+                </div>
               </div>
-              <button onClick={() => navigate('/dashboard')} className="mt-8 px-8 py-3 bg-white/10 rounded-xl font-bold hover:bg-white/20 transition-colors">Return to Dashboard</button>
             </div>
 
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><FiCheckCircle className="text-neon-green" /> Detailed Review</h2>
             
             {sections.map((sec, sId) => (
                 <div key={sId} className="mb-10">
-                    <h3 className="text-xl font-bold text-neon-purple border-b border-white/10 pb-2 mb-4">{sec.title}</h3>
+                    <h3 className="text-xl font-bold text-neon-purple border-b border-white/10 pb-2 mb-6">{sec.title}</h3>
                     <div className="space-y-6">
                         {sec.qs.map((q, qId) => {
                             const ansKey = `${sId}-${qId}`;
+                            const isSkipped = !userAnswers[ansKey];
                             const isCorrect = userAnswers[ansKey] === q.answer;
                             
                             return (
-                                <div key={qId} className="glass-panel p-6 rounded-2xl border border-white/10 bg-black/40">
+                                <div key={qId} className="p-6 rounded-2xl border border-white/10 bg-black/40">
                                     <div className="flex gap-4 mb-4">
-                                        <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${isCorrect ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>{qId + 1}</span>
+                                        <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${isCorrect ? 'bg-green-500/20 text-green-400' : (isSkipped ? 'bg-gray-500/20 text-gray-400' : 'bg-red-500/20 text-red-400')}`}>
+                                            {qId + 1}
+                                        </span>
                                         <h3 className="text-lg font-medium leading-snug whitespace-pre-wrap">{q.question}</h3>
                                     </div>
                                     <div className="grid md:grid-cols-2 gap-3 pl-12 mb-4">
@@ -285,8 +320,9 @@ export default function TestPage() {
                                             return <div key={optIdx} className={`p-3 rounded-xl border text-sm ${style}`}>{opt}</div>;
                                         })}
                                     </div>
-                                    <div className="pl-12">
-                                        <div className="bg-neon-blue/10 border border-neon-blue/20 rounded-xl p-4 text-sm text-blue-100 whitespace-pre-wrap leading-relaxed">
+                                    <div className="pl-12 mt-4">
+                                        {isSkipped && <div className="text-gray-400 font-bold text-sm mb-3 uppercase tracking-widest border border-gray-600/30 bg-gray-600/10 inline-block px-3 py-1 rounded-md">Not Attempted</div>}
+                                        <div className="bg-neon-blue/5 border border-neon-blue/20 rounded-xl p-4 text-sm text-blue-100 whitespace-pre-wrap leading-relaxed">
                                             <span className="font-bold text-neon-blue block mb-2 text-base">Explanation & Shortcuts:</span>
                                             {q.explanation || "No explanation provided."}
                                         </div>
@@ -298,10 +334,96 @@ export default function TestPage() {
                 </div>
             ))}
           </div>
+          
+          {/* ========================================================================= */}
+          {/* THE HIDDEN PRINTABLE PDF TEMPLATE (Fixes the Right-Side Cutoff!)            */}
+          {/* ========================================================================= */}
+          <div className="absolute top-0 left-0 w-full h-0 overflow-hidden opacity-0 pointer-events-none z-[-999]">
+              
+              {/* FIX 3: Strict A4 width (794px) + inner padding (px-12 py-10) + break-words */}
+              <div id="clean-pdf-report" className="w-[794px] bg-white text-black px-12 py-10 font-sans mx-auto break-words">
+                  
+                  {/* PDF Header */}
+                  <div className="border-b-4 border-gray-900 pb-6 mb-8 flex justify-between items-end">
+                      <div>
+                          <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tighter">Placement Report</h1>
+                          <p className="text-gray-600 font-bold mt-2 uppercase tracking-widest text-lg">{decodedTopic}</p>
+                      </div>
+                      <div className="text-right">
+                          <p className="text-gray-900 font-bold text-xl">{user?.fname} {user?.lname}</p>
+                          <p className="text-gray-500 text-sm mt-1">{new Date().toLocaleDateString()} | MODE: {mode.toUpperCase()}</p>
+                      </div>
+                  </div>
+
+                  {/* PDF Score Boxes */}
+                  <div className="flex gap-6 mb-10">
+                      <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center flex-1">
+                          <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mb-2">Final Score</p>
+                          <p className="text-4xl font-black text-gray-900">{finalScore} / {totalQuestions}</p>
+                      </div>
+                      <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center flex-1">
+                          <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mb-2">Accuracy</p>
+                          <p className="text-4xl font-black text-gray-900">{accuracy}%</p>
+                      </div>
+                      <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center flex-1 flex flex-col justify-center">
+                          <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mb-2">Result</p>
+                          <p className={`text-2xl font-black ${passed ? 'text-green-600' : 'text-red-600'}`}>{passed ? 'PASSED' : 'PRACTICE MORE'}</p>
+                      </div>
+                  </div>
+
+                  {/* PDF Questions Layout */}
+                  {sections.map((sec, sId) => (
+                      <div key={`pdf-sec-${sId}`} className="mb-10">
+                          <h3 className="text-xl font-bold text-gray-800 border-b border-gray-300 pb-2 mb-6">{sec.title.toUpperCase()}</h3>
+                          
+                          {sec.qs.map((q, qId) => {
+                              const ansKey = `${sId}-${qId}`;
+                              const isSkipped = !userAnswers[ansKey];
+                              const isCorrect = userAnswers[ansKey] === q.answer;
+                              
+                              return (
+                                  <div key={`pdf-q-${qId}`} className="mb-8 pb-6 border-b border-gray-100 break-inside-avoid">
+                                      <div className="flex gap-3 mb-4">
+                                          <span className="font-black text-gray-900 text-lg">{qId + 1}.</span>
+                                          <p className="text-gray-900 font-medium text-base whitespace-pre-wrap leading-snug">{q.question}</p>
+                                      </div>
+                                      
+                                      <div className="pl-8 grid grid-cols-2 gap-3 mb-4">
+                                          {q.options.map((opt, optIdx) => {
+                                              const isActualAnswer = q.answer === opt;
+                                              const isUsersPick = userAnswers[ansKey] === opt;
+                                              
+                                              let style = "text-gray-600";
+                                              let icon = "○";
+                                              
+                                              if (isActualAnswer) { style = "text-green-700 font-bold bg-green-50 px-2 py-1 rounded"; icon = "✓"; }
+                                              else if (isUsersPick) { style = "text-red-600 font-bold line-through px-2 py-1"; icon = "✗"; }
+                                              
+                                              return <div key={optIdx} className={`text-sm ${style}`}>{icon} {opt}</div>;
+                                          })}
+                                      </div>
+                                      
+                                      <div className="pl-8">
+                                          {isSkipped && <div className="text-gray-500 font-bold text-xs mb-2 uppercase tracking-widest border border-gray-300 bg-gray-100 inline-block px-2 py-1 rounded">Not Attempted</div>}
+                                          {/* FIX 4: break-words class forces math equations to wrap safely instead of bleeding off the page! */}
+                                          <div className="bg-blue-50/50 border-l-4 border-blue-400 p-4 rounded-r-lg text-sm text-gray-800 whitespace-pre-wrap break-words">
+                                              <span className="font-bold text-blue-700 block mb-1 uppercase text-xs tracking-widest">Explanation & Shortcuts:</span>
+                                              {q.explanation || "No explanation provided."}
+                                          </div>
+                                      </div>
+                                  </div>
+                              );
+                          })}
+                      </div>
+                  ))}
+              </div>
+          </div>
+
         </div>
       );
   }
 
+  // --- EXAM SCREEN RENDERS BELOW ---
   const activeQuestion = currentSection?.qs[currentIdx];
 
   const renderQuestionPalette = () => (
@@ -313,8 +435,7 @@ export default function TestPage() {
         const isVisited = !!visited[key];
         const isCurrent = i === currentIdx;
         
-        // STANDARD EXAM COLOR LOGIC
-        let btnStyle = "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"; // Not Visited
+        let btnStyle = "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10"; 
         
         if (isMarked && isAttempted) {
             btnStyle = "bg-purple-600 text-white font-bold border-purple-400 shadow-[0_0_10px_rgba(147,51,234,0.5)]";
@@ -329,13 +450,8 @@ export default function TestPage() {
         if (isCurrent) btnStyle += " ring-2 ring-white scale-110 z-10";
 
         return (
-          <button 
-            key={i} 
-            onClick={() => { setCurrentIdx(i); setShowMobilePalette(false); }} 
-            className={`w-10 h-10 rounded-lg text-sm transition-all flex items-center justify-center relative ${btnStyle}`}
-          >
+          <button key={i} onClick={() => { setCurrentIdx(i); setShowMobilePalette(false); }} className={`w-10 h-10 rounded-lg text-sm transition-all flex items-center justify-center relative ${btnStyle}`}>
             {i + 1}
-            {/* Green Dot for Marked AND Answered */}
             {isMarked && isAttempted && (
                 <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border border-black"></div>
             )}
@@ -356,34 +472,24 @@ export default function TestPage() {
         </div>
       )}
 
-{/* --- STICKY TOP NAVIGATION (Header + Tabs Locked Together) --- */}
+      {/* STICKY TOP NAVIGATION */}
       <div className="sticky top-0 z-40 w-full flex flex-col shadow-2xl">
-          
-          {/* HEADER */}
           <div className="flex items-center justify-between p-4 md:p-6 bg-black/90 backdrop-blur-2xl border-b border-white/5">
             <button onClick={() => { if(window.confirm("Exit test? All progress will be lost.")) navigate(-1); }} className="text-gray-500 hover:text-white bg-white/5 px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors"><FiX /> Quit</button>
-            
             <div className={`text-2xl font-mono font-black flex items-center gap-2 tracking-widest ${timeLeft < 300 ? 'text-red-500 animate-pulse' : 'text-neon-blue'}`}>
                 <FiClock /> {formatTime(timeLeft)}
             </div>
-
             <button onClick={handleManualSubmit} disabled={submitting} className="hidden lg:flex items-center gap-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50 px-6 py-2 rounded-xl font-bold uppercase tracking-widest text-sm transition-all">
                 {submitting ? "Submitting..." : "Submit Test"}
             </button>
-
             <button onClick={() => setShowMobilePalette(!showMobilePalette)} className="lg:hidden text-gray-400 bg-white/5 p-2 rounded-xl"><FiGrid size={24}/></button>
           </div>
 
-          {/* SECTION TABS (Now locked inside the sticky container) */}
           {sections.length > 1 && (
               <div className="w-full bg-black/80 backdrop-blur-2xl border-b border-white/10 overflow-x-auto custom-scrollbar">
                   <div className="max-w-7xl mx-auto px-4 md:px-6 flex gap-2 py-3">
                       {sections.map(sec => (
-                          <button 
-                              key={sec.id}
-                              onClick={() => { setActiveSectionId(sec.id); setCurrentIdx(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                              className={`whitespace-nowrap px-5 py-2.5 rounded-xl text-sm font-bold tracking-widest uppercase transition-all flex items-center gap-2 ${activeSectionId === sec.id ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
-                          >
+                          <button key={sec.id} onClick={() => { setActiveSectionId(sec.id); setCurrentIdx(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className={`whitespace-nowrap px-5 py-2.5 rounded-xl text-sm font-bold tracking-widest uppercase transition-all flex items-center gap-2 ${activeSectionId === sec.id ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>
                               {sec.title}
                           </button>
                       ))}
@@ -393,8 +499,6 @@ export default function TestPage() {
       </div>
 
       <div className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 flex gap-8">
-        
-        {/* LEFT: QUESTION AREA */}
         <div className="flex-1 animate-fade-in-up pb-10">
           <div className="flex justify-between items-end mb-6">
             <span className="text-neon-purple text-sm font-bold bg-neon-purple/10 px-3 py-1 rounded-md border border-neon-purple/20 uppercase tracking-widest">
@@ -420,12 +524,9 @@ export default function TestPage() {
           </div>
         </div>
 
-        {/* RIGHT: DESKTOP PALETTE */}
         <div className="hidden lg:block w-96 flex-shrink-0">
-          <div className="glass-panel p-6 rounded-3xl border border-white/10 bg-black/40 sticky top-36">
+          <div className="glass-panel p-6 rounded-3xl border border-white/10 bg-black/40 sticky top-48">
             <h3 className="font-bold text-white mb-4 border-b border-white/10 pb-4 flex items-center gap-2"><FiGrid className="text-neon-blue"/> {currentSection?.title} Map</h3>
-            
-            {/* LEGEND */}
             <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-6 bg-white/5 p-4 rounded-xl border border-white/10">
                 <span className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-green-500"></div> Answered</span>
                 <span className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-red-500"></div> Not Answered</span>
@@ -433,17 +534,13 @@ export default function TestPage() {
                 <span className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-purple-600"></div> Marked</span>
                 <span className="flex items-center gap-2 col-span-2 relative"><div className="w-3 h-3 rounded bg-purple-600"></div><div className="absolute left-[7px] -top-1 w-2 h-2 bg-green-400 rounded-full border border-black"></div> Answered & Marked</span>
             </div>
-
             {renderQuestionPalette()}
           </div>
         </div>
       </div>
 
-      {/* BOTTOM NAVIGATION BAR */}
       <div className="fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/10 p-4 z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-2 gap-2 overflow-x-auto">
-            
-            {/* Left Actions */}
             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <button onClick={handleMarkForReview} className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-xs sm:text-sm border transition-all ${marked[currentKey] ? 'bg-purple-600 border-purple-500 text-white' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'}`}>
                     <FiBookmark /> <span className="hidden sm:inline">{marked[currentKey] ? 'Unmark Review' : 'Mark for Review'}</span><span className="sm:hidden">Mark</span>
@@ -452,13 +549,10 @@ export default function TestPage() {
                     <FiRefreshCcw /> <span className="hidden sm:inline">Clear Response</span><span className="sm:hidden">Clear</span>
                 </button>
             </div>
-
-            {/* Right Actions */}
             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                 <button onClick={handlePrev} disabled={activeSectionId === 0 && currentIdx === 0} className={`flex items-center gap-1 sm:gap-2 px-4 sm:px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs sm:text-sm ${activeSectionId === 0 && currentIdx === 0 ? 'opacity-50 cursor-not-allowed bg-white/5' : 'bg-white/10 hover:bg-white/20 text-white transition-all'}`}>
                     <FiChevronLeft/> Prev
                 </button>
-                
                 {(!isLastQuestionInSection || !isFinalSection) ? (
                     <button onClick={handleNext} className="flex items-center gap-1 sm:gap-2 px-6 sm:px-8 py-3 rounded-xl font-black bg-white text-black hover:bg-gray-200 uppercase tracking-widest text-xs sm:text-sm transition-all shadow-lg">
                         Next <FiChevronRight/>
@@ -469,14 +563,11 @@ export default function TestPage() {
                     </button>
                 )}
             </div>
-
-            {/* Mobile Submit Fallback */}
             <button onClick={handleManualSubmit} disabled={submitting} className="lg:hidden ml-auto flex items-center gap-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50 px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-xs flex-shrink-0">
                 Submit Test
             </button>
         </div>
       </div>
-
     </div>
   );
 }
