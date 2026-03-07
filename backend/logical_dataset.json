@@ -733,5 +733,545 @@
     "answer": "B. B",
     "explanation": "Standard Method: Let's build the arrangement from left to right:\n1. 'A is to the left of B': ...A B...\n2. 'C is to the right of B': ...A B C...\n3. 'D is to the right of C': ...A B C D...\n4. 'E is between A and B': This inserts E into the first part, resulting in A E B.\nCombining these, the complete arrangement from left to right is A, E, B, C, D. With five friends, the middle position is the 3rd person. Counting from the left: A (1st), E (2nd), B (3rd). So, B is sitting in the middle. \n\n\u26a1 SHORTCUT: Quickly establish the relative order using symbols. A < B. B < C. C < D. This gives A < B < C < D. Then, E is between A and B, so A < E < B. Combining these, A < E < B < C < D. The 3rd position in a 5-person row is B.",
     "id": 49
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "easy",
+    "question": "If 'CAT' is coded as 'DBU', how is 'DOG' coded?",
+    "options": [
+      "A. EPH",
+      "B. EQH",
+      "C. FOI",
+      "D. DPI"
+    ],
+    "answer": "A. EPH",
+    "explanation": "Standard Method: Each letter shifts one position forward (C+1=D, A+1=B, T+1=U). Applying this to DOG: D+1=E, O+1=P, G+1=H. Result is EPH. \n\n\u26a1 SHORTCUT: Observe pattern for 'CAT' -> 'DBU' is a +1 shift for each letter. Apply the same simple shift to 'DOG'.",
+    "id": 50
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "easy",
+    "question": "'A' is the sister of 'B'. 'C' is the brother of 'D'. 'D' is the daughter of 'A'. How is 'C' related to 'B'?",
+    "options": [
+      "A. Brother",
+      "B. Son",
+      "C. Nephew",
+      "D. Uncle"
+    ],
+    "answer": "C. Nephew",
+    "explanation": "Standard Method: 'D' is 'A's daughter. 'C' is 'D's brother. So 'C' is 'A's son. 'A' is 'B's sister. Thus, 'C' is 'B's nephew. \n\n\u26a1 SHORTCUT: Trace direct lineage: 'C' is 'A's son, and 'A' is 'B's sister. This directly makes 'C' 'B's nephew.",
+    "id": 51
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: 2, 4, 6, 8, ?",
+    "options": [
+      "A. 9",
+      "B. 10",
+      "C. 11",
+      "D. 12"
+    ],
+    "answer": "B. 10",
+    "explanation": "Standard Method: The series consists of consecutive even numbers. Each number is obtained by adding 2 to the previous number (2+2=4, 4+2=6, 6+2=8). So, 8+2=10. \n\n\u26a1 SHORTCUT: Recognize it as the sequence of even numbers. The next even number after 8 is 10.",
+    "id": 52
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "easy",
+    "question": "John walks 5 km East, then turns right and walks 3 km. Which direction is he facing now?",
+    "options": [
+      "A. East",
+      "B. West",
+      "C. North",
+      "D. South"
+    ],
+    "answer": "D. South",
+    "explanation": "Standard Method: Starts facing East. Turning right from East means facing South. The distance walked after turning does not change the facing direction. \n\n\u26a1 SHORTCUT: Visualize: East -> Right turn (like turning clockwise from 3 o'clock) means facing South.",
+    "id": 53
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy (Word Based)",
+    "difficulty": "easy",
+    "question": "'Bird' is to 'Nest' as 'Lion' is to ?",
+    "options": [
+      "A. Stable",
+      "B. Den",
+      "C. Cave",
+      "D. Aquarium"
+    ],
+    "answer": "B. Den",
+    "explanation": "Standard Method: The relationship is an animal and its home. Birds live in nests. Lions live in dens. \n\n\u26a1 SHORTCUT: Identify the 'animal-habitat' relation. Apply it to Lion. Lion's home is a den.",
+    "id": 54
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "easy",
+    "question": "Statements: 1. All chairs are tables. 2. Some tables are desks. \nConclusion: Some chairs are desks.",
+    "options": [
+      "A. True",
+      "B. False",
+      "C. Cannot be determined",
+      "D. Irrelevant"
+    ],
+    "answer": "C. Cannot be determined",
+    "explanation": "Standard Method: Draw Venn diagrams. 'Chairs' fully inside 'Tables'. 'Desks' overlap with 'Tables'. No direct information links 'Chairs' and 'Desks'. \n\n\u26a1 SHORTCUT: Just because some tables are desks and all chairs are tables, doesn't guarantee chairs and desks overlap.",
+    "id": 55
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "easy",
+    "question": "'P', 'Q', 'R', 'S' are sitting in a row. 'Q' is next to 'P'. 'R' is at one end. 'S' is next to 'R'. Who is sitting next to 'S' on the left?",
+    "options": [
+      "A. P",
+      "B. Q",
+      "C. R",
+      "D. Cannot be determined"
+    ],
+    "answer": "A. P",
+    "explanation": "Standard Method: 'R' is at an end. 'S' is next to 'R', so the partial sequence is S-R. 'Q' is next to 'P', forming P-Q or Q-P. With 4 people, the full sequence is P-Q-S-R. Thus, 'P' is sitting next to 'S' on the left. \n\n\u26a1 SHORTCUT: Build the known segments: S R. P Q must fit. P Q S R is the only linear arrangement. P is left of S.",
+    "id": 56
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "easy",
+    "question": "If 'A' is the brother of 'B', 'B' is the sister of 'C', and 'C' is the father of 'D', how is 'A' related to 'D'?",
+    "options": [
+      "A. Uncle",
+      "B. Grandfather",
+      "C. Father",
+      "D. Brother"
+    ],
+    "answer": "A. Uncle",
+    "explanation": "Standard Method: Diagram the relationships: A-B (siblings), B-C (siblings), C is father of D. This makes A, B, C siblings. Since C is D's father, A is D's uncle. \n\n\u26a1 SHORTCUT: A is C's sibling, and C is D's father. So A is D's father's sibling, which means A is D's uncle.",
+    "id": 57
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "easy",
+    "question": "If 'APPLE' is coded as 'BQQMF', then how will 'ORANGE' be coded?",
+    "options": [
+      "A. PQBOJF",
+      "B. PQBRHF",
+      "C. PQBMIF",
+      "D. QPCNJF"
+    ],
+    "answer": "A. PQBOJF",
+    "explanation": "Standard Method: The pattern for 'APPLE' to 'BQQMF' is each letter shifting one position forward in the alphabet (A+1=B, P+1=Q, L+1=M, E+1=F). Apply this same rule to 'ORANGE'. \n\n\u26a1 SHORTCUT: Simple +1 shift for each letter. O+1=P, R+1=Q, A+1=B, N+1=O, G+1=J, E+1=F.",
+    "id": 58
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Series",
+    "difficulty": "easy",
+    "question": "Complete the series: 3, 6, 9, 12, ?",
+    "options": [
+      "A. 13",
+      "B. 14",
+      "C. 15",
+      "D. 16"
+    ],
+    "answer": "C. 15",
+    "explanation": "Standard Method: Observe the difference between consecutive numbers. 6-3=3, 9-6=3, 12-9=3. The pattern is an addition of 3 to the previous number. So, 12 + 3 = 15. \n\n\u26a1 SHORTCUT: It's simply the multiples of 3. The next multiple after 12 is 15.",
+    "id": 59
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "easy",
+    "question": "A person walks 5 km East, then turns right and walks 3 km. In which direction is he walking now?",
+    "options": [
+      "A. East",
+      "B. West",
+      "C. North",
+      "D. South"
+    ],
+    "answer": "D. South",
+    "explanation": "Standard Method: Start facing East. A right turn from East means turning clockwise 90 degrees. This direction is South. \n\n\u26a1 SHORTCUT: Visualize compass. East is right. Turning right from East leads you down, which is South.",
+    "id": 60
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Odd One Out (Classification)",
+    "difficulty": "easy",
+    "question": "Find the odd one out: 'Chair', 'Table', 'Sofa', 'Carrot'",
+    "options": [
+      "A. Chair",
+      "B. Table",
+      "C. Sofa",
+      "D. Carrot"
+    ],
+    "answer": "D. Carrot",
+    "explanation": "Standard Method: Group the items based on their properties. 'Chair', 'Table', and 'Sofa' are all pieces of furniture. 'Carrot' is a vegetable. Therefore, 'Carrot' is the odd one out. \n\n\u26a1 SHORTCUT: Three items are furniture, one is food. Simple categorization.",
+    "id": 61
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Analogy",
+    "difficulty": "easy",
+    "question": "Complete the analogy: 'Bird' is to 'Nest' as 'Lion' is to '?'",
+    "options": [
+      "A. Cave",
+      "B. Den",
+      "C. Tree",
+      "D. Zoo"
+    ],
+    "answer": "B. Den",
+    "explanation": "Standard Method: Identify the relationship between the first pair: 'Bird' lives in a 'Nest'. Apply the same relationship to the second pair. 'Lion' lives in a 'Den'. \n\n\u26a1 SHORTCUT: Animal and its dwelling. Bird-Nest, Lion-Den.",
+    "id": 62
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Logical Sequence of Words",
+    "difficulty": "easy",
+    "question": "Arrange the following words in a meaningful logical sequence:\n1. Birth\n2. Education\n3. Death\n4. Marriage\n5. Job",
+    "options": [
+      "A. 1, 2, 5, 4, 3",
+      "B. 1, 2, 4, 5, 3",
+      "C. 1, 4, 2, 5, 3",
+      "D. 1, 5, 2, 4, 3"
+    ],
+    "answer": "A. 1, 2, 5, 4, 3",
+    "explanation": "Standard Method: Consider the typical chronological order of life events: Birth (1) comes first, followed by Education (2), then usually a Job (5), leading to Marriage (4), and finally Death (3). \n\n\u26a1 SHORTCUT: Common life events timeline: birth -> learn -> work -> marry -> die.",
+    "id": 63
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism (Basic)",
+    "difficulty": "easy",
+    "question": "Statements: All 'pens' are 'pencils'. Some 'pencils' are 'erasers'.\nConclusion: Some 'pens' are 'erasers'.",
+    "options": [
+      "A. The conclusion is definitely true.",
+      "B. The conclusion is definitely false.",
+      "C. The conclusion may be true.",
+      "D. The conclusion is irrelevant."
+    ],
+    "answer": "C. The conclusion may be true.",
+    "explanation": "Standard Method: Draw Venn diagrams. While some pencils are erasers, and all pens are pencils, there's no direct link established between pens and erasers. They might overlap, or they might not. \n\n\u26a1 SHORTCUT: Just because pens are inside pencils, and pencils overlap erasers, doesn't mean pens *must* overlap erasers. It's a possibility, not a certainty.",
+    "id": 64
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Calendars",
+    "difficulty": "easy",
+    "question": "If today is Tuesday, what day will it be 7 days from now?",
+    "options": [
+      "A. Monday",
+      "B. Wednesday",
+      "C. Tuesday",
+      "D. Sunday"
+    ],
+    "answer": "C. Tuesday",
+    "explanation": "Standard Method: A week has 7 days. Adding or subtracting 7 days from any day of the week will always result in the same day. So, 7 days from Tuesday is Tuesday. \n\n\u26a1 SHORTCUT: Adding multiples of 7 days brings you back to the same day of the week.",
+    "id": 65
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "medium",
+    "question": "'P' is the daughter of 'Q'. 'R' is the brother of 'P'. 'S' is the mother of 'Q'. 'T' is the husband of 'S'. 'U' is the son of 'T'. How is 'U' related to 'R'?",
+    "options": [
+      "A. Brother",
+      "B. Uncle",
+      "C. Father",
+      "D. Cousin"
+    ],
+    "answer": "B. Uncle",
+    "explanation": "Standard Method: Draw a family tree. 'P' is 'Q's daughter. 'R' is 'P's brother, so 'R' is 'Q's son. 'S' is 'Q's mother. 'T' is 'S's husband, so 'T' is 'Q's father. 'U' is 'T's son. Since 'Q' is 'T's child, 'U' is 'Q's brother. 'R' is 'Q's son, so 'U' is 'R's paternal uncle.\n\n\u26a1 SHORTCUT: 'T' is 'Q's father. 'U' is 'T's son, so 'U' is 'Q's brother. 'R' is 'Q's son. Thus, 'U' is 'R's uncle.",
+    "id": 66
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding Decoding",
+    "difficulty": "medium",
+    "question": "If 'CAT' is coded as '3120' and 'DOG' is coded as '4157', what is 'EGG' coded as?",
+    "options": [
+      "A. 577",
+      "B. 5707",
+      "C. 5770",
+      "D. 5077"
+    ],
+    "answer": "A. 577",
+    "explanation": "Standard Method: Each letter is replaced by its positional value in the alphabet (A=1, B=2, ..., Z=26). 'C' is 3, 'A' is 1, 'T' is 20, forming '3120'. 'D' is 4, 'O' is 15, 'G' is 7, forming '4157'. For 'EGG', 'E' is 5, 'G' is 7, 'G' is 7, forming '577'.\n\n\u26a1 SHORTCUT: Quickly identify the pattern as direct alphabetic positional values concatenated. Apply it directly to 'EGG'.",
+    "id": 67
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "medium",
+    "question": "Statements: 'All pens are pencils.', 'Some pencils are erasers.', 'No eraser is a sharpener.' Conclusions: 'I. Some pens are erasers.', 'II. No pen is a sharpener.', 'III. Some pencils are not sharpeners.'",
+    "options": [
+      "A. Only I follows",
+      "B. Only III follows",
+      "C. Only I and III follow",
+      "D. Only II and III follow"
+    ],
+    "answer": "B. Only III follows",
+    "explanation": "Standard Method: Draw Venn diagrams. All PENS are PENCILS. Some PENCILS are ERASERS. No ERASER is SHARPENER. Conclusion I is a possibility, not definite. Conclusion II is also a possibility, not definite. Conclusion III is definite because some pencils are erasers, and those erasers cannot be sharpeners.\n\n\u26a1 SHORTCUT: 'Some Pencils are Erasers' + 'No Eraser is Sharpener' directly implies 'Some Pencils are not Sharpeners'. Conclusions I and II are not necessarily true.",
+    "id": 68
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "medium",
+    "question": "Six friends 'A', 'B', 'C', 'D', 'E', 'F' are sitting in a circle facing the center. 'A' is to the immediate left of 'B'. 'C' is between 'D' and 'E'. 'F' is between 'E' and 'A'. Who is sitting to the immediate right of 'C'?",
+    "options": [
+      "A. F",
+      "B. A",
+      "C. E",
+      "D. D"
+    ],
+    "answer": "D. D",
+    "explanation": "Standard Method: Start with 'A' is to the immediate left of 'B' (A,B). 'F' is between 'E' and 'A' (E,F,A,B). 'C' is between 'D' and 'E' (D,C,E,F,A,B). The complete clockwise arrangement is D-C-E-F-A-B. Therefore, 'D' is to the immediate right of 'C'.\n\n\u26a1 SHORTCUT: Piece together segments. (A B) from first clue. (E F A) from third. Combine to (E F A B). Now (D C E) from second. Combine (D C E F A B). Locate 'C' and its immediate right.",
+    "id": 69
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "medium",
+    "question": "A person walks 10m North, turns right and walks 10m. Then he turns left and walks 5m. Again, he turns left and walks 10m. Finally, he turns left and walks 5m. How far and in which direction is he from his starting point?",
+    "options": [
+      "A. 0m",
+      "B. 10m North",
+      "C. 10m East",
+      "D. 5m North"
+    ],
+    "answer": "B. 10m North",
+    "explanation": "Standard Method: Plot movements: (0,0) -> 10m N (0,10) -> Right, 10m (10,10) -> Left, 5m (10,15) -> Left, 10m (0,15) -> Left, 5m (0,10). The final position is (0,10), which is 10m North of the starting point.\n\n\u26a1 SHORTCUT: Sum net North/South and East/West displacements. North: +10 +5 -5 = +10. East: +10 -10 = 0. Result: 10m North.",
+    "id": 70
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series Completion (Alpha-numeric)",
+    "difficulty": "medium",
+    "question": "Find the next term in the series: '2B, 3E, 5H, 7K, ?'",
+    "options": [
+      "A. 9M",
+      "B. 11L",
+      "C. 11N",
+      "D. 13N"
+    ],
+    "answer": "C. 11N",
+    "explanation": "Standard Method: Analyze numbers and letters separately. Numbers are consecutive prime numbers: 2, 3, 5, 7. The next prime is 11. Letters follow a +3 pattern in alphabetical position: B(+3)E(+3)H(+3)K. So, K(+3) is N. Combining gives 11N.\n\n\u26a1 SHORTCUT: Identify number sequence as primes and letter sequence as constant interval (+3). Quickly find next prime and next letter.",
+    "id": 71
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Statement and Assumption",
+    "difficulty": "medium",
+    "question": "Statement: 'A signboard says: For quick and easy travel, use our new express highway. No tolls for the first month!' Assumptions: 'I. The new express highway is indeed quicker and easier to travel on than existing routes.' 'II. People will be attracted to use the highway because of the no-toll offer.' 'III. There are existing alternative routes available.'",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only II and III follow",
+      "C. Only I and III follow",
+      "D. All I, II and III follow"
+    ],
+    "answer": "D. All I, II and III follow",
+    "explanation": "Standard Method: An assumption is something taken for granted for the statement to make sense. For the sign to be effective, it assumes people desire quick/easy travel (I), that the no-toll offer is an incentive (II), and that people have other options they might compare it to (III). All are implied.\n\n\u26a1 SHORTCUT: Ask 'Why would the advertiser make this claim?' for each part of the statement. The answer to 'why' reveals the underlying assumption.",
+    "id": 72
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Cubes and Dice",
+    "difficulty": "medium",
+    "question": "Two positions of a dice are shown. In Position 1, faces visible are 1, 3, 4. In Position 2, faces visible are 2, 4, 5. If '2' is on the top, which number will be at the bottom?",
+    "options": [
+      "A. 1",
+      "B. 3",
+      "C. 5",
+      "D. 6"
+    ],
+    "answer": "B. 3",
+    "explanation": "Standard Method: Identify the common face, which is '4'. From '4', move clockwise for both dice. Dice 1: 4 -> 1 -> 3. Dice 2: 4 -> 5 -> 2. This shows 1 is opposite 5, and 3 is opposite 2. If '2' is on top, '3' will be at the bottom.\n\n\u26a1 SHORTCUT: With one common face ('4'), numbers in the same relative (clockwise) order are opposites. 1 is opposite 5, 3 is opposite 2.",
+    "id": 73
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "medium",
+    "question": "How many people are sitting in a circular table, all facing the center? Statements: 'I. 'P' is sitting exactly opposite to 'Q'. There are two people between 'P' and 'R' when counted clockwise from 'P'.' 'II. 'S' is sitting to the immediate right of 'Q'. There are two people between 'S' and 'T' when counted anticlockwise from 'S'.'",
+    "options": [
+      "A. Statement I alone is sufficient",
+      "B. Statement II alone is sufficient",
+      "C. Both statements I and II are together sufficient",
+      "D. Neither statement I nor II is sufficient"
+    ],
+    "answer": "A. Statement I alone is sufficient",
+    "explanation": "Standard Method: For I: 'P' opposite 'Q' implies an even number 'N', with (N/2)-1 people between them on each side. 'P' -> (2 people) -> 'R' (clockwise) means 'R' is the 4th position clockwise from 'P'. For 'P' and 'Q' to be opposite with 'R' placed, this forces 'N' to be 8. For II: 'Q S' and 'S' -> (2 people) -> 'T' (anticlockwise) describes a segment but doesn't connect back to determine the total number of people. Thus, I alone is sufficient.\n\n\u26a1 SHORTCUT: 'Opposite' provides N/2 information. 'P _ _ R' fixes relative distances. Combining these fixes total N. Statement 'II' only gives a segment, not total size.",
+    "id": 74
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Number Analogy",
+    "difficulty": "medium",
+    "question": "'3 : 243 :: 5 : ?'",
+    "options": [
+      "A. 625",
+      "B. 125",
+      "C. 3125",
+      "D. 2500"
+    ],
+    "answer": "C. 3125",
+    "explanation": "Standard Method: Analyze the relationship between 3 and 243. Observe that 243 is 3 raised to the power of 5 (3^5). Applying the same logic to 5, we need to calculate 5^5. 5^5 = 5 * 5 * 5 * 5 * 5 = 3125.\n\n\u26a1 SHORTCUT: Recognize powers. 243 is clearly a power of 3. Calculate 3^5 = 243. Apply the same power (N^5) to the second number, 5.",
+    "id": 75
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Syllogism",
+    "difficulty": "hard",
+    "question": "All 'A' are 'B'. Some 'B' are 'C'. No 'C' is 'D'. Some 'D' are 'E'. Conclusions: I. Some 'B' are not 'D'. II. All 'E' can be 'C'. III. All 'A' being 'C' is a possibility. Which conclusion(s) logically follow?",
+    "options": [
+      "A. Only I and II follow",
+      "B. Only I and III follow",
+      "C. Only II and III follow",
+      "D. All I, II and III follow"
+    ],
+    "answer": "D. All I, II and III follow",
+    "explanation": "Standard Method: Draw Venn diagrams for each statement and test conclusions for definite and possibility. All three conclusions can be logically derived. \n\n\u26a1 SHORTCUT: 'Some B are C' and 'No C is D' implies 'Some B are not D'. Possibilities exist for 'E' and 'C', and 'A' and 'C' as they are not directly linked to preclude such. ",
+    "id": 76
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Coding-Decoding",
+    "difficulty": "hard",
+    "question": "If 'PRIME' is coded as '11_9_18_14_22' and 'TABLE' is coded as '7_26_15_6_22', then how would 'WORLD' be coded?",
+    "options": [
+      "A. '4_15_9_12_23'",
+      "B. '23_12_9_15_4'",
+      "C. '23_15_9_12_4'",
+      "D. '4_12_9_15_23'"
+    ],
+    "answer": "D. '4_12_9_15_23'",
+    "explanation": "Standard Method: The code is 27 minus the alphabetical position of each letter. W=23 -> 4. O=15 -> 12. R=18 -> 9. L=12 -> 15. D=4 -> 23. \n\n\u26a1 SHORTCUT: Recognize pattern: Each letter's value is (27 - its position). Apply directly to 'WORLD' to get '4_12_9_15_23'. ",
+    "id": 77
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Blood Relations",
+    "difficulty": "hard",
+    "question": "'A' is the son of 'B'. 'C' is the sister of 'D'. 'E' is the mother of 'C'. 'F' is the only child of 'G' and 'H'. 'B' is the brother of 'E'. 'D' is the only grandchild of 'H'. How is 'F' related to 'A'?",
+    "options": [
+      "A. Aunt",
+      "B. Sister",
+      "C. Mother",
+      "D. Cannot be determined"
+    ],
+    "answer": "A. Aunt",
+    "explanation": "Standard Method: B is brother of E. A is B's son. So E is A's aunt. E is C's mother. D is E's child. F is G and H's only child. D is H's grandchild. This implies E is F. So F is A's aunt. \n\n\u26a1 SHORTCUT: Trace relations: B is brother of E. A is B's son, so E is A's paternal aunt. F being the only child of G and H, and D being H's grandchild, implies E and F are the same person. Thus F is A's aunt.",
+    "id": 78
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Seating Arrangement",
+    "difficulty": "hard",
+    "question": "Eight friends A, B, C, D, E, F, G, H are sitting around a circular table facing the center. B is not an immediate neighbor of A or C. D is third to the right of B. F is second to the left of D. H is between D and E. A is not facing F. G is second to the left of E. Who is sitting exactly opposite to C?",
+    "options": [
+      "A. E",
+      "B. G",
+      "C. H",
+      "D. A"
+    ],
+    "answer": "B. G",
+    "explanation": "Standard Method: Place B. D is 3rd right of B. F is 2nd left of D. H is between D and E. G is 2nd left of E. A not facing F. B not neighbor of A or C. Deduce order. The arrangement leads to C opposite G. \n\n\u26a1 SHORTCUT: Start with fixed positions (B, D, F, H, E, G). This largely builds the circle. Then place A, C using negative conditions. Once placed, determine who is opposite C.",
+    "id": 79
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Statement & Assumption",
+    "difficulty": "hard",
+    "question": "Statement: 'We should immediately stop providing free education for all, and introduce a fee-based model to ensure quality and self-sustainability of institutions.' - An education policy proposal. Assumptions: I. Quality of education is currently suffering due to free education. II. A fee-based model will inherently lead to higher quality education. III. Educational institutions are currently not self-sustainable.",
+    "options": [
+      "A. Only I and II are implicit",
+      "B. Only II and III are implicit",
+      "C. Only I and III are implicit",
+      "D. All I, II and III are implicit"
+    ],
+    "answer": "D. All I, II and III are implicit",
+    "explanation": "Standard Method: The proposal argues for change to 'ensure quality and self-sustainability'. This implies current issues with both (I and III) and a belief the proposed solution will fix them (II). \n\n\u26a1 SHORTCUT: For a proposal to be logical, it must assume problems (I, III) and that its solution (II) will be effective. All three are necessary underlying beliefs.",
+    "id": 80
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Puzzles",
+    "difficulty": "hard",
+    "question": "Seven persons P, Q, R, S, T, U, V are scheduled to attend a meeting on seven different days of the week, starting from Monday. Q attends on Wednesday. P attends two days after R. T attends on Friday. V attends immediately after S. U does not attend on Monday. R does not attend on Tuesday or Sunday. Who attends on Saturday?",
+    "options": [
+      "A. U",
+      "B. S",
+      "C. P",
+      "D. V"
+    ],
+    "answer": "C. P",
+    "explanation": "Standard Method: Fix Q (Wed) and T (Fri). 'P is two days after R' (R_P). R cannot be Tue/Sun, and also not Mon, Wed, Fri due to Q/P conflict. So R must be Thu, making P Sat. S and V are consecutive, so S (Mon), V (Tue). U (Sun). Thus, P attends on Saturday. \n\n\u26a1 SHORTCUT: Use fixed days and negative constraints to quickly place R. R's only valid day is Thursday, which forces P to Saturday. Then S/V and U fall into place.",
+    "id": 81
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Direction Sense",
+    "difficulty": "hard",
+    "question": "A person starts from point 'A' and walks 12m East to reach 'B'. He then turns left and walks 5m to reach 'C'. From 'C', he takes a right turn and walks 3m to 'D'. He then turns left and walks 7m to 'E'. From 'E', he turns left and walks 10m to 'F'. What is the shortest distance between 'A' and 'F'?",
+    "options": [
+      "A. 7m",
+      "B. 12m",
+      "C. 13m",
+      "D. 15m"
+    ],
+    "answer": "C. 13m",
+    "explanation": "Standard Method: Plot coordinates. A(0,0), B(12,0), C(12,5), D(15,5), E(15,12), F(5,12). Distance A to F is sqrt((5-0)^2 + (12-0)^2) = sqrt(25+144) = sqrt(169) = 13m. \n\n\u26a1 SHORTCUT: Calculate net displacement: East = 12+3-10=5m. North = 5+7=12m. Shortest distance is the hypotenuse: sqrt(5^2 + 12^2) = 13m.",
+    "id": 82
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Data Sufficiency",
+    "difficulty": "hard",
+    "question": "Five persons P, Q, R, S, T are sitting in a row facing North. Who is sitting exactly in the middle?\nStatements: \n I. S is to the immediate right of Q. R is not at any end. \n II. T is at one of the ends. P is second to the left of S. \n III. Q is second to the left of T. R is not adjacent to P.",
+    "options": [
+      "A. I and II together are sufficient",
+      "B. II and III together are sufficient",
+      "C. I and III together are sufficient",
+      "D. All I, II and III together are necessary"
+    ],
+    "answer": "B. II and III together are sufficient",
+    "explanation": "Standard Method: Combine II and III. 'Q is 2L of T' and 'T is at an end' implies T is at the right end (Q_T impossible if T is left). So, _ _ Q _ T. From II, 'P is 2L of S' forces P S Q R T. Q is the middle person. \n\n\u26a1 SHORTCUT: II+III uniquely determine the arrangement. T at the right end is the only way for 'Q 2L of T'. This forces P, S, R into specific spots, identifying Q as middle.",
+    "id": 83
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Logical Analogy",
+    "difficulty": "hard",
+    "question": "Find the odd one out: 121, 144, 169, 196, 226, 256",
+    "options": [
+      "A. 144",
+      "B. 196",
+      "C. 226",
+      "D. 256"
+    ],
+    "answer": "C. 226",
+    "explanation": "Standard Method: Analyze the numbers for a common property. 121=11^2, 144=12^2, 169=13^2, 196=14^2, 256=16^2. All are perfect squares except 226. \n\n\u26a1 SHORTCUT: Immediately recognize perfect squares in the list. 226 is the only number that is not a perfect square.",
+    "id": 84
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Mixed Puzzles",
+    "difficulty": "hard",
+    "question": "Six friends, A, B, C, D, E, F, have different heights. F is taller than only two persons. C is taller than A but shorter than E. B is shorter than D but taller than F. The second shortest person is 150cm. The person E is not the tallest. Which of the following is definitely true?",
+    "options": [
+      "A. C is the tallest",
+      "B. D is the tallest",
+      "C. E is 150cm",
+      "D. F is taller than D"
+    ],
+    "answer": "B. D is the tallest",
+    "explanation": "Standard Method: F is 4th tallest. D>B>F. E>C>A. E is not tallest. The three persons taller than F must be D, B, E. Since E is not the tallest, D must be the tallest. \n\n\u26a1 SHORTCUT: F's position (4th) is key. D, B, E must occupy the top 3 spots. E cannot be 1st, so D must be the tallest. This makes D>E or D>B.",
+    "id": 85
   }
 ]

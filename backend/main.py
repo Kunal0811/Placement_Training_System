@@ -68,6 +68,8 @@ app.include_router(resume_router, prefix="/api")
 app.include_router(interview_router)
 app.include_router(gd_router)
 
+registration_otps = {}
+
 # ---- Pydantic Models ----
 class RegisterUser(BaseModel):
     fname: str
@@ -76,6 +78,10 @@ class RegisterUser(BaseModel):
     year: int
     field: str
     password: str
+    otp: str 
+
+class RegistrationOTPRequest(BaseModel):
+    email: EmailStr
 
 class LoginUser(BaseModel):
     email: EmailStr
@@ -182,23 +188,59 @@ def reset_password_with_otp(req: ResetPasswordWithIDRequest, db_cursor: tuple = 
     return {"message": "Password reset successful"}
 
 # ---- Auth Routes ----
+@app.post("/api/send-registration-otp")
+def send_registration_otp(req: RegistrationOTPRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    
+    # 1. Check if email is ALREADY in the database
+    cursor.execute("SELECT id FROM users WHERE email=%s", (req.email,))
+    if cursor.fetchone():
+        raise HTTPException(status_code=400, detail="Email is already registered! Please log in.")
+
+    # 2. Generate a random 6-digit OTP
+    otp = f"{secrets.randbelow(1000000):06}"
+    
+    # 3. Store it temporarily in memory mapped to their email
+    registration_otps[req.email] = otp
+    
+    # 4. Send the Email
+    email_body = f"Hello,\n\nYour OTP for Placify Registration is: {otp}\n\nPlease enter this code to verify your email. Do not share this code with anyone."
+    send_email(req.email, "Your Placify Registration OTP", email_body)
+    
+    return {"message": "OTP sent to email"}
+
 @app.post("/api/register")
 def register_user(user: RegisterUser, db_cursor: tuple = Depends(get_cursor)):
+    # 1. VERIFY OTP FIRST
+    saved_otp = registration_otps.get(user.email)
+    if not saved_otp:
+        raise HTTPException(status_code=400, detail="Please request an OTP first.")
+        
+    if saved_otp != user.otp:
+        raise HTTPException(status_code=400, detail="Invalid Authentication Code!")
+
+    # 2. Proceed with normal validation
     cursor, db = db_cursor
     valid, msg = validate_password(user.password)
     if not valid:
         raise HTTPException(status_code=400, detail=msg)
 
+    # Secondary DB check just in case
     cursor.execute("SELECT id FROM users WHERE email=%s", (user.email,))
     if cursor.fetchone():
         raise HTTPException(status_code=400, detail="User already exists")
 
+    # 3. Create the user
     hashed_pwd = argon2.hash(user.password)
     cursor.execute(
         "INSERT INTO users (fname, lname, email, year, field, password) VALUES (%s, %s, %s, %s, %s, %s)",
         (user.fname, user.lname, user.email, user.year, user.field, hashed_pwd)
     )
     db.commit()
+
+    # 4. Clean up the temporary OTP so it can't be reused
+    del registration_otps[user.email]
+
     return {"message": "User registered successfully"}
 
 @app.post("/api/user/{user_id}/upload-pfp")

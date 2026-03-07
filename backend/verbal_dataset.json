@@ -2923,5 +2923,1205 @@
     "answer": "C. Both Conclusions I and II follow.",
     "explanation": "Standard Method:\nFor I: If all pens are pencils, and all pencils are erasers, then logically, all pens must also be erasers (Transitive property of 'all'). So, I follows.\nFor II: If all pens are erasers, then it naturally follows that 'some' erasers (specifically, those that are pens) are indeed pens. 'All A are B' implies 'Some B are A'. So, II follows.\n\n\u26a1 SHORTCUT: Use Venn diagrams. Draw a small circle for 'pens' inside a larger circle for 'pencils'. Then draw an even larger circle for 'erasers' encompassing 'pencils'. You'll see 'pens' are inside 'erasers' (I) and that the 'erasers' circle contains 'pens' (II).",
     "id": 195
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "easy",
+    "question": "Passage: Maria loved going to the park. Every Saturday, her mother would pack a small picnic basket with sandwiches, juice, and some cookies. Maria would often bring her favourite red ball. Once they arrived, she would run straight to the swings, trying to swing as high as she could. After playing for a while, they would find a shady spot under a large oak tree to eat their lunch. Sometimes, other children would join Maria for a game of catch. It was always a happy day filled with laughter and fresh air, making her look forward to the next Saturday. \n\n Question: What did Maria usually bring to the park in addition to the picnic basket?",
+    "options": [
+      "A. A blue kite",
+      "B. Her favourite red ball",
+      "C. A book to read",
+      "D. Her pet puppy"
+    ],
+    "answer": "B. Her favourite red ball",
+    "explanation": "Standard Method: Read the passage carefully to identify key details. The third sentence explicitly states, 'Maria would often bring her favourite red ball.' This directly answers the question. \n\n\u26a1 SHORTCUT: Scan the passage for keywords related to 'Maria' and 'bring' or 'take'. The phrase 'red ball' will stand out quickly.",
+    "id": 196
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "easy",
+    "question": "Arrange the following sentences in a logical sequence to form a coherent paragraph: \n\nP: He wanted to buy a new book. \nQ: Yesterday, Tom went to the bookstore. \nR: It was a story about a brave knight. \nS: Finally, he chose 'The Dragon's Lair'.",
+    "options": [
+      "A. QPSR",
+      "B. PQRS",
+      "C. QRSP",
+      "D. SQRP"
+    ],
+    "answer": "A. QPSR",
+    "explanation": "Standard Method: Identify the opening sentence first, which usually introduces the main subject or event (Q: 'Yesterday, Tom went to the bookstore.'). Then look for connections. Q logically leads to P (Why did he go? 'He wanted to buy a new book.'). After wanting a book, he would choose one (S: 'Finally, he chose 'The Dragon's Lair'.'). The last sentence describes the chosen book (R: 'It was a story about a brave knight.'). Thus, the sequence is QPSR. \n\n\u26a1 SHORTCUT: Look for clear starting and ending sentences. 'Yesterday, Tom went' is a clear start. 'Finally, he chose' indicates a choice after a desire, and 'It was a story' describes the chosen item, making R likely the last after S. Check options that begin with Q and end with R, and then confirm the middle flow.",
+    "id": 197
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "easy",
+    "question": "Identify the part of the sentence that contains an error. \n\n He usually go (A) to the market (B) on Sundays (C). No error (D).",
+    "options": [
+      "A. He usually go",
+      "B. to the market",
+      "C. on Sundays",
+      "D. No error"
+    ],
+    "answer": "A. He usually go",
+    "explanation": "Standard Method: Analyze each part of the sentence for grammatical correctness. The subject 'He' is singular, and the verb for a habitual action in simple present tense should agree with the singular subject. Therefore, 'go' should be 'goes'. 'He usually goes to the market'. \n\n\u26a1 SHORTCUT: Focus on subject-verb agreement first. 'He' (singular) requires 'goes' (singular verb for third person present tense), not 'go'.",
+    "id": 198
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "easy",
+    "question": "Identify the part of the sentence that contains an error. \n\n Despite of the heavy rain (A), they decided (B) to go for a walk (C). No error (D).",
+    "options": [
+      "A. Despite of the heavy rain",
+      "B. they decided",
+      "C. to go for a walk",
+      "D. No error"
+    ],
+    "answer": "A. Despite of the heavy rain",
+    "explanation": "Standard Method: The preposition 'despite' does not take 'of'. It should simply be 'Despite the heavy rain'. 'In spite of' is the correct phrase if 'of' is to be used. \n\n\u26a1 SHORTCUT: Common idiom/preposition error. Remember that 'despite' is never followed by 'of', unlike 'in spite of'.",
+    "id": 199
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "easy",
+    "question": "Choose the best option to replace the underlined part of the sentence: \n\n Each of the boys _have completed_ their homework.",
+    "options": [
+      "A. have completed",
+      "B. has completed",
+      "C. are completing",
+      "D. is complete"
+    ],
+    "answer": "B. has completed",
+    "explanation": "Standard Method: The subject of the sentence is 'Each', which is a singular pronoun. Therefore, the verb must also be singular. 'Have completed' is plural, while 'has completed' is singular. \n\n\u26a1 SHORTCUT: When 'Each of' or 'Every one of' is used, the verb that follows must always be singular, regardless of the plural noun after 'of' (e.g., 'Each of the *boys* has...').",
+    "id": 200
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction",
+    "difficulty": "easy",
+    "question": "Statement: \n1. All birds can fly. \n2. A robin is a bird. \n\nWhich of the following can be logically concluded from the statements above?",
+    "options": [
+      "A. All robins are birds.",
+      "B. A robin can fly.",
+      "C. Flying birds are robins.",
+      "D. Robins cannot fly."
+    ],
+    "answer": "B. A robin can fly.",
+    "explanation": "Standard Method: This is a direct syllogism. If 'All birds can fly' and 'A robin is a bird', then it logically follows that a robin, being a type of bird, must also possess the characteristic of flying. \n\n\u26a1 SHORTCUT: Visualize it: a larger category (birds that fly) contains a smaller category (robins). If everything in the larger category has a trait, everything in the smaller category must also have that trait.",
+    "id": 201
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Synonyms",
+    "difficulty": "easy",
+    "question": "Choose the word that is closest in meaning to 'Diligent'.",
+    "options": [
+      "A. Lazy",
+      "B. Careless",
+      "C. Hardworking",
+      "D. Slow"
+    ],
+    "answer": "C. Hardworking",
+    "explanation": "Standard Method: 'Diligent' means having or showing care and conscientiousness in one's work or duties. Among the given options, 'hardworking' is the most direct synonym. 'Lazy', 'careless', and 'slow' are antonyms or unrelated terms. \n\n\u26a1 SHORTCUT: Think of a phrase or context where the word is used, e.g., 'a diligent student'. A diligent student is typically hardworking. Eliminate clear opposites or irrelevant words.",
+    "id": 202
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Antonyms",
+    "difficulty": "easy",
+    "question": "Choose the word that is opposite in meaning to 'Optimistic'.",
+    "options": [
+      "A. Hopeful",
+      "B. Positive",
+      "C. Pessimistic",
+      "D. Cheerful"
+    ],
+    "answer": "C. Pessimistic",
+    "explanation": "Standard Method: 'Optimistic' means hopeful and confident about the future. Its direct opposite is 'Pessimistic', which means tending to see the worst aspect of things or believe that the worst will happen. 'Hopeful', 'Positive', and 'Cheerful' are synonyms or closely related terms. \n\n\u26a1 SHORTCUT: Look for the clear opposite. 'Optimistic' (seeing the good) contrasts directly with 'Pessimistic' (seeing the bad). The other options are positive like the target word.",
+    "id": 203
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Idioms",
+    "difficulty": "easy",
+    "question": "What is the meaning of the idiom 'Break a leg'?",
+    "options": [
+      "A. To injure oneself",
+      "B. To wish good luck",
+      "C. To break something important",
+      "D. To run very fast"
+    ],
+    "answer": "B. To wish good luck",
+    "explanation": "Standard Method: 'Break a leg' is an idiom commonly used in theatre to wish a performer good luck, ironically implying the opposite of a desired outcome (injury) to avoid jinxing them. \n\n\u26a1 SHORTCUT: Idioms are rarely literal. If it sounds like something bad, it often means something good in an ironic twist, especially for well-known idioms like this one (often used before performances).",
+    "id": 204
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "easy",
+    "question": "Arrange the following sentences in a logical sequence to describe the process of arranging flowers: \n\nP: She then poured water into it. \nQ: First, Lisa took an empty vase. \nR: Finally, she arranged the fresh flowers. \nS: Next, she added some flower food.",
+    "options": [
+      "A. QPSR",
+      "B. PQRS",
+      "C. QRSP",
+      "D. SQRP"
+    ],
+    "answer": "A. QPSR",
+    "explanation": "Standard Method: Identify the chronological markers. 'First' (Q) clearly starts the process. 'Then' (P) indicates the next step after taking the vase. 'Next' (S) follows pouring water. 'Finally' (R) indicates the conclusion of the process. Thus, the sequence is QPSR. \n\n\u26a1 SHORTCUT: Look for sequencing words: 'First', 'Then', 'Next', 'Finally'. These act as strong clues to the correct order.",
+    "id": 205
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "easy",
+    "question": "Passage: The annual community fair was a great success last Saturday, drawing hundreds of visitors from both the town and surrounding villages. Local artisans showcased their handmade crafts, from pottery to intricate jewelry, attracting many eager buyers. Children enjoyed face painting, a bouncy castle, and a puppet show that kept them entertained for hours. Food stalls offered a variety of delicious treats, including freshly baked pies and savory street food, which quickly sold out. The mayor, present at the event, expressed his delight at the turnout and the strong community spirit displayed. He highlighted the importance of such events in fostering local talent and strengthening neighborhood bonds. Plans are already underway for next year's fair, promising even more attractions and activities for all ages. \n\n Question: What was one of the main attractions for children at the community fair?",
+    "options": [
+      "A. Pottery workshops",
+      "B. Intricate jewelry stalls",
+      "C. A puppet show",
+      "D. Freshly baked pies"
+    ],
+    "answer": "C. A puppet show",
+    "explanation": "Standard Method: Read the passage carefully and locate the sentence that mentions children's activities. The passage states, 'Children enjoyed face painting, a bouncy castle, and a puppet show that kept them entertained for hours.' Identify the option that matches one of these mentioned activities. \n\n\u26a1 SHORTCUT: Scan the passage for keywords like 'children' and 'enjoyed'. The sentence immediately following these keywords will likely contain the answer for their attractions.",
+    "id": 206
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "easy",
+    "question": "Arrange the following sentences in a logical order:\nP. This helps them stay safe from predators.\nQ. Chameleons are known for their ability to change color.\nR. They can blend perfectly with their surroundings.\nS. It's a fascinating natural defense mechanism.",
+    "options": [
+      "A. QPRS",
+      "B. QRPS",
+      "C. PQRS",
+      "D. SQPR"
+    ],
+    "answer": "B. QRPS",
+    "explanation": "Standard Method: Look for the opening sentence that introduces the main topic (Q introduces chameleons). Then find connections: Q (chameleons change color) leads to R (blend with surroundings), which explains *how* they change color. R (blend) leads to P (helps them stay safe from predators), which explains the *purpose*. P (defense from predators) is summarized by S (fascinating natural defense mechanism). \n\n\u26a1 SHORTCUT: Identify the subject (Chameleons - Q). Look for cause-effect or elaboration. Q (ability to change color) leads to R (how they do it - blend). R leads to P (why they do it - safety). S provides a concluding statement about the entire phenomenon.",
+    "id": 207
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "easy",
+    "question": "Find the part of the sentence that contains an error.\nShe has been (A)/ working here (B)/ for five years (C)/ and still is not promoted (D).",
+    "options": [
+      "A. A",
+      "B. B",
+      "C. C",
+      "D. D"
+    ],
+    "answer": "D. D",
+    "explanation": "Standard Method: Analyze each part for grammatical correctness and tense consistency. The first part 'She has been working here for five years' uses the present perfect continuous tense, indicating an action that started in the past and continues into the present. The conjunction 'and' connects this to the second clause. The second clause 'still is not promoted' uses the simple present passive. To maintain consistency with the duration implied by 'for five years' and the ongoing situation, the correct tense for the second clause should also be present perfect passive, 'has not been promoted'. \n\n\u26a1 SHORTCUT: Look for tense consistency. The sentence starts in the present perfect continuous. The action in the second part (promotion) is also related to the five-year period. 'Still is not promoted' is a tense mismatch; it should be 'still has not been promoted' to align with the ongoing timeframe.",
+    "id": 208
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Assumption",
+    "difficulty": "easy",
+    "question": "Statement: The local library has decided to extend its operating hours by two hours every weekday evening.\nAssumption: People in the community want to use the library later in the evening.",
+    "options": [
+      "A. The assumption is definitely true.",
+      "B. The assumption is probably true.",
+      "C. The assumption is definitely false.",
+      "D. The assumption has no relation to the statement."
+    ],
+    "answer": "B. The assumption is probably true.",
+    "explanation": "Standard Method: When an institution like a library decides to extend its operating hours, it typically does so in response to perceived demand or to better serve its patrons. While it's not 'definitely true' (as there might be other minor reasons, or the demand might be from a specific group), it is highly probable that the decision is based on the belief that there's a desire or need for later access among community members. \n\n\u26a1 SHORTCUT: Why would a service extend its hours? To accommodate users who wish to use it during those extended hours. This is the most logical and probable underlying reason for such a decision.",
+    "id": 209
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "easy",
+    "question": "Choose the option that best corrects the underlined part of the sentence.\nShe not only bought a new car, but also a new house.",
+    "options": [
+      "A. She not only bought a new car, but also a new house. (No change)",
+      "B. Not only she bought a new car, but also a new house.",
+      "C. She bought not only a new car, but also a new house.",
+      "D. She bought a new car not only, but also a new house."
+    ],
+    "answer": "C. She bought not only a new car, but also a new house.",
+    "explanation": "Standard Method: The correlative conjunctions 'not only... but also...' should be placed immediately before the parallel words or phrases they connect. In the original sentence, 'not only' precedes 'bought' (a verb), while 'but also' precedes 'a new house' (a noun phrase). This creates an imbalance. To achieve parallelism, 'not only' should precede 'a new car' (a noun phrase), matching 'but also a new house'. Therefore, the verb 'bought' should come before 'not only'. \n\n\u26a1 SHORTCUT: Ensure parallelism with 'not only... but also...'. Whatever grammatical structure follows 'not only' must be the same as what follows 'but also'. Here, 'a new car' and 'a new house' are parallel noun phrases. So, 'not only' should immediately precede 'a new car'.",
+    "id": 210
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "easy",
+    "question": "Arrange the following sentences in a logical order:\nP. This change is often gradual.\nQ. Over time, living organisms adapt to their environment.\nR. They develop features that help them survive and reproduce.\nS. For example, polar bears have thick fur to withstand cold.",
+    "options": [
+      "A. PQRS",
+      "B. QPRS",
+      "C. QRPS",
+      "D. SQPR"
+    ],
+    "answer": "B. QPRS",
+    "explanation": "Standard Method: Q introduces the main topic: the adaptation of living organisms. R explains *how* they adapt (develop features). P describes a characteristic of this change (it's gradual). S provides a concrete *example* of this adaptation (polar bears). Therefore, the logical flow is Q -> R -> P -> S. \n\n\u26a1 SHORTCUT: Start with the general concept (Q - organisms adapt). Then explain the *consequence* or *mechanism* (R - develop features). P (gradual) describes *how* this process typically occurs. S (for example) is a clear indicator for an illustrative sentence, which should follow the general explanation.",
+    "id": 211
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "easy",
+    "question": "Find the part of the sentence that contains an error.\nOne of the most important factors (A)/ that contribute to success (B)/ are hard work and perseverance (C)/ for any student (D).",
+    "options": [
+      "A. A",
+      "B. B",
+      "C. C",
+      "D. D"
+    ],
+    "answer": "C. C",
+    "explanation": "Standard Method: Identify the subject of the main clause. The subject is 'One', which is singular. The phrase 'of the most important factors' is a prepositional phrase modifying 'One'. Therefore, the verb must agree with the singular subject 'One'. The current verb 'are' is plural. It should be 'is' to correctly agree with 'One'. ('That contribute' is correct as 'that' refers to 'factors', which is plural). \n\n\u26a1 SHORTCUT: Whenever you see the structure 'One of the [plural noun]...', the verb that follows, referring back to 'One', should almost always be singular. In this case, 'One... is' not 'One... are'.",
+    "id": 212
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: Climate change is profoundly altering ecosystems worldwide, leading to shifts in species distribution, changes in phenology, and increased frequency of extreme weather events. These impacts are not uniform; some regions, like the Arctic, are experiencing changes at an accelerated rate, warming almost three times faster than the global average. This rapid warming has significant implications for indigenous communities whose traditional ways of life are intimately connected to the ice and permafrost. Furthermore, the disruption of natural habitats threatens biodiversity, potentially leading to widespread extinctions if mitigation efforts are not drastically scaled up. The economic repercussions are also substantial, affecting agriculture, infrastructure, and human health, demanding immediate and coordinated international action. \n\n Question: Which of the following best summarizes the main idea of the passage?",
+    "options": [
+      "A. The Arctic is disproportionately affected by climate change, threatening indigenous communities.",
+      "B. Climate change causes widespread ecological, social, and economic disruptions, requiring urgent global action.",
+      "C. Species distribution and phenology are the primary indicators of climate change's impact on ecosystems.",
+      "D. Mitigation efforts are currently insufficient to prevent widespread extinctions due to climate change."
+    ],
+    "answer": "B. Climate change causes widespread ecological, social, and economic disruptions, requiring urgent global action.",
+    "explanation": "Standard Method: Read the passage to understand the overall theme. The passage starts with general impacts, specifies the Arctic, mentions biodiversity, and concludes with economic repercussions and the need for action. Option B encompasses all these aspects. Option A is a specific detail, not the main idea. Option C focuses only on ecological indicators, ignoring social/economic. Option D is a conclusion drawn, but not the overarching theme.\n\n\u26a1 SHORTCUT: Look for the statement that covers the broadest scope of the passage, often found in the introduction or conclusion. The passage details various impacts and calls for 'immediate and coordinated international action', which aligns with 'requiring urgent global action'.",
+    "id": 213
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles",
+    "difficulty": "medium",
+    "question": "Arrange the following sentences in a logical sequence:\nP. This complex interplay of forces determines the eventual trajectory of nations and their standing on the global stage.\nQ. Geopolitics, by its very nature, involves the study of how geography and economics influence politics and international relations.\nR. Economic strength, military prowess, cultural influence, and technological advancement are all critical components.\nS. Understanding the concept requires an appreciation of various factors that contribute to a country's power and influence.",
+    "options": [
+      "A. QSRP",
+      "B. QSPR",
+      "C. PQRS",
+      "D. RSQP"
+    ],
+    "answer": "B. QSPR",
+    "explanation": "Standard Method: Q introduces the topic 'Geopolitics'. S elaborates on 'understanding the concept' mentioned in Q. R lists the 'various factors' mentioned in S. P describes the outcome of 'this complex interplay' (referring to factors in R). So, Q-S-R-P is the logical flow.\n\n\u26a1 SHORTCUT: Identify the introductory sentence (Q). Look for pronoun/referent links (e.g., 'this complex interplay' in P refers to factors in R; 'understanding the concept' in S refers to geopolitics in Q). Q is clearly the start. S follows Q by explaining what's needed to understand it. R details the factors needed for understanding. P summarizes the interplay of those factors.",
+    "id": 214
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Assumption",
+    "difficulty": "medium",
+    "question": "Statement: 'Our company encourages employees to join professional development workshops to enhance their skills and career prospects.'\n\nWhich of the following assumptions is implicit in the statement?",
+    "options": [
+      "A. Employees lack the necessary skills for their current roles.",
+      "B. Professional development workshops are the only way to enhance skills.",
+      "C. Enhanced skills contribute to better career prospects within the company.",
+      "D. All employees will definitely join these workshops."
+    ],
+    "answer": "C. Enhanced skills contribute to better career prospects within the company.",
+    "explanation": "Standard Method: An assumption is something taken for granted or supposed.\nA. The statement doesn't say employees *lack* skills, just that workshops *enhance* them. This is too strong an assumption.\nB. 'To enhance skills' doesn't imply it's the *only* way.\nC. If the company encourages workshops to enhance skills *and* career prospects, it implicitly believes that these enhanced skills will lead to better career prospects, likely within the company or at least supported by the company. This is a reasonable underlying belief.\nD. 'Encourages' does not mean 'all will definitely join'. It's an encouragement, not a mandate or a guarantee of participation.\n\n\u26a1 SHORTCUT: Look for the underlying belief that *must* be true for the statement to make sense. The link between 'enhancing skills' and 'career prospects' implies the company sees value in this connection.",
+    "id": 215
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Synonym)",
+    "difficulty": "medium",
+    "question": "Despite the government's best efforts, the **protracted** negotiations failed to yield a consensus on the new trade agreement.\n\nChoose the word that is closest in meaning to the word 'protracted'.",
+    "options": [
+      "A. Abbreviated",
+      "B. Intense",
+      "C. Extended",
+      "D. Fruitful"
+    ],
+    "answer": "C. Extended",
+    "explanation": "Standard Method: 'Protracted' means lasting for a long time or longer than expected or usual; prolonged.\nA. 'Abbreviated' means shortened, opposite of protracted.\nB. 'Intense' means extreme or forceful, not directly related to duration.\nC. 'Extended' means made longer, prolonged. This is a direct synonym.\nD. 'Fruitful' means producing good results, not related to duration.\n\n\u26a1 SHORTCUT: If unsure, try replacing the word in the sentence with each option. 'Extended negotiations' makes perfect sense and conveys the meaning of negotiations that dragged on.",
+    "id": 216
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: The advent of artificial intelligence (AI) has brought forth a wave of transformative potential across various sectors, from healthcare to finance. In medicine, AI algorithms can analyze complex patient data to predict disease risks, recommend personalized treatments, and even assist in drug discovery, promising a revolution in patient care. However, this transformative power is accompanied by significant ethical dilemmas. Concerns around data privacy, algorithmic bias, and job displacement loom large, requiring careful consideration and robust regulatory frameworks. The opaque nature of some AI decision-making processes, often termed 'black box' AI, also poses challenges for accountability and trustworthiness. Striking a balance between innovation and responsible deployment is paramount to harnessing AI's benefits while mitigating its societal risks. \n\n Question: What is a primary challenge associated with the 'black box' nature of AI, according to the passage?",
+    "options": [
+      "A. Its inability to analyze complex patient data effectively.",
+      "B. The difficulty in predicting disease risks with its algorithms.",
+      "C. Obstacles in ensuring accountability and trustworthiness in its decisions.",
+      "D. Its tendency to directly cause job displacement across sectors."
+    ],
+    "answer": "C. Obstacles in ensuring accountability and trustworthiness in its decisions.",
+    "explanation": "Standard Method: Locate the specific phrase 'black box' AI in the passage. The sentence states: 'The opaque nature of some AI decision-making processes, often termed 'black box' AI, also poses challenges for accountability and trustworthiness.'\nA. The passage states AI *can* analyze complex patient data.\nB. AI *can* predict disease risks.\nC. This directly matches the text: 'challenges for accountability and trustworthiness.'\nD. Job displacement is mentioned as a general concern, but not directly linked to the 'black box' nature in the passage.\n\n\u26a1 SHORTCUT: For specific detail questions, scan the passage for keywords from the question ('black box' AI). The answer will usually be found in the immediate vicinity of those keywords.",
+    "id": 217
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "medium",
+    "question": "Choose the best way to improve the underlined part of the sentence.\nThe novel, written by an unknown author, was surprisingly compelling, drawing readers into its intricate plot and well-developed characters, **despite it's amateurish cover design**.",
+    "options": [
+      "A. despite it's amateurish cover design.",
+      "B. despite its amateurish cover design.",
+      "C. despite of its amateurish cover design.",
+      "D. even though its amateurish cover design."
+    ],
+    "answer": "B. despite its amateurish cover design.",
+    "explanation": "Standard Method: Identify the error in the original sentence. 'it's' is a contraction for 'it is' or 'it has'. The sentence requires the possessive pronoun 'its'.\nA. 'it's' is incorrect (contraction vs. possessive).\nB. 'its' is the correct possessive pronoun. 'despite' is correctly used as a preposition followed by a noun phrase.\nC. 'despite of' is grammatically incorrect; 'despite' does not take 'of'. (You could say 'in spite of').\nD. 'even though its amateurish cover design' is grammatically awkward. 'Even though' is a conjunction and usually introduces a clause (e.g., 'even though its cover design *was* amateurish'). Here, it's followed by a noun phrase, making 'despite its' a more concise and grammatically sound option.\n\n\u26a1 SHORTCUT: Look for common errors like apostrophes (it's vs. its), preposition usage, and sentence structure. 'It's' vs. 'its' is a very common trap. Eliminate options with clear grammatical errors first.",
+    "id": 218
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles",
+    "difficulty": "medium",
+    "question": "Arrange the following sentences in a logical sequence:\nP. The resultant waste stream poses significant environmental challenges, especially with the rise of single-use plastics.\nQ. Modern consumer society relies heavily on packaging to protect products, extend shelf life, and provide branding.\nR. Innovations in biodegradable materials and circular economy models offer promising solutions to this growing problem.\nS. This proliferation of packaging materials, while beneficial for commerce, often leads to excessive material consumption.",
+    "options": [
+      "A. QRSP",
+      "B. QSPR",
+      "C. PQRS",
+      "D. SPRQ"
+    ],
+    "answer": "B. QSPR",
+    "explanation": "Standard Method: Q introduces the topic: modern society's reliance on packaging. S elaborates on 'this proliferation of packaging materials' (referring to Q) and its downside. P describes the 'resultant waste stream' from the excessive consumption mentioned in S. R offers 'solutions' to 'this growing problem' (the waste stream from P). So, Q-S-P-R is the logical flow.\n\n\u26a1 SHORTCUT: Q is clearly the opening statement. S connects to Q with 'This proliferation of packaging materials'. P connects to S with 'The resultant waste stream' from 'excessive material consumption'. R offers solutions to 'this growing problem' (the waste stream). Look for definite articles ('the resultant'), demonstrative pronouns ('this proliferation'), and cause-effect relationships.",
+    "id": 219
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idiom)",
+    "difficulty": "medium",
+    "question": "After losing his job, John realized he had to **tighten his belt** until he found new employment.\n\nWhat does the idiom 'tighten his belt' mean?",
+    "options": [
+      "A. To get ready for a fight.",
+      "B. To exercise regularly to lose weight.",
+      "C. To spend less money and live more frugally.",
+      "D. To work harder and longer hours."
+    ],
+    "answer": "C. To spend less money and live more frugally.",
+    "explanation": "Standard Method: Understand the context. John lost his job, implying a financial hardship.\nA. Not related to financial difficulty.\nB. While related to 'belt', this is a literal interpretation, not the idiomatic meaning.\nC. 'Tighten one's belt' means to cut down on expenses, to live more economically, typically due to financial difficulty. This fits the context.\nD. While he might work harder to find a job, the idiom itself refers to financial austerity.\n\n\u26a1 SHORTCUT: Idioms often relate to common human experiences or simple actions. 'Tightening a belt' implies making something smaller or restricting it, which can be metaphorically applied to spending less. The context of losing a job strongly points to financial difficulty.",
+    "id": 220
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Conclusion",
+    "difficulty": "medium",
+    "question": "Statement: 'Many people believe that strict privacy regulations hinder technological innovation by restricting data access, while others argue they are essential for protecting individual rights.'\n\nConclusions:\nI. There is a debate regarding the impact of privacy regulations on technological innovation.\nII. All technological innovation relies on unrestricted data access.",
+    "options": [
+      "A. Only Conclusion I follows.",
+      "B. Only Conclusion II follows.",
+      "C. Both Conclusion I and II follow.",
+      "D. Neither Conclusion I nor II follows."
+    ],
+    "answer": "A. Only Conclusion I follows.",
+    "explanation": "Standard Method: Analyze the statement and each conclusion independently.\nStatement: Presents two opposing viewpoints ('many people believe...' and 'others argue...') about privacy regulations.\nConclusion I: 'There is a debate regarding the impact of privacy regulations on technological innovation.' The statement explicitly describes conflicting views, which is precisely a debate. So, Conclusion I follows.\nConclusion II: 'All technological innovation relies on unrestricted data access.' The statement says some people *believe* strict regulations *hinder* innovation by *restricting* data access. It does not state as a fact that *all* innovation relies on *unrestricted* access. The word 'all' makes this conclusion too strong and not directly supported by the statement.\n\n\u26a1 SHORTCUT: For 'Statement & Conclusion' questions, look for conclusions that are direct logical consequences or summaries of the information given. Be wary of strong quantifiers like 'all', 'only', 'never' unless explicitly supported. The statement clearly outlines a 'debate' by presenting two contrasting views.",
+    "id": 221
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: The advent of artificial intelligence (AI) has sparked extensive debate regarding its long-term societal implications. While proponents highlight AI's potential to revolutionize industries, enhance productivity, and solve complex global challenges like disease and climate change, critics express profound concerns. They often point to the ethical dilemmas surrounding autonomous decision-making, the potential for widespread job displacement due to automation, and the inherent biases that can be amplified by AI systems trained on imperfect data. Furthermore, questions about privacy, surveillance, and the concentration of power in the hands of a few AI developers loom large. Navigating this transformative era requires a careful balance between fostering innovation and implementing robust regulatory frameworks to safeguard human values and rights. The future trajectory of human-AI interaction will undoubtedly depend on these crucial considerations.\n\nQuestion: Which of the following best encapsulates the central theme of the passage?",
+    "options": [
+      "A. The inevitable takeover of human jobs by AI automation.",
+      "B. The ethical imperative of designing bias-free AI systems.",
+      "C. The dual nature of AI's potential: immense benefits alongside significant challenges and ethical concerns.",
+      "D. The urgent need for international regulation of AI development."
+    ],
+    "answer": "C. The dual nature of AI's potential: immense benefits alongside significant challenges and ethical concerns.",
+    "explanation": "Standard Method: Read the passage carefully to identify the main subject (AI) and the primary points discussed. The passage presents both the positive aspects ('revolutionize industries', 'enhance productivity', 'solve complex global challenges') and the negative aspects ('ethical dilemmas', 'job displacement', 'inherent biases', 'privacy', 'surveillance', 'concentration of power'). The concluding sentence also emphasizes the 'careful balance'. Option C accurately summarizes this dual perspective, encompassing both the promises and perils of AI.\n\n\u26a1 SHORTCUT: Look for the statement that encompasses the broadest scope of the passage, rather than focusing on a single detail or extreme view. Eliminate options that present only one side of a multi-faceted topic, as the passage clearly discusses both pros and cons.",
+    "id": 222
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "medium",
+    "question": "Arrange the following sentences in a logical sequence to form a coherent paragraph:\nP. This process, known as photosynthesis, converts light energy into chemical energy.\nQ. Plants are unique organisms capable of producing their own food.\nR. They achieve this primarily through their leaves, which contain chlorophyll.\nS. Chlorophyll absorbs sunlight, which then powers a reaction involving carbon dioxide and water.",
+    "options": [
+      "A. QSPR",
+      "B. QSRP",
+      "C. QRPS",
+      "D. RQSP"
+    ],
+    "answer": "B. QSRP",
+    "explanation": "Standard Method: Identify the opening sentence, usually a general statement (Q). Then, look for logical connections. Q introduces plants' ability to make food. R explains 'how' they do it (through leaves/chlorophyll). S explains what chlorophyll does (absorbs sunlight for a reaction). P names the process described in S. Thus, the sequence is Q (general statement) -> R (explanation of method) -> S (detail of method) -> P (name of process).\n\n\u26a1 SHORTCUT: Look for pronoun references or linking words. 'They' in R refers to 'Plants' in Q. 'Chlorophyll' in S refers to 'chlorophyll' in R. 'This process' in P refers to the chemical reaction described in S. This creates a clear chain: Q -> R -> S -> P.",
+    "id": 223
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction (Statement & Assumption)",
+    "difficulty": "medium",
+    "question": "Statement: 'Please switch off your mobile phones before entering the examination hall.' - An instruction given to candidates.\n\nWhich of the following assumptions is/are implicit in the statement?\nI. Candidates might carry mobile phones into the examination hall.\nII. Mobile phones can disturb other candidates.\nIII. Candidates will follow the instruction.",
+    "options": [
+      "A. Only I is implicit.",
+      "B. Only II is implicit.",
+      "C. Both I and II are implicit.",
+      "D. Both II and III are implicit."
+    ],
+    "answer": "C. Both I and II are implicit.",
+    "explanation": "Standard Method: An assumption is something taken for granted or believed to be true in order to make the statement. For an instruction to be given ('switch off phones'), it must be assumed that candidates *might* have phones (I) and that these phones *could cause disturbance* if not switched off (II). If phones weren't brought or didn't cause disturbance, the instruction would be pointless. Assumption III (that candidates *will* follow the instruction) is an expectation or hope, but not a fundamental assumption for *giving* the instruction in the first place. Instructions are given regardless of whether they are always followed.\n\n\u26a1 SHORTCUT: Ask 'Why would this statement be made?' The 'why' reveals the underlying assumptions. If there's no phone to switch off (I), or no disturbance (II), the instruction loses its purpose. The *act of giving the instruction* implies these two conditions.",
+    "id": 224
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idioms)",
+    "difficulty": "medium",
+    "question": "Choose the meaning of the idiom: 'To throw caution to the winds'",
+    "options": [
+      "A. To act very carefully and prudently.",
+      "B. To engage in pointless arguments.",
+      "C. To disregard prudence and act recklessly.",
+      "D. To give up on a difficult task."
+    ],
+    "answer": "C. To disregard prudence and act recklessly.",
+    "explanation": "Standard Method: Analyze the components of the idiom. 'Caution' refers to carefulness or prudence. 'Throwing something to the winds' implies letting go of it, allowing it to be scattered and disappear. Therefore, 'to throw caution to the winds' means to abandon all carefulness and act without regard for potential risks or consequences, i.e., recklessly.\n\n\u26a1 SHORTCUT: Idioms often use metaphorical language. Visualize 'throwing caution away'\u2014it implies getting rid of carefulness, leaving one free to act without constraint, which equates to recklessness.",
+    "id": 225
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: The industrial revolution fundamentally reshaped global societies, transitioning them from agrarian economies to industrialized ones. Originating in Great Britain in the late 18th century, it was characterized by significant technological innovations such as the steam engine, the power loom, and new methods of iron production. These advancements led to factory systems, mass production, and urbanization, attracting large populations to nascent industrial centers. While it brought unprecedented economic growth and new opportunities, it also created stark social divisions, poor working conditions, and environmental degradation. Child labor became rampant, and overcrowded cities struggled with sanitation and disease. The long-term impact, however, laid the groundwork for modern capitalism and technological progress, permanently altering human civilization's course.\n\nQuestion: Which of the following statements about the Industrial Revolution can be inferred from the passage?",
+    "options": [
+      "A. It exclusively benefited the upper classes and led to widespread misery for everyone else.",
+      "B. Its origins were solely driven by a desire to exploit child labor for economic gain.",
+      "C. It introduced both profound positive changes and severe negative consequences.",
+      "D. The steam engine was the only significant technological innovation during that period."
+    ],
+    "answer": "C. It introduced both profound positive changes and severe negative consequences.",
+    "explanation": "Standard Method: An inference is a conclusion reached on the basis of evidence and reasoning. The passage explicitly states, 'While it brought unprecedented economic growth and new opportunities, it also created stark social divisions, poor working conditions, and environmental degradation.' This directly supports option C, showing a balance of positive ('economic growth', 'new opportunities') and negative ('social divisions', 'poor working conditions', 'environmental degradation') outcomes. Options A, B, and D present extreme or partial views not fully supported by the text; for example, D is incorrect because 'power loom' and 'new methods of iron production' are also mentioned as significant innovations.\n\n\u26a1 SHORTCUT: When looking for an inference, avoid options that use absolute words like 'exclusively', 'solely', or 'only' unless the passage provides explicit, unambiguous support for such absolutes. The phrase 'While it brought... it also created...' is a strong indicator of a balanced perspective, directly matching option C.",
+    "id": 226
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "medium",
+    "question": "Choose the best way to improve the underlined part of the sentence:\nHaving finished the assignment, the professor collected the papers.",
+    "options": [
+      "A. As the assignment was finished, the professor collected the papers.",
+      "B. After the students finished the assignment, the professor collected the papers.",
+      "C. Having finished the assignment, the papers were collected by the professor.",
+      "D. The professor collected the papers after the assignment was finished."
+    ],
+    "answer": "B. After the students finished the assignment, the professor collected the papers.",
+    "explanation": "Standard Method: The original sentence contains a dangling participle ('Having finished'). A dangling participle occurs when the subject of the participle (the one doing the action) is not the same as the subject of the main clause. Here, 'Having finished' logically refers to the students, but the subject of the main clause is 'the professor'. Option B corrects this by explicitly stating 'the students finished the assignment', making the subject of the action clear and grammatically correct. Options A and D are grammatically correct but less direct than B in showing who finished the assignment before the collection. Option C creates a passive voice structure and still doesn't explicitly state who finished the assignment, making it less clear than B.\n\n\u26a1 SHORTCUT: When you see an '-ing' phrase at the beginning of a sentence, immediately check if its implied subject matches the subject of the main clause. If not, it's likely a dangling participle. Look for an option that explicitly introduces the correct subject for that initial action.",
+    "id": 227
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "medium",
+    "question": "Arrange the following sentences in a logical sequence to form a coherent paragraph:\nP. This creates a powerful suction, drawing air into the lungs.\nQ. Breathing is a fundamental biological process essential for life.\nR. When we inhale, the diaphragm contracts and moves downwards, while the rib muscles pull the rib cage upwards and outwards.\nS. This expansion of the chest cavity decreases the air pressure inside the lungs relative to the outside atmosphere.",
+    "options": [
+      "A. QRSP",
+      "B. QSPR",
+      "C. QSRP",
+      "D. RQSP"
+    ],
+    "answer": "A. QRSP",
+    "explanation": "Standard Method: Identify the introductory sentence: Q defines breathing. Then, look for the 'how' or 'what happens next'. R describes the initial physical actions of inhalation (diaphragm and rib muscles). S logically follows R by explaining the immediate consequence of those actions: 'This expansion of the chest cavity' (referring to the actions in R) leads to decreased air pressure. Finally, P explains the result of that pressure change: 'This creates a powerful suction' (referring to the decreased pressure in S). The sequence is therefore Q -> R -> S -> P.\n\n\u26a1 SHORTCUT: Look for cause-and-effect relationships and pronoun references. Q introduces the topic. R describes the action. S describes the effect of R ('This expansion'). P describes the effect of S ('This creates...suction'). This chain of events makes the order clear.",
+    "id": 228
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction (Statement & Conclusion)",
+    "difficulty": "medium",
+    "question": "Statement: 'The local government has announced a new policy offering substantial subsidies to farmers who adopt organic farming methods.'\n\nWhich of the following conclusion(s) can be logically drawn from the statement?\nI. The government aims to promote sustainable agricultural practices.\nII. Conventional farming methods are causing environmental damage.\nIII. Farmers will immediately switch to organic methods due to the subsidies.",
+    "options": [
+      "A. Only conclusion I follows.",
+      "B. Only conclusion II follows.",
+      "C. Both I and II follow.",
+      "D. Both I, II, and III follow."
+    ],
+    "answer": "C. Both I and II follow.",
+    "explanation": "Standard Method: A conclusion is a proposition that logically follows from the premises. \nI. The statement mentions 'organic farming methods' which are widely recognized as sustainable. Offering subsidies to adopt these methods directly implies the government's aim to promote sustainable practices. So, I follows.\nII. By incentivizing a shift *towards* organic farming, the government implicitly suggests that the current or conventional methods are less desirable, likely due to their negative impact. While not explicitly stated, the context of promoting organic methods often arises from concerns about the environmental impact of conventional methods. So, II follows.\nIII. While subsidies are an incentive, the statement only announces the policy. It does not provide any guarantee or evidence that farmers *will immediately switch*. Many factors influence farmers' decisions, and the immediate impact cannot be logically concluded from the announcement alone. So, III does not follow.\n\n\u26a1 SHORTCUT: For conclusions, stick strictly to what the statement *implies* or *necessitates*. 'Aims to promote' (I) is a clear implication of offering incentives for a particular practice. 'Conventional methods are causing damage' (II) is a reasonable background inference for *why* the government would promote an alternative. 'Will immediately switch' (III) makes a prediction about future behavior that is not a guaranteed logical consequence of the policy announcement itself, making it an assumption rather than a conclusion.",
+    "id": 229
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: The advent of artificial intelligence has ushered in an era of unprecedented technological disruption. While proponents highlight its potential to revolutionize industries, enhance productivity, and solve complex global challenges from disease eradication to climate modeling, critics voice significant concerns. They argue that unchecked AI development could exacerbate existing societal inequalities, lead to widespread job displacement, and even pose existential risks if ethical guidelines and regulatory frameworks fail to keep pace with innovation. Moreover, the 'black box' nature of some advanced AI algorithms raises questions about transparency and accountability, especially in critical applications like justice systems and autonomous vehicles. The debate often centers on striking a delicate balance: fostering innovation while simultaneously ensuring human oversight and societal well-being. It is clear that the future integration of AI into daily life requires careful, multidisciplinary consideration, extending beyond mere technological capability to encompass philosophical, economic, and ethical dimensions.\n\nQuestion: Which of the following best encapsulates the central tension discussed in the passage regarding Artificial Intelligence?",
+    "options": [
+      "A. The difficulty in developing AI algorithms that are transparent and accountable.",
+      "B. The conflict between technological innovation and the need for ethical and societal safeguards.",
+      "C. The debate over whether AI will create more jobs than it displaces.",
+      "D. The challenge of integrating AI into justice systems and autonomous vehicles."
+    ],
+    "answer": "B. The conflict between technological innovation and the need for ethical and societal safeguards.",
+    "explanation": "Standard Method: Read the passage to understand the main idea and the various viewpoints presented. The passage discusses both the 'potential to revolutionize industries' (innovation) and the 'concerns' like 'exacerbate societal inequalities,' 'job displacement,' and 'existential risks' if 'ethical guidelines and regulatory frameworks fail to keep pace' (societal safeguards). The conclusion 'striking a delicate balance: fostering innovation while simultaneously ensuring human oversight and societal well-being' directly points to this central tension.\n\n\u26a1 SHORTCUT: Look for keywords that represent the opposing forces. 'Proponents' vs. 'critics' and 'fostering innovation' vs. 'ensuring human oversight and societal well-being' are strong indicators of a conflict or tension. Option B directly uses these concepts.",
+    "id": 230
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "medium",
+    "question": "P: This shift is largely driven by increased awareness of environmental impact and a growing demand for sustainable practices.\nQ: However, transitioning to green energy often requires substantial initial investment and poses challenges related to grid stability.\nR: Many nations are currently exploring and adopting renewable energy sources, such as solar and wind power, at an unprecedented rate.\nS: Despite these hurdles, the long-term benefits, including reduced carbon emissions and energy independence, make it a compelling future.\n\nQuestion: Choose the option that arranges the sentences P, Q, R, S in a logical and coherent order.",
+    "options": [
+      "A. RSPQ",
+      "B. RPQS",
+      "C. RQSP",
+      "D. RSQP"
+    ],
+    "answer": "B. RPQS",
+    "explanation": "Standard Method: Identify the opening sentence, typically one that introduces a general topic (R: Many nations are currently exploring and adopting renewable energy sources...). Look for connections: P explains the 'why' behind R ('This shift is largely driven by...' refers to the adoption in R). Q introduces a contrasting idea or challenge ('However, transitioning to green energy...' contrasts with the positive development). S offers a concluding thought, addressing the challenge mentioned in Q ('Despite these hurdles...' refers to the challenges in Q). This sequential flow establishes a coherent narrative.\n\n\u26a1 SHORTCUT: Look for explicit linking words. 'This shift' in P refers to the action in R. 'However' in Q indicates a contrast to the preceding positive development. 'Despite these hurdles' in S directly refers to the 'challenges' mentioned in Q, making Q-S a strong pair.",
+    "id": 231
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "medium",
+    "question": "Identify the segment in the sentence below that contains a grammatical error. If there is no error, choose option D.\n\n'The committee was (A) divided in its opinion, (B) and they struggled (C) to reach a consensus on the new policy.'",
+    "options": [
+      "A. The committee was",
+      "B. divided in its opinion, and they struggled",
+      "C. to reach a consensus on the new policy.",
+      "D. No error"
+    ],
+    "answer": "B. divided in its opinion, and they struggled",
+    "explanation": "Standard Method: The word 'committee' is a collective noun. While it can take either a singular or plural verb/pronoun depending on whether it acts as a single unit or as individual members, consistency is key. Here, 'was divided in 'its' opinion' treats the committee as a singular unit. However, 'and 'they' struggled' then treats the committee members as individuals. This creates an inconsistency in pronoun agreement. To correct it, either both references should be singular (e.g., 'The committee was divided in its opinion, and 'it' struggled...') or both should be plural (e.g., 'The committee 'were' divided in 'their' opinions, and 'they' struggled...'). The error lies in the switch from singular reference ('its') to plural ('they') within segment B.\n\n\u26a1 SHORTCUT: Look for collective nouns (committee, team, jury, family). Check if the verbs and pronouns referring to them are consistent in number (singular or plural) throughout the sentence. Here, 'its' (singular) clashes with 'they' (plural).",
+    "id": 232
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction",
+    "difficulty": "medium",
+    "question": "Read the statement and determine which conclusion logically follows.\n\nStatement: 'All successful entrepreneurs are innovative. Some innovative people are risk-takers. Therefore, some successful entrepreneurs are risk-takers.'",
+    "options": [
+      "A. The conclusion is definitely true.",
+      "B. The conclusion is definitely false.",
+      "C. The conclusion might be true, but cannot be definitively deduced.",
+      "D. The statement is contradictory, hence no conclusion can be drawn."
+    ],
+    "answer": "C. The conclusion might be true, but cannot be definitively deduced.",
+    "explanation": "Standard Method: This is a classic example of an invalid syllogism. Let's represent the sets: Successful Entrepreneurs (S), Innovative People (I), Risk-takers (R).\n1. 'All S are I' means the set of S is a subset of I.\n2. 'Some I are R' means there's an overlap between I and R.\nHowever, this overlap (I \u2229 R) might entirely consist of elements from I that are 'not' in S. For instance, imagine all innovative people (I) are in a large circle. Successful entrepreneurs (S) are a smaller circle entirely inside I. Risk-takers (R) might overlap with I in a region that is 'outside' the S circle. Therefore, it is possible for the premises to be true while 'Some S are R' is false. The conclusion is not guaranteed.\n\n\u26a1 SHORTCUT: If the premises state 'All A are B' and 'Some B are C', you cannot deduce 'Some A are C'. The 'some B' that are 'C' might be the B's that are 'not' A. Visualize Venn diagrams: one circle (S) inside another (I). A third circle (R) intersects the second (I). This intersection (I and R) might or might not include parts of the first circle (S).",
+    "id": 233
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idioms)",
+    "difficulty": "medium",
+    "question": "Choose the option that best explains the meaning of the idiom 'throw caution to the wind' in the given sentence.\n\n'After years of meticulous planning, she finally decided to throw caution to the wind and launch her ambitious startup with limited initial capital.'",
+    "options": [
+      "A. To act recklessly and without any planning.",
+      "B. To carefully weigh risks before making a decision.",
+      "C. To take a significant risk despite potential dangers.",
+      "D. To abandon all hope and give up."
+    ],
+    "answer": "C. To take a significant risk despite potential dangers.",
+    "explanation": "Standard Method: Analyze the idiom 'throw caution to the wind'. It means to act without careful thought or concern about potential risks, often in a bold or impetuous manner. In the given sentence, the phrase is used after 'years of meticulous planning', indicating that while planning occurred, the final decision involved letting go of caution regarding the 'limited initial capital' and potential risks. Option C, 'To take a significant risk despite potential dangers,' accurately reflects this meaning within the context, distinguishing it from simply acting 'without any planning' (which contradicts the first part of the sentence).\n\n\u26a1 SHORTCUT: Focus on the core meaning of 'caution' and 'throwing it away' or 'to the wind'. It implies disregard for carefulness or safety. The context 'launch her ambitious startup with limited initial capital' points directly to taking a risk.",
+    "id": 234
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "medium",
+    "question": "Passage: The concept of 'fast fashion' has come under increasing scrutiny in recent years, primarily due to its significant environmental and social impact. This business model relies on rapid production cycles, quickly turning runway trends into affordable garments available to consumers. While it democratizes style and offers choice, the hidden costs are substantial. Vast amounts of water are consumed in cotton cultivation and dyeing processes, and the widespread use of synthetic fabrics contributes to microplastic pollution in oceans. Furthermore, the constant churn of new collections leads to immense textile waste, with millions of tons ending up in landfills annually. On the social front, the pressure for low prices often translates into poor working conditions and unfair wages for garment factory workers in developing countries. Calls for greater sustainability are growing, urging consumers to embrace 'slow fashion' and producers to adopt more ethical and eco-friendly practices throughout their supply chains.\n\nQuestion: According to the passage, which of the following is NOT a consequence or characteristic of the 'fast fashion' business model?",
+    "options": [
+      "A. Creation of microplastic pollution.",
+      "B. Democratization of style for consumers.",
+      "C. Increased textile waste in landfills.",
+      "D. Emphasis on durable, long-lasting garments."
+    ],
+    "answer": "D. Emphasis on durable, long-lasting garments.",
+    "explanation": "Standard Method: Read the passage carefully and specifically look for statements about the consequences or characteristics of 'fast fashion'.\nA. 'widespread use of synthetic fabrics contributes to microplastic pollution' - This is mentioned.\nB. 'While it democratizes style and offers choice' - This is mentioned.\nC. 'the constant churn of new collections leads to immense textile waste' - This is mentioned.\nD. The passage discusses 'rapid production cycles' and 'constant churn of new collections', implying short-lived, trend-driven items, not durable or long-lasting garments. This is the opposite of fast fashion.\n\n\u26a1 SHORTCUT: Scan the passage for keywords related to each option. The passage highlights rapid cycles and waste, which are antithetical to 'durable, long-lasting garments'. If you find direct support for A, B, and C, then D must be the incorrect characteristic.",
+    "id": 235
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "medium",
+    "question": "P: Consequently, many individuals are now seeking alternative housing solutions, like co-living spaces or micro-apartments.\nQ: The rapid urbanization and increasing population density in major cities worldwide have led to a severe housing crisis.\nR: This surge in demand, coupled with limited land availability, has resulted in exorbitant rental prices and unaffordable property values.\nS: Such options offer a more communal lifestyle and optimize space, making urban living more accessible and sustainable.\n\nQuestion: Choose the option that arranges the sentences P, Q, R, S in a logical and coherent order.",
+    "options": [
+      "A. QRPS",
+      "B. RQSP",
+      "C. QSPR",
+      "D. PQRS"
+    ],
+    "answer": "A. QRPS",
+    "explanation": "Standard Method: Identify the introductory sentence (Q, which introduces the problem of housing crisis). Then look for cause-and-effect or elaborations. R directly follows Q by explaining the consequence of the 'rapid urbanization and increasing population density' mentioned in Q ('This surge in demand...'). P then describes the reaction to this situation ('Consequently, many individuals are now seeking...'). Finally, S describes the characteristics of the solutions introduced in P ('Such options offer...'). This forms a clear narrative flow.\n\n\u26a1 SHORTCUT: Look for strong linking words. 'This surge in demand' in R directly refers to the phenomenon described in Q. 'Consequently' in P indicates a result of what was stated previously (R). 'Such options' in S refers back to the 'alternative housing solutions' mentioned in P, making P-S a strong pair.",
+    "id": 236
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "medium",
+    "question": "Choose the best way to complete or correct the underlined portion of the sentence.\n\n'Despite being an innovative concept, the startup's initial marketing campaign was neither effective, 'nor was it reaching its target audience'.'",
+    "options": [
+      "A. nor was it reaching its target audience",
+      "B. or was it reaching its target audience",
+      "C. nor reaching its target audience",
+      "D. but not reaching its target audience"
+    ],
+    "answer": "C. nor reaching its target audience",
+    "explanation": "Standard Method: The sentence uses the correlative conjunction 'neither...nor'. For proper grammar and style, phrases connected by 'neither...nor' must be parallel in structure. The first part is 'neither effective' (an adjective). For parallelism, the second part should also be an adjective or an adjective phrase. 'nor reaching its target audience' serves as a parallel participial phrase describing the campaign's failure, making it concise and grammatically correct. Option A is clunky and breaks parallelism with the repeated 'was it'. Option B incorrectly uses 'or'. Option D changes the correlative conjunction entirely.\n\n\u26a1 SHORTCUT: When you see 'neither...nor', immediately look for parallel structure. The part after 'neither' should match the grammatical form of the part after 'nor'. 'Effective' is an adjective, so we need something grammatically similar. 'Reaching' is a present participle functioning adjectivally.",
+    "id": 237
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction (Statement & Assumption)",
+    "difficulty": "medium",
+    "question": "Read the statement and the assumptions. Decide which of the assumptions is/are implicit in the statement.\n\nStatement: 'Our company has decided to install advanced biometric security systems at all entry points starting next month.'\n\nAssumptions:\nI. The current security systems at the company are inadequate.\nII. Biometric security systems are more reliable than the current systems.",
+    "options": [
+      "A. Only Assumption I is implicit.",
+      "B. Only Assumption II is implicit.",
+      "C. Both Assumption I and II are implicit.",
+      "D. Neither Assumption I nor II is implicit."
+    ],
+    "answer": "C. Both Assumption I and II are implicit.",
+    "explanation": "Standard Method: An assumption is something taken for granted or believed to be true without proof.\nFor Assumption I: If the company is deciding to install 'advanced' biometric security systems, it implicitly assumes that the 'current' systems are not meeting their security needs, hence are 'inadequate' for future requirements. If the current systems were perfectly adequate, an upgrade wouldn't be necessary.\nFor Assumption II: The decision to install 'biometric security systems' specifically implies a belief in their superiority or 'reliability' compared to the existing systems. Companies invest in new technology to improve performance, security, or efficiency. Without this belief, the decision to invest in a specific type of 'advanced' system would be illogical.\nTherefore, both assumptions are implicit in the statement.\n\n\u26a1 SHORTCUT: When a statement describes a change or an upgrade, look for underlying reasons for that change. An upgrade (like installing 'advanced' systems) always assumes the existing system is insufficient (inadequate) and the new system is superior (more reliable).",
+    "id": 238
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Synonym)",
+    "difficulty": "medium",
+    "question": "Choose the word that is most similar in meaning to the underlined word in the sentence.\n\n'The CEO's 'candid' assessment of the company's financial health, though harsh, was appreciated by the shareholders for its honesty.'",
+    "options": [
+      "A. Biased",
+      "B. Forthright",
+      "C. Evasive",
+      "D. Guarded"
+    ],
+    "answer": "B. Forthright",
+    "explanation": "Standard Method: Understand the meaning of the underlined word 'candid'. 'Candid' means truthful, straightforward, frank, or honest, especially in speech or writing. The context 'though harsh, was appreciated by the shareholders for its honesty' reinforces this meaning. Now evaluate the options:\nA. 'Biased' means prejudiced or unfairly influenced, which is contrary to honesty.\nB. 'Forthright' means direct and honest, which is a close synonym of candid.\nC. 'Evasive' means avoiding commitment or directness, the opposite of candid.\nD. 'Guarded' means cautious and reserved, not openly frank, the opposite of candid.\nTherefore, 'Forthright' is the best fit.\n\n\u26a1 SHORTCUT: Use the surrounding words in the sentence as clues. 'Though harsh, was appreciated for its honesty' clearly points to a meaning related to directness and truthfulness. Immediately eliminate opposites (A, C, D) to find the correct synonym (B).",
+    "id": 239
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "hard",
+    "question": "Passage: The human mind often constructs narratives to make sense of a chaotic world, imbuing random events with causality and purpose. This innate storytelling impulse, while crucial for social cohesion and memory formation, can also lead to significant cognitive biases. We tend to oversimplify complex phenomena, attributing outcomes to singular, dramatic causes rather than the intricate interplay of multiple factors. Consequently, our understanding of history, economics, and even personal relationships is frequently a sanitized, coherent, and often misleading version of reality, shaped more by our desire for meaning than by empirical evidence. The challenge lies in recognizing this narrative compulsion and deliberately seeking out disconfirming evidence, a practice that runs counter to our natural inclination for cognitive ease.\n\nQuestion: Which of the following statements can be most logically inferred from the passage?",
+    "options": [
+      "A. Human beings are inherently incapable of objective reasoning due to their narrative impulse.",
+      "B. Cognitive biases are primarily a result of our desire for social cohesion and memory formation.",
+      "C. A critical approach to understanding reality involves actively challenging one's own interpretive frameworks.",
+      "D. The process of making sense of the world is always misleading and serves no beneficial purpose."
+    ],
+    "answer": "C. A critical approach to understanding reality involves actively challenging one's own interpretive frameworks.",
+    "explanation": "Standard Method: Analyze each option against the passage. Option A is too extreme ('inherently incapable'). Option B misattributes the primary cause of biases; the passage states narrative impulse leads to biases, which *also* serves social cohesion, but isn't *primarily* a result of social cohesion. Option D is also too extreme ('always misleading', 'no beneficial purpose'); the passage mentions it's 'crucial for social cohesion and memory formation'. Option C aligns perfectly with the passage's concluding thought about 'recognizing this narrative compulsion and deliberately seeking out disconfirming evidence'.\n\n\u26a1 SHORTCUT: Look for options that moderate claims and reflect the nuances in the passage. Extreme words like 'always', 'never', 'inherently incapable', 'primarily' often indicate incorrect options in inference questions. The last sentence often provides a strong hint for the author's primary takeaway or inference.",
+    "id": 240
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence:\nP. Such widespread access, however, inevitably brings with it a deluge of information, both verified and spurious, challenging traditional gatekeepers of knowledge.\nQ. The democratization of information, facilitated by the internet and social media, has profoundly reshaped societal structures and individual interactions.\nR. Navigating this complex informational landscape requires enhanced media literacy and critical thinking skills to discern reliable sources and evaluate claims.\nS. This shift empowers individuals with unprecedented opportunities for learning, participation, and expression, circumventing once-powerful intermediaries like mainstream media and established institutions.\n\nWhich of the following is the most logical order of the sentences?",
+    "options": [
+      "A. QSPR",
+      "B. QSRP",
+      "C. SQPR",
+      "D. PQRS"
+    ],
+    "answer": "A. QSPR",
+    "explanation": "Standard Method:\n1.  Identify the opening sentence: Q introduces the main topic 'democratization of information'.\n2.  Look for connections: S follows Q by elaborating on the positive impacts of this 'shift' (referring to the democratization).\n3.  Identify contrasting/transitional phrases: P starts with 'Such widespread access, however,' indicating a shift from positive to negative implications (deluge of information).\n4.  Identify the concluding sentence: R provides a solution or consequence of the problem raised in P ('Navigating this complex informational landscape' refers to the 'deluge' mentioned in P).\n\n\u26a1 SHORTCUT: Look for definite article-noun pairs (e.g., 'this shift', 'such widespread access', 'this complex informational landscape') which signal that the preceding sentence must have introduced the noun without the article. 'However' usually introduces a counterpoint. Q introduces the topic, S expands on Q, P introduces a counterpoint to S, and R provides a solution/response to P.",
+    "id": 241
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Synonym)",
+    "difficulty": "hard",
+    "question": "Choose the word that is most nearly synonymous with 'ESCHEW'.",
+    "options": [
+      "A. Embrace",
+      "B. Indulge",
+      "C. Forego",
+      "D. Advocate"
+    ],
+    "answer": "C. Forego",
+    "explanation": "Standard Method: 'Eschew' means to deliberately avoid using; abstain from; deliberately stay away from. 'Forego' means to go without (something desirable); to refrain from.\nA. 'Embrace' means to accept or support willingly and enthusiastically. (Antonym)\nB. 'Indulge' means to allow oneself to enjoy the pleasure of. (Antonym)\nC. 'Forego' means to go without (something desirable). (Synonym)\nD. 'Advocate' means to publicly recommend or support. (Antonym)\nTherefore, 'Forego' is the closest synonym.\n\n\u26a1 SHORTCUT: If you know the word, excellent. If not, try to use context if it were in a sentence, or break down the word if possible (though 'eschew' is hard for that). Look for clear opposites among the options to eliminate them quickly. 'Embrace' and 'Indulge' are clearly opposites of 'eschew'.",
+    "id": 242
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Assumption",
+    "difficulty": "hard",
+    "question": "Statement: 'Despite the economic slowdown, our company maintained its market share by focusing on customer retention and leveraging its robust supply chain.'\nWhich of the following assumption(s) is/are implicit in the statement?\nI. Customer retention is a more effective strategy than new customer acquisition during an economic slowdown.\nII. A robust supply chain is crucial for maintaining market share during an economic downturn.\nIII. The company's competitors did not focus on customer retention during the slowdown.",
+    "options": [
+      "A. Only I is implicit.",
+      "B. Only II is implicit.",
+      "C. Only I and II are implicit.",
+      "D. Only II and III are implicit."
+    ],
+    "answer": "B. Only II is implicit.",
+    "explanation": "Standard Method:\nI. The statement says the company *maintained market share by focusing on customer retention*. It doesn't imply it's 'more effective' than new acquisition *in general* during a slowdown, only that it *was* effective for *this company*. There's no comparative assertion made. (Not implicit)\nII. The statement explicitly links 'leveraging its robust supply chain' to 'maintained its market share during an economic slowdown'. This suggests the supply chain was a key factor and therefore 'crucial' in this context. If it wasn't crucial, it wouldn't have been mentioned as a reason for success. (Implicit)\nIII. The statement makes no mention of competitors' strategies. It focuses solely on *this company's* actions and results. We cannot assume anything about competitors. (Not implicit)\nTherefore, only II is implicitly assumed.\n\n\u26a1 SHORTCUT: An assumption is something *taken for granted* in the statement to make it logical. If an option introduces new information or makes a comparative judgment not present, it's likely not an assumption. Focus on what *must be true* for the statement to hold for the conclusion to be valid.",
+    "id": 243
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "hard",
+    "question": "The board's decision, which was both financially unsound and a morally reprehensible act, sparked widespread condemnation from shareholders.\n\nChoose the option that best replaces the underlined part.",
+    "options": [
+      "A. which was both financially unsound and a morally reprehensible act",
+      "B. which was both financially unsound and morally reprehensible",
+      "C. being both financially unsound and morally reprehensible acts",
+      "D. that was financially unsound and also a moral reprehension"
+    ],
+    "answer": "B. which was both financially unsound and morally reprehensible",
+    "explanation": "Standard Method: The original sentence (A) suffers from a lack of parallelism. The phrase 'both X and Y' requires X and Y to be grammatically similar. Here, 'financially unsound' is an adjective phrase, while 'a morally reprehensible act' is a noun phrase.\nB. Corrects the parallelism: 'financially unsound' (adjective phrase) and 'morally reprehensible' (adjective phrase). This makes the construction balanced and grammatically correct.\nC. Changes 'acts' to plural, which doesn't fit 'decision'. Also 'being' can be awkward.\nD. 'moral reprehension' is a noun, again breaking parallelism with 'financially unsound'.\n\n\u26a1 SHORTCUT: When you see 'both X and Y', ensure X and Y belong to the same grammatical category (e.g., noun and noun, adjective and adjective, verb and verb phrase). This is a very common pattern for parallelism errors.",
+    "id": 244
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence:\nP. Despite their technological prowess, these ancient civilizations often grappled with internal strife and external pressures, leading to their eventual decline.\nQ. Early human settlements gradually evolved into complex societies, marked by specialized labor, hierarchical structures, and monumental architecture.\nR. The development of agriculture played a pivotal role, enabling sedentary lifestyles and supporting larger, denser populations than nomadic hunting and gathering.\nS. This transition laid the groundwork for the emergence of sophisticated urban centers, cradles of innovation in art, writing, and governance.\n\nWhich of the following is the most logical order of the sentences?",
+    "options": [
+      "A. RQSP",
+      "B. QSPR",
+      "C. RSPQ",
+      "D. SQPR"
+    ],
+    "answer": "A. RQSP",
+    "explanation": "Standard Method:\n1.  Identify the opening sentence: R discusses the 'pivotal role' of agriculture, a fundamental development that enabled settled societies.\n2.  Look for connections: Q follows R, describing how settlements (enabled by agriculture) evolved into 'complex societies'.\n3.  Identify transitions: S refers to 'This transition' (from simple settlements to complex societies mentioned in Q) and its outcome: 'sophisticated urban centers'.\n4.  Identify the concluding sentence: P introduces a counterpoint ('Despite their technological prowess') and discusses the 'eventual decline' of these 'ancient civilizations' (referring to the societies/urban centers).\n\n\u26a1 SHORTCUT: R provides a foundational cause. Q describes the immediate effect. S takes the idea from Q (complex societies/settlements) and extends it to urban centers. P then introduces a contrast and the eventual fate of these civilizations. Look for the flow of cause-effect or chronological development. 'This transition' is a strong clue for S to follow Q.",
+    "id": 245
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idiom)",
+    "difficulty": "hard",
+    "question": "Choose the option that best explains the meaning of the idiom 'throw down the gauntlet'.",
+    "options": [
+      "A. To accept a challenge.",
+      "B. To make a definitive statement.",
+      "C. To issue a challenge.",
+      "D. To surrender or admit defeat."
+    ],
+    "answer": "C. To issue a challenge.",
+    "explanation": "Standard Method: The idiom 'throw down the gauntlet' originates from medieval jousting, where a knight would throw his gauntlet (a heavy glove) at another knight's feet as a challenge to combat.\nA. 'To accept a challenge' would be 'take up the gauntlet'.\nB. 'To make a definitive statement' is incorrect.\nC. 'To issue a challenge' accurately reflects the origin and modern usage of the idiom.\nD. 'To surrender or admit defeat' is the opposite meaning.\n\n\u26a1 SHORTCUT: If you know the origin, it helps greatly. If not, try to infer from common usage, though idioms are often tricky. Eliminate clear opposites. 'Accepting' is different from 'issuing'.",
+    "id": 246
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Antonym)",
+    "difficulty": "hard",
+    "question": "Choose the word that is most nearly opposite in meaning to 'OBFUSCATE'.",
+    "options": [
+      "A. Clarify",
+      "B. Perplex",
+      "C. Mystify",
+      "D. Conceal"
+    ],
+    "answer": "A. Clarify",
+    "explanation": "Standard Method: 'Obfuscate' means to make something obscure, unclear, or unintelligible.\nA. 'Clarify' means to make (something) clear and intelligible. (Antonym)\nB. 'Perplex' means to make someone feel completely baffled. (Synonym for obfuscate)\nC. 'Mystify' means to utterly bewilder or perplex (someone). (Synonym for obfuscate)\nD. 'Conceal' means to keep (something) from being known; hide. While related to making things unclear, 'obfuscate' often implies making something confusing rather than merely hiding it. 'Clarify' is the direct opposite of making something unclear.\nTherefore, 'Clarify' is the closest antonym.\n\n\u26a1 SHORTCUT: Understand the core meaning. 'Obfuscate' is about making things *less clear*. The direct opposite is making things *more clear*. Quickly eliminate synonyms or close associates. B, C, D are all closer to the meaning of obfuscate than its opposite.",
+    "id": 247
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "hard",
+    "question": "Passage: The Enlightenment's emphasis on empirical observation and rational inquiry, while undeniably foundational to modern science, simultaneously fostered a peculiar epistemic overconfidence. By privileging a particular mode of knowing, it inadvertently marginalized other forms of human understanding\u2014intuitive, aesthetic, and even spiritual\u2014relegating them to the realm of the subjective and irrational. This reductive epistemology, though efficient in charting the material world, has arguably contributed to a fragmented human experience, where the pursuit of objective truth often comes at the expense of a holistic comprehension of existence. The subsequent Romantic counter-movement, with its revalorization of emotion and imagination, was not merely an aesthetic shift but a profound critique of this intellectual atomization, seeking to re-integrate the disparate faculties of human consciousness. However, even Romanticism struggled to provide a coherent alternative epistemology, often falling into its own forms of subjective solipsism.\n\nWhich of the following best captures the author's primary critique of the Enlightenment's legacy as described in the passage?",
+    "options": [
+      "A. Its failure to fully embrace empirical observation and rational inquiry.",
+      "B. Its tendency to excessively prioritize emotional and spiritual understanding over logic.",
+      "C. Its overemphasis on objective truth led to the marginalization of other valid forms of knowledge.",
+      "D. Its inability to provide a coherent philosophical framework for the Romantic movement."
+    ],
+    "answer": "C. Its overemphasis on objective truth led to the marginalization of other valid forms of knowledge.",
+    "explanation": "Standard Method: Read the passage carefully to identify the main point of criticism. The passage explicitly states the Enlightenment 'fostered a peculiar epistemic overconfidence' and 'By privileging a particular mode of knowing, it inadvertently marginalized other forms of human understanding\u2014intuitive, aesthetic, and even spiritual\u2014relegating them to the realm of the subjective and irrational.' This directly supports option C, highlighting the issue of an overemphasis on one type of knowledge (objective truth) at the expense of others. Options A and B misrepresent the passage's claims. Option D discusses Romanticism's struggles, not the core critique of the Enlightenment itself.\n\n\u26a1 SHORTCUT: Look for words indicating a critical stance. Phrases like 'peculiar epistemic overconfidence', 'inadvertently marginalized', and 'reductive epistemology' point towards a flaw in the Enlightenment's approach to knowledge, specifically its narrow scope. Option C directly paraphrases this core criticism.",
+    "id": 248
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence:\nP. Such an approach often overlooks the intrinsic human need for subjective narrative and emotional resonance.\nQ. Modern scientific communication frequently prioritizes objective data and statistical evidence, aiming for maximum factual clarity.\nR. Consequently, public engagement with complex issues like climate change or public health can remain stubbornly low, despite overwhelming scientific consensus.\nS. This method, while indispensable for scientific rigor, can inadvertently create a barrier between experts and the lay audience.",
+    "options": [
+      "A. QSPR",
+      "B. QRSP",
+      "C. QSRP",
+      "D. SQPR"
+    ],
+    "answer": "C. QSRP",
+    "explanation": "Standard Method: Identify the independent opening sentence, then look for logical connections. Q introduces the topic of modern scientific communication and its priority. S refers to 'This method' (the method described in Q) and states a negative consequence (creating a barrier). P further elaborates on what 'Such an approach' (the barrier-creating method) overlooks. R then presents a broad 'consequently' of the entire situation described, specifically the lack of public engagement. Therefore, Q (introduction) leads to S (consequence of Q's method), which leads to P (what S's approach overlooks), culminating in R (the ultimate consequence).\n\n\u26a1 SHORTCUT: Q is clearly the introductory sentence. S uses 'This method', linking it directly to Q. P uses 'Such an approach', referring to the method described in Q and its negative implications discussed in S. R starts with 'Consequently', indicating it's the result of the preceding problems. The flow Q -> S -> P -> R builds a coherent argument.",
+    "id": 249
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "hard",
+    "question": "The company's decision to outsource its customer service, a move widely criticized by both employees and analysts, are likely to result in significant layoffs and a dip in service quality.",
+    "options": [
+      "A. The company's decision to outsource its customer service,",
+      "B. a move widely criticized by both employees and analysts,",
+      "C. are likely to result in significant layoffs",
+      "D. and a dip in service quality."
+    ],
+    "answer": "C. are likely to result in significant layoffs",
+    "explanation": "Standard Method: Identify the subject-verb agreement. The main subject of the sentence is 'The company's decision' (singular). The phrase 'a move widely criticized by both employees and analysts' is an appositive phrase that provides additional information about the decision but does not change the number of the subject. Therefore, the singular subject 'decision' requires a singular verb. 'are' (plural) should be replaced with 'is' (singular).\n\n\u26a1 SHORTCUT: Strip down the sentence to its core subject and verb. 'The company's decision... are likely...' The word 'decision' is singular, so the verb must be 'is'. The long phrase between the subject and verb is a distractor; ignore it for subject-verb agreement.",
+    "id": 250
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction",
+    "difficulty": "hard",
+    "question": "Statement: 'A recent study found that employees who regularly participate in mindfulness programs report significantly lower stress levels and higher job satisfaction compared to their non-participating colleagues.'\n\nWhich of the following can be logically deduced from the statement?",
+    "options": [
+      "A. Mindfulness programs are the sole determinant of employee well-being.",
+      "B. All employees who participate in mindfulness programs will experience reduced stress.",
+      "C. Mindfulness programs contribute positively to stress reduction and job satisfaction for participating employees.",
+      "D. Non-participating colleagues have higher stress levels and lower job satisfaction primarily because they do not participate in mindfulness programs."
+    ],
+    "answer": "C. Mindfulness programs contribute positively to stress reduction and job satisfaction for participating employees.",
+    "explanation": "Standard Method: Analyze what the statement *explicitly* claims or *directly implies*. The study *found* a correlation: participants 'report significantly lower stress levels and higher job satisfaction'. This directly indicates a positive contribution. Option A ('sole determinant') is an extreme overstatement. Option B ('All employees') is an overgeneralization; 'significantly lower' implies a general trend, not a universal outcome for every individual. Option D ('primarily because') implies a singular cause, which the study doesn't definitively prove, nor does it exclude other factors. Option C is the most accurate and cautious deduction, reflecting the observed positive correlation.\n\n\u26a1 SHORTCUT: Avoid extreme language in options like 'sole', 'all', 'only', 'primarily' unless the statement explicitly uses such definitive terms. Look for a moderate conclusion that aligns directly with the observed correlation without making unwarranted causal claims or generalizations beyond what the 'study found'.",
+    "id": 251
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Synonym)",
+    "difficulty": "hard",
+    "question": "Choose the word that is closest in meaning to the word 'REDOLENT'.",
+    "options": [
+      "A. Odorous",
+      "B. Pungent",
+      "C. Evocative",
+      "D. Noxious"
+    ],
+    "answer": "C. Evocative",
+    "explanation": "Standard Method: 'Redolent' can mean 'fragrant' (like option A, 'odorous', if referring to a pleasant smell). However, in a more advanced and common usage, it means 'strongly reminiscent or suggestive of something'. For example, 'The old attic was redolent of childhood memories' (meaning it evoked them). 'Evocative' means bringing strong images, memories, or feelings to mind. 'Pungent' means having a sharp, strong smell or taste. 'Noxious' means harmful, poisonous, or very unpleasant. While 'redolent' can imply a smell, 'evocative' captures the deeper sense of prompting memories or feelings, which is a key nuance in its advanced usage.\n\n\u26a1 SHORTCUT: While 'redolent' often involves smell, its primary nuance in challenging contexts is its power to *bring something to mind*. If it were merely about smell, a simpler word like 'fragrant' or 'smelly' would be used. 'Evocative' is the best fit for this deeper, suggestive quality.",
+    "id": 252
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "hard",
+    "question": "The recent economic downturn has not only impacted small businesses severely, but also causing a ripple effect across the entire global market.",
+    "options": [
+      "A. severely, but also causing",
+      "B. severely, but has also caused",
+      "C. severely; it has also caused",
+      "D. severe, but also caused"
+    ],
+    "answer": "B. severely, but has also caused",
+    "explanation": "Standard Method: The sentence uses the correlative conjunction 'not only... but also...'. For correct parallelism, the grammatical structure following 'not only' must match the structure following 'but also'. The first part is 'has not only impacted small businesses severely' (verb 'impacted'). The second part 'but also causing a ripple effect' uses a present participle 'causing', which is not parallel to 'impacted'. Option B, 'but has also caused', provides a parallel verb structure (present perfect tense 'has caused') to 'has impacted'. The auxiliary verb 'has' is understood to apply to both parts: 'The downturn has not only impacted... but has also caused...'.\n\n\u26a1 SHORTCUT: When you see 'not only... but also...', immediately check for parallelism. The form of the verb or phrase after 'not only' must match the form after 'but also'. Since 'impacted' is a past participle used as part of a verb phrase, the second part needs a similar verb structure. 'Causing' is incorrect. 'Has also caused' provides the necessary verb phrase.",
+    "id": 253
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idiom)",
+    "difficulty": "hard",
+    "question": "The board of directors decided to *take a rain check* on the ambitious expansion plan, citing unforeseen market volatility.\n\nWhat does the idiom 'take a rain check' mean in this context?",
+    "options": [
+      "A. To proceed with caution.",
+      "B. To postpone indefinitely.",
+      "C. To cancel the plan entirely.",
+      "D. To postpone to a later date."
+    ],
+    "answer": "D. To postpone to a later date.",
+    "explanation": "Standard Method: The idiom 'take a rain check' originates from baseball, where if a game is canceled due to rain, spectators are given a 'rain check' to attend a future game. It means to decline an offer or postpone an event *with the intention of doing it at a later time*. Option A ('proceed with caution') implies continuing now, which is contrary to postponing. Option B ('postpone indefinitely') suggests no firm intention to revisit, which isn't the core meaning. Option C ('cancel entirely') is incorrect, as a rain check implies future consideration. Option D ('postpone to a later date') perfectly captures the essence of putting something off with the intent to revisit it.\n\n\u26a1 SHORTCUT: Remember the original context: a rain check gives you the *option* to go *later*. It's not a cancellation, and it's not an indefinite deferral without any future intent. It's a specific deferral with an implied future action.",
+    "id": 254
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence:\nP. This cognitive dissonance can lead to either a rejection of the data or a rationalization that preserves the prior belief.\nQ. Human beings often exhibit a strong tendency towards confirmation bias, selectively interpreting information that aligns with their existing convictions.\nR. Consequently, presenting individuals with factual evidence that contradicts deeply held beliefs rarely results in an immediate change of mind.\nS. Instead, the new information is processed through the lens of established frameworks, often perceived as a threat to one's intellectual integrity.",
+    "options": [
+      "A. QSRP",
+      "B. QRSP",
+      "C. QSPR",
+      "D. RQPS"
+    ],
+    "answer": "A. QSRP",
+    "explanation": "Standard Method: Q introduces the core concept of confirmation bias. R follows as a logical consequence ('Consequently') of confirmation bias: evidence rarely changes minds. S explains *how* this happens ('Instead, the new information is processed...') rather than accepted, which further elaborates on R. P describes the psychological outcome ('cognitive dissonance') of the processing described in S, leading to either rejection or rationalization. Thus, the sequence Q-R-S-P provides a coherent flow from the general phenomenon to its specific mechanism and psychological outcome.\n\n\u26a1 SHORTCUT: Q is the clear opening statement, defining the general phenomenon. R begins with 'Consequently', indicating it's a direct result of Q. S starts with 'Instead', signaling an alternative to the expected outcome (changing minds) mentioned in R, explaining *what happens* instead. P describes the psychological state ('cognitive dissonance') that arises from the process in S. This forms a logical chain: Cause (Q) -> Effect (R) -> Explanation of Effect (S) -> Further Psychological Outcome (P).",
+    "id": 255
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "hard",
+    "question": "The committee, comprised of senior executives, leading scientists, and an independent ethicist, were tasked with drafting guidelines for the responsible use of artificial intelligence.",
+    "options": [
+      "A. The committee, comprised of senior executives,",
+      "B. leading scientists, and an independent ethicist,",
+      "C. were tasked with drafting guidelines",
+      "D. for the responsible use of artificial intelligence."
+    ],
+    "answer": "C. were tasked with drafting guidelines",
+    "explanation": "Standard Method: Identify the subject-verb agreement. The main subject of the sentence is 'The committee' (singular). The phrase 'comprised of senior executives, leading scientists, and an independent ethicist' is a participial phrase modifying 'committee'; it describes the committee but does not change its singular number. Therefore, the singular subject 'committee' requires a singular verb. 'were' (plural) should be replaced with 'was' (singular).\n\n\u26a1 SHORTCUT: Ignore the descriptive phrases between commas when checking subject-verb agreement. The core subject is 'The committee'. 'Committee' is singular, so it should be 'was tasked', not 'were tasked'.",
+    "id": 256
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Assumption",
+    "difficulty": "hard",
+    "question": "Statement: 'To mitigate the risks associated with rapid technological advancements, the government must invest heavily in retraining programs for workers whose jobs are threatened by automation.'\n\nWhich of the following is a necessary assumption underlying the statement?",
+    "options": [
+      "A. Rapid technological advancements are inherently detrimental to the economy.",
+      "B. Government investment is the most effective means of funding retraining programs.",
+      "C. Workers whose jobs are threatened by automation are capable of being retrained.",
+      "D. All jobs threatened by automation can be fully replaced by new opportunities created by technology."
+    ],
+    "answer": "C. Workers whose jobs are threatened by automation are capable of being retrained.",
+    "explanation": "Standard Method: A necessary assumption is an unstated premise that *must be true* for the conclusion of the statement to be logical. The statement proposes a solution (government investment in retraining programs) to a problem (risks from technological advancements, specifically jobs threatened by automation). For this solution to be viable, it *must be assumed* that the target beneficiaries\u2014the workers\u2014are actually *capable of being retrained*. If they cannot be retrained, the proposed solution is nonsensical. Option A is too strong; the statement only implies mitigating risks, not inherent detriment. Option B states 'most effective,' which is not a necessary assumption; it only assumes government investment is *a* necessary action. Option D is an outcome, not an assumption essential for the retraining program's logic.\n\n\u26a1 SHORTCUT: Ask yourself: 'If this option were *false*, would the original statement's argument fall apart?' If workers *could not be retrained*, then investing in retraining programs would be a futile exercise, making the government's proposed action illogical. Therefore, the capability of workers to be retrained is a fundamental, necessary assumption.",
+    "id": 257
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension",
+    "difficulty": "hard",
+    "question": "Passage: Thomas Kuhn's 'The Structure of Scientific Revolutions' fundamentally altered our understanding of scientific progress, positing that it is not a linear accumulation of knowledge but rather a series of 'paradigm shifts.' A scientific paradigm, in Kuhn's view, encompasses not just a set of theories, but also the methods, standards, and even the metaphysical assumptions shared by a particular scientific community. Normal science operates within the confines of an existing paradigm, solving 'puzzles' that fit its framework. However, anomalies inevitably arise, challenging the established view. Initially, these anomalies are often ignored or explained away within the existing paradigm. As persistent anomalies accumulate, a crisis ensues, leading to a period of 'revolutionary science' where competing new paradigms emerge. The transition from an old paradigm to a new one is not solely based on empirical evidence, but also involves social and psychological factors, often resembling a conversion experience. Consequently, scientists adhering to different paradigms may struggle to communicate effectively, as they effectively 'see' the world differently.\n\nQuestion: The passage suggests that the transition from one scientific paradigm to another is characterized by all of the following EXCEPT:",
+    "options": [
+      "A. A gradual, logical progression driven solely by new empirical evidence.",
+      "B. A period of crisis where existing frameworks are challenged by accumulating anomalies.",
+      "C. A shift in the fundamental methods and assumptions of a scientific community.",
+      "D. Non-rational factors and difficulties in inter-paradigm communication."
+    ],
+    "answer": "A. A gradual, logical progression driven solely by new empirical evidence.",
+    "explanation": "Standard Method: Analyze each option against the passage. Option A directly contradicts the text, which states that progress is 'not a linear accumulation' and 'not solely based on empirical evidence', and explicitly involves 'social and psychological factors' resembling a 'conversion experience'. Options B, C, and D are all explicitly supported by the passage, describing elements of Kuhnian paradigm shifts.\n\n\u26a1 SHORTCUT: Look for absolute statements in the options like 'solely' or 'only'. The passage emphasizes that paradigm shifts are complex, non-linear processes influenced by more than just empirical data, making an option asserting 'solely empirical' and 'gradual, logical' progression highly suspect and likely incorrect.",
+    "id": 258
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence:\nP: He believed that without such a comprehensive framework, individual rights would remain perpetually vulnerable.\nQ: John Rawls's seminal work, 'A Theory of Justice,' sought to establish principles for a just and equitable society.\nR: His subsequent thought experiment of the 'veil of ignorance' was designed precisely to derive unbiased rules for social cooperation.\nS: This hypothetical scenario ensured that decision-makers, unaware of their own social status or natural abilities, would advocate for truly impartial regulations.",
+    "options": [
+      "A. QPRS",
+      "B. QSRP",
+      "C. PQRS",
+      "D. PRQS"
+    ],
+    "answer": "A. QPRS",
+    "explanation": "Standard Method: Identify the introductory sentence: Q introduces John Rawls and his work. Next, P logically follows Q, as 'He' refers to Rawls and 'such a comprehensive framework' refers to the principles mentioned in Q, explaining the motivation behind Rawls's work. R then introduces the 'veil of ignorance' as the method to achieve these principles, with 'His' referring to Rawls and 'subsequent' indicating a follow-up. Finally, S explains the 'hypothetical scenario' of the 'veil of ignorance' introduced in R. Thus, the logical flow is Q-P-R-S.\n\n\u26a1 SHORTCUT: Look for strong pronoun-antecedent links and sequencing words. 'He' in P clearly refers to John Rawls in Q, linking QP. 'His' in R also refers to Rawls and 'subsequent' implies it follows the initial work. 'This hypothetical scenario' in S directly refers to the 'veil of ignorance' introduced in R, strongly linking RS. This sequence Q-P-R-S emerges as the only option satisfying all these links.",
+    "id": 259
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting",
+    "difficulty": "hard",
+    "question": "Identify the part of the sentence that contains a grammatical error.\nIf the company would have invested more judiciously in research and development last year (A), it would have been better positioned (B) for market leadership today (C). No error (D).",
+    "options": [
+      "A. If the company would have invested more judiciously in research and development last year",
+      "B. it would have been better positioned",
+      "C. for market leadership today",
+      "D. No error"
+    ],
+    "answer": "A. If the company would have invested more judiciously in research and development last year",
+    "explanation": "Standard Method: This is a Type 3 conditional sentence, which describes a hypothetical past condition and its past hypothetical result (a counterfactual situation). The correct structure for the 'if' clause in a Type 3 conditional is 'If + Subject + had + past participle'. The phrase 'If the company would have invested' incorrectly uses 'would have' in the 'if' clause. It should be 'If the company had invested'. The main clause 'it would have been better positioned' is correctly structured for a Type 3 conditional.\n\n\u26a1 SHORTCUT: As a general rule in English grammar, 'would have' (or 'could have', 'should have') is almost never used in the 'if' clause of a conditional sentence. When you see 'If + would have', it's a strong indicator of an error, especially in formal writing. The presence of 'would have been' in the main clause confirms this is a Type 3 conditional, which demands 'had + past participle' in the 'if' clause.",
+    "id": 260
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "hard",
+    "question": "The candidate's platform was not only well-articulated but also it addressed the most pressing issues of the electorate.\n\nChoose the option that best corrects the underlined part of the sentence.",
+    "options": [
+      "A. but also it addressed the most pressing issues of the electorate.",
+      "B. but also addressed the most pressing issues of the electorate.",
+      "C. and it also addressed the most pressing issues of the electorate.",
+      "D. but also the most pressing issues of the electorate were addressed by it."
+    ],
+    "answer": "B. but also addressed the most pressing issues of the electorate.",
+    "explanation": "Standard Method: The correlative conjunction 'not only...but also' requires parallel structure. In the original sentence, 'not only' is followed by 'well-articulated' (an adjective/participial phrase). For parallelism, 'but also' should be followed by a grammatically similar element. 'It addressed the most pressing issues...' is a full clause, which breaks the parallel structure. Option B, 'but also addressed the most pressing issues of the electorate', correctly uses a verb phrase ('addressed...') that is parallel to the implied 'was well-articulated', maintaining the logical and grammatical balance required by 'not only...but also'.\n\n\u26a1 SHORTCUT: When using correlative conjunctions like 'not only X but also Y', ensure that X and Y are identical in grammatical form (e.g., both nouns, both verbs, both adjectives, both phrases of the same type). Here, 'well-articulated' is an adjective phrase. To maintain parallelism, 'but also' must be followed by a phrase that directly continues the description of the 'platform', which 'addressed the most pressing issues' does, without the redundant pronoun 'it'.",
+    "id": 261
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction / Statement & Assumption",
+    "difficulty": "hard",
+    "question": "Statement: 'A renowned economist stated, 'The government's recent fiscal policy, aimed at stimulating consumption, will inevitably lead to higher inflation within the next quarter.''\n\nWhich of the following assumptions is/are implicit in the economist's statement?\nI. Increased consumption directly contributes to inflationary pressures.\nII. The government's fiscal policy is the sole determinant of inflation in the short term.\nIII. The economist's prediction is based on a sound understanding of economic principles.",
+    "options": [
+      "A. Only I is implicit.",
+      "B. Only I and II are implicit.",
+      "C. Only I and III are implicit.",
+      "D. I, II, and III are all implicit."
+    ],
+    "answer": "A. Only I is implicit.",
+    "explanation": "Standard Method: An assumption is an unstated premise that must be true for the argument or statement to logically hold. \nI. The statement explicitly links 'stimulating consumption' to 'higher inflation'. For this causal link to be valid, the economist must implicitly assume that increased consumption indeed leads to inflationary pressures. This assumption is necessary.\nII. The phrase 'will inevitably lead to higher inflation' indicates a strong causal connection, but it does not mean this policy is the *only* factor influencing inflation. Other economic factors could also be at play, but the policy is presented as a sufficient condition for inflation. The word 'sole' makes this assumption too strong to be implicit.\nIII. While the economist making the statement likely believes their prediction is sound, the *statement itself* does not require the listener/reader to assume the economist's understanding is infallible or 'sound' for the statement's internal logic. We are evaluating the argument's premises, not the speaker's credibility. It is an external judgment, not an implicit premise of the argument itself.\n\n\u26a1 SHORTCUT: For Statement & Assumption questions, identify the core causal link. If X is claimed to cause Y, then the causal connection (X leads to Y) is an implicit assumption. Be extremely cautious with absolute terms like 'sole' or 'only' in the assumptions; statements rarely imply such exclusivity unless explicitly stated. Also, the credibility of the speaker (e.g., 'sound understanding') is almost never an implicit assumption for the logical validity of the statement itself.",
+    "id": 262
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Antonym)",
+    "difficulty": "hard",
+    "question": "Choose the word that is most opposite in meaning to 'MELLIFLUOUS'.",
+    "options": [
+      "A. Cacophonous",
+      "B. Strident",
+      "C. Dissonant",
+      "D. Harsh"
+    ],
+    "answer": "A. Cacophonous",
+    "explanation": "Standard Method: 'Mellifluous' describes a voice or sound that is sweet, smooth, and pleasant to hear, often implying a harmonious and flowing quality. 'Cacophonous' is the direct opposite, referring to a harsh, discordant, and unpleasant mixture of sounds, a complete lack of harmony and sweetness. While 'strident,' 'dissonant,' and 'harsh' describe unpleasant sounds, 'cacophonous' specifically denotes a jumbled, discordant mix, directly contrasting the smooth, sweet, and harmonious nature of 'mellifluous'.\n\n\u26a1 SHORTCUT: 'Mellifluous' is about the pleasant *flow* and *harmony* of sound. To find the most direct antonym, look for a word that suggests a *disorderly*, *unpleasant* combination of sounds. 'Cacophonous' (from Greek 'kakos' meaning bad and 'phone' meaning voice/sound) literally means 'bad sound' and implies a jumbled, discordant mix, which is the most comprehensive opposite to mellifluous.",
+    "id": 263
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Idiom)",
+    "difficulty": "hard",
+    "question": "In the following sentence, choose the option that best explains the meaning of the idiom 'throw the baby out with the bathwater'.\n\n'In their zeal to cut costs, the management risks throwing the baby out with the bathwater by eliminating essential R&D departments that are crucial for long-term innovation.'",
+    "options": [
+      "A. To inadvertently lose something valuable while discarding something unwanted.",
+      "B. To make a rash decision based on incomplete information.",
+      "C. To prioritize short-term gains over long-term sustainability.",
+      "D. To create more problems while attempting to solve an existing one."
+    ],
+    "answer": "A. To inadvertently lose something valuable while discarding something unwanted.",
+    "explanation": "Standard Method: The idiom 'to throw the baby out with the bathwater' means to discard something valuable or essential along with something that is undesirable or no longer needed. The sentence clearly illustrates this: the 'bathwater' is the 'costs' the management wants to cut, and the 'baby' is the 'essential R&D departments' that are crucial. The management is getting rid of the bad (costs) but losing something good (R&D) in the process. Option A accurately captures this meaning.\n\n\u26a1 SHORTCUT: Break down the literal imagery of the idiom. The 'bathwater' is something dirty/unwanted. The 'baby' is precious. So, the idiom suggests discarding the unwanted thing but carelessly losing the valuable thing along with it. Match this core meaning of 'losing something good while getting rid of something bad' to the options.",
+    "id": 264
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Critical Reasoning / Inference",
+    "difficulty": "hard",
+    "question": "Passage: Despite a robust quarterly GDP growth figure and a decline in the headline unemployment rate, economists caution against over-optimism. Analysis reveals that much of the employment growth has occurred in low-wage, temporary positions, and the GDP increase is largely attributable to government spending rather than private sector investment. Furthermore, consumer savings rates have plummeted, indicating a reliance on credit or dwindling reserves.\n\nQuestion: Which of the following inferences is most strongly supported by the passage?",
+    "options": [
+      "A. The government's fiscal policies have failed to generate any sustainable economic growth.",
+      "B. The reported economic health is potentially misleading regarding underlying stability.",
+      "C. Private sector investment is declining due to a lack of consumer confidence.",
+      "D. Future inflation is an inevitable consequence of the current economic indicators."
+    ],
+    "answer": "B. The reported economic health is potentially misleading regarding underlying stability.",
+    "explanation": "Standard Method: An inference must be a logical conclusion directly derivable from the given text. The passage presents seemingly positive economic indicators (robust GDP, declining unemployment) but immediately follows with caveats: employment in low-wage/temporary jobs, GDP driven by government spending not private investment, and plummeting consumer savings. The economists 'caution against over-optimism'. All these points collectively suggest that the superficial 'health' indicated by headline figures might not reflect genuine, stable underlying economic strength. Option B directly captures this central idea. Option A uses 'any sustainable growth', which is too strong given 'much of the employment growth has occurred...'; some sustainable growth might still exist. Option C introduces a reason ('lack of consumer confidence') not explicitly stated. Option D makes a strong prediction ('inevitable consequence') that is not fully supported as a direct inference, merely a possibility.\n\n\u26a1 SHORTCUT: Look for the contrast or tension presented in the passage. Here, it's positive headlines versus negative underlying details. This contrast almost always leads to an inference that the positive outlook might be superficial or deceptive. Eliminate options that introduce new unstated causes or make overly definitive predictions ('any', 'inevitable') that go beyond the cautious tone of the passage.",
+    "id": 265
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Fill in the Blanks",
+    "difficulty": "hard",
+    "question": "The CEO's initially ______ rhetoric, intended to ______ dissent, inadvertently fueled further opposition from the disillusioned workforce.",
+    "options": [
+      "A. conciliatory; assuage",
+      "B. belligerent; mollify",
+      "C. authoritarian; stifle",
+      "D. placatory; exacerbate"
+    ],
+    "answer": "A. conciliatory; assuage",
+    "explanation": "Standard Method: Analyze the context: the CEO's rhetoric was 'intended to' achieve something with dissent, but 'inadvertently fueled further opposition'. This implies the CEO's intention was to reduce or calm the dissent, but the action had the opposite effect. \n1. For the first blank, 'conciliatory' (intended to appease or reconcile) and 'placatory' (intended to make someone less angry) fit the 'intended to calm' idea. 'Belligerent' (aggressive) and 'authoritarian' (dictatorial) are unlikely if the goal was to calm dissent and the outcome was 'inadvertent'.\n2. For the second blank, 'assuage' (make an unpleasant feeling less intense) and 'mollify' (appease anger) fit the goal of reducing dissent. 'Stifle' (suppress) is also plausible. 'Exacerbate' (make worse) contradicts the idea that the action was *intended* to manage dissent, as 'exacerbate' is what *inadvertently happened*.\n3. Combine the plausible pairs: \n   A. 'conciliatory; assuage': A conciliatory rhetoric intended to assuage dissent makes perfect sense. The attempt to calm things down unexpectedly backfired. This aligns with 'inadvertently fueled further opposition'.\n   B. 'belligerent; mollify': Belligerent rhetoric would not typically be *intended* to mollify dissent. It would likely fuel opposition directly, not 'inadvertently'.\n   C. 'authoritarian; stifle': An authoritarian rhetoric intended to stifle dissent could inadvertently fuel opposition, but 'conciliatory; assuage' provides a clearer contrast between the positive intent and negative outcome, better fitting 'inadvertently'.\n   D. 'placatory; exacerbate': 'Intended to exacerbate' clearly contradicts the idea that the 'fueling further opposition' was *inadvertent* (unintentional).\n\n\u26a1 SHORTCUT: Look for the core contradiction: 'intended to' (positive action) vs. 'inadvertently fueled' (negative outcome). The CEO *intended* to calm or reduce dissent. The first blank describes this intent, and the second blank describes the action on dissent. Thus, both words should signify 'calming' or 'reducing'. 'Conciliatory' and 'assuage' both carry this meaning, indicating an attempt to reconcile and lessen intensity, which fits perfectly with the unexpected negative consequence.",
+    "id": 266
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension (Inference)",
+    "difficulty": "hard",
+    "question": "Passage: The perennial debate surrounding the nature of consciousness often founders on the limitations of language itself, which, evolved primarily for navigating the material world, struggles to articulate phenomena beyond empirical observation. Cognitive science grapples with the 'hard problem' - explaining subjective experience - a challenge that transcends merely correlating neural activity with mental states. Philosophers, from Descartes to Dennett, have posited various dualistic and monistic frameworks, each encountering its own set of paradoxes when confronted with the seemingly seamless integration of mind and body. The difficulty is compounded by the inherent subjectivity; one cannot directly access another's qualia, leading to an explanatory gap that scientific reductionism has yet to bridge. While neurological research maps increasingly intricate brain functions, these maps often describe the 'what' and 'how' but remain silent on the 'why' of subjective experience. This persistent lacuna suggests that a complete understanding might necessitate a paradigm shift beyond current scientific methodologies. \n\n Question: Which of the following statements can be inferred from the passage?",
+    "options": [
+      "A. The 'hard problem' of consciousness is primarily a linguistic rather than a scientific challenge.",
+      "B. Scientific reductionism has definitively failed to explain the integration of mind and body.",
+      "C. A complete understanding of consciousness may require approaches outside conventional scientific inquiry.",
+      "D. Descartes' and Dennett's philosophical frameworks offer the most comprehensive explanations for consciousness."
+    ],
+    "answer": "C. A complete understanding of consciousness may require approaches outside conventional scientific inquiry.",
+    "explanation": "Standard Method: The passage states, 'This persistent lacuna suggests that a complete understanding might necessitate a paradigm shift beyond current scientific methodologies.' This directly supports option C. Option A is incorrect; the passage says language 'struggles to articulate' but the 'hard problem' itself is about explaining subjective experience, a scientific challenge. Option B is too strong; it says reductionism 'has yet to bridge' the gap, not 'definitively failed'. Option D is not supported; it states they 'have posited various frameworks' but doesn't claim they are the 'most comprehensive'. \n\n\u26a1 SHORTCUT: Look for the statement that directly summarizes or rephrases the passage's concluding thought or main implication. The last sentence often holds the key to inference questions regarding the author's broader point, especially when it suggests a future direction or need.",
+    "id": 267
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence to form a coherent paragraph: \nP. This decentralization, while offering enhanced security through cryptographic hashing and distributed ledgers, also presents scalability challenges. \nQ. Blockchain technology, initially conceived as the backbone for cryptocurrencies, has evolved into a broader paradigm for secure, transparent data management. \nR. Its fundamental innovation lies in creating an immutable, chronologically ordered chain of records, known as blocks, linked cryptographically. \nS. Consequently, efforts are underway to develop more efficient consensus mechanisms and sharding solutions to accommodate larger transaction volumes.",
+    "options": [
+      "A. PQRS",
+      "B. QPRS",
+      "C. QRPS",
+      "D. RPQS"
+    ],
+    "answer": "C. QRPS",
+    "explanation": "Standard Method: Sentence Q introduces Blockchain technology generally. R defines its fundamental innovation, directly following Q by explaining 'its' (blockchain's) core mechanism. P introduces a challenge (decentralization, scalability) related to the technology described. S logically follows P by discussing solutions to the challenges mentioned in P ('Consequently' linking to the problems of scalability). \n\n\u26a1 SHORTCUT: Look for the introductory sentence (Q). Then find the sentence that defines or elaborates on the subject (R). Next, identify a problem or consequence (P) related to the subject, followed by its solution or further development (S). 'This decentralization' in P links back to the distributed nature implied in Q and R. 'Consequently' in S clearly signals a follow-up to P.",
+    "id": 268
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Error Spotting / Sentence Correction",
+    "difficulty": "hard",
+    "question": "The board members, along with the CEO, (A) was keen to implement (B) the new policy, which they believed (C) would significantly boost company morale. (D) No error.",
+    "options": [
+      "A. (A)",
+      "B. (B)",
+      "C. (C)",
+      "D. (D)"
+    ],
+    "answer": "A. (A)",
+    "explanation": "Standard Method: The subject of the sentence is 'The board members', which is plural. The phrase 'along with the CEO' is an intervening phrase and does not change the number of the subject. Therefore, the verb should agree with 'board members', which requires a plural verb. 'was' should be 'were'. \n\n\u26a1 SHORTCUT: When phrases like 'along with', 'as well as', 'in addition to', 'together with' are used, the verb always agrees with the noun that comes *before* these phrases. Scan for such constructions and check subject-verb agreement with the initial subject.",
+    "id": 269
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction (Statement & Assumption)",
+    "difficulty": "hard",
+    "question": "Statement: 'To improve student learning outcomes, our university must invest significantly in virtual reality classrooms, as evidenced by pilot studies showing increased engagement.' \nWhich of the following is a necessary assumption underlying the statement?",
+    "options": [
+      "A. Virtual reality classrooms are the most effective method available for improving student learning outcomes.",
+      "B. Increased student engagement directly correlates with improved learning outcomes.",
+      "C. The university currently lacks adequate funding for traditional classroom improvements.",
+      "D. All students will have equal access to and proficiency in using virtual reality technology."
+    ],
+    "answer": "B. Increased student engagement directly correlates with improved learning outcomes.",
+    "explanation": "Standard Method: The statement argues for investing in VR classrooms because pilot studies show 'increased engagement'. For this to be a valid argument for 'improving student learning outcomes', the assumption must be made that increased engagement *leads to* improved learning outcomes. If engagement did not translate to outcomes, the evidence would be irrelevant to the conclusion. Option A is too strong ('most effective method'). Option C is irrelevant to the stated cause-effect. Option D is a desirable outcome but not a *necessary assumption* for the argument that increased engagement *improves learning*. \n\n\u26a1 SHORTCUT: Identify the gap between the evidence provided (increased engagement) and the conclusion drawn (improved learning outcomes). The necessary assumption bridges this gap. Ask: 'What must be true for the evidence to support the conclusion?'",
+    "id": 270
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Sentence Correction",
+    "difficulty": "hard",
+    "question": "The committee was unequivocal in its decision that the project's success depended *entirely on the dedication of its team, making clear their expectation for unwavering commitment from all members*.",
+    "options": [
+      "A. entirely on the dedication of its team, making clear their expectation for unwavering commitment from all members.",
+      "B. entirely on the dedication of its team; they made clear their expectation for unwavering commitment from all members.",
+      "C. entirely on its team's dedication, and made clear its expectation of unwavering commitment from all members.",
+      "D. entirely on the dedication of its team, clearly stating its expectation for unwavering commitment by all members."
+    ],
+    "answer": "C. entirely on its team's dedication, and made clear its expectation of unwavering commitment from all members.",
+    "explanation": "Standard Method: The original sentence has a dangling modifier issue. 'making clear' appears to modify 'team' or 'dedication', but it's meant to convey the committee's action. Also, 'their expectation' refers to 'the committee' (a collective noun treated as singular here), which should be 'its expectation'. Option A is incorrect due to the dangling modifier and pronoun agreement. Option B uses a semicolon correctly but 'they' still refers to 'committee' which is singular here. Option D uses 'stating its expectation', which is better, but 'for unwavering commitment by all members' is slightly less idiomatic than 'from'. Option C correctly uses 'its team's dedication' for conciseness and 'made clear its expectation' aligns with the subject 'committee' (singular) and correctly uses 'from all members'. The phrase 'and made clear' properly links the second action to the committee. \n\n\u26a1 SHORTCUT: Check for pronoun agreement (committee is singular, so 'its' not 'their'). Look for clarity of attribution for actions; 'making clear' needs a clear subject. 'And made clear' properly links the second action to the committee. Also, 'team's dedication' is generally more concise and preferred over 'dedication of its team'.",
+    "id": 271
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Reading Comprehension (Primary Implication)",
+    "difficulty": "hard",
+    "question": "Passage: Despite advancements in renewable energy sources, the global transition away from fossil fuels remains hampered by entrenched economic interests and geopolitical complexities. Nations heavily reliant on oil and gas revenues face significant internal and external pressures to maintain the status quo, often resisting international climate agreements or delaying domestic policy changes. Furthermore, the sheer scale of energy demand, particularly in rapidly industrializing economies, often necessitates pragmatic reliance on existing, albeit polluting, infrastructure. While technological breakthroughs in battery storage and grid modernization offer promising pathways, the political will and economic restructuring required to fully capitalize on these innovations are formidable obstacles. The intermittency of some renewables, coupled with the capital intensity of new infrastructure, further complicates the calculus, making a swift, equitable, and comprehensive energy transition an unprecedented global challenge. \n\n Question: What is the primary implication of the passage regarding the global energy transition?",
+    "options": [
+      "A. Technological solutions alone are insufficient to overcome the challenges of transitioning from fossil fuels.",
+      "B. The economic restructuring required for energy transition is a more significant hurdle than political will.",
+      "C. Rapidly industrializing economies are solely responsible for the continued reliance on polluting infrastructure.",
+      "D. International climate agreements are ineffective against entrenched national interests."
+    ],
+    "answer": "A. Technological solutions alone are insufficient to overcome the challenges of transitioning from fossil fuels.",
+    "explanation": "Standard Method: The passage details various non-technological hurdles: 'entrenched economic interests and geopolitical complexities,' 'pressures to maintain the status quo,' 'political will and economic restructuring'. While it acknowledges 'technological breakthroughs' as 'promising pathways', it immediately qualifies that the 'political will and economic restructuring required...are formidable obstacles.' This implies that technology is part of the solution but not the whole solution. Option B presents a false dichotomy, stating one is 'more significant' than the other when both are described as 'formidable'. Option C is too strong and generalizes blame; the passage states 'often necessitates pragmatic reliance', not 'solely responsible'. Option D is too absolute; the passage says nations 'often resisting', not that agreements are 'ineffective' entirely. \n\n\u26a1 SHORTCUT: Look for the overall tone and scope of the passage. It outlines multiple *non-technological* barriers despite technological progress. This points to the insufficiency of technology by itself. The passage presents a balanced view, not assigning sole blame or declaring total ineffectiveness.",
+    "id": 272
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Para-jumbles (Sentence Ordering)",
+    "difficulty": "hard",
+    "question": "Arrange the following sentences in a logical sequence to form a coherent paragraph: \nP. However, this focus on individual accountability often obscures systemic issues, such as inadequate regulatory oversight or corporate lobbying, that contribute to such failures. \nQ. When large-scale financial scandals erupt, public discourse typically zeroes in on the culpability of key executives and board members. \nR. This narrow attribution of blame can impede genuine reform by failing to address the root causes embedded within the broader financial ecosystem. \nS. Consequently, legislative responses, if any, often target individual actors rather than instituting comprehensive structural changes.",
+    "options": [
+      "A. PQRS",
+      "B. QPRS",
+      "C. QRPS",
+      "D. QPSR"
+    ],
+    "answer": "D. QPSR",
+    "explanation": "Standard Method: Q introduces the topic: public discourse on financial scandals and individual culpability. P follows logically, presenting a counterpoint ('However') that this focus *obscures systemic issues*. S then follows P, as the 'consequently' connects the limited focus on individual accountability (mentioned in P) to the legislative responses. R concludes by explaining the negative outcome of this 'narrow attribution of blame' (referring back to P and S). \n\n\u26a1 SHORTCUT: Q sets the stage by introducing a common reaction. P offers a contrasting view ('However'). S indicates a consequence ('Consequently') of the situation described in P. R then provides the ultimate negative impact of the 'narrow attribution' discussed in P and S.",
+    "id": 273
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Advanced Vocabulary (Synonyms)",
+    "difficulty": "hard",
+    "question": "Choose the word that is closest in meaning to 'ubiquitous'.",
+    "options": [
+      "A. Scarce",
+      "B. Omnipresent",
+      "C. Ephemeral",
+      "D. Singular"
+    ],
+    "answer": "B. Omnipresent",
+    "explanation": "Standard Method: 'Ubiquitous' means present, appearing, or found everywhere. 'Omnipresent' carries the exact same meaning: universally present. 'Scarce' is the opposite. 'Ephemeral' means lasting for a very short time. 'Singular' means unique or exceptional, or referring to only one. \n\n\u26a1 SHORTCUT: Break down the word 'ubiquitous'. 'Ubi' relates to 'where' (as in 'wherever'). It implies 'everywhere'. 'Omnipresent' similarly combines 'omni' (all) and 'present'. Directly match the core meaning, recognizing common prefixes and root meanings.",
+    "id": 274
+  },
+  {
+    "module": "Verbal Ability",
+    "topic": "Logical Deduction (Course of Action)",
+    "difficulty": "hard",
+    "question": "Statement: 'A significant portion of the city's elderly population is experiencing increased social isolation due to limited access to public transport and a lack of community-based social programs.' \nWhich of the following would be the most effective course of action to address this situation?",
+    "options": [
+      "A. Launch a city-wide awareness campaign about the importance of social interaction for seniors.",
+      "B. Allocate funds to improve public transport routes and expand community centers offering senior programs.",
+      "C. Encourage private taxi services to offer discounted rates for elderly citizens.",
+      "D. Conduct further studies to ascertain the exact percentage of seniors affected by social isolation."
+    ],
+    "answer": "B. Allocate funds to improve public transport routes and expand community centers offering senior programs.",
+    "explanation": "Standard Method: The statement clearly identifies two primary causes of social isolation: 'limited access to public transport' and 'a lack of community-based social programs'. The most effective course of action directly addresses these identified root causes. Option B directly tackles both issues. Option A, while good, doesn't solve the *root causes* of limited access and lack of programs. Option C might help with transport but is less comprehensive than improving public routes and relies on private initiatives. Option D is a diagnostic step, not an action to *address* the situation, especially when the problem is already acknowledged as 'significant'. \n\n\u26a1 SHORTCUT: Identify the explicit problems stated in the premise. The best course of action directly targets and resolves these identified problems. Avoid options that are indirect, merely diagnostic, or only partial solutions when a comprehensive one is available. Look for the option that provides the most direct and complete solution to the stated problems.",
+    "id": 275
   }
 ]

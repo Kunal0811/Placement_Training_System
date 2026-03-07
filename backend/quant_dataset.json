@@ -2398,5 +2398,590 @@
     "answer": "B. 17",
     "explanation": "Standard Method:\nLet the largest number be N.\nAccording to the problem, when N divides:\n398, it leaves a remainder of 7. This means (398 - 7) is perfectly divisible by N. So, 391 is divisible by N.\n437, it leaves a remainder of 12. This means (437 - 12) is perfectly divisible by N. So, 425 is divisible by N.\n542, it leaves a remainder of 15. This means (542 - 15) is perfectly divisible by N. So, 527 is divisible by N.\n\nTherefore, N is the Highest Common Factor (HCF) of 391, 425, and 527.\n\nWe find the HCF using prime factorization or the long division method.\n\nUsing Prime Factorization:\n391: We can test for small prime factors. Not divisible by 2, 3, 5. Test 7 (391/7 = 55 R 6). Test 11 (391/11 = 35 R 6). Test 13 (391/13 = 30 R 1). Test 17 (391/17 = 23). So, 391 = 17 * 23.\n\n425: Ends in 5, so divisible by 5. 425 = 5 * 85 = 5 * 5 * 17 = 5^2 * 17.\n\n527: Not divisible by 2, 3, 5. Test 7 (527/7 = 75 R 2). Test 11 (527/11 = 47 R 10). Test 13 (527/13 = 40 R 7). Test 17 (527/17 = 31). So, 527 = 17 * 31.\n\nThe common prime factor among 391, 425, and 527 is 17.\nHence, HCF(391, 425, 527) = 17.\n\n\u26a1 SHORTCUT: The core idea is to subtract the remainders from the original numbers and then find the HCF of the resulting differences. A useful trick if the numbers are large is to check the given options. Since we are looking for the 'largest possible number', start checking from the largest option. Test each option (13, 17, 19, 23) by dividing 391, 425, and 527. The first option that divides all three perfectly will be the HCF. For example, check 17: 391/17=23, 425/17=25, 527/17=31. Since 17 divides all three, and it's an option, it is likely the answer. To be certain it's the *largest*, you might need to check other numbers, but for MCQs, this is often sufficient. Also, when factoring, remember that prime numbers usually appear in such problems.",
     "id": 160
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Percentages",
+    "difficulty": "easy",
+    "question": "A student scored 75% marks in an exam. If the maximum marks for the exam were 600, what was his score?",
+    "options": [
+      "A. 400",
+      "B. 450",
+      "C. 500",
+      "D. 550"
+    ],
+    "answer": "B. 450",
+    "explanation": "Standard Method: To find the score, calculate 75% of the maximum marks. Score = (75/100) * 600 = 0.75 * 600 = 450. \n\n\u26a1 SHORTCUT: 75% is equivalent to the fraction 3/4. So, the score is (3/4) * 600 = 3 * (600/4) = 3 * 150 = 450.",
+    "id": 161
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Profit & Loss",
+    "difficulty": "easy",
+    "question": "A shopkeeper buys an item for Rs. 400 and sells it for Rs. 480. What is the profit percentage?",
+    "options": [
+      "A. 15%",
+      "B. 20%",
+      "C. 25%",
+      "D. 30%"
+    ],
+    "answer": "B. 20%",
+    "explanation": "Standard Method: First, calculate the profit amount. Profit = Selling Price - Cost Price = 480 - 400 = Rs. 80. Then, calculate the profit percentage using the formula: Profit % = (Profit / Cost Price) * 100 = (80 / 400) * 100 = (1/5) * 100 = 20%. \n\n\u26a1 SHORTCUT: The profit (80) is a fifth of the cost price (400). A fifth is 20%. So, 80/400 = 1/5 = 20%.",
+    "id": 162
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Time & Work",
+    "difficulty": "easy",
+    "question": "A can complete a work in 10 days and B can complete the same work in 15 days. If they work together, in how many days will the work be completed?",
+    "options": [
+      "A. 5 days",
+      "B. 6 days",
+      "C. 7.5 days",
+      "D. 8 days"
+    ],
+    "answer": "B. 6 days",
+    "explanation": "Standard Method: A's one day's work = 1/10. B's one day's work = 1/15. When they work together, their combined one day's work = 1/10 + 1/15 = (3 + 2)/30 = 5/30 = 1/6. Therefore, they will complete the work together in 6 days. \n\n\u26a1 SHORTCUT: For two people, the combined time to complete work is (Time1 * Time2) / (Time1 + Time2). So, (10 * 15) / (10 + 15) = 150 / 25 = 6 days.",
+    "id": 163
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Averages",
+    "difficulty": "easy",
+    "question": "What is the average of the first five prime numbers?",
+    "options": [
+      "A. 4.8",
+      "B. 5.2",
+      "C. 5.6",
+      "D. 6"
+    ],
+    "answer": "C. 5.6",
+    "explanation": "Standard Method: The first five prime numbers are 2, 3, 5, 7, and 11. Sum of these numbers = 2 + 3 + 5 + 7 + 11 = 28. Average = Sum of numbers / Count of numbers = 28 / 5 = 5.6. \n\n\u26a1 SHORTCUT: Quickly list the first five primes. Sum them up (2+3+5+7+11=28) and divide by 5. Mental math will quickly yield 5.6.",
+    "id": 164
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Ratio & Proportion",
+    "difficulty": "easy",
+    "question": "Divide Rs. 720 in the ratio 4:5. What is the larger share?",
+    "options": [
+      "A. Rs. 320",
+      "B. Rs. 400",
+      "C. Rs. 450",
+      "D. Rs. 500"
+    ],
+    "answer": "B. Rs. 400",
+    "explanation": "Standard Method: The total number of ratio parts is 4 + 5 = 9. The value of one ratio part is Rs. 720 / 9 = Rs. 80. The larger share corresponds to 5 parts, so the larger share = 5 * 80 = Rs. 400. \n\n\u26a1 SHORTCUT: The larger share is 5 out of a total of 9 parts. So, the larger share = (5/9) * 720. (720/9) is 80, so 5 * 80 = 400.",
+    "id": 165
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Simple Interest",
+    "difficulty": "easy",
+    "question": "Calculate the simple interest on Rs. 8000 at 5% per annum for 3 years.",
+    "options": [
+      "A. Rs. 1000",
+      "B. Rs. 1200",
+      "C. Rs. 1500",
+      "D. Rs. 1800"
+    ],
+    "answer": "B. Rs. 1200",
+    "explanation": "Standard Method: The formula for simple interest is SI = (Principal * Rate * Time) / 100. SI = (8000 * 5 * 3) / 100 = (8000 * 15) / 100 = 80 * 15 = Rs. 1200. \n\n\u26a1 SHORTCUT: Calculate the interest for one year: 5% of 8000 = (5/100) * 8000 = Rs. 400. For 3 years, the interest will be 3 * 400 = Rs. 1200.",
+    "id": 166
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Speed, Time & Distance",
+    "difficulty": "easy",
+    "question": "A car travels at a speed of 60 km/hr for 2.5 hours. What is the distance covered?",
+    "options": [
+      "A. 120 km",
+      "B. 150 km",
+      "C. 180 km",
+      "D. 200 km"
+    ],
+    "answer": "B. 150 km",
+    "explanation": "Standard Method: The formula for distance is Distance = Speed * Time. Distance = 60 km/hr * 2.5 hours = 150 km. \n\n\u26a1 SHORTCUT: Think of 2.5 hours as 2 hours + half an hour. In 2 hours, the car covers 60*2 = 120 km. In half an hour, it covers 60/2 = 30 km. Total distance = 120 + 30 = 150 km.",
+    "id": 167
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Mixtures & Allegations",
+    "difficulty": "easy",
+    "question": "A mixture contains milk and water in the ratio 3:1. If the total volume of the mixture is 20 liters, what is the quantity of milk in the mixture?",
+    "options": [
+      "A. 5 liters",
+      "B. 10 liters",
+      "C. 15 liters",
+      "D. 20 liters"
+    ],
+    "answer": "C. 15 liters",
+    "explanation": "Standard Method: The ratio of milk to water is 3:1. The total number of ratio parts is 3 + 1 = 4. The quantity of milk is 3 parts out of 4 total parts. So, Quantity of milk = (3/4) * Total volume = (3/4) * 20 liters = 3 * 5 = 15 liters. \n\n\u26a1 SHORTCUT: Quickly identify that milk forms 3/4 of the mixture. Multiply 20 liters by 3/4 to get 15 liters.",
+    "id": 168
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Mensuration",
+    "difficulty": "easy",
+    "question": "The length of a rectangular park is 20 meters and its width is 15 meters. What is the area of the park?",
+    "options": [
+      "A. 70 sq meters",
+      "B. 150 sq meters",
+      "C. 300 sq meters",
+      "D. 350 sq meters"
+    ],
+    "answer": "C. 300 sq meters",
+    "explanation": "Standard Method: The formula for the area of a rectangle is Area = Length * Width. Area = 20 meters * 15 meters = 300 sq meters. \n\n\u26a1 SHORTCUT: Direct multiplication of length and width. No complex steps are needed for this basic area calculation.",
+    "id": 169
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Percentage",
+    "difficulty": "easy",
+    "question": "In an exam, a student scored 30% marks and failed by 45 marks. If the passing mark is 42%, how many marks did the student score?",
+    "options": [
+      "A. 225",
+      "B. 150",
+      "C. 112.5",
+      "D. 120"
+    ],
+    "answer": "C. 112.5",
+    "explanation": "Standard Method: Let the total marks be M. According to the problem, 30% of M + 45 marks = 42% of M. This means the difference in percentage (42% - 30% = 12%) corresponds to the 45 marks needed to pass. So, 12% of M = 45. M = 45 / 0.12 = 375. The marks scored by the student were 30% of 375 = 0.30 * 375 = 112.5 marks.\n\n\u26a1 SHORTCUT: The difference between the passing percentage and the scored percentage is 42% - 30% = 12%. This 12% directly corresponds to the 45 marks by which the student failed. So, 12% = 45 marks. We need to find the marks scored, which is 30%. Since 30% is 2.5 times 12% (30/12 = 2.5), the marks scored will be 2.5 times 45 marks. Marks scored = 45 * 2.5 = 112.5.",
+    "id": 170
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Ratio & Proportion",
+    "difficulty": "easy",
+    "question": "The ratio of two numbers is 3:5. If each number is increased by 10, the ratio becomes 5:7. What are the original numbers?",
+    "options": [
+      "A. 15, 25",
+      "B. 20, 30",
+      "C. 10, 20",
+      "D. 12, 20"
+    ],
+    "answer": "A. 15, 25",
+    "explanation": "Standard Method: Let the original numbers be 3x and 5x. When each number is increased by 10, they become (3x + 10) and (5x + 10). The new ratio is (3x + 10) / (5x + 10) = 5/7. Cross-multiplying, we get 7(3x + 10) = 5(5x + 10). This simplifies to 21x + 70 = 25x + 50. Subtracting 21x from both sides: 70 = 4x + 50. Subtracting 50 from both sides: 20 = 4x. So, x = 5. The original numbers are 3x = 3 * 5 = 15 and 5x = 5 * 5 = 25.\n\n\u26a1 SHORTCUT: Observe the difference between the ratio parts. For the original ratio 3:5, the difference is 2. For the new ratio 5:7, the difference is also 2. Since the difference between the ratio parts is constant, we can directly compare the change in ratio parts to the actual increase. The first number's ratio part changed from 3 to 5 (an increase of 2 units). The second number's ratio part changed from 5 to 7 (an increase of 2 units). This '2 unit' increase corresponds to the actual increase of 10 in each number. So, 2 units = 10. Therefore, 1 unit = 5. The original numbers are 3 units = 3 * 5 = 15 and 5 units = 5 * 5 = 25.",
+    "id": 171
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Averages",
+    "difficulty": "easy",
+    "question": "The average weight of 10 students is 45 kg. If one student leaves, the average weight of the remaining 9 students becomes 44 kg. What is the weight of the student who left?",
+    "options": [
+      "A. 54 kg",
+      "B. 50 kg",
+      "C. 55 kg",
+      "D. 48 kg"
+    ],
+    "answer": "A. 54 kg",
+    "explanation": "Standard Method: The total weight of 10 students = Number of students * Average weight = 10 * 45 kg = 450 kg. After one student leaves, there are 9 students, and their average weight is 44 kg. So, the total weight of the 9 students = 9 * 44 kg = 396 kg. The weight of the student who left is the difference between the total weight of 10 students and the total weight of 9 students = 450 kg - 396 kg = 54 kg.\n\n\u26a1 SHORTCUT: When the student left, the average weight of the remaining 9 students dropped by 1 kg (from 45 kg to 44 kg). This means the student who left was carrying an 'excess' weight of 1 kg for each of the 9 remaining students. Therefore, the weight of the student who left is their original average weight plus the sum of these 'excess' weights: 45 kg + (9 students * 1 kg/student) = 45 + 9 = 54 kg.",
+    "id": 172
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Profit & Loss",
+    "difficulty": "easy",
+    "question": "A shopkeeper sells an item for Rs. 480 after allowing a discount of 20% on the marked price. If he makes a profit of 20%, what is the cost price of the item?",
+    "options": [
+      "A. Rs. 400",
+      "B. Rs. 500",
+      "C. Rs. 384",
+      "D. Rs. 420"
+    ],
+    "answer": "A. Rs. 400",
+    "explanation": "Standard Method: Let the selling price (SP) be Rs. 480. A 20% discount on the marked price (MP) means the SP is 80% of the MP. So, 0.80 * MP = 480. MP = 480 / 0.80 = Rs. 600. The shopkeeper makes a 20% profit, meaning the SP is 120% of the cost price (CP). So, 1.20 * CP = 480. CP = 480 / 1.20 = Rs. 400.\n\n\u26a1 SHORTCUT: We know the Selling Price (SP) is Rs. 480. The item was sold at a 20% profit. This means SP = CP * (1 + Profit%). So, 480 = CP * (1 + 0.20) = CP * 1.20. To find the Cost Price (CP), divide the selling price by 1.20: CP = 480 / 1.20 = 400. The discount information is extraneous to finding the cost price once the selling price and profit percentage are known.",
+    "id": 173
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Simple Interest",
+    "difficulty": "easy",
+    "question": "What will be the simple interest on an amount of Rs. 8000 at an interest rate of 6% per annum for 3 years?",
+    "options": [
+      "A. Rs. 1440",
+      "B. Rs. 1200",
+      "C. Rs. 1500",
+      "D. Rs. 1600"
+    ],
+    "answer": "A. Rs. 1440",
+    "explanation": "Standard Method: The formula for Simple Interest (SI) is SI = (P * R * T) / 100, where P is the Principal amount, R is the rate of interest per annum, and T is the time in years. Given P = Rs. 8000, R = 6%, and T = 3 years. SI = (8000 * 6 * 3) / 100 = 80 * 18 = Rs. 1440.\n\n\u26a1 SHORTCUT: For simple interest, the total percentage interest accumulated over T years is simply R * T. In this case, total interest percentage = 6% * 3 years = 18%. The simple interest will be 18% of the principal amount. SI = 18% of 8000 = 0.18 * 8000 = 18 * 80 = Rs. 1440.",
+    "id": 174
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Time & Work",
+    "difficulty": "easy",
+    "question": "A can do a piece of work in 10 days and B can do the same work in 15 days. In how many days will they complete the work if they work together?",
+    "options": [
+      "A. 6 days",
+      "B. 8 days",
+      "C. 12.5 days",
+      "D. 7.5 days"
+    ],
+    "answer": "A. 6 days",
+    "explanation": "Standard Method: A's one day's work = 1/10 of the total work. B's one day's work = 1/15 of the total work. When A and B work together, their combined one day's work = (1/10) + (1/15). To add these fractions, find a common denominator, which is 30. (3/30) + (2/30) = 5/30 = 1/6 of the work. If they complete 1/6 of the work in one day, they will complete the entire work in 6 days.\n\n\u26a1 SHORTCUT: For two people working together, if one takes 'x' days and the other takes 'y' days, they will complete the work together in (x * y) / (x + y) days. In this case, x = 10 days and y = 15 days. Days taken together = (10 * 15) / (10 + 15) = 150 / 25 = 6 days.",
+    "id": 175
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Time, Speed & Distance",
+    "difficulty": "easy",
+    "question": "A car covers a distance of 216 km in 3 hours. What is its speed in meters per second?",
+    "options": [
+      "A. 15 m/s",
+      "B. 20 m/s",
+      "C. 18 m/s",
+      "D. 60 m/s"
+    ],
+    "answer": "B. 20 m/s",
+    "explanation": "Standard Method: First, calculate the speed in km/hr. Speed = Distance / Time = 216 km / 3 hours = 72 km/hr. To convert speed from km/hr to meters per second (m/s), multiply by the conversion factor (5/18). Speed in m/s = 72 * (5/18) = (72/18) * 5 = 4 * 5 = 20 m/s.\n\n\u26a1 SHORTCUT: Convert the distance to meters and time to seconds first, then divide. Distance = 216 km = 216 * 1000 meters = 216000 meters. Time = 3 hours = 3 * 60 minutes = 3 * 60 * 60 seconds = 10800 seconds. Speed = 216000 meters / 10800 seconds = 2160 / 108 = 20 m/s.",
+    "id": 176
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Mixtures & Allegations",
+    "difficulty": "easy",
+    "question": "A mixture contains milk and water in the ratio 5:3. If 8 liters of water are added to the mixture, the ratio of milk to water becomes 5:4. What is the quantity of milk in the mixture?",
+    "options": [
+      "A. 40 liters",
+      "B. 30 liters",
+      "C. 20 liters",
+      "D. 50 liters"
+    ],
+    "answer": "A. 40 liters",
+    "explanation": "Standard Method: Let the initial quantity of milk be 5x liters and water be 3x liters. After adding 8 liters of water, the quantity of milk remains 5x, and the quantity of water becomes (3x + 8) liters. The new ratio of milk to water is 5x / (3x + 8) = 5/4. Cross-multiplying, we get 4 * (5x) = 5 * (3x + 8). This simplifies to 20x = 15x + 40. Subtracting 15x from both sides: 5x = 40. So, x = 8. The quantity of milk in the mixture is 5x = 5 * 8 = 40 liters.\n\n\u26a1 SHORTCUT: The key observation is that only water is added, so the quantity of milk remains unchanged. Look at the ratios: Initial M:W = 5:3. Final M:W = 5:4. Notice that the 'milk' part of the ratio (5) is already the same in both ratios. The 'water' part of the ratio changed from 3 units to 4 units, an increase of 1 unit. This 1 unit increase corresponds to the 8 liters of water added. So, 1 unit = 8 liters. The quantity of milk is 5 units, so 5 * 8 = 40 liters.",
+    "id": 177
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Algebra (Linear Equations)",
+    "difficulty": "easy",
+    "question": "If 3x + 5 = 2x + 12, what is the value of x?",
+    "options": [
+      "A. 7",
+      "B. 17",
+      "C. 5",
+      "D. 10"
+    ],
+    "answer": "A. 7",
+    "explanation": "Standard Method: We have the equation 3x + 5 = 2x + 12. To solve for x, we need to gather all x terms on one side and constant terms on the other. Subtract 2x from both sides: (3x - 2x) + 5 = 12. This simplifies to x + 5 = 12. Now, subtract 5 from both sides: x = 12 - 5. Therefore, x = 7.\n\n\u26a1 SHORTCUT: Mentally rearrange the terms. Move the smaller 'x' term to the side with the larger 'x' term, and the smaller constant to the side with the larger constant. So, 3x - 2x = 12 - 5. This directly gives x = 7. It's about efficiently isolating x by moving terms.",
+    "id": 178
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Time & Work",
+    "difficulty": "medium",
+    "question": "A can do a piece of work in 10 days, and B can do the same work in 15 days. They start working together. After 3 days, A leaves, and C joins them. If C's efficiency is 2/3 of A's efficiency, in how many days will the remaining work be completed by B and C?",
+    "options": [
+      "A. 3.5 days",
+      "B. 3.75 days",
+      "C. 4 days",
+      "D. 4.25 days"
+    ],
+    "answer": "B. 3.75 days",
+    "explanation": "Standard Method: Let the total work be the LCM of 10 and 15, which is 30 units. A's efficiency = 30/10 = 3 units/day. B's efficiency = 30/15 = 2 units/day. C's efficiency = (2/3) * A's efficiency = (2/3) * 3 = 2 units/day. Work done by A and B in 3 days = (3 + 2) units/day * 3 days = 5 * 3 = 15 units. Remaining work = 30 - 15 = 15 units. Combined efficiency of B and C = B's efficiency + C's efficiency = 2 + 2 = 4 units/day. Time taken by B and C to complete the remaining work = Remaining work / Combined efficiency = 15 units / 4 units/day = 3.75 days. \n\n\u26a1 SHORTCUT: Think in terms of work units and daily output directly. A does 1/10 work per day, B does 1/15. Let total work be 1 unit. Work done by A and B in 3 days = 3 * (1/10 + 1/15) = 3 * (3/30 + 2/30) = 3 * (5/30) = 3 * (1/6) = 1/2 of the work. Remaining work = 1 - 1/2 = 1/2. C's daily work rate = (2/3) * (1/10) = 2/30 = 1/15. Combined daily work rate of B and C = 1/15 (from B) + 1/15 (from C) = 2/15. Time to complete remaining 1/2 work = (1/2) / (2/15) = 1/2 * 15/2 = 15/4 = 3.75 days.",
+    "id": 179
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Profit & Loss",
+    "difficulty": "medium",
+    "question": "A shopkeeper marks his goods at 60% above the cost price. He allows a discount of 25% on the marked price. If he earns a profit of Rs. 400 on an article, what is the cost price of the article?",
+    "options": [
+      "A. Rs. 1800",
+      "B. Rs. 2000",
+      "C. Rs. 2200",
+      "D. Rs. 2500"
+    ],
+    "answer": "B. Rs. 2000",
+    "explanation": "Standard Method: Let the Cost Price (CP) be x. Marked Price (MP) = CP * (1 + 60/100) = x * 1.6. Selling Price (SP) = MP * (1 - 25/100) = (1.6x) * (0.75) = 1.2x. Profit = SP - CP = 1.2x - x = 0.2x. We are given that the profit is Rs. 400. So, 0.2x = 400. Therefore, x = 400 / 0.2 = 4000 / 2 = Rs. 2000. \n\n\u26a1 SHORTCUT: Let CP be 100 units. Marked Price = 100 * (1 + 60/100) = 160 units. Selling Price = 160 * (1 - 25/100) = 160 * (3/4) = 120 units. Profit = SP - CP = 120 - 100 = 20 units. If 20 units represent Rs. 400, then 1 unit represents Rs. 400/20 = Rs. 20. The Cost Price is 100 units, so CP = 100 * 20 = Rs. 2000.",
+    "id": 180
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Averages",
+    "difficulty": "medium",
+    "question": "The average age of 30 students in a class is 15 years. If the age of the teacher is included, the average age of the class increases by 1 year. What is the teacher's age?",
+    "options": [
+      "A. 45 years",
+      "B. 46 years",
+      "C. 47 years",
+      "D. 48 years"
+    ],
+    "answer": "B. 46 years",
+    "explanation": "Standard Method: Total age of 30 students = 30 * 15 = 450 years. When the teacher's age is included, the total number of people becomes 30 + 1 = 31. The average age increases by 1 year, so the new average age is 15 + 1 = 16 years. The total age of 31 people (students + teacher) = 31 * 16 = 496 years. Teacher's age = (Total age of 31 people) - (Total age of 30 students) = 496 - 450 = 46 years. \n\n\u26a1 SHORTCUT: When a new person joins a group and increases the average, the new person's value is equal to the New Average plus (the Original Number of people multiplied by the increase in average). Teacher's age = (New Average) + (Original Number of Students * Increase in Average) = 16 + (30 * 1) = 16 + 30 = 46 years.",
+    "id": 181
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Speed, Time & Distance",
+    "difficulty": "medium",
+    "question": "A boat takes 4 hours to travel 60 km downstream and 6 hours to travel 48 km upstream. What is the speed of the boat in still water?",
+    "options": [
+      "A. 10.5 km/hr",
+      "B. 11 km/hr",
+      "C. 11.5 km/hr",
+      "D. 12 km/hr"
+    ],
+    "answer": "C. 11.5 km/hr",
+    "explanation": "Standard Method: First, calculate the downstream and upstream speeds. Downstream Speed = Distance / Time = 60 km / 4 hours = 15 km/hr. Upstream Speed = Distance / Time = 48 km / 6 hours = 8 km/hr. Let the speed of the boat in still water be B km/hr and the speed of the stream be S km/hr. We know that: B + S = 15 (Equation 1) and B - S = 8 (Equation 2). Adding Equation 1 and Equation 2: (B + S) + (B - S) = 15 + 8  =>  2B = 23  =>  B = 23 / 2 = 11.5 km/hr. \n\n\u26a1 SHORTCUT: Once you have the downstream speed (D) and upstream speed (U), the speed of the boat in still water (B) can be directly calculated using the formula: B = (D + U) / 2. Here, D = 15 km/hr and U = 8 km/hr. So, B = (15 + 8) / 2 = 23 / 2 = 11.5 km/hr.",
+    "id": 182
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Ratios & Proportions",
+    "difficulty": "medium",
+    "question": "The ratio of incomes of A and B is 3:2, and the ratio of their expenditures is 5:3. If each saves Rs. 1000, what is the income of B?",
+    "options": [
+      "A. Rs. 2000",
+      "B. Rs. 3000",
+      "C. Rs. 4000",
+      "D. Rs. 5000"
+    ],
+    "answer": "C. Rs. 4000",
+    "explanation": "Standard Method: Let A's income be 3x and B's income be 2x. Let A's expenditure be 5y and B's expenditure be 3y. Savings = Income - Expenditure. For A: 3x - 5y = 1000 (Equation 1). For B: 2x - 3y = 1000 (Equation 2). To eliminate 'y', multiply Equation 1 by 3 and Equation 2 by 5: (3 * (3x - 5y = 1000)) => 9x - 15y = 3000. (5 * (2x - 3y = 1000)) => 10x - 15y = 5000. Subtract the first new equation from the second new equation: (10x - 15y) - (9x - 15y) = 5000 - 3000  =>  x = 2000. Income of B = 2x = 2 * 2000 = Rs. 4000. \n\n\u26a1 SHORTCUT: Use the cross-multiplication method for such problems. Let incomes be 3x, 2x and expenditures be 5y, 3y. Savings are the same (1000). (3*3 - 2*5) units = (3*1000 - 5*1000).  (9 - 10) units = (3000 - 5000).  -1 unit = -2000. So, 1 unit = 2000. The common multiplier 'x' (from 3x, 2x) represents this 'unit' in this shortcut. Therefore, x = 2000. Income of B = 2x = 2 * 2000 = Rs. 4000.",
+    "id": 183
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Percentages",
+    "difficulty": "medium",
+    "question": "The population of a town increased by 10% in the first year, decreased by 12.5% in the second year, and increased by 8% in the third year. If the current population is 207900, what was the population 3 years ago?",
+    "options": [
+      "A. 180000",
+      "B. 200000",
+      "C. 220000",
+      "D. 250000"
+    ],
+    "answer": "B. 200000",
+    "explanation": "Standard Method: Let the population 3 years ago be P. The changes in population can be expressed as multiplication factors:  10% increase = (1 + 10/100) = 11/10.  12.5% decrease = (1 - 12.5/100) = (1 - 1/8) = 7/8.  8% increase = (1 + 8/100) = (1 + 2/25) = 27/25.  So, P * (11/10) * (7/8) * (27/25) = 207900.  P * (11 * 7 * 27) / (10 * 8 * 25) = 207900.  P * 2079 / 2000 = 207900.  P = 207900 * 2000 / 2079.  P = 100 * 2000 = 200000. \n\n\u26a1 SHORTCUT: Convert percentages to fractions immediately for quicker calculation. 10% = 1/10, 12.5% = 1/8, 8% = 2/25.  So, the multipliers are (1 + 1/10) = 11/10, (1 - 1/8) = 7/8, (1 + 2/25) = 27/25.  Original Population = Current Population / (Product of Multipliers) = 207900 / ((11/10) * (7/8) * (27/25)) = 207900 * (10/11) * (8/7) * (25/27).  Notice that 11 * 7 * 27 = 2079. So, 207900 / (11 * 7 * 27) = 100.  Thus, Original Population = 100 * (10 * 8 * 25) = 100 * 2000 = 200000.",
+    "id": 184
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Mixtures & Alligations",
+    "difficulty": "medium",
+    "question": "Two vessels, A and B, contain mixtures of milk and water in the ratios 4:3 and 2:3 respectively. In what ratio should the contents of A and B be mixed to obtain a new mixture in vessel C containing milk and water in the ratio 1:1?",
+    "options": [
+      "A. 7:5",
+      "B. 5:7",
+      "C. 3:2",
+      "D. 2:3"
+    ],
+    "answer": "A. 7:5",
+    "explanation": "Standard Method: Let x units of mixture from vessel A and y units of mixture from vessel B be mixed. In vessel A, the proportion of milk is 4/7 and water is 3/7. In vessel B, the proportion of milk is 2/5 and water is 3/5. The desired mixture in vessel C has milk and water in a 1:1 ratio, meaning the proportion of milk is 1/2 and water is 1/2.  Total milk in the new mixture = x*(4/7) + y*(2/5). Total water in the new mixture = x*(3/7) + y*(3/5).  Since the ratio of milk to water in the final mixture is 1:1, the amount of milk must equal the amount of water: x*(4/7) + y*(2/5) = x*(3/7) + y*(3/5).  Rearranging terms: (4x/7) - (3x/7) = (3y/5) - (2y/5)  =>  x/7 = y/5.  Therefore, x/y = 7/5. The mixtures should be mixed in the ratio 7:5. \n\n\u26a1 SHORTCUT: Use the Alligation Rule. Consider the fraction of milk in each mixture.  Mixture A (Milk fraction) = 4/7. Mixture B (Milk fraction) = 2/5. Desired Mixture C (Milk fraction) = 1/2.  Draw the alligation diagram:  (4/7)            (2/5)                     \\       /                      (1/2)                     /       \\           (1/2 - 2/5)      (4/7 - 1/2)            (5-4)/10          (8-7)/14             1/10               1/14.  The ratio of quantities A:B is (1/10) : (1/14). To simplify, multiply both by the LCM of 10 and 14 (which is 70): (1/10)*70 : (1/14)*70 = 7 : 5.",
+    "id": 185
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Number Systems",
+    "difficulty": "medium",
+    "question": "The sum of the digits of a two-digit number is 9. If 27 is subtracted from the number, its digits are reversed. Find the number.",
+    "options": [
+      "A. 72",
+      "B. 63",
+      "C. 54",
+      "D. 45"
+    ],
+    "answer": "B. 63",
+    "explanation": "Standard Method: Let the two-digit number be represented as 10t + u, where 't' is the tens digit and 'u' is the units digit.  From the first condition, 'The sum of the digits is 9', we have: t + u = 9 (Equation 1).  From the second condition, 'If 27 is subtracted from the number, its digits are reversed', we have: (10t + u) - 27 = 10u + t.  Rearranging this equation: 10t - t + u - 10u = 27  =>  9t - 9u = 27  =>  t - u = 3 (Equation 2).  Now we solve the system of equations:  1) t + u = 9  2) t - u = 3.  Adding Equation 1 and Equation 2: (t + u) + (t - u) = 9 + 3  =>  2t = 12  =>  t = 6.  Substitute t = 6 into Equation 1: 6 + u = 9  =>  u = 3.  The number is 10*t + u = 10*6 + 3 = 63. \n\n\u26a1 SHORTCUT: Since it's a multiple-choice question, quickly test the options.  A. 72: Sum of digits = 7+2 = 9 (Correct). Subtract 27: 72 - 27 = 45. Digits are not reversed (reversed would be 27). Incorrect.  B. 63: Sum of digits = 6+3 = 9 (Correct). Subtract 27: 63 - 27 = 36. Digits are reversed (original was 63, reversed is 36). Correct. This is the answer.",
+    "id": 186
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Simple & Compound Interest",
+    "difficulty": "medium",
+    "question": "A sum of money amounts to Rs. 13310 in 3 years at 10% per annum compound interest, compounded annually. What is the principal sum?",
+    "options": [
+      "A. Rs. 9000",
+      "B. Rs. 10000",
+      "C. Rs. 11000",
+      "D. Rs. 12000"
+    ],
+    "answer": "B. Rs. 10000",
+    "explanation": "Standard Method: The formula for compound interest is A = P * (1 + R/100)^N, where A is the amount, P is the principal, R is the rate of interest, and N is the number of years.  Given: A = Rs. 13310, R = 10%, N = 3 years. We need to find P.  13310 = P * (1 + 10/100)^3  =>  13310 = P * (110/100)^3  =>  13310 = P * (11/10)^3  =>  13310 = P * (1331/1000).  To find P: P = 13310 * (1000/1331)  =>  P = 10 * 1000 = Rs. 10000. \n\n\u26a1 SHORTCUT: A 10% annual compound interest means the principal increases by a factor of 1.1 each year. For 3 years, the total multiplication factor is (1.1)^3 = 1.1 * 1.1 * 1.1 = 1.21 * 1.1 = 1.331.  So, the Amount = Principal * 1.331.  Given Amount = Rs. 13310.  Principal = Amount / 1.331 = 13310 / 1.331.  Recognizing that 1331 is a cube of 11, the calculation becomes straightforward: 13310 / (1331/1000) = 13310 * 1000 / 1331 = 10 * 1000 = Rs. 10000.",
+    "id": 187
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Probability",
+    "difficulty": "medium",
+    "question": "A bag contains 5 red balls and 3 blue balls. If two balls are drawn at random without replacement, what is the probability that they are of different colors?",
+    "options": [
+      "A. 15/28",
+      "B. 13/28",
+      "C. 5/14",
+      "D. 3/7"
+    ],
+    "answer": "A. 15/28",
+    "explanation": "Standard Method: Total number of balls in the bag = 5 red + 3 blue = 8 balls.  The total number of ways to draw 2 balls from 8 is given by the combination formula C(n, k) = n! / (k! * (n-k)!), so C(8, 2) = (8 * 7) / (2 * 1) = 28.  The number of ways to draw two balls of different colors means drawing 1 red ball AND 1 blue ball.  Number of ways to choose 1 red ball from 5 = C(5, 1) = 5.  Number of ways to choose 1 blue ball from 3 = C(3, 1) = 3.  Number of ways to choose 1 red and 1 blue = C(5, 1) * C(3, 1) = 5 * 3 = 15.  The probability of drawing two balls of different colors = (Favorable outcomes) / (Total outcomes) = 15 / 28. \n\n\u26a1 SHORTCUT: Calculate the probability of the complementary event (drawing two balls of the same color) and subtract from 1.  Probability of drawing 2 red balls = C(5, 2) / C(8, 2) = 10 / 28.  Probability of drawing 2 blue balls = C(3, 2) / C(8, 2) = 3 / 28.  Probability of drawing 2 balls of the same color = P(2 Red) + P(2 Blue) = 10/28 + 3/28 = 13/28.  Probability of drawing two balls of different colors = 1 - P(same color) = 1 - 13/28 = (28 - 13) / 28 = 15/28.",
+    "id": 188
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Pipes & Cisterns",
+    "difficulty": "medium",
+    "question": "Pipe A can fill a tank in 12 hours, and Pipe B can fill it in 15 hours. A third pipe C can empty the tank in 20 hours. If all three pipes are opened together, in how many hours will the tank be full?",
+    "options": [
+      "A. 8 hours",
+      "B. 9 hours",
+      "C. 10 hours",
+      "D. 12 hours"
+    ],
+    "answer": "C. 10 hours",
+    "explanation": "Standard Method: Calculate the work rate (or filling/emptying rate) of each pipe. Pipe A's filling rate = 1/12 of the tank per hour. Pipe B's filling rate = 1/15 of the tank per hour. Pipe C's emptying rate = 1/20 of the tank per hour. When all three pipes are opened together, their combined rate is (1/12) + (1/15) - (1/20). Find a common denominator, which is the LCM of 12, 15, and 20. LCM(12, 15, 20) = 60. Combined rate = (5/60) + (4/60) - (3/60) = (5 + 4 - 3) / 60 = 6/60 = 1/10 of the tank per hour. Therefore, the tank will be full in 1 / (1/10) = 10 hours. \n\n\u26a1 SHORTCUT: Use the unit method. Let the total capacity of the tank be 60 units (LCM of 12, 15, 20). Pipe A fills at 60/12 = 5 units/hour. Pipe B fills at 60/15 = 4 units/hour. Pipe C empties at 60/20 = 3 units/hour. When all three are open, the net filling rate = 5 (A) + 4 (B) - 3 (C) = 6 units/hour. Time to fill the tank = Total capacity / Net filling rate = 60 units / 6 units/hour = 10 hours.",
+    "id": 189
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Time & Work",
+    "difficulty": "medium",
+    "question": "A and B can do a piece of work in 10 days and 15 days respectively. A started the work, and B joined him after 5 days. If they work with 75% of their usual efficiency for the remaining days, in how many days will the entire work be completed?",
+    "options": [
+      "A. 9 days",
+      "B. 8 days",
+      "C. 10 days",
+      "D. 7 days"
+    ],
+    "answer": "A. 9 days",
+    "explanation": "Standard Method:\nLet the total work be the LCM of 10 and 15, which is 30 units.\nEfficiency of A = 30 / 10 = 3 units/day.\nEfficiency of B = 30 / 15 = 2 units/day.\n\nA works alone for the first 5 days: Work done = 5 days * 3 units/day = 15 units.\nRemaining work = 30 - 15 = 15 units.\n\nNow, A and B work together with 75% of their usual efficiency.\nA's new efficiency = 3 * 0.75 = 2.25 units/day.\nB's new efficiency = 2 * 0.75 = 1.5 units/day.\nCombined new efficiency = 2.25 + 1.5 = 3.75 units/day.\n\nTime taken to complete the remaining work = 15 units / 3.75 units/day = 4 days.\nTotal time to complete the entire work = 5 days (A alone) + 4 days (A and B together) = 9 days.\n\n\u26a1 SHORTCUT:\nCalculate daily units for A (3) and B (2). Work done by A in 5 days is 15 units. Remaining work is 15 units.\nFor remaining work, use fractional efficiency: 75% = 3/4.\nA's new rate = 3 * (3/4) = 9/4 units/day.\nB's new rate = 2 * (3/4) = 6/4 = 3/2 units/day.\nCombined new rate = 9/4 + 6/4 = 15/4 units/day.\nTime for remaining work = 15 / (15/4) = 15 * 4 / 15 = 4 days.\nTotal days = 5 + 4 = 9 days.",
+    "id": 190
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Profit & Loss",
+    "difficulty": "medium",
+    "question": "A shopkeeper marks up his goods by 40% above the cost price. He allows a discount of 20% on the marked price. If he also uses a faulty weight that measures 800 grams for 1 kg, what is his approximate net profit percentage?",
+    "options": [
+      "A. 30%",
+      "B. 35%",
+      "C. 40%",
+      "D. 45%"
+    ],
+    "answer": "C. 40%",
+    "explanation": "Standard Method:\nAssume the cost price (CP) for 1000 grams is 'Rs. 100'.\n1.  **Markup:** Marked Price (MP) = CP + 40% of CP = 100 + 40 = Rs. 140.\n2.  **Discount:** Selling Price (SP) after discount = MP - 20% of MP = 140 - (0.20 * 140) = 140 - 28 = Rs. 112.\nThis Rs. 112 is what the shopkeeper charges for 1000 grams of goods.\n3.  **Faulty Weight:** The shopkeeper measures 800 grams but charges for 1000 grams. So, he effectively sells 800 grams for Rs. 112.\n    The actual cost of 800 grams of goods = (800 / 1000) * 100 = Rs. 80.\n4.  **Net Profit:** Effective SP = Rs. 112, Effective CP = Rs. 80.\n    Profit = SP - CP = 112 - 80 = Rs. 32.\n    Profit Percentage = (Profit / Effective CP) * 100 = (32 / 80) * 100 = (2 / 5) * 100 = 40%.\n\n\u26a1 SHORTCUT:\nAssume CP for 1 unit weight (say, 1000g) is 100.\n1.  Price effect: First, a 40% markup, then a 20% discount. Combined price factor = (1 + 0.40) * (1 - 0.20) = 1.4 * 0.8 = 1.12.\n    So, for the quantity he *claims* to sell (1000g), the SP is 100 * 1.12 = 112.\n2.  Weight effect: He sells 800g but claims 1000g. This means he earns Rs. 112 (for 1000g) but spends only for 800g.\n    Cost for actual quantity sold (800g) = 100 * (800/1000) = 80.\n3.  Net profit percentage = ((Effective SP - Effective CP) / Effective CP) * 100 = ((112 - 80) / 80) * 100 = (32 / 80) * 100 = 40%.",
+    "id": 191
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Averages",
+    "difficulty": "medium",
+    "question": "The average age of 30 students and a teacher is 15 years. If the teacher's age is excluded, the average age of the students becomes 14 years. What is the teacher's age?",
+    "options": [
+      "A. 45 years",
+      "B. 44 years",
+      "C. 43 years",
+      "D. 42 years"
+    ],
+    "answer": "A. 45 years",
+    "explanation": "Standard Method:\nInitial total number of people = 30 students + 1 teacher = 31.\nInitial average age = 15 years.\nTotal sum of ages of 31 people = Number of people * Average age = 31 * 15 = 465 years.\n\nWhen the teacher's age is excluded, the number of people (students) = 30.\nNew average age of students = 14 years.\nTotal sum of ages of 30 students = Number of students * Average age = 30 * 14 = 420 years.\n\nTeacher's age = (Total sum of ages of 31 people) - (Total sum of ages of 30 students)\nTeacher's age = 465 - 420 = 45 years.\n\n\u26a1 SHORTCUT:\nThe teacher's age is the initial average plus the 'extra' age contribution to compensate for the decrease in the average of the remaining students.\nTeacher's age = (New average) + (Number of remaining students * (Initial average - New average))\nTeacher's age = 14 + (30 * (15 - 14))\nTeacher's age = 14 + (30 * 1) = 14 + 30 = 44 years.\nWait, this shortcut gives 44. Let's re-verify. The standard shortcut for 'person added/removed' is (New Average) + (Number of people * Change in Average). But it's easier to think of it as: The teacher is 15 years old (the average) plus 'x' years. This 'x' year contribution raises the average of 30 students from 14 to 15.\nTeacher's Age = (Initial average) + (Number of students * (Initial average - New average for students))\nTeacher's Age = 15 + (30 * (15 - 14)) = 15 + 30 = 45 years. This version of the shortcut is correct for this type of problem.",
+    "id": 192
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Permutations & Combinations",
+    "difficulty": "medium",
+    "question": "In how many different ways can the letters of the word 'CORPORATION' be arranged so that all the vowels always come together?",
+    "options": [
+      "A. 50400",
+      "B. 14400",
+      "C. 8400",
+      "D. 24000"
+    ],
+    "answer": "A. 50400",
+    "explanation": "Standard Method:\nThe word is 'CORPORATION'. Total letters = 11.\nVowels: O, O, A, I, O (5 vowels, with 'O' repeated 3 times).\nConsonants: C, R, P, R, T, N (6 consonants, with 'R' repeated 2 times).\n\nStep 1: Treat all vowels as a single block.\nLet the block of vowels be (OOAIO). Now, we need to arrange this block along with the consonants C, R, P, R, T, N.\nThis means we are arranging 7 'items': (OOAIO), C, R, P, R, T, N.\nAmong these 7 items, the consonant 'R' is repeated 2 times.\nNumber of ways to arrange these 7 items = 7! / 2! (for repeated 'R')\n= 5040 / 2 = 2520 ways.\n\nStep 2: Arrange the vowels within their block.\nThe vowels are O, O, A, I, O. There are 5 vowels, with 'O' repeated 3 times.\nNumber of ways to arrange these 5 vowels = 5! / 3! (for repeated 'O')\n= 120 / 6 = 20 ways.\n\nStep 3: Multiply the results from Step 1 and Step 2.\nTotal different arrangements = (Arrangements of blocks and consonants) * (Arrangements of vowels within the block)\n= 2520 * 20 = 50400 ways.\n\n\u26a1 SHORTCUT:\nThe standard method is the most efficient and direct approach for this type of problem. The 'shortcut' is in systematically applying the rules for permutations with repetition and treating the restricted group as a single unit. Quickly identify repeated letters and calculate factorials/divisions.",
+    "id": 193
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Ratios & Proportions",
+    "difficulty": "medium",
+    "question": "A jar contains a mixture of two liquids A and B in the ratio 4:1. When 10 liters of the mixture is taken out and 10 liters of liquid B is poured into the jar, the ratio becomes 2:3. How many liters of liquid A was present in the jar initially?",
+    "options": [
+      "A. 16 liters",
+      "B. 20 liters",
+      "C. 24 liters",
+      "D. 32 liters"
+    ],
+    "answer": "A. 16 liters",
+    "explanation": "Standard Method:\nLet the initial quantity of liquid A be 4x liters and liquid B be x liters.\nTotal initial mixture = 4x + x = 5x liters.\n\nWhen 10 liters of the mixture is taken out:\nAmount of A removed = (4/5) * 10 = 8 liters.\nAmount of B removed = (1/5) * 10 = 2 liters.\n\nRemaining quantity of A = 4x - 8 liters.\nRemaining quantity of B = x - 2 liters.\n\nNow, 10 liters of liquid B is poured into the jar:\nNew quantity of A = 4x - 8 liters.\nNew quantity of B = (x - 2) + 10 = x + 8 liters.\n\nThe new ratio of A to B is 2:3.\nSo, (4x - 8) / (x + 8) = 2/3\nCross-multiply: 3 * (4x - 8) = 2 * (x + 8)\n12x - 24 = 2x + 16\n12x - 2x = 16 + 24\n10x = 40\nx = 4.\n\nInitial quantity of liquid A = 4x = 4 * 4 = 16 liters.\n\n\u26a1 SHORTCUT:\nFocus on the quantity of liquid A, as it is only removed and not added back.\nInitial A = 4x. Total = 5x.\nAfter removing 10L, the remaining mixture is (5x-10)L. The proportion of A remains 4/5.\nQuantity of A remaining = (4/5) * (5x - 10) = 4x - 8.\nAfter adding 10L of B, the total volume of the mixture becomes (5x - 10) + 10 = 5x liters (the total volume is restored).\nIn the final mixture, the ratio A:B is 2:3, so A's proportion is 2/(2+3) = 2/5.\nSo, (Quantity of A in final mixture) / (Total final mixture volume) = 2/5.\n(4x - 8) / (5x) = 2/5\nCross-multiply: 5 * (4x - 8) = 2 * (5x)\n20x - 40 = 10x\n10x = 40\nx = 4.\nInitial liquid A = 4x = 16 liters.",
+    "id": 194
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Number Systems & LCM-HCF",
+    "difficulty": "medium",
+    "question": "What is the least number which when divided by 12, 15, 20, or 54 leaves a remainder of 8 in each case?",
+    "options": [
+      "A. 548",
+      "B. 540",
+      "C. 532",
+      "D. 552"
+    ],
+    "answer": "A. 548",
+    "explanation": "Standard Method:\nLet the required number be N.\nAccording to the problem, when N is divided by 12, 15, 20, or 54, it leaves a remainder of 8.\nThis means that (N - 8) must be exactly divisible by 12, 15, 20, and 54.\nTherefore, (N - 8) is the Least Common Multiple (LCM) of 12, 15, 20, and 54.\n\nFirst, find the prime factorization of each number:\n12 = 2^2 * 3^1\n15 = 3^1 * 5^1\n20 = 2^2 * 5^1\n54 = 2^1 * 3^3\n\nTo find the LCM, take the highest power of all prime factors present:\nLCM(12, 15, 20, 54) = 2^2 * 3^3 * 5^1\n= 4 * 27 * 5\n= 20 * 27\n= 540.\n\nSo, (N - 8) = 540.\nN = 540 + 8 = 548.\n\n\u26a1 SHORTCUT:\nThe 'standard method' for this type of problem is already the most efficient and direct approach. The 'shortcut' is to immediately identify that the number minus the remainder must be the LCM. Performing the prime factorization and LCM calculation quickly is key.",
+    "id": 195
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Percentages",
+    "difficulty": "medium",
+    "question": "The price of an article increased by 20% in the first year, decreased by 25% in the second year, and increased by 10% in the third year. If its current price is 990, what was its price 3 years ago?",
+    "options": [
+      "A. 1000",
+      "B. 1100",
+      "C. 1200",
+      "D. 1300"
+    ],
+    "answer": "A. 1000",
+    "explanation": "Standard Method:\nLet the price of the article 3 years ago be P.\n\nAfter the first year, the price increased by 20%:\nPrice = P * (1 + 20/100) = P * (120/100) = P * 1.2\n\nAfter the second year, the price decreased by 25%:\nPrice = (P * 1.2) * (1 - 25/100) = (P * 1.2) * (75/100) = P * 1.2 * 0.75\n\nAfter the third year, the price increased by 10%:\nPrice = (P * 1.2 * 0.75) * (1 + 10/100) = (P * 1.2 * 0.75) * (110/100) = P * 1.2 * 0.75 * 1.10\n\nGiven that the current price is 990:\nP * 1.2 * 0.75 * 1.10 = 990\nP * (0.9) * 1.10 = 990\nP * 0.99 = 990\nP = 990 / 0.99\nP = 99000 / 99\nP = 1000.\n\n\u26a1 SHORTCUT:\nConvert percentage changes into multiplication factors immediately:\nIncrease by 20% = 120/100 = 6/5.\nDecrease by 25% = 75/100 = 3/4.\nIncrease by 10% = 110/100 = 11/10.\n\nLet the original price be P.\nFinal Price = P * (6/5) * (3/4) * (11/10) = 990\nP * (18/20) * (11/10) = 990\nP * (9/10) * (11/10) = 990\nP * (99/100) = 990\nP = 990 * (100/99)\nP = 10 * 100 = 1000.",
+    "id": 196
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Mensuration",
+    "difficulty": "medium",
+    "question": "A rectangular park is 120 meters long and 90 meters wide. A path of uniform width 3 meters runs around its inside. What is the area of the path?",
+    "options": [
+      "A. 1218 sq m",
+      "B. 1224 sq m",
+      "C. 1236 sq m",
+      "D. 1242 sq m"
+    ],
+    "answer": "B. 1224 sq m",
+    "explanation": "Standard Method:\nDimensions of the outer rectangular park:\nLength (L) = 120 m\nWidth (W) = 90 m\nArea of the outer rectangle (park) = L * W = 120 * 90 = 10800 sq m.\n\nThe path of uniform width 3 meters runs around its *inside*.\nThis means the inner rectangle (the park area excluding the path) will have reduced dimensions.\n\nDimensions of the inner rectangle:\nInner Length (l) = Outer Length - 2 * (path width) = 120 - 2 * 3 = 120 - 6 = 114 m.\nInner Width (w) = Outer Width - 2 * (path width) = 90 - 2 * 3 = 90 - 6 = 84 m.\nArea of the inner rectangle = l * w = 114 * 84 = 9576 sq m.\n\nArea of the path = Area of outer rectangle - Area of inner rectangle\nArea of the path = 10800 - 9576 = 1224 sq m.\n\n\u26a1 SHORTCUT:\nFor a path of uniform width 'w' running *inside* a rectangular area of length 'L' and width 'W', the area of the path can be calculated using the formula:\nArea of Path = 2w * (L + W - 2w)\nWhere w = 3 m, L = 120 m, W = 90 m.\nArea of Path = 2 * 3 * (120 + 90 - 2 * 3)\n= 6 * (210 - 6)\n= 6 * 204\n= 1224 sq m.",
+    "id": 197
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Pipes & Cisterns",
+    "difficulty": "medium",
+    "question": "Two pipes A and B can fill a tank in 12 hours and 15 hours respectively. A third pipe C can empty the tank in 10 hours. If all three pipes are opened together and after 2 hours, pipe C is closed, in how many more hours will the tank be full?",
+    "options": [
+      "A. 6 hours",
+      "B. 7 hours",
+      "C. 8 hours",
+      "D. 9 hours"
+    ],
+    "answer": "A. 6 hours",
+    "explanation": "Standard Method:\nLet the total capacity of the tank be the LCM of 12, 15, and 10. LCM(12, 15, 10) = 60 units.\n\nCalculate the efficiency (rate) of each pipe:\nRate of pipe A (filling) = 60 units / 12 hours = 5 units/hour.\nRate of pipe B (filling) = 60 units / 15 hours = 4 units/hour.\nRate of pipe C (emptying) = 60 units / 10 hours = 6 units/hour.\n\nStep 1: All three pipes A, B, and C are opened together.\nCombined net rate of A, B, and C = (Rate of A) + (Rate of B) - (Rate of C)\n= 5 + 4 - 6 = 3 units/hour (filling).\n\nThey work together for 2 hours:\nWork done in the first 2 hours = 3 units/hour * 2 hours = 6 units.\n\nRemaining capacity to fill = Total capacity - Work done = 60 - 6 = 54 units.\n\nStep 2: After 2 hours, pipe C is closed.\nNow, only pipes A and B are filling the tank.\nCombined net rate of A and B = (Rate of A) + (Rate of B) = 5 + 4 = 9 units/hour.\n\nTime taken to fill the remaining 54 units = Remaining capacity / Combined rate of A and B\n= 54 units / 9 units/hour = 6 hours.\n\nThe tank will be full in 6 more hours.\n\n\u26a1 SHORTCUT:\nQuickly calculate individual rates from LCM: A=5, B=4, C=-6 (as it empties).\nCombined rate for A+B+C = 5+4-6 = 3 units/hour.\nWork in 2 hours = 3 * 2 = 6 units.\nRemaining work = 60 - 6 = 54 units.\nAfter C is closed, combined rate for A+B = 5+4 = 9 units/hour.\nTime needed for remaining work = 54 / 9 = 6 hours.",
+    "id": 198
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Simple & Compound Interest",
+    "difficulty": "medium",
+    "question": "The difference between the compound interest and simple interest on a certain sum at 10% per annum for 2 years is 25. What is the sum?",
+    "options": [
+      "A. 2000",
+      "B. 2500",
+      "C. 3000",
+      "D. 3500"
+    ],
+    "answer": "B. 2500",
+    "explanation": "Standard Method:\nLet the principal sum be P.\nRate of interest (R) = 10% per annum.\nTime (T) = 2 years.\n\nSimple Interest (SI) for 2 years = (P * R * T) / 100\nSI = (P * 10 * 2) / 100 = 20P / 100 = P/5.\n\nCompound Interest (CI) for 2 years = P * [(1 + R/100)^T - 1]\nCI = P * [(1 + 10/100)^2 - 1]\nCI = P * [(11/10)^2 - 1]\nCI = P * [121/100 - 1]\nCI = P * [ (121 - 100) / 100 ]\nCI = P * [21/100] = 21P/100.\n\nGiven that the difference between CI and SI is 25:\nCI - SI = 25\n(21P/100) - (P/5) = 25\n(21P/100) - (20P/100) = 25\n(21P - 20P) / 100 = 25\nP / 100 = 25\nP = 25 * 100 = 2500.\n\n\u26a1 SHORTCUT:\nFor 2 years, the difference between Compound Interest (CI) and Simple Interest (SI) is given by the direct formula:\nDifference = P * (R/100)^2\nWhere P is the principal sum and R is the annual rate of interest.\n\nGiven: Difference = 25, R = 10%.\n25 = P * (10/100)^2\n25 = P * (1/10)^2\n25 = P * (1/100)\nMultiply both sides by 100:\nP = 25 * 100\nP = 2500.",
+    "id": 199
   }
 ]
