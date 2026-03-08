@@ -16,7 +16,7 @@ class MCQRequest(BaseModel):
     count: int = 20
     difficulty: str | None = None
 
-# --- 1. LOCAL DATASET LOGIC (FOR FINAL EXAM) ---
+# --- 1. LOCAL DATASET LOGIC ---
 def load_specific_db(filename):
     """Loads a specific JSON dataset file."""
     path = os.path.join(os.path.dirname(__file__), filename)
@@ -30,7 +30,7 @@ def load_specific_db(filename):
     return []
 
 def get_balanced_sample(module_qs, count=20):
-    """Fetches exactly 20% Easy, 30% Medium, 50% Hard"""
+    """Fetches exactly 20% Easy, 30% Medium, 50% Hard for Final Exam"""
     easy_qs = [q for q in module_qs if q.get('difficulty') == 'easy']
     med_qs = [q for q in module_qs if q.get('difficulty') == 'medium']
     hard_qs = [q for q in module_qs if q.get('difficulty') == 'hard']
@@ -40,20 +40,58 @@ def get_balanced_sample(module_qs, count=20):
     h_count = int(count * 0.50)
     
     test_qs = []
-    # Use random.choices to allow duplicates if your DB is still small
     if easy_qs: test_qs.extend(random.choices(easy_qs, k=e_count))
     if med_qs: test_qs.extend(random.choices(med_qs, k=m_count))
     if hard_qs: test_qs.extend(random.choices(hard_qs, k=h_count))
     
-    # Fill any missing gaps if the math was slightly off
     while len(test_qs) < count and module_qs:
         test_qs.append(random.choice(module_qs))
         
     return test_qs
 
-# --- 2. LIVE AI LOGIC (FOR SINGLE TOPICS) ---
+def normalize_string_for_match(s: str) -> str:
+    """Cleans strings to make topic matching bulletproof (e.g. 'Time, Speed, & Distance' -> 'time speed distance')"""
+    if not s: return ""
+    s = s.lower()
+    s = re.sub(r'[^a-z0-9]', ' ', s) # replace non-alphanumeric with space
+    s = s.replace(" and ", " ")
+    s = re.sub(r'\s+', ' ', s).strip()
+    return s
+
+def get_local_topic_questions(topic: str, count: int, difficulty: str | None = None):
+    """Searches ALL local JSON databases for questions matching the exact topic and difficulty."""
+    quant_qs = load_specific_db("quant_dataset.json")
+    logic_qs = load_specific_db("logical_dataset.json")
+    verb_qs = load_specific_db("verbal_dataset.json")
+    
+    all_qs = quant_qs + logic_qs + verb_qs
+    if not all_qs: return []
+        
+    search_topic = normalize_string_for_match(topic)
+    filtered_qs = []
+    
+    for q in all_qs:
+        q_topic = normalize_string_for_match(q.get("topic", ""))
+        
+        # Match the topic substring (so AI variations like "Time Speed Distance" match the frontend request)
+        if search_topic in q_topic or q_topic in search_topic:
+            
+            # Match difficulty if specified (ignore if user selected 'mixed')
+            if difficulty and difficulty.lower() not in ["mixed", "all", "none"]:
+                if q.get("difficulty", "").lower() == difficulty.lower():
+                    filtered_qs.append(q)
+            else:
+                filtered_qs.append(q)
+                
+    # Return exact amount requested if we have enough
+    if len(filtered_qs) >= count:
+        return random.sample(filtered_qs, count)
+        
+    return filtered_qs # Return whatever we have (even if it's less than requested)
+
+# --- 2. LIVE AI LOGIC ---
 def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> str:
-    difficulty_line = f"Difficulty: {difficulty}." if difficulty else ""
+    difficulty_line = f"Difficulty: {difficulty}." if difficulty and difficulty.lower() != "mixed" else "Ensure a mix of difficulty levels."
     return f"""
     Generate exactly {count} multiple choice questions (MCQs) on the topic: {topic}.
     {difficulty_line}
@@ -71,7 +109,7 @@ def generate_prompt(topic: str, count: int, difficulty: str | None = None) -> st
       {{
         "module": "General",
         "topic": "{topic}",
-        "difficulty": "{difficulty}",
+        "difficulty": "{difficulty or 'medium'}",
         "question": "...",
         "options": ["A. Option 1", "B. Option 2", "C. Option 3", "D. Option 4"],
         "answer": "A. Option 1",
@@ -119,17 +157,18 @@ def validate_mcqs(data, count):
             if matched_ans:
                 cleaned.append({
                     "question": str(question), "options": opts_str, 
-                    "answer": matched_ans, "explanation": str(explanation)
+                    "answer": matched_ans, "explanation": str(explanation),
+                    "topic": q.get("topic", "General"),
+                    "difficulty": q.get("difficulty", "medium")
                 })
     return cleaned[:count]
 
 async def generate_single_topic(topic: str, count: int, difficulty: str, api_key: str = None):
-    if not api_key: return []
+    if not api_key or count <= 0: return []
     client = genai.Client(api_key=api_key)
     prompt = generate_prompt(topic, count, difficulty)
     
     models_to_try = ["gemini-2.5-flash", "gemini-2.5-flash-lite"] 
-    
     for model_name in models_to_try:
         try:
             response = await client.aio.models.generate_content(model=model_name, contents=prompt)
@@ -145,7 +184,7 @@ async def generate_single_topic(topic: str, count: int, difficulty: str, api_key
 @router.post("/mcqs/test")
 async def generate_aptitude_test(req: MCQRequest):
     
-    # HYBRID LOGIC: If Final Test -> Load instantly from the 3 JSON Datasets
+    # 1. FINAL TEST LOGIC (Gets 20 random from ALL datasets)
     if req.topic == "Final Aptitude Test":
         quant_qs = load_specific_db("quant_dataset.json")
         logic_qs = load_specific_db("logical_dataset.json")
@@ -155,8 +194,6 @@ async def generate_aptitude_test(req: MCQRequest):
             raise HTTPException(status_code=500, detail="Databases missing. Run the background Python miners first.")
             
         final_exam = []
-        
-        # Get exactly 20 of each, perfectly balanced with 20% Easy / 30% Medium / 50% Hard
         if quant_qs: final_exam.extend(get_balanced_sample(quant_qs, 20))
         if logic_qs: final_exam.extend(get_balanced_sample(logic_qs, 20))
         if verb_qs: final_exam.extend(get_balanced_sample(verb_qs, 20))
@@ -164,11 +201,25 @@ async def generate_aptitude_test(req: MCQRequest):
         random.shuffle(final_exam)
         return final_exam
 
-    # HYBRID LOGIC: If Single Topic -> Generate Live with AI
-    api_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
-    mcqs = await generate_single_topic(req.topic, req.count, req.difficulty, api_key)
+    # 2. MODULE/TOPIC TEST LOGIC -> Try Local DB FIRST!
+    local_qs = get_local_topic_questions(req.topic, req.count, req.difficulty)
     
-    if not mcqs:
+    # If we found exactly 20 (or however many requested) locally, return them instantly!
+    if len(local_qs) == req.count:
+        random.shuffle(local_qs)
+        return local_qs
+
+    # 3. FALLBACK HYBRID LOGIC -> Not enough Qs locally? Use AI to generate the missing amount.
+    needed_count = req.count - len(local_qs)
+    print(f"⚠️ Found {len(local_qs)}/{req.count} local Qs for '{req.topic}' ({req.difficulty}). Asking AI for {needed_count} more...")
+    
+    api_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
+    ai_qs = await generate_single_topic(req.topic, needed_count, req.difficulty, api_key)
+    
+    final_qs = local_qs + ai_qs
+    
+    if not final_qs:
         raise HTTPException(status_code=500, detail="Failed to generate AI questions. Rate limit may be exceeded.")
     
-    return mcqs
+    random.shuffle(final_qs)
+    return final_qs

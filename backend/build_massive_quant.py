@@ -1,4 +1,4 @@
-# backend/build_quant.py
+# backend/build_massive_quant.py
 import os, json, asyncio, re, ast
 from google import genai
 from dotenv import load_dotenv
@@ -7,9 +7,27 @@ load_dotenv()
 DATASET_PATH = "quant_dataset.json"
 MODULE_NAME = "Quantitative Aptitude"
 
-def generate_prompt(difficulty: str) -> str:
+# 🚀 SPEED UP TWEAKS:
+BATCH_SIZE = 30  # Number of questions to generate per API call
+SLEEP_TIME = 60  # Wait time between calls (lower if your API tier allows)
+
+TARGET_TOPICS = [
+    "Number System",
+    "Percentages",
+    "Profit and Loss",
+    "Time, Speed, and Distance",
+    "Time and Work",
+    "Ratio and Proportion",
+    "Simple and Compound Interest"
+    "Averages",
+    "Mensuration",
+    "Algebra",
+    "Geometry and mensuration"
+]
+
+def generate_prompt(topic: str, difficulty: str) -> str:
     return f"""
-    Generate exactly 10 unique, highly challenging multiple choice questions for the {MODULE_NAME} module.
+    Generate exactly {BATCH_SIZE} unique, highly challenging multiple choice questions for the topic: {topic}.
     Difficulty: {difficulty}. Ensure these are placement-exam standard questions.
     
     CRITICAL INSTRUCTIONS:
@@ -18,18 +36,19 @@ def generate_prompt(difficulty: str) -> str:
     3. 'answer' must EXACTLY MATCH one of the options.
     4. NO LATEX OR BACKSLASHES. Write math as standard text (e.g. pi, x^2).
     5. ONLY USE SINGLE QUOTES (') inside your text. NEVER use double quotes (").
-    6. 'explanation' MUST contain: "Standard Method" and a "⚡ SHORTCUT" trick.
+    6. 'explanation' MUST be formatted with exact headers "*Standard method*:" and "*SHORTCUT Trick*:". 
+    7. In the 'explanation', you MUST insert a newline character (\\n) after EACH full stop (.) so every sentence/step is on a new line.
     
     Format:
     [
       {{
         "module": "{MODULE_NAME}",
-        "topic": "Specific Sub-topic (e.g. Time & Work)",
+        "topic": "{topic}",
         "difficulty": "{difficulty}",
         "question": "...",
         "options": ["A. Opt1", "B. Opt2", "C. Opt3", "D. Opt4"],
         "answer": "A. Opt1",
-        "explanation": "Standard Method: ... \\n\\n⚡ SHORTCUT: ..."
+        "explanation": "*Standard method*:\\nThe formula for circumference is C = 2 * pi * r.\\nGiven r = 7 cm, C = 2 * (22/7) * 7.\\nThe 7 cancels out.\\nC = 44 cm.\\n\\n*SHORTCUT Trick*:\\nMemorize base values for r=7.\\nCircumference is 44 cm.\\nArea is 154 sq cm.\\n"
       }}
     ]
     """
@@ -63,38 +82,38 @@ async def main():
     api_key = os.getenv("GEMINI_API_KEY_QUANT") or os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
     
-    runs = ["easy", "easy", "medium", "medium", "medium", "hard", "hard", "hard", "hard", "hard"]
+    runs = ["easy", "medium", "hard"]
     
-    print(f"🚀 Starting {MODULE_NAME} Miner...")
+    print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:
-        for diff in runs:
-            print(f"Mining 10 {diff} {MODULE_NAME} Qs...")
-            try:
-                res = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=generate_prompt(diff))
-                match = re.search(r'\[\s*\{.*?\}\s*\]', res.text or "", re.DOTALL)
-                if match:
-                    clean_json = match.group(0)
-                    data = []
-                    try: 
-                        # 1. Try standard lenient parsing
-                        data = json.loads(clean_json, strict=False)
-                    except:
-                        try:
-                            # 2. FLATTEN FIX: If the AI pressed "Enter" inside a string, flatten it into one safe line!
-                            flat_json = clean_json.replace('\n', ' ').replace('\r', '')
-                            data = json.loads(flat_json)
+        for topic in TARGET_TOPICS:
+            for diff in runs:
+                print(f"Mining {BATCH_SIZE} {diff} Qs for '{topic}'...")
+                try:
+                    res = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=generate_prompt(topic, diff))
+                    match = re.search(r'\[\s*\{.*?\}\s*\]', res.text or "", re.DOTALL)
+                    if match:
+                        clean_json = match.group(0)
+                        data = []
+                        try: data = json.loads(clean_json, strict=False)
                         except:
                             try:
-                                # 3. Fallback to Python AST evaluator
-                                data = ast.literal_eval(clean_json.replace("true", "True").replace("false", "False"))
+                                flat_json = clean_json.replace('\n', ' ').replace('\r', '')
+                                data = json.loads(flat_json)
                             except:
-                                # 4. If it's completely unreadable, silently skip it without a scary red error!
-                                print("⚠️ AI generated unreadable format. Safely skipping this batch...")
-                                data = []
-                    
-                    valid_qs = [q for q in data if isinstance(q, dict) and len(q.get("options", [])) == 4]
-                    if valid_qs: save_to_dataset(valid_qs)
-            except Exception as e: print(f"⚠️ Error: {e}")
-            await asyncio.sleep(30)
+                                try: data = ast.literal_eval(clean_json.replace("true", "True").replace("false", "False"))
+                                except: pass
+                        
+                        valid_qs = [q for q in data if isinstance(q, dict) and len(q.get("options", [])) == 4]
+                        if valid_qs: 
+                            print(f"✅ Successfully parsed {len(valid_qs)} questions!")
+                            save_to_dataset(valid_qs)
+                        else:
+                            print("⚠️ AI generated response, but no valid questions were found.")
+                except Exception as e: 
+                    print(f"⚠️ Error: {e}")
+                
+                # Sleep briefly to avoid hitting Gemini rate limits (adjust based on your tier)
+                await asyncio.sleep(SLEEP_TIME)
 
 if __name__ == "__main__": asyncio.run(main())

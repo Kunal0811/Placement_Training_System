@@ -1,4 +1,4 @@
-# backend/build_logical.py
+# backend/build_massive_logical.py
 import os, json, asyncio, re, ast
 from google import genai
 from dotenv import load_dotenv
@@ -7,30 +7,46 @@ load_dotenv()
 DATASET_PATH = "logical_dataset.json"
 MODULE_NAME = "Logical Reasoning"
 
-def generate_prompt(difficulty: str) -> str:
+# 🚀 SPEED UP TWEAKS:
+BATCH_SIZE = 20  # Sweet spot for generating valid JSON without errors
+SLEEP_TIME = 60  # Wait time between calls to prevent rate limits
+
+# Logical topics (Make sure these perfectly match what your frontend requests!)
+TARGET_TOPICS = [
+    "Blood Relations",
+    "Coding and Decoding",
+    "Direction Sense",
+    "Series & Patterns",
+    "Clocks and Calendars"
+]
+
+def generate_prompt(topic: str, difficulty: str) -> str:
     return f"""
-    Generate exactly 10 unique, highly challenging multiple choice questions for the {MODULE_NAME} module.
-    Difficulty: {difficulty}. Ensure these are placement-exam standard questions.
+    Generate exactly {BATCH_SIZE} unique, highly challenging multiple choice questions for the topic: {topic}.
+    Difficulty: {difficulty}. Ensure these are placement-exam standard logical reasoning questions.
     
-    CRITICAL INSTRUCTIONS TO PREVENT JSON CRASHES:
+    CRITICAL INSTRUCTIONS:
     1. Return ONLY a valid JSON array.
     2. 'options' must be exactly 4 strings.
     3. 'answer' must EXACTLY MATCH one of the options.
-    4. NEVER USE DOUBLE QUOTES (") ANYWHERE INSIDE YOUR TEXT. If you need to quote variables (like A, B, C), you MUST use single quotes (like 'A', 'B', 'C').
-    5. DO NOT use physical line breaks (Enter key) inside your strings. If you need a newline, write exactly \\n as literal characters.
-    6. KEEP EXPLANATIONS SHORT AND CONCISE (Under 50 words). If you write too much, the JSON will get cut off at the end and crash the system!
-    7. 'explanation' MUST contain: "Standard Method" and a "⚡ SHORTCUT" trick.
+    4. NO LATEX OR BACKSLASHES. Use standard text.
+    5. DIALOGUE RULE: If a person is speaking (very common in Blood Relations), YOU MUST USE SINGLE QUOTES (' '). 
+       ABSOLUTELY NO DOUBLE QUOTES (") ALLOWED INSIDE THE TEXT. Double quotes will break the JSON!
+       Example of Good format: 'He is my brother's son.'
+       Example of Bad format: "He is my brother's son."
+    6. 'explanation' MUST be formatted with exact headers "*Standard method*:" and "*SHORTCUT Trick*:". 
+    7. In the 'explanation', you MUST insert a newline character (\\n) after EACH full stop (.) so every sentence/step is on a new line.
     
     Format:
     [
       {{
         "module": "{MODULE_NAME}",
-        "topic": "Specific Sub-topic (e.g. Blood Relations, Coding Decoding)",
+        "topic": "{topic}",
         "difficulty": "{difficulty}",
-        "question": "If 'A' is the brother of 'B'...",
-        "options": ["A. Opt1", "B. Opt2", "C. Opt3", "D. Opt4"],
-        "answer": "A. Opt1",
-        "explanation": "Standard Method: ... \\n\\n⚡ SHORTCUT: ..."
+        "question": "Pointing to a photograph, a man said, 'I have no brother or sister but that man's father is my father's son.' Whose photograph was it?",
+        "options": ["A. His own", "B. His son's", "C. His father's", "D. His nephew's"],
+        "answer": "B. His son's",
+        "explanation": "*Standard method*:\\nSince the narrator has no brother or sister, 'my father's son' refers to the narrator himself.\\nTherefore, the man in the photograph has the narrator as his father.\\nSo, the photograph is of his son.\\n\\n*SHORTCUT Trick*:\\nBreak it down backwards.\\n'My father's son' = Me (since no siblings).\\n'That man's father' = Me.\\nTherefore, 'That man' = My son.\\n"
       }}
     ]
     """
@@ -58,45 +74,43 @@ def save_to_dataset(new_qs):
             
     with open(DATASET_PATH, "w", encoding="utf-8") as f:
         json.dump(existing, f, indent=2)
-    print(f"📙 LOGICAL DB Updated! Added: {unique_added} | Total: {len(existing)}")
+    print(f"📘 LOGICAL DB Updated! Added: {unique_added} | Total: {len(existing)}")
 
 async def main():
-    api_key = os.getenv("GEMINI_API_KEY_LOGICAL") or os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY_Logical") or os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
     
-    runs = ["easy", "easy", "medium", "medium", "medium", "hard", "hard", "hard", "hard", "hard"]
+    runs = ["easy", "medium", "hard"]
     
-    print(f"🚀 Starting {MODULE_NAME} Miner...")
+    print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:
-        for diff in runs:
-            print(f"Mining 10 {diff} {MODULE_NAME} Qs...")
-            try:
-                res = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=generate_prompt(diff))
-                
-                # Check if Google's API cut off the output because it was too long
-                if res.candidates and res.candidates[0].finish_reason == 2:
-                    print("⚠️ WARNING: AI hit maximum output length and cut off the JSON. Attempting rescue...")
-
-                match = re.search(r'\[\s*\{.*?\}\s*\]', res.text or "", re.DOTALL)
-                if match:
-                    clean_json = match.group(0)
-                    data = []
-                    try: 
-                        data = json.loads(clean_json, strict=False)
-                    except:
-                        try:
-                            flat_json = clean_json.replace('\n', ' ').replace('\r', '')
-                            data = json.loads(flat_json)
+        for topic in TARGET_TOPICS:
+            for diff in runs:
+                print(f"Mining {BATCH_SIZE} {diff} Qs for '{topic}'...")
+                try:
+                    res = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=generate_prompt(topic, diff))
+                    match = re.search(r'\[\s*\{.*?\}\s*\]', res.text or "", re.DOTALL)
+                    if match:
+                        clean_json = match.group(0)
+                        data = []
+                        try: data = json.loads(clean_json, strict=False)
                         except:
                             try:
-                                data = ast.literal_eval(clean_json.replace("true", "True").replace("false", "False"))
-                            except Exception as final_err:
-                                print(f"⚠️ AI generated corrupted JSON. Safely skipping. Error: {final_err}")
-                                data = []
-                    
-                    valid_qs = [q for q in data if isinstance(q, dict) and len(q.get("options", [])) == 4]
-                    if valid_qs: save_to_dataset(valid_qs)
-            except Exception as e: print(f"⚠️ Error: {e}")
-            await asyncio.sleep(60)
+                                flat_json = clean_json.replace('\n', ' ').replace('\r', '')
+                                data = json.loads(flat_json)
+                            except:
+                                try: data = ast.literal_eval(clean_json.replace("true", "True").replace("false", "False"))
+                                except: pass
+                        
+                        valid_qs = [q for q in data if isinstance(q, dict) and len(q.get("options", [])) == 4]
+                        if valid_qs: 
+                            print(f"✅ Successfully parsed {len(valid_qs)} questions!")
+                            save_to_dataset(valid_qs)
+                        else:
+                            print("⚠️ AI generated response, but no valid questions were found.")
+                except Exception as e: 
+                    print(f"⚠️ Error: {e}")
+                
+                await asyncio.sleep(SLEEP_TIME)
 
 if __name__ == "__main__": asyncio.run(main())

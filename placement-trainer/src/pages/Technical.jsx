@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { 
   FiArrowRight, FiTerminal, FiCode, FiCoffee, 
-  FiDatabase, FiServer, FiCpu, FiGlobe, FiGitBranch, FiS
+  FiDatabase, FiServer, FiCpu, FiGlobe, FiGitBranch
 } from "react-icons/fi";
 
 const technicalModules = [
@@ -30,7 +30,7 @@ const technicalModules = [
   { 
     name: "Python", 
     path: "python", 
-    icon: <FiSnake size={28} />, 
+    icon: <FiCode size={28} />, 
     color: "from-yellow-400 to-green-500",
     bgImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" 
   },
