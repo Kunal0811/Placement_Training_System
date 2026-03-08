@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import MarkdownViewer from "../../../components/MarkdownViewer";
 
 // IMPORTANT: Import the markdown file as a raw URL path
-import TDS from "../../../content/TSDNotes.md?url"; 
+import TSD from "../../../content/TSDNotes.md?url"; 
 
-export default function TDSNotes() {
+export default function TSDNotes() {
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ export default function TDSNotes() {
             <h1 className="text-2xl font-bold text-white">Time, Speed & Distance Deep Dive</h1>
           </div>
           <button 
-            onClick={() => navigate('/aptitude/modes/TDS')}
+            onClick={() => navigate('/aptitude/modes/Time-Speed-Distance')}
             className="px-6 py-2 bg-neon-pink text-white font-black rounded-xl hover:scale-105 transition-transform uppercase tracking-widest shadow-[0_0_20px_rgba(244,114,182,0.4)]"
           >
             Take Test
@@ -31,7 +31,7 @@ export default function TDSNotes() {
       {/* Deep Markdown Content Rendered Here */}
       <div className="max-w-5xl mx-auto px-6 mt-12">
         <div className="glass-panel p-8 md:p-12 rounded-3xl bg-black/40 border border-white/10">
-            <MarkdownViewer filePath={TDS} />
+            <MarkdownViewer filePath={TSD} />
         </div>
       </div>
     </div>

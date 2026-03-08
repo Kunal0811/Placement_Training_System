@@ -1,6 +1,10 @@
+// src/components/MarkdownViewer.jsx
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';          // <-- NEW: Understands $math$ syntax
+import rehypeKatex from 'rehype-katex';        // <-- NEW: Renders the math beautifully
+import 'katex/dist/katex.min.css';             // <-- NEW: CSS required for math symbols
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -9,7 +13,6 @@ export default function MarkdownViewer({ filePath }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the raw text of the markdown file
     fetch(filePath)
       .then((res) => res.text())
       .then((text) => {
@@ -30,7 +33,8 @@ export default function MarkdownViewer({ filePath }) {
   return (
     <div className="prose prose-invert prose-lg max-w-none">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]} // <-- Added remarkMath here
+        rehypePlugins={[rehypeKatex]}           // <-- Added rehypeKatex here
         components={{
           // Custom styling for code blocks
           code({ node, inline, className, children, ...props }) {

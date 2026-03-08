@@ -11,9 +11,9 @@ const Sidebar = ({ isOpen }) => {
     { title: "Home", path: "/", icon: "🏠", reqLevel: 1 },
     { title: "Resume AI", path: "/resume-analyzer", icon: "📄", reqLevel: 1 },
     { title: "Aptitude Hub", path: "/aptitude", icon: "📖", reqLevel: 1 },
-    { title: "Technical Hub", path: "/technical", icon: "💻", reqLevel: 2 },
-    { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 4 },
-    { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 4 },
+    { title: "Technical Hub", path: "/technical", icon: "💻", reqLevel: 1 },
+    { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 1 },
+    { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 1 },
   ];
 
   return (

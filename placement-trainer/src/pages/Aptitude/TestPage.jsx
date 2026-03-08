@@ -7,6 +7,88 @@ import API_BASE from "../../api";
 import { FiX, FiChevronRight, FiChevronLeft, FiCheckCircle, FiGrid, FiShield, FiAlertTriangle, FiClock, FiBookmark, FiRefreshCcw, FiDownload, FiHome } from "react-icons/fi";
 import html2pdf from "html2pdf.js";
 
+// --- NEW HELPER COMPONENTS FOR SORTED EXPLANATIONS ---
+
+const ExplanationDisplay = ({ explanation }) => {
+  const [showShortcut, setShowShortcut] = useState(false);
+  
+  if (!explanation) return <p>No explanation provided.</p>;
+
+  // Regex to split standard method from the shortcut, handles different dataset variations
+  const splitRegex = /(?:\n|^)\s*(?:⚡\s*SHORTCUT:|\*SHORTCUT Trick\*:|\*?SHORTCUT\*?:)/i;
+  const parts = explanation.split(splitRegex);
+
+  if (parts.length >= 2) {
+    const standard = parts[0].replace(/\*Standard method\*:/i, '').replace(/Standard Method:/i, '').trim();
+    const shortcut = parts.slice(1).join('\n').trim();
+
+    return (
+      <div className="space-y-4">
+        <div>
+          <strong className="text-neon-blue font-bold block mb-2 text-base">📚 Standard Method:</strong>
+          <p className="whitespace-pre-wrap leading-relaxed">{standard}</p>
+        </div>
+        
+        <button 
+          onClick={() => setShowShortcut(!showShortcut)}
+          className="px-4 py-2 bg-neon-purple/20 text-neon-purple border border-neon-purple/50 rounded-lg text-sm font-bold uppercase tracking-widest hover:bg-neon-purple/30 transition-colors"
+        >
+          {showShortcut ? "Hide ⚡ Shortcut Trick" : "Show ⚡ Shortcut Trick"}
+        </button>
+
+        {showShortcut && (
+          <div className="shortcut-box bg-neon-purple/10 p-4 rounded-xl border border-neon-purple/50 animate-fade-in mt-2">
+            <strong className="text-neon-purple font-bold block mb-2 text-base">⚡ Shortcut Trick:</strong>
+            <p className="whitespace-pre-wrap leading-relaxed">{shortcut}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Fallback if no shortcut tag is found
+  return (
+    <div>
+      <span className="font-bold text-neon-blue block mb-2 text-base">Explanation:</span>
+      <p className="whitespace-pre-wrap leading-relaxed">{explanation}</p>
+    </div>
+  );
+};
+
+const PDFExplanationDisplay = ({ explanation }) => {
+  if (!explanation) return <p>No explanation provided.</p>;
+
+  const splitRegex = /(?:\n|^)\s*(?:⚡\s*SHORTCUT:|\*SHORTCUT Trick\*:|\*?SHORTCUT\*?:)/i;
+  const parts = explanation.split(splitRegex);
+
+  if (parts.length >= 2) {
+    const standard = parts[0].replace(/\*Standard method\*:/i, '').replace(/Standard Method:/i, '').trim();
+    const shortcut = parts.slice(1).join('\n').trim();
+
+    return (
+      <div className="space-y-4">
+        <div>
+          <strong className="text-blue-700 block mb-1 uppercase text-xs tracking-widest">📚 Standard Method:</strong>
+          <p className="whitespace-pre-wrap text-sm text-gray-800">{standard}</p>
+        </div>
+        <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+          <strong className="text-purple-700 block mb-1 uppercase text-xs tracking-widest">⚡ Shortcut Trick:</strong>
+          <p className="whitespace-pre-wrap text-sm text-gray-800">{shortcut}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <strong className="text-blue-700 block mb-1 uppercase text-xs tracking-widest">Explanation:</strong>
+      <p className="whitespace-pre-wrap text-sm text-gray-800">{explanation}</p>
+    </div>
+  );
+};
+
+// --- MAIN EXAM COMPONENT ---
+
 export default function TestPage() {
   const { topic, mode } = useParams();
   const decodedTopic = decodeURIComponent(topic);
@@ -198,24 +280,18 @@ export default function TestPage() {
     }
   };
 
-  // --- NEW: PDF GENERATION LOGIC ---
   const handleDownloadPDF = () => {
     setIsDownloading(true);
     
-    // Target the specific HIDDEN clean document div
     const element = document.getElementById("clean-pdf-report");
-    
-    // Dynamic Naming: StudentName_Topic_Mode.pdf
     const safeName = `${user?.fname || 'Student'}_${user?.lname || ''}`.trim().replace(/\s+/g, '_');
     const safeTopic = decodedTopic.replace(/\s+/g, '_');
     const filename = `${safeName}_${safeTopic}_${mode.toUpperCase()}.pdf`;
 
     const opt = {
-        // FIX 1: Margin set to 0. We use CSS padding inside the hidden div instead!
         margin:       0, 
         filename:     filename,
         image:        { type: 'jpeg', quality: 1 }, 
-        // FIX 2: Removed forced windowWidth which was causing the slice effect
         html2canvas:  { scale: 2, useCORS: true, logging: false }, 
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
@@ -322,9 +398,8 @@ export default function TestPage() {
                                     </div>
                                     <div className="pl-12 mt-4">
                                         {isSkipped && <div className="text-gray-400 font-bold text-sm mb-3 uppercase tracking-widest border border-gray-600/30 bg-gray-600/10 inline-block px-3 py-1 rounded-md">Not Attempted</div>}
-                                        <div className="bg-neon-blue/5 border border-neon-blue/20 rounded-xl p-4 text-sm text-blue-100 whitespace-pre-wrap leading-relaxed">
-                                            <span className="font-bold text-neon-blue block mb-2 text-base">Explanation & Shortcuts:</span>
-                                            {q.explanation || "No explanation provided."}
+                                        <div className="bg-neon-blue/5 border border-neon-blue/20 rounded-xl p-4 text-sm text-blue-100">
+                                            <ExplanationDisplay explanation={q.explanation} />
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +415,6 @@ export default function TestPage() {
           {/* ========================================================================= */}
           <div className="absolute top-0 left-0 w-full h-0 overflow-hidden opacity-0 pointer-events-none z-[-999]">
               
-              {/* FIX 3: Strict A4 width (794px) + inner padding (px-12 py-10) + break-words */}
               <div id="clean-pdf-report" className="w-[794px] bg-white text-black px-12 py-10 font-sans mx-auto break-words">
                   
                   {/* PDF Header */}
@@ -405,10 +479,8 @@ export default function TestPage() {
                                       
                                       <div className="pl-8">
                                           {isSkipped && <div className="text-gray-500 font-bold text-xs mb-2 uppercase tracking-widest border border-gray-300 bg-gray-100 inline-block px-2 py-1 rounded">Not Attempted</div>}
-                                          {/* FIX 4: break-words class forces math equations to wrap safely instead of bleeding off the page! */}
-                                          <div className="bg-blue-50/50 border-l-4 border-blue-400 p-4 rounded-r-lg text-sm text-gray-800 whitespace-pre-wrap break-words">
-                                              <span className="font-bold text-blue-700 block mb-1 uppercase text-xs tracking-widest">Explanation & Shortcuts:</span>
-                                              {q.explanation || "No explanation provided."}
+                                          <div className="bg-blue-50/50 border-l-4 border-blue-400 p-4 rounded-r-lg text-sm text-gray-800 break-words mt-3">
+                                              <PDFExplanationDisplay explanation={q.explanation} />
                                           </div>
                                       </div>
                                   </div>

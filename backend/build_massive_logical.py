@@ -97,6 +97,6 @@ async def main():
                     valid_qs = [q for q in data if isinstance(q, dict) and len(q.get("options", [])) == 4]
                     if valid_qs: save_to_dataset(valid_qs)
             except Exception as e: print(f"⚠️ Error: {e}")
-            await asyncio.sleep(15)
+            await asyncio.sleep(60)
 
 if __name__ == "__main__": asyncio.run(main())
