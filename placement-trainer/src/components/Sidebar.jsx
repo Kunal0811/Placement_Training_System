@@ -1,76 +1,124 @@
 import { NavLink } from "react-router-dom";
-import { FiHome, FiBookOpen, FiCpu, FiCode, FiUserCheck, FiUsers, FiAward, FiFileText, FiLock } from "react-icons/fi";
+import { 
+  FiHome, FiFileText, FiBookOpen, FiCpu, 
+  FiUserCheck, FiUsers, FiLock, FiChevronRight 
+} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import { motion } from "framer-motion"; // Ensure you ran 'npm install framer-motion'
 
 const Sidebar = ({ isOpen }) => {
   const { stats } = useAuth();
   const level = stats?.level || 1;
 
-  // Define modules and their required levels
   const MENUS = [
-    { title: "Home", path: "/", icon: "🏠", reqLevel: 1 },
-    { title: "Resume AI", path: "/resume-analyzer", icon: "📄", reqLevel: 1 },
-    { title: "Aptitude Hub", path: "/aptitude", icon: "📖", reqLevel: 1 },
-    { title: "Technical Hub", path: "/technical", icon: "💻", reqLevel: 2 },
-    { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 4 },
-    { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 4 },
+    { title: "Home", path: "/", icon: <FiHome />, reqLevel: 1 },
+    { title: "Resume AI", path: "/resume-analyzer", icon: <FiFileText />, reqLevel: 1 },
+    { title: "Aptitude Hub", path: "/aptitude", icon: <FiBookOpen />, reqLevel: 1 },
+    { title: "Technical Hub", path: "/technical", icon: <FiCpu />, reqLevel: 1 },
+    { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 1 },
+    { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 1 },
   ];
+
+  const sidebarBg = "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1000&auto=format&fit=crop";
 
   return (
     <div
-      className={`h-[calc(100vh-2rem)] fixed left-2 top-4 transition-all duration-300 z-40
-        ${isOpen ? "w-64" : "w-0 opacity-0 overflow-hidden"}`}
+      className={`h-[calc(100vh-2rem)] fixed left-2 top-4 transition-all duration-500 z-40 
+        ${isOpen ? "w-64" : "w-0 opacity-0 pointer-events-none"}`}
     >
-      <div className="glass-panel h-full rounded-2xl p-4 flex flex-col border border-white/10">
-        
-        <div className="mb-0 px-4">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Main Menu</p>
+      <div 
+        className="h-full rounded-[2rem] flex flex-col shadow-2xl border border-white/10 relative overflow-hidden bg-slate-950"
+        style={{ 
+          backgroundImage: `url(${sidebarBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] -z-0" />
+
+        <div className="relative z-10 flex flex-col h-full p-4">
           
-        
-        {MENUS.map((menu, index) => {
-          const isLocked = level < menu.reqLevel;
+          <div className="mb-8 px-4 mt-6">
+            {/* Fixed the font size here from 20px to 10px to fit the tracking */}
+            <p className="text-[10px] font-black text-blue-400/80 uppercase tracking-[0.4em]">
+              Learning Path
+            </p>
+          </div>
 
-          return (
-            <NavLink
-              key={index}
-              to={isLocked ? "#" : menu.path} // Prevent navigation if locked
-              className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${
-                  isLocked 
-                    ? "opacity-50 cursor-not-allowed bg-transparent hover:bg-red-500/10" 
-                    : isActive 
-                        ? "bg-neon-blue text-black font-bold shadow-[0_0_20px_rgba(45,212,191,0.3)]" 
-                        : "text-gray-400 hover:bg-white/10 hover:text-white"
-                }`
-              }
-            >
-              <div className={`text-xl ${isLocked ? "text-gray-600" : ""}`}>
-                 {isLocked ? <FiLock /> : menu.icon}
-              </div>
-              
-              {isOpen && (
-                <span className={`whitespace-nowrap ${isLocked && "text-gray-500 line-through decoration-gray-700"}`}>
-                  {menu.title}
-                </span>
-              )}
+          <nav className="flex-1 space-y-2 px-2">
+            {MENUS.map((menu, index) => {
+              const isLocked = level < menu.reqLevel;
 
-              {isOpen && isLocked && (
-                 <span className="absolute right-4 text-[10px] font-black bg-gray-800 text-gray-400 px-2 py-1 rounded-md">
-                     LVL {menu.reqLevel}
-                 </span>
-              )}
+              return (
+                <NavLink
+                  key={index}
+                  to={isLocked ? "#" : menu.path}
+                  className={({ isActive }) =>
+                    `group relative flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 ${
+                      isLocked 
+                        ? "opacity-40 cursor-not-allowed" 
+                        : isActive 
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
+                          : "text-slate-300 hover:bg-white/10 hover:text-white"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      {/* Using motion.div for the active indicator */}
+                      {isActive && !isLocked && (
+                        <motion.div 
+                          layoutId="activeTabSidebar"
+                          className="absolute left-0 w-1 h-6 bg-white rounded-r-full"
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
 
-              {/* Tooltip for collapsed mode */}
-              {!isOpen && (
-                <div className="absolute left-full ml-4 px-3 py-1.5 bg-black text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 border border-white/10 shadow-xl">
-                  {menu.title} {isLocked && `(Lvl ${menu.reqLevel})`}
-                </div>
-              )}
-            </NavLink>
-          );
-        })}
+                      <div className={`text-xl transition-transform duration-300 group-hover:scale-110 ${isLocked ? "text-slate-500" : ""}`}>
+                        {isLocked ? <FiLock /> : menu.icon}
+                      </div>
+                      
+                      <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-colors duration-300 ${
+                        isLocked ? "text-slate-500" : ""
+                      }`}>
+                        {menu.title}
+                      </span>
+
+                      {isLocked && (
+                        <div className="ml-auto bg-slate-900/80 text-blue-400 text-[9px] font-black px-2 py-0.5 rounded-md border border-white/5">
+                          LVL {menu.reqLevel}
+                        </div>
+                      )}
+
+                      {!isLocked && (
+                        <FiChevronRight className={`ml-auto opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 ${isActive ? "hidden" : "block"}`} />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
+
+          <div className="mt-auto p-5 bg-black/40 backdrop-blur-md rounded-3xl border border-white/5">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Rank</span>
+              <span className="text-xs font-black text-blue-400">LVL {level}</span>
+            </div>
+            <div className="w-full h-1.5 bg-slate-800/50 rounded-full overflow-hidden">
+              {/* Using motion.div for the rank progress bar */}
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${(level / 5) * 100}%` }}
+                className="h-full bg-gradient-to-r from-blue-600 to-indigo-400 shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+              />
+            </div>
+            <p className="mt-3 text-[9px] text-center text-slate-500 font-bold uppercase italic">
+              Solve more to unlock higher ranks
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

@@ -18,7 +18,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload } from "react-icons/fi";
+import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload, FiBriefcase } from "react-icons/fi";
 
 // --- CONSTANTS ---
 const APTITUDE_TOPICS = [
@@ -35,15 +35,16 @@ const TECHNICAL_TOPICS = [
 
 // --- COMPONENTS ---
 
+// Upgraded Light Theme Tooltip
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-black/90 backdrop-blur-xl p-4 border border-white/20 rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.2)] z-50">
-        <p className="text-gray-400 font-bold mb-2 text-xs uppercase tracking-widest border-b border-white/10 pb-1">{label}</p>
+      <div className="bg-white/95 backdrop-blur-md p-4 border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] z-50">
+        <p className="text-gray-500 font-bold mb-3 text-xs uppercase tracking-widest border-b border-gray-100 pb-2">{label}</p>
         {payload.map((p, i) => (
-          <div key={i} className="flex items-center gap-3 mb-1">
-            <div className="w-2 h-2 rounded-full shadow-[0_0_8px]" style={{ backgroundColor: p.color, boxShadow: `0 0 8px ${p.color}` }} />
-            <span className="text-sm font-medium text-gray-200">{p.name}: <span className="font-bold text-lg" style={{ color: p.color }}>{p.value}</span></span>
+          <div key={i} className="flex items-center gap-3 mb-1.5">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color, boxShadow: `0 0 8px ${p.color}80` }} />
+            <span className="text-sm font-medium text-slate-600">{p.name}: <span className="font-bold text-lg text-slate-900">{p.value}</span></span>
           </div>
         ))}
       </div>
@@ -52,19 +53,19 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+// Upgraded Light Theme Stat Card
 const StatCard = ({ title, value, icon, gradient, glowColor }) => (
-  <div className="relative overflow-hidden p-6 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl">
-    {/* Background Glow */}
-    <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity ${glowColor}`} />
+  <div className="relative overflow-hidden p-6 rounded-[2rem] bg-white/70 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group hover:-translate-y-1">
+    <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[50px] opacity-10 group-hover:opacity-20 transition-opacity ${glowColor}`} />
     
     <div className="flex items-start justify-between relative z-10">
         <div>
-            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
-            <h3 className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
+            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
+            <h3 className="text-4xl font-black text-slate-800 tracking-tight drop-shadow-sm">
                 {value}
             </h3>
         </div>
-        <div className={`p-3 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+        <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg shadow-${glowColor}/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
             <div className="text-white text-xl">{icon}</div>
         </div>
     </div>
@@ -175,9 +176,9 @@ export default function Dashboard() {
 
     return {
       bar: [
-        { difficulty: 'Easy', solved: solvedByDifficulty.easy, fill: '#4ade80' },
-        { difficulty: 'Medium', solved: solvedByDifficulty.medium, fill: '#60a5fa' },
-        { difficulty: 'Hard', solved: solvedByDifficulty.hard, fill: '#f472b6' },
+        { difficulty: 'Easy', solved: solvedByDifficulty.easy, fill: '#10b981' }, // emerald-500
+        { difficulty: 'Medium', solved: solvedByDifficulty.medium, fill: '#3b82f6' }, // blue-500
+        { difficulty: 'Hard', solved: solvedByDifficulty.hard, fill: '#8b5cf6' }, // violet-500
       ],
       line: solvedAttempts.map((attempt, i) => ({
         date: new Date(attempt.created_at).toLocaleDateString(),
@@ -220,39 +221,47 @@ export default function Dashboard() {
     else if (selectedView === 'interview') { items = interviewAttempts; headers = ['Job Role', 'Type', 'Score', 'Date']; }
     else { items = filteredTests; headers = ['Topic', 'Mode', 'Score', 'Date']; }
 
-    if (items.length === 0) return <div className="p-12 text-center text-gray-500 font-mono text-sm border-t border-white/5">No data logs found. Start grinding! 🚀</div>;
+    if (items.length === 0) return <div className="p-12 text-center text-slate-400 font-mono text-sm">No data logs found. Start grinding! 🚀</div>;
 
     return (
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white/5 text-gray-400 text-xs uppercase tracking-wider border-b border-white/10">
-              {headers.map(h => <th key={h} className="p-4 font-semibold">{h}</th>)}
+            <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-gray-100">
+              {headers.map(h => <th key={h} className="p-4 font-bold">{h}</th>)}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5 text-sm text-gray-300">
+          <tbody className="divide-y divide-gray-50 text-sm text-slate-700 bg-white/40">
             {items.slice().reverse().map((item, index) => (
-              <tr key={index} className="hover:bg-white/5 transition-colors group">
+              <tr key={index} className="hover:bg-white transition-colors group">
                 {selectedView === 'interview' ? (
                   <>
-                    <td className="p-4 font-bold text-blue-400 group-hover:text-blue-300 transition-colors">{item.job_role}</td>
-                    <td className="p-4 text-xs opacity-70">{item.interview_type}</td>
-                    <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 7 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/10</span></td>
+                    <td className="p-4 font-bold text-blue-600">{item.job_role}</td>
+                    <td className="p-4 text-xs font-medium text-slate-500">{item.interview_type}</td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${item.overall_score >= 7 ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}`}>
+                        {item.overall_score}/10
+                      </span>
+                    </td>
                   </>
                 ) : selectedView === 'coding' ? (
                   <>
-                    <td className="p-4 font-medium text-white">{item.problem_title}</td>
-                    <td className="p-4"><span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded border ${item.difficulty === 'easy' ? 'border-green-500/50 text-green-400' : item.difficulty === 'medium' ? 'border-blue-500/50 text-blue-400' : 'border-pink-500/50 text-pink-400'}`}>{item.difficulty}</span></td>
-                    <td className="p-4">{item.is_correct ? <span className="text-green-400 flex items-center gap-1"><FiCheckCircle/> Solved</span> : <span className="text-red-400">Failed</span>}</td>
+                    <td className="p-4 font-bold text-slate-800">{item.problem_title}</td>
+                    <td className="p-4">
+                      <span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded border ${item.difficulty === 'easy' ? 'border-emerald-200 text-emerald-600 bg-emerald-50' : item.difficulty === 'medium' ? 'border-blue-200 text-blue-600 bg-blue-50' : 'border-purple-200 text-purple-600 bg-purple-50'}`}>
+                        {item.difficulty}
+                      </span>
+                    </td>
+                    <td className="p-4">{item.is_correct ? <span className="text-emerald-600 font-bold flex items-center gap-1.5"><FiCheckCircle/> Solved</span> : <span className="text-red-500 font-medium">Failed</span>}</td>
                   </>
                 ) : (
                   <>
-                    <td className="p-4 font-medium">{item.topic}</td>
-                    <td className="p-4 capitalize text-xs opacity-70">{item.mode || 'Standard'}</td>
-                    <td className="p-4 font-bold font-mono">{item.score}/{item.total}</td>
+                    <td className="p-4 font-bold text-slate-800">{item.topic}</td>
+                    <td className="p-4 capitalize text-xs font-medium text-slate-500">{item.mode || 'Standard'}</td>
+                    <td className="p-4 font-bold font-mono text-blue-600">{item.score}/{item.total}</td>
                   </>
                 )}
-                <td className="p-4 opacity-50 text-xs font-mono">{item.created_at ? new Date(item.created_at).toLocaleDateString() : "-"}</td>
+                <td className="p-4 text-slate-400 text-xs font-mono">{item.created_at ? new Date(item.created_at).toLocaleDateString() : "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -262,87 +271,93 @@ export default function Dashboard() {
   };
 
   if (loading) return (
-    <div className="flex min-h-screen items-center justify-center bg-game-bg text-white">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <div className="flex flex-col items-center gap-6">
-        <div className="w-12 h-12 border-4 border-neon-blue border-t-transparent rounded-full animate-spin"></div>
-        <p className="font-bold tracking-widest animate-pulse text-neon-blue">LOADING...</p>
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="font-bold tracking-widest animate-pulse text-blue-500">LOADING DASHBOARD...</p>
       </div>
     </div>
   );
   
   return (
-    <div className="min-h-screen bg-game-bg text-white p-6 md:p-12 font-sans">
-      <div className="max-w-7xl mx-auto space-y-12">
+    // MAIN WRAPPER: Added Fixed Background Image
+    <div 
+      className="min-h-screen bg-fixed bg-cover bg-center font-sans text-slate-900 relative"
+      style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2000&auto=format&fit=crop")' }}
+    >
+      {/* Light overlay to ensure text is readable over the image */}
+      <div className="absolute inset-0 bg-sky-50/80 backdrop-blur-sm -z-10"></div>
+
+      <div className="p-6 md:p-12 max-w-7xl mx-auto space-y-12 relative z-10">
         
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-8">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-200/60 pb-8">
             <div>
-                <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-2 tracking-tight">
+                <h1 className="text-5xl md:text-6xl font-display font-extrabold text-slate-800 mb-2 tracking-tight">
                     DASHBOARD
                 </h1>
-                <p className="text-gray-400 text-sm">Welcome back, <span className="text-neon-blue font-bold">{user?.fname}</span>. Let's crush some goals.</p>
+                <p className="text-slate-500 text-sm font-medium">Welcome back, <span className="text-blue-600 font-bold">{user?.fname}</span>. Here is your performance breakdown.</p>
             </div>
             
             <button 
                 onClick={() => navigate('/leaderboard')}
-                className="group relative inline-flex items-center gap-3 px-6 py-3 bg-neon-yellow/10 border border-neon-yellow/40 rounded-xl text-neon-yellow font-bold uppercase tracking-widest hover:bg-neon-yellow hover:text-black transition-all duration-300 overflow-hidden"
+                className="group relative inline-flex items-center gap-3 px-6 py-3 bg-white border border-gray-200 rounded-xl text-slate-700 font-bold uppercase tracking-widest hover:border-blue-500 hover:text-blue-600 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
             >
-                <FiAward size={20} />
+                <FiAward size={20} className="text-amber-500" />
                 <span>Hall of Fame</span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </button>
         </div>
 
         {/* 1. STATS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-cyan-500 to-blue-500" glowColor="bg-cyan-500" />
-          <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-emerald-400 to-green-600" glowColor="bg-emerald-500" />
-          <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-purple-500 to-pink-500" glowColor="bg-purple-500" />
-          <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-red-500" glowColor="bg-orange-500" />
+          <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-blue-500 to-sky-400" glowColor="bg-blue-500" />
+          <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-emerald-400 to-teal-500" glowColor="bg-emerald-500" />
+          <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-violet-500 to-purple-500" glowColor="bg-violet-500" />
+          <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-amber-500" glowColor="bg-orange-500" />
         </div>
 
         {/* 2. PROFILE & MAIN CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* PROFILE CARD */}
-            <div className="lg:col-span-1 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-white/10 flex flex-col items-center text-center relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-neon-blue/20 to-transparent opacity-50" />
+            <div className="lg:col-span-1 bg-white/70 backdrop-blur-xl p-8 rounded-[2rem] border border-white shadow-xl flex flex-col items-center text-center relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-100 to-transparent opacity-50" />
                 
                 <div className="relative w-40 h-40 mb-6 group-hover:scale-105 transition-transform duration-500">
                     {/* Ring Animation */}
-                    <div className="absolute inset-0 border-2 border-dashed border-neon-blue/50 rounded-full animate-spin-slow"></div>
+                    <div className="absolute inset-0 border-2 border-dashed border-blue-300 rounded-full animate-spin-slow"></div>
                     
-                    <div className="w-full h-full rounded-full p-2 bg-black/50 relative z-10">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-gray-800 relative z-10 border-2 border-white/10">
+                    <div className="w-full h-full rounded-full p-2 bg-white relative z-10 shadow-sm">
+                        <div className="w-full h-full rounded-full overflow-hidden bg-slate-100 relative z-10 border border-gray-100">
                             {preview ? <img src={preview} className="w-full h-full object-cover" alt="Profile" /> :
                             user?.profile_picture_url ? <img src={`${API_BASE}${user.profile_picture_url}`} className="w-full h-full object-cover" alt="Profile" /> :
-                            <div className="w-full h-full flex items-center justify-center text-5xl font-black text-gray-600">{user?.fname?.[0]}</div>}
+                            <div className="w-full h-full flex items-center justify-center text-5xl font-black text-blue-200">{user?.fname?.[0]}</div>}
                         </div>
                     </div>
                     
-                    <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-neon-blue text-black p-3 rounded-xl cursor-pointer hover:bg-white transition-colors shadow-lg shadow-neon-blue/30">
+                    <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-blue-600 text-white p-3 rounded-xl cursor-pointer hover:bg-blue-700 transition-colors shadow-lg">
                         <FiCamera size={18} />
                     </label>
                     <input type="file" id="pfp" className="hidden" onChange={(e) => { if(e.target.files[0]) setSelectedFile(e.target.files[0]) }} />
                 </div>
 
                 {selectedFile && (
-                    <button onClick={handleUpload} className="mb-6 px-6 py-2 bg-neon-blue text-black rounded-lg text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
+                    <button onClick={handleUpload} className="mb-6 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2 shadow-md">
                         {uploading ? "Uploading..." : <><FiUpload /> Save Photo</>}
                     </button>
                 )}
 
-                <h2 className="text-2xl font-bold text-white mb-1">{user?.fname} {user?.lname}</h2>
-                <p className="text-gray-400 text-sm mb-6 font-mono">{user?.email}</p>
+                <h2 className="text-2xl font-bold text-slate-800 mb-1">{user?.fname} {user?.lname}</h2>
+                <p className="text-slate-500 text-sm mb-6 font-mono bg-slate-100 px-3 py-1 rounded-full">{user?.email}</p>
 
-                <div className="w-full grid grid-cols-2 gap-3">
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Year</p>
-                        <p className="text-xl font-bold text-white">{user?.year}</p>
+                <div className="w-full grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                        <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Year</p>
+                        <p className="text-xl font-bold text-slate-700">{user?.year}</p>
                     </div>
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Field</p>
-                        <p className="text-xl font-bold text-white truncate">{user?.field}</p>
+                    <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                        <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Field</p>
+                        <p className="text-lg font-bold text-slate-700 truncate">{user?.field}</p>
                     </div>
                 </div>
             </div>
@@ -351,7 +366,7 @@ export default function Dashboard() {
             <div className="lg:col-span-2 space-y-8">
                 
                 {/* TABS */}
-                <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto">
+                <div className="p-1.5 bg-white/60 backdrop-blur rounded-2xl border border-white shadow-sm inline-flex w-full overflow-x-auto">
                     {['aptitude', 'technical', 'coding', 'interview'].map((tab) => (
                         <button
                             key={tab}
@@ -362,8 +377,8 @@ export default function Dashboard() {
                             }}
                             className={`flex-1 py-3 px-4 min-w-[100px] text-xs md:text-sm font-bold uppercase tracking-wider rounded-xl transition-all duration-300 ${
                                 selectedView === tab 
-                                ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.4)]' 
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                ? 'bg-blue-600 text-white shadow-md' 
+                                : 'text-slate-500 hover:text-slate-800 hover:bg-white/80'
                             }`}
                         >
                             {tab}
@@ -373,36 +388,36 @@ export default function Dashboard() {
 
                 {/* GRAPH CONTAINER */}
                 {selectedView === 'interview' ? (
-                   <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden h-[400px]">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 rounded-full blur-[80px] -z-10" />
-                      <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCamera className="text-neon-blue"/> Interview Mastery</h3>
+                   <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] border border-white shadow-xl relative overflow-hidden h-[400px]">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-[80px] -z-10" />
+                      <h3 className="text-xl font-bold mb-6 text-slate-800 flex items-center gap-2"><FiBriefcase className="text-blue-500"/> Interview Mastery</h3>
                       <ResponsiveContainer width="100%" height="90%">
                         <AreaChart data={interviewGraphData}>
                           <defs>
                             <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#2DD4BF" stopOpacity={0.3}/>
-                              <stop offset="95%" stopColor="#2DD4BF" stopOpacity={0}/>
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                             </linearGradient>
                           </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                          <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                          <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
+                          <YAxis domain={[0, 10]} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
                           <Tooltip content={<CustomTooltip />} />
-                          <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
+                          <Area type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={4} fill="url(#colorScore)" />
                         </AreaChart>
                       </ResponsiveContainer>
                    </div>
                 ) : selectedView === 'coding' ? (
                    <div className="grid grid-cols-1 gap-6 h-[400px]">
-                      <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 h-full">
-                         <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2"><FiCode className="text-neon-purple"/> Problems Solved</h3>
+                      <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] border border-white shadow-xl h-full">
+                         <h3 className="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2"><FiCode className="text-violet-500"/> Problems Solved</h3>
                          <ResponsiveContainer width="100%" height="90%">
-                            <BarChart data={codingData.bar} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" horizontal={false} />
+                            <BarChart data={codingData.bar} layout="vertical" barSize={32}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                                 <XAxis type="number" hide />
-                                <YAxis dataKey="difficulty" type="category" width={60} tick={{fill:'#fff', fontSize:12}} axisLine={false} tickLine={false}/>
-                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
-                                <Bar dataKey="solved" radius={[0, 10, 10, 0]} barSize={30}>
+                                <YAxis dataKey="difficulty" type="category" width={70} tick={{fill:'#64748b', fontSize:12, fontWeight: 600}} axisLine={false} tickLine={false}/>
+                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(241, 245, 249, 0.5)'}} />
+                                <Bar dataKey="solved" radius={[0, 10, 10, 0]}>
                                    {codingData.bar.map((entry, index) => <cell key={`cell-${index}`} fill={entry.fill} />)}
                                 </Bar>
                             </BarChart>
@@ -410,50 +425,52 @@ export default function Dashboard() {
                       </div>
                    </div>
                 ) : (
-                  <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl h-[450px]">
-                    <div className="absolute -top-20 -left-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] -z-10" />
+                  <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] border border-white relative overflow-hidden shadow-xl h-[450px]">
+                    <div className="absolute -top-20 -left-20 w-96 h-96 bg-blue-50 rounded-full blur-[100px] -z-10" />
                     
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 z-20 relative">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 z-20 relative gap-4">
                         <div>
-                            <h3 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
-                                <FiTrendingUp className="text-neon-green"/> Topic Progress
+                            <h3 className="text-2xl font-bold text-slate-800 mb-1 flex items-center gap-2">
+                                <FiTrendingUp className="text-emerald-500"/> Topic Progress
                             </h3>
-                            <p className="text-xs text-gray-400">Track your score history.</p>
+                            <p className="text-xs text-slate-500 font-medium">Track your score history over time.</p>
                         </div>
                         
-                        {/* FIXED INVISIBLE DROPDOWN */}
-                        <div className="relative group min-w-[200px]">
+                        {/* Upgraded Light Theme Dropdown */}
+                        <div className="relative group min-w-[220px]">
                             <select 
                                 value={graphTopic} 
                                 onChange={(e) => setGraphTopic(e.target.value)}
-                                className="w-full appearance-none bg-black border border-white/20 text-white rounded-xl py-3 pl-4 pr-10 text-sm outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors cursor-pointer"
+                                className="w-full appearance-none bg-white border border-gray-200 text-slate-700 font-semibold rounded-xl py-3 pl-4 pr-10 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all cursor-pointer shadow-sm"
                             >
                                 {(selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS).map(t => (
-                                    <option key={t} value={t} className="bg-black text-gray-200">{t}</option>
+                                    <option key={t} value={t} className="text-slate-800">{t}</option>
                                 ))}
                             </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</div>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs">▼</div>
                         </div>
                     </div>
 
-                    <div className="h-[320px] w-full">
+                    <div className="h-[320px] w-full mt-4">
                         {topicTrendData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={topicTrendData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                                <XAxis dataKey="attempt" tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                <YAxis domain={[0, 20]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <LineChart data={topicTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                                <XAxis dataKey="attempt" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
+                                <YAxis domain={[0, 20]} tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} axisLine={false} tickLine={false} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                                <Line type="monotone" dataKey="Easy" stroke="#4ade80" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#4ade80'}} connectNulls />
-                                <Line type="monotone" dataKey="Moderate" stroke="#60a5fa" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#60a5fa'}} connectNulls />
-                                <Line type="monotone" dataKey="Hard" stroke="#f472b6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#f472b6'}} connectNulls />
+                                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '13px', fontWeight: 600, color: '#475569' }} />
+                                <Line type="monotone" dataKey="Easy" stroke="#10b981" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#10b981'}} connectNulls />
+                                <Line type="monotone" dataKey="Moderate" stroke="#3b82f6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#3b82f6'}} connectNulls />
+                                <Line type="monotone" dataKey="Hard" stroke="#8b5cf6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#8b5cf6'}} connectNulls />
                             </LineChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
-                                <FiZap size={40} className="text-gray-700 opacity-50"/>
-                                <p>No data recorded for {graphTopic}.</p>
+                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-4">
+                                <div className="p-4 bg-slate-50 rounded-full">
+                                    <FiZap size={32} className="text-slate-300"/>
+                                </div>
+                                <p className="font-medium">No data recorded for {graphTopic}.</p>
                             </div>
                         )}
                     </div>
@@ -463,12 +480,14 @@ export default function Dashboard() {
         </div>
 
         {/* 3. ACTIVITY LOG TABLE */}
-        <div className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-12">
-            <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
-                <FiActivity className="text-neon-blue" />
-                <h3 className="text-lg font-bold text-white">Recent Activity Log</h3>
+        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] border border-white shadow-xl overflow-hidden mb-12">
+            <div className="p-6 border-b border-gray-100 flex items-center gap-3 bg-white">
+                <div className="p-2 bg-blue-50 rounded-lg">
+                    <FiActivity className="text-blue-600" size={20} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800">Recent Activity Log</h3>
             </div>
-            <div className="p-2">
+            <div className="p-1">
                 {renderTable()}
             </div>
         </div>

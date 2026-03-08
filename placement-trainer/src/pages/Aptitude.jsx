@@ -50,7 +50,7 @@ export default function Aptitude() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/20 rounded-full blur-[100px] -z-10 animate-pulse-soft"></div>
             
             <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 drop-shadow-2xl">
-                Aptitude <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow-primary">Arena</span>
+                Aptitude<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow-primary">Arena</span>
             </h1>
             <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
                 Sharpen your mind. Select a domain to begin your mental training and master the fundamentals of placement exams.

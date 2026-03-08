@@ -125,28 +125,28 @@ function App() {
               <Route path="/aptitude/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
               
               {/* Technical Section - LEVEL 2 (Requires Level 2) */}
-              <Route path="/technical" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cnotes" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cpp" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/java" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/python" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/dsa" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/dbms" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/os" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cn" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cnotes" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cpp" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/java" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/python" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/dsa" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/dbms" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/os" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/cn" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute>} />
 
               {/* Coding Section - LEVEL 3 (Requires Level 3) */}
-              <Route path="/coding" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-levels" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-test" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
+              <Route path="/coding" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-levels" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-test" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
+              <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
 
               {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
-              <Route path="/interview" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute>} />
-              <Route path="/gd" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute>} />
-              <Route path="/gd/room/:id" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute>} />
+              <Route path="/interview" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute>} />
+              <Route path="/gd" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute>} />
+              <Route path="/gd/room/:id" element={<ProtectedRoute><ModuleLock reqlevel={1} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute>} />
               
             </Routes>
           </div>
