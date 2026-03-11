@@ -1,7 +1,9 @@
 // src/App.jsx
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
+// Components
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -15,7 +17,7 @@ import Interview from "./pages/Interview.jsx";
 import TestPage from "./pages/Aptitude/TestPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import ModuleLock from "./components/ModuleLock.jsx"; // ✅ IMPORTED MODULE LOCK
+import ModuleLock from "./components/ModuleLock.jsx"; 
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPasswordWithOTP from "./pages/auth/ResetPasswordWithOTP.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
@@ -56,7 +58,89 @@ import DirectionSenseNotes from "./pages/Aptitude/Logical/DirectionSenseNotes.js
 import GrammarNotes from "./pages/Aptitude/Verbal/GrammarNotes.jsx";
 import VocabularyNotes from "./pages/Aptitude/Verbal/VocabularyNotes.jsx";
 import ComprehensionNotes from "./pages/Aptitude/Verbal/ComprehensionNotes.jsx";
-import Leaderboard from "./pages/Leaderboard.jsx"; // fixed typo here
+import Leaderboard from "./pages/Leaderboard.jsx"; 
+
+// 🚀 IMPORT ANIMATION COMPONENT
+import AnimatedPage from "./animations/AnimatedPage.jsx";
+
+// Create a new inner component to handle the routing and animations
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    // AnimatePresence tells React to wait for the exit animation before unmounting the old page
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Public Routes */}
+        <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
+        <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+        <Route path="/register" element={<AnimatedPage><Register /></AnimatedPage>} />
+        <Route path="/forgot-password" element={<AnimatedPage><ForgotPassword /></AnimatedPage>} />
+        <Route path="/verify-otp/:email" element={<AnimatedPage><VerifyOTP /></AnimatedPage>} />
+        <Route path="/reset-password-otp/:userId" element={<AnimatedPage><ResetPasswordWithOTP /></AnimatedPage>} />
+
+        {/* Protected Routes - LEVEL 1 (Open to all) */}
+        <Route path="/dashboard" element={<AnimatedPage><ProtectedRoute><Dashboard /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/leaderboard" element={<AnimatedPage><ProtectedRoute><Leaderboard /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/resume-analyzer" element={<AnimatedPage><ProtectedRoute><ResumeAnalyzer /></ProtectedRoute></AnimatedPage>} />
+
+        {/* Aptitude Section - LEVEL 1 (Open to all) */}
+        <Route path="/aptitude" element={<AnimatedPage><ProtectedRoute><Aptitude /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative" element={<AnimatedPage><ProtectedRoute><QuantitativePage /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/logical" element={<AnimatedPage><ProtectedRoute><LogicalPage /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/verbal" element={<AnimatedPage><ProtectedRoute><VerbalPage /></ProtectedRoute></AnimatedPage>} />
+        
+        {/* Quant Note Pages */}
+        <Route path="/aptitude/quantitative/number-system" element={<AnimatedPage><ProtectedRoute><NumberSystemNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/percentages" element={<AnimatedPage><ProtectedRoute><PercentagesNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/profit-loss" element={<AnimatedPage><ProtectedRoute><ProfitLossNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/interest" element={<AnimatedPage><ProtectedRoute><InterestNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/time-speed-distance" element={<AnimatedPage><ProtectedRoute><TSDNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/ratio-proportion" element={<AnimatedPage><ProtectedRoute><RatioNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/permutation-combination" element={<AnimatedPage><ProtectedRoute><PermutationNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/quantitative/geometry" element={<AnimatedPage><ProtectedRoute><GeometryNotes /></ProtectedRoute></AnimatedPage>} />
+        
+        {/* Logical Note Pages */}
+        <Route path="/aptitude/logical/series-patterns" element={<AnimatedPage><ProtectedRoute><SeriesNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/logical/coding-decoding" element={<AnimatedPage><ProtectedRoute><CodingNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/logical/blood-relations" element={<AnimatedPage><ProtectedRoute><BloodRelationsNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/logical/direction-sense" element={<AnimatedPage><ProtectedRoute><DirectionSenseNotes /></ProtectedRoute></AnimatedPage>} />
+
+        {/* Verbal Note Pages */}
+        <Route path="/aptitude/verbal/grammar" element={<AnimatedPage><ProtectedRoute><GrammarNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/verbal/vocabulary" element={<AnimatedPage><ProtectedRoute><VocabularyNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/verbal/reading-comprehension" element={<AnimatedPage><ProtectedRoute><ComprehensionNotes /></ProtectedRoute></AnimatedPage>} />
+        
+        <Route path="/aptitude/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModeSelection /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/aptitude/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
+        
+        {/* Technical Section - LEVEL 2 (Requires Level 2) */}
+        <Route path="/technical" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cnotes" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cpp" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/java" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/python" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/dsa" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/dbms" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/os" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cn" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+
+        {/* Coding Section - LEVEL 3 (Requires Level 3) */}
+        <Route path="/coding" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-levels" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-test" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-test/:difficulty" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+
+        {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
+        <Route path="/interview" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/gd" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/gd/room/:id" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -80,75 +164,7 @@ function App() {
           <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/verify-otp/:email" element={<VerifyOTP />} />
-              <Route path="/reset-password-otp/:userId" element={<ResetPasswordWithOTP />} />
-
-              {/* Protected Routes - LEVEL 1 (Open to all) */}
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-              <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
-
-              {/* Aptitude Section - LEVEL 1 (Open to all) */}
-              <Route path="/aptitude" element={<ProtectedRoute><Aptitude /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative" element={<ProtectedRoute><QuantitativePage /></ProtectedRoute>} />
-              <Route path="/aptitude/logical" element={<ProtectedRoute><LogicalPage /></ProtectedRoute>} />
-              <Route path="/aptitude/verbal" element={<ProtectedRoute><VerbalPage /></ProtectedRoute>} />
-              
-              {/* Quant Note Pages */}
-              <Route path="/aptitude/quantitative/number-system" element={<ProtectedRoute><NumberSystemNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/percentages" element={<ProtectedRoute><PercentagesNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/profit-loss" element={<ProtectedRoute><ProfitLossNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/interest" element={<ProtectedRoute><InterestNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/time-speed-distance" element={<ProtectedRoute><TSDNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/ratio-proportion" element={<ProtectedRoute><RatioNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/permutation-combination" element={<ProtectedRoute><PermutationNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/quantitative/geometry" element={<ProtectedRoute><GeometryNotes /></ProtectedRoute>} />
-              
-              {/* Logical Note Pages */}
-              <Route path="/aptitude/logical/series-patterns" element={<ProtectedRoute><SeriesNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/logical/coding-decoding" element={<ProtectedRoute><CodingNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/logical/blood-relations" element={<ProtectedRoute><BloodRelationsNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/logical/direction-sense" element={<ProtectedRoute><DirectionSenseNotes /></ProtectedRoute>} />
-
-              {/* Verbal Note Pages */}
-              <Route path="/aptitude/verbal/grammar" element={<ProtectedRoute><GrammarNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/verbal/vocabulary" element={<ProtectedRoute><VocabularyNotes /></ProtectedRoute>} />
-              <Route path="/aptitude/verbal/reading-comprehension" element={<ProtectedRoute><ComprehensionNotes /></ProtectedRoute>} />
-              
-              <Route path="/aptitude/modes/:topic" element={<ProtectedRoute><ModeSelection /></ProtectedRoute>} />
-              <Route path="/aptitude/test/:topic/:mode" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
-              
-              {/* Technical Section - LEVEL 2 (Requires Level 2) */}
-              <Route path="/technical" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cnotes" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cpp" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/java" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/python" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/dsa" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/dbms" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/os" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/cn" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/modes/:topic" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/test/:topic/:mode" element={<ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute>} />
-
-              {/* Coding Section - LEVEL 3 (Requires Level 3) */}
-              <Route path="/coding" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-levels" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-test" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
-              <Route path="/technical/coding-test/:difficulty" element={<ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute>} />
-
-              {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
-              <Route path="/interview" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute>} />
-              <Route path="/gd" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute>} />
-              <Route path="/gd/room/:id" element={<ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute>} />
-              
-            </Routes>
+            <AnimatedRoutes />
           </div>
           
           <Footer />

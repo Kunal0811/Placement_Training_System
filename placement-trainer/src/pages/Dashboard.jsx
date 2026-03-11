@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // <-- NEW
+import ScrollReveal from "../animations/ScrollReveal"; // <-- NEW
+import BouncyClick from "../animations/BouncyClick"; // <-- NEW
 import {
   ResponsiveContainer,
   BarChart,
@@ -33,6 +36,20 @@ const TECHNICAL_TOPICS = [
   'Database Management Systems', 'Operating Systems', 'Computer Networks'
 ];
 
+// --- ANIMATION VARIANTS ---
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+};
+
 // --- COMPONENTS ---
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -53,8 +70,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const StatCard = ({ title, value, icon, gradient, glowColor }) => (
-  <div className="relative overflow-hidden p-6 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl">
-    {/* Background Glow */}
+  <div className="relative overflow-hidden p-6 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-300 group hover:shadow-2xl">
     <div className={`absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity ${glowColor}`} />
     
     <div className="flex items-start justify-between relative z-10">
@@ -144,19 +160,19 @@ export default function Dashboard() {
     const relevantTopics = selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS;
     const filtered = tests.filter(test => test.topic && relevantTopics.includes(test.topic));
     
-    const stats = {};
+    const statsObj = {};
     filtered.forEach(test => {
       const mode = test.mode ? test.mode.toLowerCase() : 'moderate';
       const topic = test.topic || 'Unknown';
-      if (!stats[topic]) stats[topic] = { easy: { s: 0, c: 0 }, moderate: { s: 0, c: 0 }, hard: { s: 0, c: 0 } };
-      if (stats[topic][mode]) { stats[topic][mode].s += (test.score || 0); stats[topic][mode].c += 1; }
+      if (!statsObj[topic]) statsObj[topic] = { easy: { s: 0, c: 0 }, moderate: { s: 0, c: 0 }, hard: { s: 0, c: 0 } };
+      if (statsObj[topic][mode]) { statsObj[topic][mode].s += (test.score || 0); statsObj[topic][mode].c += 1; }
     });
 
-    const barData = Object.keys(stats).map(topic => ({
+    const barData = Object.keys(statsObj).map(topic => ({
       topic,
-      easy: stats[topic].easy.c > 0 ? parseFloat((stats[topic].easy.s / stats[topic].easy.c).toFixed(2)) : 0,
-      moderate: stats[topic].moderate.c > 0 ? parseFloat((stats[topic].moderate.s / stats[topic].moderate.c).toFixed(2)) : 0,
-      hard: stats[topic].hard.c > 0 ? parseFloat((stats[topic].hard.s / stats[topic].hard.c).toFixed(2)) : 0,
+      easy: statsObj[topic].easy.c > 0 ? parseFloat((statsObj[topic].easy.s / statsObj[topic].easy.c).toFixed(2)) : 0,
+      moderate: statsObj[topic].moderate.c > 0 ? parseFloat((statsObj[topic].moderate.s / statsObj[topic].moderate.c).toFixed(2)) : 0,
+      hard: statsObj[topic].hard.c > 0 ? parseFloat((statsObj[topic].hard.s / statsObj[topic].hard.c).toFixed(2)) : 0,
     }));
     return { mcqBarChartData: barData, filteredTests: filtered };
   }, [tests, selectedView]);
@@ -275,203 +291,229 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-8">
-            <div>
-                <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-2 tracking-tight">
-                    DASHBOARD
-                </h1>
-                <p className="text-gray-400 text-sm">Welcome back, <span className="text-neon-blue font-bold">{user?.fname}</span>. Let's crush some goals.</p>
-            </div>
-            
-            <button 
-                onClick={() => navigate('/leaderboard')}
-                className="group relative inline-flex items-center gap-3 px-6 py-3 bg-neon-yellow/10 border border-neon-yellow/40 rounded-xl text-neon-yellow font-bold uppercase tracking-widest hover:bg-neon-yellow hover:text-black transition-all duration-300 overflow-hidden"
-            >
-                <FiAward size={20} />
-                <span>Hall of Fame</span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            </button>
-        </div>
+        <ScrollReveal direction="down">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-8">
+              <div>
+                  <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-2 tracking-tight">
+                      DASHBOARD
+                  </h1>
+                  <p className="text-gray-400 text-sm">Welcome back, <span className="text-neon-blue font-bold">{user?.fname}</span>. Let's crush some goals.</p>
+              </div>
+              
+              <BouncyClick>
+                <button 
+                    onClick={() => navigate('/leaderboard')}
+                    className="group relative inline-flex items-center gap-3 px-6 py-3 bg-neon-yellow/10 border border-neon-yellow/40 rounded-xl text-neon-yellow font-bold uppercase tracking-widest hover:bg-neon-yellow hover:text-black transition-all duration-300 overflow-hidden"
+                >
+                    <FiAward size={20} />
+                    <span>Hall of Fame</span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </button>
+              </BouncyClick>
+          </div>
+        </ScrollReveal>
 
-        {/* 1. STATS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-cyan-500 to-blue-500" glowColor="bg-cyan-500" />
-          <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-emerald-400 to-green-600" glowColor="bg-emerald-500" />
-          <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-purple-500 to-pink-500" glowColor="bg-purple-500" />
-          <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-red-500" glowColor="bg-orange-500" />
-        </div>
+        {/* 1. STATS GRID (Animated Stagger) */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
+            <StatCard title="Total Tests" value={stats.totalTests} icon={<FiActivity/>} gradient="from-cyan-500 to-blue-500" glowColor="bg-cyan-500" />
+          </motion.div>
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
+            <StatCard title="Avg Score" value={stats.avgScore} icon={<FiTarget/>} gradient="from-emerald-400 to-green-600" glowColor="bg-emerald-500" />
+          </motion.div>
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
+            <StatCard title="Coding Streak" value={stats.codingSolved} icon={<FiCode/>} gradient="from-purple-500 to-pink-500" glowColor="bg-purple-500" />
+          </motion.div>
+          <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
+            <StatCard title="Interviews" value={stats.interviewCount} icon={<FiUser/>} gradient="from-orange-400 to-red-500" glowColor="bg-orange-500" />
+          </motion.div>
+        </motion.div>
 
         {/* 2. PROFILE & MAIN CONTENT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* PROFILE CARD */}
-            <div className="lg:col-span-1 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-white/10 flex flex-col items-center text-center relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-neon-blue/20 to-transparent opacity-50" />
-                
-                <div className="relative w-40 h-40 mb-6 group-hover:scale-105 transition-transform duration-500">
-                    {/* Ring Animation */}
-                    <div className="absolute inset-0 border-2 border-dashed border-neon-blue/50 rounded-full animate-spin-slow"></div>
-                    
-                    <div className="w-full h-full rounded-full p-2 bg-black/50 relative z-10">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-gray-800 relative z-10 border-2 border-white/10">
-                            {preview ? <img src={preview} className="w-full h-full object-cover" alt="Profile" /> :
-                            user?.profile_picture_url ? <img src={`${API_BASE}${user.profile_picture_url}`} className="w-full h-full object-cover" alt="Profile" /> :
-                            <div className="w-full h-full flex items-center justify-center text-5xl font-black text-gray-600">{user?.fname?.[0]}</div>}
-                        </div>
-                    </div>
-                    
-                    <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-neon-blue text-black p-3 rounded-xl cursor-pointer hover:bg-white transition-colors shadow-lg shadow-neon-blue/30">
-                        <FiCamera size={18} />
-                    </label>
-                    <input type="file" id="pfp" className="hidden" onChange={(e) => { if(e.target.files[0]) setSelectedFile(e.target.files[0]) }} />
-                </div>
+            <ScrollReveal direction="right" delay={0.2}>
+              <div className="lg:col-span-1 bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-white/10 flex flex-col items-center text-center relative overflow-hidden group h-full">
+                  <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-neon-blue/20 to-transparent opacity-50" />
+                  
+                  <div className="relative w-40 h-40 mb-6 group-hover:scale-105 transition-transform duration-500">
+                      <div className="absolute inset-0 border-2 border-dashed border-neon-blue/50 rounded-full animate-spin-slow"></div>
+                      
+                      <div className="w-full h-full rounded-full p-2 bg-black/50 relative z-10">
+                          <div className="w-full h-full rounded-full overflow-hidden bg-gray-800 relative z-10 border-2 border-white/10">
+                              {preview ? <img src={preview} className="w-full h-full object-cover" alt="Profile" /> :
+                              user?.profile_picture_url ? <img src={`${API_BASE}${user.profile_picture_url}`} className="w-full h-full object-cover" alt="Profile" /> :
+                              <div className="w-full h-full flex items-center justify-center text-5xl font-black text-gray-600">{user?.fname?.[0]}</div>}
+                          </div>
+                      </div>
+                      
+                      <label htmlFor="pfp" className="absolute bottom-2 right-2 z-20 bg-neon-blue text-black p-3 rounded-xl cursor-pointer hover:bg-white transition-colors shadow-lg shadow-neon-blue/30">
+                          <FiCamera size={18} />
+                      </label>
+                      <input type="file" id="pfp" className="hidden" onChange={(e) => { if(e.target.files[0]) setSelectedFile(e.target.files[0]) }} />
+                  </div>
 
-                {selectedFile && (
-                    <button onClick={handleUpload} className="mb-6 px-6 py-2 bg-neon-blue text-black rounded-lg text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
-                        {uploading ? "Uploading..." : <><FiUpload /> Save Photo</>}
-                    </button>
-                )}
+                  {selectedFile && (
+                    <BouncyClick>
+                      <button onClick={handleUpload} className="mb-6 px-6 py-2 bg-neon-blue text-black rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                          {uploading ? "Uploading..." : <><FiUpload /> Save Photo</>}
+                      </button>
+                    </BouncyClick>
+                  )}
 
-                <h2 className="text-2xl font-bold text-white mb-1">{user?.fname} {user?.lname}</h2>
-                <p className="text-gray-400 text-sm mb-6 font-mono">{user?.email}</p>
+                  <h2 className="text-2xl font-bold text-white mb-1">{user?.fname} {user?.lname}</h2>
+                  <p className="text-gray-400 text-sm mb-6 font-mono">{user?.email}</p>
 
-                <div className="w-full grid grid-cols-2 gap-3">
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Year</p>
-                        <p className="text-xl font-bold text-white">{user?.year}</p>
-                    </div>
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Field</p>
-                        <p className="text-xl font-bold text-white truncate">{user?.field}</p>
-                    </div>
-                </div>
-            </div>
+                  <div className="w-full grid grid-cols-2 gap-3 mt-auto">
+                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                          <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Year</p>
+                          <p className="text-xl font-bold text-white">{user?.year}</p>
+                      </div>
+                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                          <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Field</p>
+                          <p className="text-xl font-bold text-white truncate" title={user?.field}>{user?.field}</p>
+                      </div>
+                  </div>
+              </div>
+            </ScrollReveal>
 
             {/* CHARTS SECTION */}
             <div className="lg:col-span-2 space-y-8">
                 
-                {/* TABS */}
-                <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto">
-                    {['aptitude', 'technical', 'coding', 'interview'].map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => { 
-                                setSelectedView(tab); 
-                                if(tab === 'technical') setGraphTopic(TECHNICAL_TOPICS[0]); 
-                                else if(tab === 'aptitude') setGraphTopic(APTITUDE_TOPICS[0]); 
-                            }}
-                            className={`flex-1 py-3 px-4 min-w-[100px] text-xs md:text-sm font-bold uppercase tracking-wider rounded-xl transition-all duration-300 ${
-                                selectedView === tab 
-                                ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.4)]' 
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                            }`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-
-                {/* GRAPH CONTAINER */}
-                {selectedView === 'interview' ? (
-                   <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden h-[400px]">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 rounded-full blur-[80px] -z-10" />
-                      <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCamera className="text-neon-blue"/> Interview Mastery</h3>
-                      <ResponsiveContainer width="100%" height="90%">
-                        <AreaChart data={interviewGraphData}>
-                          <defs>
-                            <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#2DD4BF" stopOpacity={0.3}/>
-                              <stop offset="95%" stopColor="#2DD4BF" stopOpacity={0}/>
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                          <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                          <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                          <Tooltip content={<CustomTooltip />} />
-                          <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                   </div>
-                ) : selectedView === 'coding' ? (
-                   <div className="grid grid-cols-1 gap-6 h-[400px]">
-                      <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 h-full">
-                         <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2"><FiCode className="text-neon-purple"/> Problems Solved</h3>
-                         <ResponsiveContainer width="100%" height="90%">
-                            <BarChart data={codingData.bar} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" horizontal={false} />
-                                <XAxis type="number" hide />
-                                <YAxis dataKey="difficulty" type="category" width={60} tick={{fill:'#fff', fontSize:12}} axisLine={false} tickLine={false}/>
-                                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
-                                <Bar dataKey="solved" radius={[0, 10, 10, 0]} barSize={30}>
-                                   {codingData.bar.map((entry, index) => <cell key={`cell-${index}`} fill={entry.fill} />)}
-                                </Bar>
-                            </BarChart>
-                         </ResponsiveContainer>
-                      </div>
-                   </div>
-                ) : (
-                  <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl h-[450px]">
-                    <div className="absolute -top-20 -left-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] -z-10" />
-                    
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-6 z-20 relative">
-                        <div>
-                            <h3 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
-                                <FiTrendingUp className="text-neon-green"/> Topic Progress
-                            </h3>
-                            <p className="text-xs text-gray-400">Track your score history.</p>
-                        </div>
-                        
-                        {/* FIXED INVISIBLE DROPDOWN */}
-                        <div className="relative group min-w-[200px]">
-                            <select 
-                                value={graphTopic} 
-                                onChange={(e) => setGraphTopic(e.target.value)}
-                                className="w-full appearance-none bg-black border border-white/20 text-white rounded-xl py-3 pl-4 pr-10 text-sm outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors cursor-pointer"
-                            >
-                                {(selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS).map(t => (
-                                    <option key={t} value={t} className="bg-black text-gray-200">{t}</option>
-                                ))}
-                            </select>
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</div>
-                        </div>
-                    </div>
-
-                    <div className="h-[320px] w-full">
-                        {topicTrendData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={topicTrendData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                                <XAxis dataKey="attempt" tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                <YAxis domain={[0, 20]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                                <Line type="monotone" dataKey="Easy" stroke="#4ade80" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#4ade80'}} connectNulls />
-                                <Line type="monotone" dataKey="Moderate" stroke="#60a5fa" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#60a5fa'}} connectNulls />
-                                <Line type="monotone" dataKey="Hard" stroke="#f472b6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#f472b6'}} connectNulls />
-                            </LineChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
-                                <FiZap size={40} className="text-gray-700 opacity-50"/>
-                                <p>No data recorded for {graphTopic}.</p>
-                            </div>
-                        )}
-                    </div>
+                <ScrollReveal direction="left" delay={0.3}>
+                  {/* TABS */}
+                  <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto">
+                      {['aptitude', 'technical', 'coding', 'interview'].map((tab) => (
+                        <BouncyClick key={tab} className="flex-1 min-w-[100px]">
+                          <button
+                              onClick={() => { 
+                                  setSelectedView(tab); 
+                                  if(tab === 'technical') setGraphTopic(TECHNICAL_TOPICS[0]); 
+                                  else if(tab === 'aptitude') setGraphTopic(APTITUDE_TOPICS[0]); 
+                              }}
+                              className={`w-full py-3 px-4 text-xs md:text-sm font-bold uppercase tracking-wider rounded-xl transition-all duration-300 ${
+                                  selectedView === tab 
+                                  ? 'bg-neon-blue text-black shadow-[0_0_15px_rgba(45,212,191,0.4)]' 
+                                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                              }`}
+                          >
+                              {tab}
+                          </button>
+                        </BouncyClick>
+                      ))}
                   </div>
-                )}
+                </ScrollReveal>
+
+                <ScrollReveal direction="up" delay={0.4}>
+                  {/* GRAPH CONTAINER */}
+                  {selectedView === 'interview' ? (
+                     <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden h-[400px]">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 rounded-full blur-[80px] -z-10" />
+                        <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiCamera className="text-neon-blue"/> Interview Mastery</h3>
+                        <ResponsiveContainer width="100%" height="90%">
+                          <AreaChart data={interviewGraphData}>
+                            <defs>
+                              <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#2DD4BF" stopOpacity={0.3}/>
+                                <stop offset="95%" stopColor="#2DD4BF" stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                            <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                     </div>
+                  ) : selectedView === 'coding' ? (
+                     <div className="grid grid-cols-1 gap-6 h-[400px]">
+                        <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 h-full">
+                           <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2"><FiCode className="text-neon-purple"/> Problems Solved</h3>
+                           <ResponsiveContainer width="100%" height="90%">
+                              <BarChart data={codingData.bar} layout="vertical">
+                                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" horizontal={false} />
+                                  <XAxis type="number" hide />
+                                  <YAxis dataKey="difficulty" type="category" width={60} tick={{fill:'#fff', fontSize:12}} axisLine={false} tickLine={false}/>
+                                  <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.05)'}} />
+                                  <Bar dataKey="solved" radius={[0, 10, 10, 0]} barSize={30}>
+                                     {codingData.bar.map((entry, index) => <cell key={`cell-${index}`} fill={entry.fill} />)}
+                                  </Bar>
+                              </BarChart>
+                           </ResponsiveContainer>
+                        </div>
+                     </div>
+                  ) : (
+                    <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl h-[450px]">
+                      <div className="absolute -top-20 -left-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] -z-10" />
+                      
+                      <div className="flex flex-col md:flex-row justify-between items-center mb-6 z-20 relative">
+                          <div>
+                              <h3 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
+                                  <FiTrendingUp className="text-neon-green"/> Topic Progress
+                              </h3>
+                              <p className="text-xs text-gray-400">Track your score history.</p>
+                          </div>
+                          
+                          <div className="relative group min-w-[200px] mt-4 md:mt-0">
+                              <select 
+                                  value={graphTopic} 
+                                  onChange={(e) => setGraphTopic(e.target.value)}
+                                  className="w-full appearance-none bg-black border border-white/20 text-white rounded-xl py-3 pl-4 pr-10 text-sm outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors cursor-pointer"
+                              >
+                                  {(selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS).map(t => (
+                                      <option key={t} value={t} className="bg-black text-gray-200">{t}</option>
+                                  ))}
+                              </select>
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</div>
+                          </div>
+                      </div>
+
+                      <div className="h-[320px] w-full">
+                          {topicTrendData.length > 0 ? (
+                              <ResponsiveContainer width="100%" height="100%">
+                              <LineChart data={topicTrendData}>
+                                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                                  <XAxis dataKey="attempt" tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                  <YAxis domain={[0, 20]} tick={{ fill: '#6b7280', fontSize: 10 }} axisLine={false} tickLine={false} />
+                                  <Tooltip content={<CustomTooltip />} />
+                                  <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+                                  <Line type="monotone" dataKey="Easy" stroke="#4ade80" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#4ade80'}} connectNulls />
+                                  <Line type="monotone" dataKey="Moderate" stroke="#60a5fa" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#60a5fa'}} connectNulls />
+                                  <Line type="monotone" dataKey="Hard" stroke="#f472b6" strokeWidth={3} dot={{r:0}} activeDot={{r:6, strokeWidth: 0, fill:'#f472b6'}} connectNulls />
+                              </LineChart>
+                              </ResponsiveContainer>
+                          ) : (
+                              <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
+                                  <FiZap size={40} className="text-gray-700 opacity-50"/>
+                                  <p>No data recorded for {graphTopic}.</p>
+                              </div>
+                          )}
+                      </div>
+                    </div>
+                  )}
+                </ScrollReveal>
             </div>
         </div>
 
         {/* 3. ACTIVITY LOG TABLE */}
-        <div className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-12">
-            <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
-                <FiActivity className="text-neon-blue" />
-                <h3 className="text-lg font-bold text-white">Recent Activity Log</h3>
-            </div>
-            <div className="p-2">
-                {renderTable()}
-            </div>
-        </div>
+        <ScrollReveal delay={0.2} direction="up">
+          <div className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-12">
+              <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
+                  <FiActivity className="text-neon-blue" />
+                  <h3 className="text-lg font-bold text-white">Recent Activity Log</h3>
+              </div>
+              <div className="p-2">
+                  {renderTable()}
+              </div>
+          </div>
+        </ScrollReveal>
 
       </div>
     </div>

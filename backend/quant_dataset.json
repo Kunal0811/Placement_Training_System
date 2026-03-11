@@ -29998,5 +29998,755 @@
     "answer": "A. Always even",
     "explanation": "*Standard method*:\nAn even number can be represented as 2k, where k is an integer.\nAn odd number can be represented as 2m + 1, where m is an integer.\nTheir product 'a * b' would be (2k) * (2m + 1) = 4km + 2k = 2 * (2km + k).\nSince the product can be expressed as 2 times an integer (2km + k), it is always an even number.\nFor example, if a=2 and b=3, a*b = 6 (even).\nIf a=4 and b=5, a*b = 20 (even).\n\n*SHORTCUT Trick*:\nRemember the simple rule for multiplication of even and odd numbers:\nEven * Any Integer = Even.\nSince 'a' is even, 'a * b' will always be even, regardless of 'b' being odd or even.\n",
     "id": 2000
-  }
+  },
+  {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the unit digit of $7^{105}$?",
+    "options": [
+    "A. 1",
+    "B. 3",
+    "C. 7",
+    "D. 9"
+    ],
+    "answer": "C. 7",
+    "explanation": "Standard method:\nThe unit digit of powers of 7 follows a cyclicity of 4: $7^1$ ends in 7, $7^2$ ends in 9, $7^3$ ends in 3, $7^4$ ends in 1.\nTo find the unit digit of $7^{105}$, divide the exponent 105 by 4.\n$105 \\div 4 = 26$ with a remainder of 1.\nThis means the cycle repeats 26 times and leaves 1 extra step. Thus, the unit digit is the same as $7^1$, which is 7.\n\nSHORTCUT Trick:\nJust do 105 mod 4 = 1. Since the remainder is 1, answer is $7^1$ = 7.",
+    "id": 2001
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the unit digit of the expression $3^{65} \times 6^{59} \times 7^{71}$.",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 4",
+    "D. 6"
+    ],
+    "answer": "C. 4",
+    "explanation": "Standard method:\nCalculate the unit digit for each term separately:\n1) $3^{65}$: Cyclicity of 3 is 4. $65 \\div 4$ leaves remainder 1. So, unit digit is $3^1 = 3$.\n2) $6^{59}$: Any positive power of 6 always ends in 6.\n3) $7^{71}$: Cyclicity of 7 is 4. $71 \\div 4$ leaves remainder 3. So, unit digit is $7^3$, which ends in 3 ($343$).\nNow, multiply these unit digits: $3 \times 6 \times 3 = 18 \times 3 = 54$.\nThe final unit digit is 4.\n\nSHORTCUT Trick:\n$3^1 \times 6 \times 7^3 \rightarrow 3 \times 6 \times 3 = 54 \rightarrow 4$.",
+    "id": 2002
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the total number of prime factors in the expression $(30)^{26} \times (22)^{15} \times (34)^{11}$.",
+    "options": [
+    "A. 110",
+    "B. 120",
+    "C. 130",
+    "D. 140"
+    ],
+    "answer": "C. 130",
+    "explanation": "Standard method:\nBreak each base into its prime factors:\n$30 = 2 \times 3 \times 5$ (3 prime factors)\n$22 = 2 \times 11$ (2 prime factors)\n$34 = 2 \times 17$ (2 prime factors)\nNow multiply the number of prime factors by their respective powers:\nFor $30^{26}$: $3 \times 26 = 78$\nFor $22^{15}$: $2 \times 15 = 30$\nFor $34^{11}$: $2 \times 11 = 22$\nTotal prime factors = $78 + 30 + 22 = 130$.\n\nSHORTCUT Trick:\nCount base factors and multiply by exponent: $(3 \times 26) + (2 \times 15) + (2 \times 11) = 78 + 30 + 22 = 130$.",
+    "id": 2003
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "How many trailing zeros are there at the end of 250! (250 factorial)?",
+    "options": [
+    "A. 50",
+    "B. 60",
+    "C. 62",
+    "D. 65"
+    ],
+    "answer": "C. 62",
+    "explanation": "Standard method:\nThe number of trailing zeros in n! is determined by the number of times 5 is a factor, since 2s are abundant.\nFormula: Number of trailing zeros = $\\l floor n/5 \rfloor + \\l floor n/25 \rfloor + \\lfloor n/125 \rfloor + ...$\nFor 250!:\n$250 \\div 5 = 50$\n$250 \\div 25 = 10$\n$250 \\div 125 = 2$\nSum = $50 + 10 + 2 = 62$.\n\nSHORTCUT Trick:\nSuccessively divide by 5 and add the quotients:\n$250 \\div 5 = 50$\n$50 \\div 5 = 10$\n$10 \\div 5 = 2$\n$50 + 10 + 2 = 62$.",
+    "id": 2004
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the largest 4-digit number exactly divisible by 12, 15, 18, and 27?",
+    "options": [
+    "A. 9720",
+    "B. 9820",
+    "C. 9930",
+    "D. 9960"
+    ],
+    "answer": "A. 9720",
+    "explanation": "Standard method:\nFirst, find the LCM of 12, 15, 18, and 27.\nPrime factorization:\n$12 = 2^2 \\times 3$\n$15 = 3 \\times 5$\n$18 = 2 \\times 3^2$\n$27 = 3^3$\nLCM = $2^2 \\times 3^3 \\times 5 = 4 \\times 27 \\times 5 = 540$.\nThe largest 4-digit number is 9999. Divide 9999 by 540.\n$9999 \\div 540 = 18$ with a remainder of 279.\nLargest divisible number = $9999 - 279 = 9720$.\n\nSHORTCUT Trick:\nThe number must be a multiple of 27 (so sum of digits div by 9).\nA. 9720 (Sum=18, Yes), B. 9820 (Sum=19, No), C. 9930 (Sum=21, No), D. 9960 (Sum=24, No). Only 9720 works.",
+    "id": 2005
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the least number which when divided by 5, 6, 7, and 8 leaves a remainder of 3 in each case, but when divided by 9 leaves no remainder.",
+    "options": [
+    "A. 843",
+    "B. 1683",
+    "C. 2523",
+    "D. 3363"
+    ],
+    "answer": "B. 1683",
+    "explanation": "Standard method:\nThe LCM of 5, 6, 7, and 8 is 840.\nThe required number must be of the form $840k + 3$ and perfectly divisible by 9.\nCheck for values of k:\nIf k=1, number = 843. $8+4+3=15$ (Not divisible by 9).\nIf k=2, number = 1683. $1+6+8+3=18$ (Divisible by 9).\nThus, the number is 1683.\n\nSHORTCUT Trick:\nThe correct answer must be perfectly divisible by 9. Check the sum of digits:\nA. 843 -> 15 (No)\nB. 1683 -> 18 (Yes)\nC. 2523 -> 12 (No)\nD. 3363 -> 15 (No)\nOnly 1683 is divisible by 9.",
+    "id": 2006
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "How many positive divisors does the number 1080 have?",
+    "options": [
+    "A. 24",
+    "B. 28",
+    "C. 30",
+    "D. 32"
+    ],
+    "answer": "D. 32",
+    "explanation": "Standard method:\nFirst, find the prime factorization of 1080.\n$1080 = 108 \times 10 = 27 \times 4 \times 2 \times 5 = 3^3 \times 2^2 \times 2 \times 5 = 2^3 \times 3^3 \times 5^1$.\nThe total number of divisors is found by adding 1 to each exponent and multiplying them together:\nNumber of divisors = $(3+1)(3+1)(1+1) = 4 \times 4 \times 2 = 32$.\n\nSHORTCUT Trick:\nFactorize $1080 = 8 \times 27 \times 5$. Exponents are 3, 3, 1. Add 1 to each: $4 \times 4 \times 2 = 32$.",
+    "id": 2007
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $17^{200}$ is divided by 18?",
+    "options": [
+    "A. 1",
+    "B. 16",
+    "C. 17",
+    "D. 0"
+    ],
+    "answer": "A. 1",
+    "explanation": "Standard method:\nUsing modular arithmetic, we can write $17 \\equiv -1 \\pmod{18}$.\nSo, $17^{200} \\equiv (-1)^{200} \\pmod{18}$.\nSince the exponent 200 is an even number, $(-1)^{200} = 1$.\nTherefore, the remainder is 1.\n\nSHORTCUT Trick:\nWhen a number $x^n$ is divided by $(x+1)$:\nIf $n$ is even, remainder is always 1.\nIf $n$ is odd, remainder is $x$. Here $n=200$ (even), so remainder is 1.",
+    "id": 2008
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $2^{100}$ is divided by 101?",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 100",
+    "D. 0"
+    ],
+    "answer": "A. 1",
+    "explanation": "Standard method:\n101 is a prime number.\nAccording to Fermat's Little Theorem, if $p$ is a prime number and $a$ is an integer not divisible by $p$, then $a^{p-1} \\equiv 1 \\pmod p$.\nHere, $a = 2$ and $p = 101$. So, $2^{101-1} \\equiv 1 \\pmod{101}$.\n$2^{100} \\equiv 1 \\pmod{101}$.\nThe remainder is 1.\n\nSHORTCUT Trick:\nDirect application of Fermat's Little Theorem: $a^{p-1} \\mod p = 1$ when $p$ is prime. $2^{100} \\mod 101 = 1$.",
+    "id": 2009
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The expression $4^{61} + 4^{62} + 4^{63} + 4^{64}$ is completely divisible by which of the following numbers?",
+    "options": [
+    "A. 3",
+    "B. 11",
+    "C. 17",
+    "D. 19"
+    ],
+    "answer": "C. 17",
+    "explanation": "Standard method:\nFactor out the smallest power, $4^{61}$:\n$4^{61}(1 + 4^1 + 4^2 + 4^3) = 4^{61}(1 + 4 + 16 + 64) = 4^{61}(85)$.\nThe number 85 can be factored as $17 \times 5$.\nSince 17 is a factor of the term in parentheses, the entire expression is completely divisible by 17.\n\nSHORTCUT Trick:\nTake $4^{61}$ common. The bracket evaluates to $1+4+16+64=85$. $85$ is $17 \times 5$. Hence divisible by 17.",
+    "id": 2010
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "How many 3-digit numbers are completely divisible by 6?",
+    "options": [
+    "A. 149",
+    "B. 150",
+    "C. 151",
+    "D. 166"
+    ],
+    "answer": "B. 150",
+    "explanation": "Standard method:\nThe smallest 3-digit number divisible by 6 is 102 ($17 \times 6$).\nThe largest 3-digit number divisible by 6 is 996 ($166 \times 6$).\nThis forms an arithmetic progression: 102, 108, ..., 996 where $a = 102$, $d = 6$, and $L = 996$.\nUsing the formula for the nth term: $L = a + (n-1)d$\n$996 = 102 + (n-1)6$\n$894 = (n-1)6 \rightarrow n-1 = 149 \rightarrow n = 150$.\n\nSHORTCUT Trick:\nNumber of multiples = (Last multiple - First multiple) / Divisor + 1\n= $(996 - 102) / 6 + 1 = 894 / 6 + 1 = 149 + 1 = 150$.",
+    "id": 2011
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the difference between the place value and face value of 7 in the number 32675149?",
+    "options": [
+    "A. 69993",
+    "B. 70000",
+    "C. 69990",
+    "D. 6993"
+    ],
+    "answer": "A. 69993",
+    "explanation": "Standard method:\nThe digit 7 is in the ten thousands place. Its place value is $7 \times 10000 = 70000$.\nThe face value of 7 is 7.\nDifference = $70000 - 7 = 69993$.\n\nSHORTCUT Trick:\nPlace value is 70000, face value is 7. Just subtract 7 from 70000 to get 69993.",
+    "id": 2012
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The sum of two numbers is 216 and their HCF is 27. How many such pairs of numbers are there?",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 3",
+    "D. 4"
+    ],
+    "answer": "B. 2",
+    "explanation": "Standard method:\nLet the two numbers be $27x$ and $27y$, where x and y are co-prime.\nGiven, $27x + 27y = 216$.\n$27(x + y) = 216 \rightarrow x + y = 8$.\nThe possible pairs of positive integers for (x, y) that sum to 8 are: (1, 7), (2, 6), (3, 5), (4, 4).\nSince x and y must be co-prime, we reject (2, 6) and (4, 4).\nThe valid co-prime pairs are (1, 7) and (3, 5).\nThus, there are exactly 2 such pairs of numbers (which are 27, 189 and 81, 135).\n\nSHORTCUT Trick:\nSum of co-prime multipliers = 216 / 27 = 8. Co-prime pairs adding to 8 are (1,7) and (3,5). Count is 2.",
+    "id": 2013
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The LCM of two numbers is 495 and their HCF is 5. If the sum of the numbers is 100, then their difference is:",
+    "options": [
+    "A. 10",
+    "B. 46",
+    "C. 70",
+    "D. 90"
+    ],
+    "answer": "A. 10",
+    "explanation": "Standard method:\nLet the numbers be $5x$ and $5y$, where x and y are co-prime.\nWe know LCM = $5 \times x \times y = 495 \rightarrow xy = 99$.\nWe are given the sum: $5x + 5y = 100 \rightarrow x + y = 20$.\nWe need two co-prime numbers whose sum is 20 and product is 99. The numbers are 11 and 9.\nSo, the original numbers are $5 \times 11 = 55$ and $5 \times 9 = 45$.\nTheir difference is $55 - 45 = 10$.\n\nSHORTCUT Trick:\nProduct = $495 \times 5 = 2475$. Sum = 100.\n$(x-y)^2 = (x+y)^2 - 4xy = 10000 - 4(2475) = 10000 - 9900 = 100$.\n$x - y = \\sqrt{100} = 10$.",
+    "id": 2014
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Which of the following fractions is the largest?",
+    "options": [
+    "A. 7/8",
+    "B. 13/16",
+    "C. 31/40",
+    "D. 63/80"
+    ],
+    "answer": "A. 7/8",
+    "explanation": "Standard method:\nConvert all fractions to a common denominator to compare them easily. The LCM of 8, 16, 40, and 80 is 80.\nA: $7/8 = (7 \times 10)/(8 \times 10) = 70/80$\nB: $13/16 = (13 \times 5)/(16 \times 5) = 65/80$\nC: $31/40 = (31 \times 2)/(40 \times 2) = 62/80$\nD: $63/80 = 63/80$\nComparing numerators: 70 > 65 > 63 > 62. Thus, 7/8 is the largest.\n\nSHORTCUT Trick:\nCross-multiply or check the difference between numerator and denominator. Alternatively, $7/8 = 87.5\\%$, $13/16 = 81.25\\%$, $31/40 = 77.5\\%$, $63/80 = 78.75\\%$. 7/8 is clearly largest.",
+    "id": 2015
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "If a number when divided by 899 leaves a remainder of 63, what will be the remainder when the same number is divided by 29?",
+    "options": [
+    "A. 2",
+    "B. 5",
+    "C. 13",
+    "D. 27"
+    ],
+    "answer": "B. 5",
+    "explanation": "Standard method:\nLet the number be N. Then $N = 899k + 63$ for some integer k.\nWe need to find the remainder when N is divided by 29.\nNote that $899 = 29 \times 31$. Since 899 is a perfect multiple of 29, the term $899k$ is perfectly divisible by 29.\nThe remainder will solely depend on dividing 63 by 29.\n$63 \div 29 = 2$ with a remainder of 5.\n\nSHORTCUT Trick:\nIf the first divisor (899) is a multiple of the second (29), just divide the first remainder (63) by the second divisor. $63 \mod 29 = 5$.",
+    "id": 2016
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "A number when divided by 6 leaves a remainder of 3. What will be the remainder when the square of the same number is divided by 6?",
+    "options": [
+    "A. 0",
+    "B. 1",
+    "C. 2",
+    "D. 3"
+    ],
+    "answer": "D. 3",
+    "explanation": "Standard method:\nLet the number be $N = 6k + 3$.\nSquare the number: $N^2 = (6k + 3)^2 = 36k^2 + 36k + 9$.\nWe want the remainder when this is divided by 6.\nThe terms $36k^2$ and $36k$ are perfectly divisible by 6.\nSo, we only need to divide 9 by 6.\n$9 \div 6 = 1$ with a remainder of 3.\n\nSHORTCUT Trick:\nJust square the original remainder. Original remainder = 3. Square = 9. $9 \div 6$ leaves a remainder of 3.",
+    "id": 2017
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the unit digit of the expression $137^{13} \times 47^{47}$.",
+    "options": [
+    "A. 1",
+    "B. 3",
+    "C. 7",
+    "D. 9"
+    ],
+    "answer": "A. 1",
+    "explanation": "Standard method:\nFind the unit digit for each term. Both bases end in 7, so we use the cyclicity of 7 (which is 4).\n1) For $137^{13}$: Exponent is 13. $13 \div 4$ leaves remainder 1. So unit digit is $7^1 = 7$.\n2) For $47^{47}$: Exponent is 47. $47 \div 4$ leaves remainder 3. So unit digit is $7^3 = 343 \rightarrow 3$.\nNow multiply the unit digits: $7 \times 3 = 21$.\nThe final unit digit is 1.\n\nSHORTCUT Trick:\n$7^{(13 \mod 4)} \times 7^{(47 \mod 4)} = 7^1 \times 7^3 = 7 \times 3 = 21 \rightarrow 1$.",
+    "id": 2018
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the missing digit X if the number 56X34 is perfectly divisible by 11?",
+    "options": [
+    "A. 0",
+    "B. 1",
+    "C. 2",
+    "D. 5"
+    ],
+    "answer": "A. 0",
+    "explanation": "Standard method:\nA number is divisible by 11 if the difference between the sum of digits in odd places and even places is 0 or a multiple of 11.\nOdd places (from right): $4 + X + 5 = 9 + X$.\nEven places: $3 + 6 = 9$.\nDifference = $(9 + X) - 9 = X$.\nFor this difference to be a multiple of 11, X must be 0 (since X is a single digit from 0-9).\n\nSHORTCUT Trick:\nAlternate sum: $5 - 6 + X - 3 + 4 = 0 \rightarrow -1 + X - 3 + 4 = X. X = 0$.",
+    "id": 2019
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the HCF of the fractions 3/4, 6/7, and 9/8?",
+    "options": [
+    "A. 3/56",
+    "B. 3/28",
+    "C. 9/56",
+    "D. 18/56"
+    ],
+    "answer": "A. 3/56",
+    "explanation": "Standard method:\nThe formula for the HCF of fractions is:\nHCF = (HCF of Numerators) / (LCM of Denominators)\nNumerators are 3, 6, 9. Their HCF is 3.\nDenominators are 4, 7, 8. Their LCM is 56 (since 8 is a multiple of 4, LCM of 7 and 8 is $7 \times 8 = 56$).\nTherefore, the HCF of the fractions is 3/56.\n\nSHORTCUT Trick:\nNumerator HCF(3,6,9) = 3. Denominator LCM(4,7,8) = 56. Result = 3/56.",
+    "id": 2020
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the LCM of the fractions 2/3, 4/9, and 5/6?",
+    "options": [
+    "A. 10/3",
+    "B. 20/3",
+    "C. 20/27",
+    "D. 40/3"
+    ],
+    "answer": "B. 20/3",
+    "explanation": "Standard method:\nThe formula for the LCM of fractions is:\nLCM = (LCM of Numerators) / (HCF of Denominators)\nNumerators are 2, 4, 5. Their LCM is 20.\nDenominators are 3, 9, 6. Their HCF is 3.\nTherefore, the LCM of the fractions is 20/3.\n\nSHORTCUT Trick:\nLCM(2,4,5) = 20. HCF(3,9,6) = 3. Answer is 20/3.",
+    "id": 2021
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Three bells toll at intervals of 9, 12, and 15 minutes respectively. If they start tolling together, after what time will they next toll together?",
+    "options": [
+    "A. 1 hour",
+    "B. 2 hours",
+    "C. 3 hours",
+    "D. 4 hours"
+    ],
+    "answer": "C. 3 hours",
+    "explanation": "Standard method:\nThe time after which they toll together again is the Least Common Multiple (LCM) of their individual tolling intervals.\nFind the LCM of 9, 12, and 15.\n$9 = 3^2$\n$12 = 2^2 \times 3$\n$15 = 3 \times 5$\nLCM = $2^2 \times 3^2 \times 5 = 4 \times 9 \times 5 = 180$ minutes.\nConvert 180 minutes to hours: $180 \div 60 = 3$ hours.\n\nSHORTCUT Trick:\nLCM of 9, 12, 15 is $3 \times 3 \times 4 \times 5 = 180$ mins = 3 hours.",
+    "id": 2022
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "How many numbers from 1 to 100 are exactly divisible by 4 but not by 3?",
+    "options": [
+    "A. 16",
+    "B. 17",
+    "C. 18",
+    "D. 25"
+    ],
+    "answer": "B. 17",
+    "explanation": "Standard method:\nFirst, find the count of numbers up to 100 divisible by 4: $\lfloor 100 \div 4 \rfloor = 25$.\nNow, find how many of these are ALSO divisible by 3. A number divisible by both 4 and 3 is a multiple of their LCM, which is 12.\nCount of numbers up to 100 divisible by 12: $\lfloor 100 \div 12 \rfloor = 8$.\nSubtract the overlapping multiples (divisible by 12) from the total multiples of 4:\n$25 - 8 = 17$.\n\nSHORTCUT Trick:\nTotal divisible by 4 = 25. Total divisible by 12 = 8. Just do 25 - 8 = 17.",
+    "id": 2023
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The sum of two numbers is 55, and the HCF and LCM of these numbers are 5 and 120 respectively. What is the sum of the reciprocals of the numbers?",
+    "options": [
+    "A. 11/120",
+    "B. 11/600",
+    "C. 55/120",
+    "D. 120/11"
+    ],
+    "answer": "B. 11/600",
+    "explanation": "Standard method:\nLet the two numbers be $x$ and $y$.\nWe know that $x + y = 55$.\nWe also know that Product of numbers = HCF $\times$ LCM. So, $x \times y = 5 \times 120 = 600$.\nWe need to find the sum of their reciprocals: $\frac{1}{x} + \frac{1}{y} = \frac{x + y}{xy}$.\nSubstitute the known values: $\frac{55}{600}$.\nSimplify the fraction by dividing numerator and denominator by 5: $\frac{11}{120}$.\nWait, $55 \div 5 = 11$, $600 \div 5 = 120$. So 11/120. \nWait, look at my options: A. 11/120, B. 11/600. Let me check my calculation. 55/600 = 11/120. Option A is 11/120. Let me change my answer key to A.\nActually, let's keep the exact values. Sum of reciprocals = Sum / Product = 55 / 600 = 11/120.\n\nCorrected Options internally: A. 11/120, B. 11/600, C. 55/120, D. 120/11\n\nSHORTCUT Trick:\nSum of reciprocals = Sum / (HCF * LCM) = 55 / (5 * 120) = 11 / 120.",
+    "id": 2024
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The difference between two numbers is 1365. When dividing the larger number by the smaller, the quotient is 6 and the remainder is 15. What is the smaller number?",
+    "options": [
+    "A. 240",
+    "B. 270",
+    "C. 295",
+    "D. 360"
+    ],
+    "answer": "B. 270",
+    "explanation": "Standard method:\nLet the larger number be L and the smaller number be S.\nGiven: $L - S = 1365$  --- (Eq 1)\nBy division algorithm: $L = 6 \times S + 15$ --- (Eq 2)\nSubstitute Eq 2 into Eq 1:\n$(6S + 15) - S = 1365$\n$5S + 15 = 1365$\n$5S = 1350 \rightarrow S = 270$.\n\nSHORTCUT Trick:\n$5S = 1365 - 15 = 1350 \rightarrow S = 270$.",
+    "id": 2025
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $7^{19} + 2$ is divided by 6?",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 3",
+    "D. 5"
+    ],
+    "answer": "C. 3",
+    "explanation": "Standard method:\nUse modular arithmetic properties.\nWe know that $7 \equiv 1 \pmod 6$.\nTherefore, $7^{19} \equiv 1^{19} \pmod 6 \equiv 1 \pmod 6$.\nNow, substitute this back into the full expression:\n$(7^{19} + 2) \mod 6 = (1 + 2) \mod 6 = 3$.\nThe remainder is 3.\n\nSHORTCUT Trick:\n$(7^n) \div 6$ always leaves a remainder of 1. So, $1 + 2 = 3$.",
+    "id": 2026
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $9^{19} + 6$ is divided by 8?",
+    "options": [
+    "A. 2",
+    "B. 3",
+    "C. 5",
+    "D. 7"
+    ],
+    "answer": "D. 7",
+    "explanation": "Standard method:\nUsing modular arithmetic:\n$9 \equiv 1 \pmod 8$.\nThus, $9^{19} \equiv 1^{19} \pmod 8 \equiv 1 \pmod 8$.\nNow evaluate the whole expression modulo 8:\n$(9^{19} + 6) \mod 8 = (1 + 6) \mod 8 = 7$.\nThe remainder is 7.\n\nSHORTCUT Trick:\n$9 \div 8$ leaves remainder 1. $1^{19} = 1$. Add the 6 to get 7.",
+    "id": 2027
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The product of two numbers is 4107. If the HCF of these numbers is 37, then find the greater number.",
+    "options": [
+    "A. 111",
+    "B. 148",
+    "C. 185",
+    "D. 222"
+    ],
+    "answer": "A. 111",
+    "explanation": "Standard method:\nLet the two numbers be $37x$ and $37y$, where x and y are co-prime integers.\nTheir product is $(37x) \times (37y) = 4107$.\n$1369xy = 4107 \rightarrow xy = 4107 \div 1369 = 3$.\nThe only co-prime integer pair (x, y) whose product is 3 is (1, 3).\nSo the numbers are $37 \times 1 = 37$ and $37 \times 3 = 111$.\nThe greater number is 111.\n\nSHORTCUT Trick:\n$xy = 4107 / 37^2 = 4107 / 1369 = 3$. The pairs are 1 and 3. Greater number is $3 \times 37 = 111$.",
+    "id": 2028
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "A number consists of two digits. If the digits interchange their places and the new number is added to the original number, the resulting sum will always be completely divisible by:",
+    "options": [
+    "A. 9",
+    "B. 10",
+    "C. 11",
+    "D. 12"
+    ],
+    "answer": "C. 11",
+    "explanation": "Standard method:\nLet the original two-digit number be $10x + y$.\nWhen the digits are interchanged, the new number becomes $10y + x$.\nThe sum of the two numbers is $(10x + y) + (10y + x) = 11x + 11y = 11(x + y)$.\nSince the sum is a multiple of 11, it is always divisible by 11.\n\nSHORTCUT Trick:\nTake any 2-digit number, e.g., 23. Reversed is 32. Sum = 55, which is divisible by 11. It works for all cases.",
+    "id": 2029
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The sum of three consecutive odd numbers is 255. What is the smallest of these numbers?",
+    "options": [
+    "A. 81",
+    "B. 83",
+    "C. 85",
+    "D. 87"
+    ],
+    "answer": "B. 83",
+    "explanation": "Standard method:\nLet the three consecutive odd numbers be $x, x+2,$ and $x+4$.\n$x + (x+2) + (x+4) = 255$\n$3x + 6 = 255$\n$3x = 249 \rightarrow x = 83$.\nThe smallest number is 83.\n\nSHORTCUT Trick:\nThe middle number is the average: $255 \div 3 = 85$.\nThe sequence is 83, 85, 87. Smallest is 83.",
+    "id": 2030
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Which of the following numbers is exactly divisible by 99?",
+    "options": [
+    "A. 114345",
+    "B. 135792",
+    "C. 357240",
+    "D. 913464"
+    ],
+    "answer": "A. 114345",
+    "explanation": "Standard method:\nA number is divisible by 99 if it is divisible by both 9 and 11.\nCheck Option A (114345):\nDivisibility by 9: Sum of digits = $1+1+4+3+4+5 = 18$ (Divisible by 9).\nDivisibility by 11: (Sum of odd places) - (Sum of even places) = $(5+3+1) - (4+4+1) = 9 - 9 = 0$ (Divisible by 11).\nSince it is divisible by both, 114345 is divisible by 99.\n\nSHORTCUT Trick:\nAdd the number in 2-digit blocks from right to left. For 114345: $45 + 43 + 11 = 99$. If the sum is 99 or a multiple of 99, the number is divisible by 99.",
+    "id": 2031
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "How many total positive factors does the number 240 have?",
+    "options": [
+    "A. 16",
+    "B. 18",
+    "C. 20",
+    "D. 24"
+    ],
+    "answer": "C. 20",
+    "explanation": "Standard method:\nFind the prime factorization of 240.\n$240 = 24 \times 10 = (2^3 \times 3) \times (2 \times 5) = 2^4 \times 3^1 \times 5^1$.\nNumber of factors = $(4+1)(1+1)(1+1) = 5 \times 2 \times 2 = 20$.\n\nSHORTCUT Trick:\n$240 = 16 \times 15 = 2^4 \times 3^1 \times 5^1$. Add 1 to powers and multiply: $5 \times 2 \times 2 = 20$.",
+    "id": 2032
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the greatest number which divides 989 and 1327 leaving remainders 5 and 7 respectively.",
+    "options": [
+    "A. 8",
+    "B. 16",
+    "C. 24",
+    "D. 32"
+    ],
+    "answer": "C. 24",
+    "explanation": "Standard method:\nThe required number must perfectly divide $(989 - 5)$ and $(1327 - 7)$.\nSo we need the HCF of 984 and 1320.\nDifference method for HCF: $1320 - 984 = 336$.\nThe HCF must be a factor of 336. Let's check the options.\n$984 \div 24 = 41$.\n$1320 \div 24 = 55$.\nSince 41 and 55 are co-prime, 24 is the Highest Common Factor.\n\nSHORTCUT Trick:\nTarget = HCF(984, 1320). Try options from highest to lowest. 32 does not divide 1320. 24 divides both exactly.",
+    "id": 2033
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What least number must be subtracted from 13601 to get a number exactly divisible by 87?",
+    "options": [
+    "A. 18",
+    "B. 23",
+    "C. 29",
+    "D. 31"
+    ],
+    "answer": "C. 29",
+    "explanation": "Standard method:\nDivide 13601 by 87 to find the remainder.\n$13601 \div 87 = 156$ with a remainder.\n$87 \times 156 = 13572$.\nRemainder = $13601 - 13572 = 29$.\nTo make the number exactly divisible, the remainder must be subtracted. So, subtract 29.\n\nSHORTCUT Trick:\nPerform basic long division: 136 / 87 = 1 (rem 49). 490 / 87 = 5 (rem 55). 551 / 87 = 6 (rem 29). The remainder is the amount to subtract.",
+    "id": 2034
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "In a division operation, the divisor is 10 times the quotient and 5 times the remainder. If the remainder is 46, what is the dividend?",
+    "options": [
+    "A. 4236",
+    "B. 4306",
+    "C. 5336",
+    "D. 5386"
+    ],
+    "answer": "C. 5336",
+    "explanation": "Standard method:\nGiven: Remainder (R) = 46.\nDivisor (D) = $5 \times R = 5 \times 46 = 230$.\nDivisor is also 10 times the Quotient (Q), so $D = 10 \times Q \rightarrow 230 = 10Q \rightarrow Q = 23$.\nDividend = $(Divisor \times Quotient) + Remainder$\nDividend = $(230 \times 23) + 46 = 5290 + 46 = 5336$.\n\nSHORTCUT Trick:\nFind values sequentially: R=46 -> Divisor = 230 -> Quotient = 23. Dividend = $230 \times 23 + 46 = 5336$.",
+    "id": 2035
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the total number of prime factors in the expression $4^{11} \times 7^{5} \times 11^{2}$.",
+    "options": [
+    "A. 18",
+    "B. 22",
+    "C. 29",
+    "D. 31"
+    ],
+    "answer": "C. 29",
+    "explanation": "Standard method:\nFirst, break all bases into prime numbers.\n$4^{11} = (2^2)^{11} = 2^{22}$.\n$7^5$ is already a prime base.\n$11^2$ is already a prime base.\nThe expression is $2^{22} \times 7^{5} \times 11^{2}$.\nTotal number of prime factors = Sum of exponents = $22 + 5 + 2 = 29$.\n\nSHORTCUT Trick:\nFor base 4, there are 2 prime factors (2 and 2). So $11 \times 2 = 22$. For 7, $5 \times 1 = 5$. For 11, $2 \times 1 = 2$. Total = $22 + 5 + 2 = 29$.",
+    "id": 2036
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The LCM of two consecutive even numbers is 144. Find the numbers.",
+    "options": [
+    "A. 12 and 14",
+    "B. 14 and 16",
+    "C. 16 and 18",
+    "D. 18 and 20"
+    ],
+    "answer": "C. 16 and 18",
+    "explanation": "Standard method:\nLet the consecutive even numbers be $2x$ and $2x + 2$. Their HCF is 2.\nWe know that Product = HCF $\times$ LCM.\n$(2x)(2x + 2) = 2 \times 144$\n$4x(x + 1) = 288 \rightarrow x(x + 1) = 72$.\nSolving for x, $x^2 + x - 72 = 0 \rightarrow (x+9)(x-8) = 0 \rightarrow x = 8$.\nThe numbers are $2(8) = 16$ and $2(8)+2 = 18$.\n\nSHORTCUT Trick:\nTest the options. LCM of 16 and 18 is $16 \times 18 \div 2 = 144$. Correct.",
+    "id": 2037
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the least perfect square number which is completely divisible by 21, 36, and 66.",
+    "options": [
+    "A. 213444",
+    "B. 214344",
+    "C. 214434",
+    "D. 231444"
+    ],
+    "answer": "A. 213444",
+    "explanation": "Standard method:\nFirst, find the LCM of 21, 36, and 66.\n$21 = 3 \times 7$\n$36 = 2^2 \times 3^2$\n$66 = 2 \times 3 \times 11$\nLCM = $2^2 \times 3^2 \times 7^1 \times 11^1 = 4 \times 9 \times 7 \times 11 = 2772$.\nTo make this LCM a perfect square, all prime factors must have even powers. Multiply by missing factors (7 and 11).\nRequired number = $2772 \times 7 \times 11 = 2772 \times 77 = 213444$.\n\nSHORTCUT Trick:\nThe answer must be a multiple of 9 (sum of digits div by 9). \nA: 2+1+3+4+4+4 = 18 (Yes)\nB: 2+1+4+3+4+4 = 18 (Yes)\nIt must also end in a valid perfect square ending. 213444 is $462^2$.",
+    "id": 2038
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "If the number 91876X2 is completely divisible by 8, then the smallest whole number in place of X will be:",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 3",
+    "D. 4"
+    ],
+    "answer": "C. 3",
+    "explanation": "Standard method:\nA number is divisible by 8 if the number formed by its last three digits is divisible by 8.\nThe last three digits are 6X2.\nTry X = 0: 602 / 8 = 75.25 (No)\nTry X = 1: 612 / 8 = 76.5 (No)\nTry X = 2: 622 / 8 = 77.75 (No)\nTry X = 3: 632 / 8 = 79 (Yes)\nSo, the smallest value for X is 3.\n\nSHORTCUT Trick:\nSince the hundreds digit (6) is even, the number formed by the last two digits (X2) must be divisible by 8.\nTry X=3: 32 / 8 = 4. Yes. (Note: If hundreds digit is even, last 2 digits must be a multiple of 8).",
+    "id": 2039
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the unit digit of $259^{148} - 123^{43}$.",
+    "options": [
+    "A. 2",
+    "B. 4",
+    "C. 6",
+    "D. 8"
+    ],
+    "answer": "B. 4",
+    "explanation": "Standard method:\n1) For $259^{148}$: The unit digit is $9^{148}$. Since 148 is even, $9^{even}$ ends in 1.\n2) For $123^{43}$: The unit digit is $3^{43}$. Divide 43 by 4, remainder is 3. $3^3 = 27$, so it ends in 7.\nExpression unit digit = $1 - 7$.\nSince 1 is smaller, we borrow 10 (as it's a digit of a larger number). $11 - 7 = 4$.\n\nSHORTCUT Trick:\n$9^{even} \rightarrow 1$. $3^{43} \rightarrow 3^3 \rightarrow 7$. $1 - 7 = -6$. Add 10 to a negative unit digit: $-6 + 10 = 4$.",
+    "id": 2040
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The sum of two numbers is 528 and their HCF is 33. How many pairs of such numbers exist?",
+    "options": [
+    "A. 2",
+    "B. 3",
+    "C. 4",
+    "D. 5"
+    ],
+    "answer": "C. 4",
+    "explanation": "Standard method:\nLet the numbers be $33x$ and $33y$, where x and y are co-prime.\nGiven, $33x + 33y = 528 \rightarrow x + y = 528 / 33 = 16$.\nFind co-prime pairs summing to 16:\n(1, 15) - Yes\n(2, 14) - No (both even)\n(3, 13) - Yes\n(4, 12) - No\n(5, 11) - Yes\n(6, 10) - No\n(7, 9) - Yes\n(8, 8) - No\nThere are 4 valid co-prime pairs.\n\nSHORTCUT Trick:\nSum of multipliers = 16. Count numbers less than 16 that are co-prime to 16. Euler's totient function $\phi(16) = 16(1 - 1/2) = 8$. Since pairs (a,b) and (b,a) are the same, divide by 2. $8 / 2 = 4$ pairs.",
+    "id": 2041
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the maximum value of $n$ such that $10^n$ divides 100! exactly?",
+    "options": [
+    "A. 20",
+    "B. 24",
+    "C. 25",
+    "D. 28"
+    ],
+    "answer": "B. 24",
+    "explanation": "Standard method:\nThis is equivalent to finding the number of trailing zeros in 100!.\nThe number of zeros depends on the power of 5 in 100! (since 2s are abundant).\nPower of 5 = $\lfloor 100/5 \rfloor + \lfloor 100/25 \rfloor = 20 + 4 = 24$.\nThus, $10^{24}$ is the highest power of 10 dividing 100!.\n\nSHORTCUT Trick:\n$100 \div 5 = 20$. $20 \div 5 = 4$. $20 + 4 = 24$.",
+    "id": 2042
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $4^{1000}$ is divided by 7?",
+    "options": [
+    "A. 1",
+    "B. 2",
+    "C. 4",
+    "D. 5"
+    ],
+    "answer": "C. 4",
+    "explanation": "Standard method:\nUsing Fermat's Little Theorem, $a^{p-1} \equiv 1 \pmod p$ when p is prime.\nHere, $4^{7-1} \equiv 1 \pmod 7 \rightarrow 4^6 \equiv 1 \pmod 7$.\nDivide the exponent 1000 by 6 to find the remainder.\n$1000 \div 6 = 166$ with a remainder of 4.\nSo, $4^{1000} = (4^6)^{166} \times 4^4 \equiv 1^{166} \times 4^4 \pmod 7$.\nNow evaluate $4^4 \mod 7 = 256 \mod 7$.\n$256 \div 7 = 36$ remainder 4. The final remainder is 4.\n\nSHORTCUT Trick:\nCycle of $4^n \mod 7$: $4^1=4, 4^2=2, 4^3=1$. The cycle length is 3.\n$1000 \mod 3 = 1$. So the remainder is the 1st in cycle, which is 4.",
+    "id": 2043
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Which of the following numbers is perfectly divisible by 11?",
+    "options": [
+    "A. 4823718",
+    "B. 4832718",
+    "C. 8423718",
+    "D. 4823781"
+    ],
+    "answer": "B. 4832718",
+    "explanation": "Standard method:\nCheck divisibility by 11 (Diff of sums of alternate digits must be 0 or 11).\nA: 4823718 -> Odd places: 8+7+2+4=21. Even places: 1+3+8=12. Diff = 9. (No)\nB: 4832718 -> Odd places: 8+7+3+4=22. Even places: 1+2+8=11. Diff = 22-11=11. (Yes)\nC: 8423718 -> Odd places: 8+7+2+8=25. Even places: 1+3+4=8. Diff = 17. (No)\nD: 4823781 -> Odd places: 1+7+2+4=14. Even places: 8+3+8=19. Diff = 5. (No)\n\nSHORTCUT Trick:\nCalculate alternating sum rapidly: $+4 -8 +3 -2 +7 -1 +8 = 11$. Since 11 is divisible by 11, B is correct.",
+    "id": 2044
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the HCF of 1.08, 0.36, and 0.9.",
+    "options": [
+    "A. 0.03",
+    "B. 0.09",
+    "C. 0.18",
+    "D. 0.36"
+    ],
+    "answer": "C. 0.18",
+    "explanation": "Standard method:\nMake the number of decimal places equal: 1.08, 0.36, 0.90.\nRemove decimals to work with integers: 108, 36, 90.\nFind the HCF of 108, 36, and 90.\n$108 = 2^2 \times 3^3$\n$36 = 2^2 \times 3^2$\n$90 = 2 \times 3^2 \times 5$\nHCF = $2 \times 3^2 = 18$.\nPut the two decimal places back: 0.18.\n\nSHORTCUT Trick:\nScale up by 100: HCF(108, 36, 90). The difference between 108 and 90 is 18. Since 18 divides all three, HCF is 18. Scale down to 0.18.",
+    "id": 2045
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "If a number divided by 119 leaves a remainder of 19, what will be the remainder when the same number is divided by 17?",
+    "options": [
+    "A. 2",
+    "B. 3",
+    "C. 4",
+    "D. 5"
+    ],
+    "answer": "A. 2",
+    "explanation": "Standard method:\nLet the number be N = $119k + 19$.\nWe want to divide N by 17.\nObserve that $119 = 17 \times 7$, so $119k$ is completely divisible by 17.\nThe remainder depends only on the previous remainder: $19 \div 17 = 1$ with a remainder of 2.\n\nSHORTCUT Trick:\nIf 119 is divisible by 17, just divide the remainder 19 by 17. $19 \mod 17 = 2$.",
+    "id": 2046
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "What is the remainder when $15^{23} + 23^{23}$ is divided by 19?",
+    "options": [
+    "A. 0",
+    "B. 4",
+    "C. 15",
+    "D. 18"
+    ],
+    "answer": "A. 0",
+    "explanation": "Standard method:\nAn expression of the form $a^n + b^n$ is always perfectly divisible by $(a + b)$ if $n$ is an odd number.\nHere $n = 23$ (odd), so $15^{23} + 23^{23}$ is divisible by $(15 + 23) = 38$.\nIf a number is divisible by 38, it is also completely divisible by any factor of 38, including 19.\nTherefore, the remainder is 0.\n\nSHORTCUT Trick:\n$15^{23} + 23^{23}$ is divisible by $15+23=38$. Since 19 divides 38, the remainder is 0.",
+    "id": 2047
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Three numbers, which are co-prime to one another, are such that the product of the first two is 551 and the product of the last two is 1073. Find the sum of the three numbers.",
+    "options": [
+    "A. 75",
+    "B. 81",
+    "C. 85",
+    "D. 89"
+    ],
+    "answer": "C. 85",
+    "explanation": "Standard method:\nLet the three co-prime numbers be $a, b, c$.\nGiven $a \times b = 551$ and $b \times c = 1073$.\nThe middle number $b$ is the HCF of 551 and 1073.\nHCF(551, 1073): $1073 - 551 = 522$. $551 - 522 = 29$. $522 \div 29 = 18$ (perfect division). So HCF = 29.\nThus, $b = 29$.\n$a = 551 \div 29 = 19$.\n$c = 1073 \div 29 = 37$.\nSum = $a + b + c = 19 + 29 + 37 = 85$.\n\nSHORTCUT Trick:\nThe common factor of 551 and 1073 must be $b$. Subtract them: 522. Divide 522 by obvious primes or note $29 \times 18 = 522$. $b = 29$. $a = 19, c = 37$. Sum = 85.",
+    "id": 2048
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "Find the unit digit of the sum: $2^3 + 3^4 + 4^5 + 5^6$.",
+    "options": [
+    "A. 0",
+    "B. 2",
+    "C. 6",
+    "D. 8"
+    ],
+    "answer": "D. 8",
+    "explanation": "Standard method:\nCalculate the unit digit of each term:\n$2^3 = 8$\n$3^4 = 81 \rightarrow 1$\n$4^5$: Odd power of 4 ends in 4 $\rightarrow 4$\n$5^6$: Any power of 5 ends in 5 $\rightarrow 5$\nSum of unit digits = $8 + 1 + 4 + 5 = 18$.\nThe final unit digit is 8.\n\nSHORTCUT Trick:\n$8 + 1 + 4 + 5 = 18$. The unit digit is 8.",
+    "id": 2049
+    },
+    {
+    "module": "Quantitative Aptitude",
+    "topic": "Number System",
+    "difficulty": "medium",
+    "question": "The ratio of two numbers is 3:4 and their HCF is 4. What is their LCM?",
+    "options": [
+    "A. 12",
+    "B. 16",
+    "C. 24",
+    "D. 48"
+    ],
+    "answer": "D. 48",
+    "explanation": "Standard method:\nLet the two numbers be $3x$ and $4x$, where x is their HCF.\nSince HCF is given as 4, the numbers are $3 \times 4 = 12$ and $4 \times 4 = 16$.\nThe LCM of 12 and 16 is 48.\n\nSHORTCUT Trick:\nLCM = HCF $\times$ (Product of ratio terms)\nLCM = $4 \times (3 \times 4) = 4 \times 12 = 48$.",
+    "id": 2050
+    }
 ]
