@@ -13,16 +13,6 @@ SLEEP_TIME = 60  # Wait time between calls (lower if your API tier allows)
 
 TARGET_TOPICS = [
     "Number System",
-    "Percentages",
-    "Profit and Loss",
-    "Time, Speed, and Distance",
-    "Time and Work",
-    "Ratio and Proportion",
-    "Simple and Compound Interest"
-    "Averages",
-    "Mensuration",
-    "Algebra",
-    "Geometry and mensuration"
 ]
 
 def generate_prompt(topic: str, difficulty: str) -> str:
@@ -82,7 +72,7 @@ async def main():
     api_key = os.getenv("GEMINI_API_KEY_QUANT") or os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
     
-    runs = ["easy", "medium", "hard"]
+    runs = ["easy"]
     
     print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:

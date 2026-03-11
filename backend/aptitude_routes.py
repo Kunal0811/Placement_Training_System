@@ -32,7 +32,8 @@ def load_specific_db(filename):
 def get_balanced_sample(module_qs, count=20):
     """Fetches exactly 20% Easy, 30% Medium, 50% Hard for Final Exam"""
     easy_qs = [q for q in module_qs if q.get('difficulty') == 'easy']
-    med_qs = [q for q in module_qs if q.get('difficulty') == 'medium']
+    # 🚀 THE FIX: Check for both words here too!
+    med_qs = [q for q in module_qs if q.get('difficulty') in ['medium', 'moderate']]
     hard_qs = [q for q in module_qs if q.get('difficulty') == 'hard']
     
     e_count = int(count * 0.20)
@@ -73,17 +74,28 @@ def get_local_topic_questions(topic: str, count: int, difficulty: str | None = N
     for q in all_qs:
         q_topic = normalize_string_for_match(q.get("topic", ""))
         
-        # Match the topic substring (so AI variations like "Time Speed Distance" match the frontend request)
-        if search_topic in q_topic or q_topic in search_topic:
+        if not search_topic or not q_topic:
+            continue
             
-            # Match difficulty if specified (ignore if user selected 'mixed')
+        if search_topic in q_topic or q_topic in search_topic:
             if difficulty and difficulty.lower() not in ["mixed", "all", "none"]:
-                if q.get("difficulty", "").lower() == difficulty.lower():
+                q_diff = q.get("difficulty", "").strip().lower()
+                req_diff = difficulty.strip().lower()
+                
+                # 🚀 THE FIX: Treat 'moderate' and 'medium' as the same word!
+                if req_diff == "moderate":
+                    req_diff = "medium"
+                if q_diff == "moderate":
+                    q_diff = "medium"
+                
+                if q_diff == req_diff:
                     filtered_qs.append(q)
             else:
                 filtered_qs.append(q)
                 
-    # Return exact amount requested if we have enough
+    print(f"🔍 SEARCHING LOCAL DB: Topic='{topic}' | Diff='{difficulty}'")
+    print(f"📊 FOUND: {len(filtered_qs)} perfect matches out of {len(all_qs)} total questions.")
+
     if len(filtered_qs) >= count:
         return random.sample(filtered_qs, count)
         
