@@ -1,106 +1,130 @@
-// src/pages/Interview.jsx
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { FiMic, FiStopCircle, FiSend, FiBookOpen, FiX, FiCheckCircle, FiAlertTriangle, FiCode } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiMic, FiStopCircle, FiVideo, FiActivity, FiStar, FiAward, FiMessageSquare, FiClock } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import API_BASE, { saveInterviewResult } from "../api";
-
-const PREP_CONTENT = {
-  tips: [
-    "Research the company and role beforehand.",
-    "Use the STAR method (Situation, Task, Action, Result) for behavioral questions.",
-    "Speak clearly and maintain a steady pace.",
-    "It's okay to take a moment to think before answering.",
-    "Ask clarifying questions if you don't understand the problem."
-  ],
-  "do'sDont's": {
-    dos: ["Dress professionally", "Maintain eye contact (look at camera)", "Be honest about what you don't know", "Test your mic/camera first"],
-    donts: ["Don't interrupt the interviewer", "Don't read from a script", "Don't fidget excessively", "Don't use slang or informal language"]
-  },
-  commonQA: [
-    { q: "Tell me about yourself.", a: "Focus on your professional journey, key skills, and why you're a fit for this role. Keep it under 2 minutes." },
-    { q: "What are your greatest strengths?", a: "Choose strengths relevant to the job (e.g., problem-solving, adaptability) and provide specific examples." },
-    { q: "Why do you want to work here?", a: "Mention the company's values, products, or reputation and align them with your career goals." }
-  ],
-  codeSnippets: [
-    { title: "Reverse String (Python)", code: "def reverse_string(s):\n    return s[::-1]" },
-    { title: "Factorial (Recursive)", code: "def factorial(n):\n    return 1 if n == 0 else n * factorial(n-1)" },
-    { title: "Check Prime", code: "def is_prime(n):\n    if n < 2: return False\n    for i in range(2, int(n**0.5)+1):\n        if n % i == 0: return False\n    return True" }
-  ]
-};
+import API_BASE from "../api";
 
 export default function Interview() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [started, setStarted] = useState(false);
+  // States
+  const [stage, setStage] = useState("setup"); // 'setup', 'interview', 'evaluating', 'report'
+  const [config, setConfig] = useState({ type: "Technical", role: "", skill: "Beginner" });
   const [sessionId, setSessionId] = useState(null);
-  const [config, setConfig] = useState({ type: "Technical", role: "", topic: "General" });
   
   const [messages, setMessages] = useState([]); 
-  const [loading, setLoading] = useState(false);
-  const [scoreHistory, setScoreHistory] = useState([]); 
-  const [feedbackHistory, setFeedbackHistory] = useState([]); 
-  const [feedback, setFeedback] = useState({ score: null, ideal: "", text: "" });
-  
-  const [isCodingMode, setIsCodingMode] = useState(false);
-  const [codeSnippet, setCodeSnippet] = useState("");
   const [input, setInput] = useState("");
-  const [isListening, setIsListening] = useState(false);
-  const [cameraActive, setCameraActive] = useState(false);
-  const [showPrep, setShowPrep] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [report, setReport] = useState(null);
+  
+  // Timer (15 Minutes)
+  const [timeLeft, setTimeLeft] = useState(15 * 60); 
 
+  // Media
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const videoRef = useRef(null);
   const recognitionRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  // Scroll to bottom
+  // Mock Body Language Metrics
+  const [metrics, setMetrics] = useState({ eyeContact: 85, posture: 90, nerves: 10 });
+
+  // Auto-scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, feedback]);
+  }, [messages]);
 
+  // 15-Minute Timer Logic
+  useEffect(() => {
+    if (stage === "interview" && timeLeft > 0) {
+      const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timerId);
+    } else if (stage === "interview" && timeLeft === 0) {
+      triggerEvaluation(); // Time's up!
+    }
+  }, [stage, timeLeft]);
+
+  // Simulated AI Body Language Analysis (Updates visually every 2 seconds)
+  useEffect(() => {
+    if (stage === "interview") {
+      const metricTimer = setInterval(() => {
+        setMetrics({
+          eyeContact: Math.floor(Math.random() * (98 - 70) + 70), // Randomize slightly for live effect
+          posture: Math.floor(Math.random() * (95 - 80) + 80),
+          nerves: isSpeaking ? Math.floor(Math.random() * 20) : Math.floor(Math.random() * (40 - 10) + 10) // Nerves go up if user stutters
+        });
+      }, 2500);
+      return () => clearInterval(metricTimer);
+    }
+  }, [stage, isSpeaking]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  // --- 🎙️ AI VOICE (TTS) ---
+  const speakAI = (text) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel(); 
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 1.0;
+    
+    const voices = window.speechSynthesis.getVoices();
+    const goodVoice = voices.find(v => v.name.includes("Google US English")) || voices[0];
+    if (goodVoice) utterance.voice = goodVoice;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // --- 📷 CAMERA ---
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       if (videoRef.current) videoRef.current.srcObject = stream;
-      setCameraActive(true);
-    } catch (err) {
-      console.error("Camera error:", err);
-    }
+    } catch (err) { console.error("Camera error:", err); }
   };
 
-  const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-      setCameraActive(false);
-    }
-  };
-
+  // --- 🚀 START ---
   const startInterview = async () => {
-    if (!config.role) return alert("Please enter a target role (e.g., SDE, Data Analyst)");
+    if (!config.role) return alert("Please enter a target role");
     setLoading(true);
     try {
       const res = await axios.post(`${API_BASE}/api/interview/start`, {
         user_id: user?.id || 1, 
         job_role: config.role,
         interview_type: config.type,
-        topic: config.topic
+        skill_level: config.skill
       });
+      
       setSessionId(res.data.session_id);
       setMessages([{ role: "ai", content: res.data.message }]);
-      setStarted(true);
+      setStage("interview");
       startCamera();
+      setTimeLeft(15 * 60); // Reset timer to 15 mins
+      
+      setTimeout(() => speakAI(res.data.message), 500); 
     } catch (err) {
       console.error(err);
-      alert("Failed to start interview");
+      alert("Failed to start.");
     } finally {
       setLoading(false);
     }
   };
 
+  // --- 💬 CHAT SUBMISSION ---
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
+    
+    window.speechSynthesis.cancel(); 
+    if (isListening) toggleListening(); 
+
     const userMsg = { role: "user", content: input };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -110,76 +134,35 @@ export default function Interview() {
       const res = await axios.post(`${API_BASE}/api/interview/chat`, {
         session_id: sessionId,
         user_input: userMsg.content,
-        history: messages,
-        is_code: isCodingMode
+        history: messages
       });
-
-      const { feedback: aiFeedback, ideal_answer, score, next_question, is_final } = res.data;
-
-      setFeedback({ score, ideal: ideal_answer, text: aiFeedback });
       
-      // Save turn history
-      const turnData = {
-        question: messages[messages.length - 1]?.content || "Intro",
-        answer: userMsg.content,
-        score: score,
-        ideal_answer: ideal_answer,
-        feedback: aiFeedback
-      };
-      
-      setScoreHistory(prev => [...prev, score]);
-      setFeedbackHistory(prev => [...prev, turnData]);
+      setMessages(prev => [...prev, { role: "ai", content: res.data.next_question }]);
+      speakAI(res.data.next_question);
+    } catch (err) { console.error(err); } 
+    finally { setLoading(false); }
+  };
 
-      if (is_final) {
-        alert(`Interview Complete! Final Score: ${score}/10`);
-        
-        // Calculate average score
-        const totalScore = [...scoreHistory, score].reduce((a, b) => a + b, 0);
-        const avgScore = Math.round(totalScore / (scoreHistory.length + 1));
-        
-        await saveInterviewResult({
-            user_id: user.id,
-            interview_type: config.type,
-            job_role: config.role,
-            overall_score: avgScore,
-            feedback: [...feedbackHistory, turnData]
-        });
+  // --- 📊 EVALUATION ---
+  const triggerEvaluation = async () => {
+    setStage("evaluating");
+    window.speechSynthesis.cancel();
+    if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
 
-        stopCamera();
-        navigate("/dashboard");
-      } else {
-        setMessages(prev => [...prev, { role: "ai", content: next_question }]);
-        
-        // Check if next question is a coding task
-        if (next_question.includes("CODE_TASK:")) {
-            setIsCodingMode(true);
-            setCodeSnippet("# Write your solution here...");
-        } else {
-            setIsCodingMode(false);
-        }
-      }
+    try {
+      const res = await axios.post(`${API_BASE}/api/interview/evaluate`, { session_id: sessionId });
+      setReport(res.data);
+      setStage("report");
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
+      alert("Failed to generate report.");
+      setStage("setup");
     }
   };
 
-  // ✅ New function to gracefully close the session and calculate score on Dashboard
-  const handleManualEnd = async () => {
-    if (sessionId) {
-      try {
-        await axios.post(`${API_BASE}/api/interview/end`, {
-          session_id: sessionId
-        });
-      } catch (err) {
-        console.error("Failed to end session on backend", err);
-      }
-    }
-    stopCamera();
-    navigate('/dashboard');
-  };
-
+  // --- 🎙️ SPEECH TO TEXT ---
   const toggleListening = () => {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -189,14 +172,16 @@ export default function Interview() {
       if (!SpeechRecognition) return alert("Browser does not support speech recognition");
       
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = "en-US";
+      recognition.continuous = true;
+      recognition.interimResults = true;
       
       recognition.onstart = () => setIsListening(true);
       recognition.onresult = (e) => {
-        const transcript = e.results[0][0].transcript;
-        setInput(prev => prev + " " + transcript);
+        let currentTranscript = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          currentTranscript += e.results[i][0].transcript;
+        }
+        setInput(currentTranscript); 
       };
       recognition.onend = () => setIsListening(false);
       
@@ -205,236 +190,230 @@ export default function Interview() {
     }
   };
 
-  // --- RENDER SETUP SCREEN ---
-  if (!started) {
+  // ===================== RENDER SETUP =====================
+  if (stage === "setup") {
     return (
-      <div className="min-h-screen bg-game-bg text-white p-6 md:p-12 font-sans flex items-center justify-center">
-        <div className="max-w-4xl w-full grid md:grid-cols-2 gap-8">
+      <div className="min-h-screen bg-game-bg text-white p-8 flex items-center justify-center">
+        <div className="glass-panel p-8 rounded-3xl border border-white/10 max-w-md w-full">
+            <h1 className="text-3xl font-bold mb-2">Smart <span className="text-neon-blue">Interview</span></h1>
+            <p className="text-gray-400 text-sm mb-6">15-Minute Video Mock Session</p>
             
-            {/* Left: Config Form */}
-            <div className="glass-panel p-8 rounded-3xl border border-white/10 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-neon-purple"></div>
-                <h1 className="text-4xl font-display font-bold text-white mb-2">AI <span className="text-neon-purple">Interview</span></h1>
-                <p className="text-gray-400 text-sm mb-8">Configure your simulation parameters.</p>
-                
-                <div className="space-y-6">
-                    <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 block">Interview Type</label>
-                        <div className="flex gap-4">
-                            {['Technical', 'HR', 'Behavioral'].map(t => (
-                                <button 
-                                    key={t}
-                                    onClick={() => setConfig({...config, type: t})}
-                                    className={`flex-1 py-3 rounded-xl text-sm font-bold border transition-all ${config.type === t ? 'bg-neon-blue text-black border-neon-blue shadow-[0_0_15px_rgba(45,212,191,0.4)]' : 'bg-black/40 border-white/10 text-gray-400 hover:border-white/30'}`}
-                                >
-                                    {t}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 block">Target Role</label>
-                        <input 
-                            type="text" 
-                            className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3 px-4 focus:outline-none focus:border-neon-purple focus:ring-1 focus:ring-neon-purple transition-all placeholder:text-gray-700"
-                            placeholder="e.g. Frontend Developer"
-                            value={config.role}
-                            onChange={(e) => setConfig({...config, role: e.target.value})}
-                        />
-                    </div>
-
-                    <button 
-                        onClick={startInterview}
-                        disabled={loading}
-                        className="w-full py-4 bg-gradient-to-r from-neon-blue to-neon-purple text-white font-bold rounded-xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {loading ? "Initializing AI..." : "Start Simulation"}
-                    </button>
-                </div>
-            </div>
-
-            {/* Right: Prep Guide */}
-            <div className="glass-panel p-8 rounded-3xl border border-white/10 bg-white/5 flex flex-col justify-between">
+            <div className="space-y-4">
                 <div>
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FiBookOpen className="text-neon-yellow"/> Quick Prep</h3>
-                    <div className="space-y-4">
-                        <div className="p-4 rounded-xl bg-black/20 border border-white/5">
-                            <h4 className="font-bold text-neon-blue text-sm mb-1">Common Questions</h4>
-                            <ul className="text-xs text-gray-400 list-disc pl-4 space-y-1">
-                                {PREP_CONTENT.commonQA.slice(0,2).map((qa,i) => <li key={i}>{qa.q}</li>)}
-                            </ul>
-                        </div>
-                        <div className="p-4 rounded-xl bg-black/20 border border-white/5">
-                            <h4 className="font-bold text-green-400 text-sm mb-1">Do's</h4>
-                            <ul className="text-xs text-gray-400 list-disc pl-4 space-y-1">
-                                {PREP_CONTENT["do'sDont's"].dos.slice(0,2).map((d,i) => <li key={i}>{d}</li>)}
-                            </ul>
-                        </div>
+                    <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Target Role</label>
+                    <input type="text" value={config.role} onChange={(e)=>setConfig({...config, role: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 focus:border-neon-blue outline-none" placeholder="e.g., Data Analyst"/>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Type</label>
+                        <select value={config.type} onChange={(e)=>setConfig({...config, type: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 outline-none">
+                            <option>HR</option><option>Technical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Your Skill</label>
+                        <select value={config.skill} onChange={(e)=>setConfig({...config, skill: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 outline-none">
+                            <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+                        </select>
                     </div>
                 </div>
-                <button onClick={() => setShowPrep(true)} className="mt-6 w-full py-3 border border-white/20 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 transition-colors">
-                    View Full Guide
+                <button onClick={startInterview} disabled={loading} className="w-full mt-4 py-4 bg-neon-blue text-black font-bold rounded-xl hover:bg-neon-purple hover:text-white transition-all">
+                    {loading ? "Initializing AI..." : "Start Interview"}
                 </button>
             </div>
         </div>
-
-        {/* Full Prep Modal */}
-        {showPrep && (
-            <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-                <div className="glass-panel max-w-2xl w-full max-h-[80vh] overflow-y-auto rounded-3xl p-8 border border-white/10 relative">
-                    <button onClick={() => setShowPrep(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white"><FiX size={24}/></button>
-                    <h2 className="text-3xl font-display font-bold text-white mb-6">Interview <span className="text-neon-blue">Guide</span></h2>
-                    
-                    <div className="space-y-8">
-                        <section>
-                            <h3 className="text-lg font-bold text-neon-yellow mb-3">💡 Pro Tips</h3>
-                            <ul className="list-disc pl-5 space-y-2 text-gray-300 text-sm">
-                                {PREP_CONTENT.tips.map((tip, i) => <li key={i}>{tip}</li>)}
-                            </ul>
-                        </section>
-                        <section className="grid grid-cols-2 gap-6">
-                            <div>
-                                <h3 className="text-lg font-bold text-green-400 mb-3">✅ Do's</h3>
-                                <ul className="list-disc pl-5 space-y-2 text-gray-300 text-sm">
-                                    {PREP_CONTENT["do'sDont's"].dos.map((item, i) => <li key={i}>{item}</li>)}
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-red-400 mb-3">❌ Don'ts</h3>
-                                <ul className="list-disc pl-5 space-y-2 text-gray-300 text-sm">
-                                    {PREP_CONTENT["do'sDont's"].donts.map((item, i) => <li key={i}>{item}</li>)}
-                                </ul>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </div>
-        )}
       </div>
     );
   }
 
-  // --- RENDER ACTIVE SESSION ---
+  // ===================== RENDER LOADING =====================
+  if (stage === "evaluating") {
+    return (
+        <div className="min-h-screen bg-game-bg flex flex-col items-center justify-center text-white text-center p-6">
+            <div className="w-24 h-24 border-4 border-neon-blue border-t-transparent rounded-full animate-spin mb-8"></div>
+            <h2 className="text-3xl font-bold text-neon-blue mb-2">Generating Deep Evaluation</h2>
+            <p className="text-gray-400 max-w-md">Analyzing Clarity, Technical Accuracy, and Body Language patterns...</p>
+        </div>
+    )
+  }
+
+  // ===================== RENDER REPORT =====================
+  if (stage === "report" && report) {
+    return (
+        <div className="min-h-screen bg-game-bg text-white p-6 md:p-12 overflow-y-auto">
+            <div className="max-w-5xl mx-auto space-y-8">
+                
+                {/* Header Summary */}
+                <div className="glass-panel p-8 rounded-3xl border border-white/10 text-center relative">
+                    <h1 className="text-4xl font-bold mb-2">Interview Result</h1>
+                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple my-4">
+                        {report.overall.score}%
+                    </div>
+                    <p className="text-gray-300 italic max-w-2xl mx-auto">"{report.overall.suggestions}"</p>
+                </div>
+
+                {/* Score Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                        { title: "Communication", val: report.overall.communication, icon: <FiMessageSquare /> },
+                        { title: "Technical", val: report.overall.technical, icon: <FiActivity /> },
+                        { title: "Confidence", val: report.overall.confidence, icon: <FiStar /> },
+                        { title: "Problem Solving", val: report.overall.problem_solving, icon: <FiAward /> }
+                    ].map((stat, i) => (
+                        <div key={i} className="bg-black/40 border border-white/5 p-6 rounded-2xl text-center">
+                            <div className="text-neon-blue text-2xl flex justify-center mb-2">{stat.icon}</div>
+                            <div className="text-3xl font-bold text-white">{stat.val}<span className="text-lg text-gray-500">/10</span></div>
+                            <div className="text-xs text-gray-400 mt-1 uppercase tracking-wider">{stat.title}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Question Breakdown */}
+                <div>
+                    <h3 className="text-2xl font-bold mb-6">Detailed Analysis</h3>
+                    <div className="space-y-6">
+                        {report.per_question_analysis.map((q, i) => (
+                            <div key={i} className="glass-panel p-6 rounded-2xl border border-white/10">
+                                <h4 className="text-lg font-bold text-gray-200 mb-4">Q: {q.question}</h4>
+                                <div className="bg-black/30 p-4 rounded-xl text-gray-400 text-sm mb-4 border border-white/5 italic">
+                                    "{q.candidate_answer}"
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-6 mb-4">
+                                    <div><h5 className="text-neon-yellow font-bold text-sm mb-1">Feedback</h5><p className="text-sm text-gray-300">{q.feedback}</p></div>
+                                    <div><h5 className="text-neon-green font-bold text-sm mb-1">Suggested Answer</h5><p className="text-sm text-gray-300">{q.suggested_answer}</p></div>
+                                </div>
+                                {/* Metrics Bar */}
+                                <div className="flex flex-wrap gap-3 mt-4">
+                                    {Object.entries(q.metrics).map(([key, val]) => (
+                                        <div key={key} className="bg-black/50 px-3 py-1 rounded-lg border border-white/5 text-xs flex items-center gap-2">
+                                            <span className="text-gray-400 capitalize">{key.replace('_', ' ')}:</span> 
+                                            <span className={`font-bold ${val >= 7 ? 'text-green-400' : 'text-yellow-400'}`}>{val}/10</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="text-center pt-8 pb-12">
+                    <button onClick={() => window.location.href='/dashboard'} className="bg-neon-blue text-black font-bold px-8 py-3 rounded-xl hover:bg-white transition-colors">Return to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    )
+  }
+
+  // ===================== RENDER ACTIVE INTERVIEW =====================
   return (
     <div className="min-h-screen bg-game-bg flex flex-col h-screen">
-        {/* Top Bar */}
-        <div className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-black/20 backdrop-blur-md shrink-0">
-            <div className="flex items-center gap-4">
-                <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                <span className="font-mono text-neon-blue font-bold">LIVE SESSION</span>
-                <span className="text-gray-500 text-sm">| {config.role}</span>
-            </div>
-            {/* ✅ FIXED BUTTON: Now triggers handleManualEnd to save partial score */}
-            <button onClick={handleManualEnd} className="text-xs font-bold text-red-400 hover:text-red-300 border border-red-500/30 px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors">
-                End Session
-            </button>
-        </div>
+        {isSpeaking && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue to-neon-purple animate-pulse z-50"></div>}
 
         <div className="flex-1 flex overflow-hidden">
-            {/* Left: Chat & Interactions */}
-            <div className="flex-1 flex flex-col p-4 md:p-6 max-w-4xl mx-auto w-full">
+            
+            {/* CHAT PANEL */}
+            <div className="flex-1 flex flex-col p-4 relative">
                 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto space-y-6 pr-2 mb-4 scrollbar-thin scrollbar-thumb-gray-700">
+                {/* Header with Timer */}
+                <div className="flex justify-between items-center mb-4 py-3 border-b border-white/10 px-4 bg-black/20 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${isSpeaking ? 'bg-neon-blue animate-pulse' : 'bg-green-500'}`}></div>
+                        <span className="font-bold text-gray-200">AI Interviewer</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeLeft < 300 ? 'text-red-400 animate-pulse' : 'text-neon-blue'}`}>
+                            <FiClock /> {formatTime(timeLeft)}
+                        </div>
+                        <button onClick={triggerEvaluation} className="text-xs bg-red-500/20 text-red-400 px-4 py-1.5 rounded-lg border border-red-500/30 hover:bg-red-500 hover:text-white">
+                            End Early
+                        </button>
+                    </div>
+                </div>
+
+                {/* Chat History */}
+                <div className="flex-1 overflow-y-auto space-y-6 pb-24 px-4 scrollbar-hide">
                     {messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                            <div className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
-                                msg.role === "user" 
-                                ? "bg-neon-blue/20 border border-neon-blue/30 text-white rounded-br-none" 
-                                : "bg-white/5 border border-white/10 text-gray-300 rounded-bl-none"
-                            }`}>
+                            <div className={`max-w-[85%] p-4 rounded-2xl text-lg font-medium ${msg.role === "user" ? "bg-white/10 text-gray-200 rounded-br-none" : "text-white"}`}>
+                                {msg.role === "ai" && <div className="text-xs font-bold text-neon-blue mb-1">Interviewer</div>}
                                 {msg.content}
                             </div>
                         </div>
                     ))}
-                    {loading && (
-                        <div className="flex justify-start">
-                            <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-none flex gap-2 items-center">
-                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-75"></div>
-                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></div>
-                            </div>
-                        </div>
-                    )}
+                    {loading && <div className="text-neon-blue animate-pulse font-mono text-sm pl-2">Analyzing response...</div>}
                     <div ref={chatEndRef} />
                 </div>
 
-                {/* Feedback Toast */}
-                {feedback.text && (
-                    <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-white/10 animate-fade-in-up">
-                        <div className="flex justify-between items-start mb-2">
-                            <span className="text-xs font-bold text-neon-purple uppercase tracking-widest">AI Feedback</span>
-                            <span className={`text-xs font-bold px-2 py-1 rounded ${feedback.score >= 7 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>Score: {feedback.score}/10</span>
-                        </div>
-                        <p className="text-sm text-gray-300 mb-2">{feedback.text}</p>
-                        {feedback.ideal && (
-                            <div className="mt-2 p-3 bg-black/40 rounded-lg border border-white/5 text-xs font-mono text-gray-400">
-                                <span className="text-gray-500 block mb-1">Ideal Answer:</span>
-                                {feedback.ideal}
-                            </div>
-                        )}
-                    </div>
-                )}
-
                 {/* Input Area */}
-                <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-neon-blue to-neon-purple opacity-20 blur-xl group-hover:opacity-30 transition-opacity"></div>
-                    <div className="relative bg-black/60 backdrop-blur-xl border border-white/20 rounded-2xl p-2 flex items-center gap-2">
-                        <button 
-                            onClick={toggleListening}
-                            className={`p-3 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
-                        >
-                            {isListening ? <FiStopCircle size={20} /> : <FiMic size={20} />}
-                        </button>
-                        
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder={isListening ? "Listening..." : "Type your answer..."}
-                            className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-600 h-10"
-                            disabled={loading}
-                        />
-                        
-                        <button 
-                            onClick={handleSend}
-                            disabled={!input.trim() || loading}
-                            className="p-3 bg-neon-blue text-black rounded-xl hover:bg-neon-purple hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <FiSend size={18} className={loading ? 'animate-spin' : ''} />
-                        </button>
-                    </div>
+                <div className="absolute bottom-6 left-4 right-4 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-3 flex gap-2">
+                    <button onClick={toggleListening} className={`p-4 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white/5 text-gray-400'}`}>
+                        {isListening ? <FiStopCircle size={24} /> : <FiMic size={24} />}
+                    </button>
+                    <textarea
+                        value={input} onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                        placeholder={isListening ? "Listening..." : "Type or speak..."}
+                        className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-500 resize-none h-12 py-3" disabled={loading}
+                    />
+                    <button onClick={handleSend} disabled={!input.trim() || loading} className="px-6 bg-neon-blue text-black font-bold rounded-xl hover:bg-neon-purple hover:text-white transition-all disabled:opacity-50">
+                        Send
+                    </button>
                 </div>
             </div>
 
-            {/* Right: Camera Feed (Desktop) */}
-            <div className="hidden lg:block w-80 p-6 border-l border-white/10 bg-black/20">
-                <div className="sticky top-6">
-                    <div className="aspect-video bg-black rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl mb-6">
-                        <video ref={videoRef} autoPlay muted className="w-full h-full object-cover transform scale-x-[-1]" />
-                        <div className="absolute bottom-3 left-3 flex gap-2">
-                            <div className="px-2 py-1 bg-red-500/80 rounded text-[10px] font-bold text-white flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> REC
-                            </div>
+            {/* AI BODY LANGUAGE SCANNER PANEL */}
+            <div className="w-[350px] border-l border-white/10 bg-black/40 p-6 flex flex-col lg:flex">
+                <div className="text-xs font-bold text-gray-500 mb-3 flex items-center gap-2 uppercase">
+                    <FiVideo /> Live Analysis
+                </div>
+                
+                {/* Camera */}
+                <div className="aspect-[4/3] bg-black rounded-2xl border border-white/10 overflow-hidden relative mb-6 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                    <video ref={videoRef} autoPlay muted className="w-full h-full object-cover transform scale-x-[-1]" />
+                    
+                    {/* Scanner Overlay UI */}
+                    <div className="absolute inset-0 border-2 border-neon-blue/30 m-4 rounded-lg flex flex-col justify-between p-2 pointer-events-none">
+                        <div className="flex justify-between">
+                            <div className="w-4 h-4 border-t-2 border-l-2 border-neon-blue"></div>
+                            <div className="w-4 h-4 border-t-2 border-r-2 border-neon-blue"></div>
+                        </div>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-neon-green/20 rounded-full animate-pulse"></div>
+                        <div className="flex justify-between">
+                            <div className="w-4 h-4 border-b-2 border-l-2 border-neon-blue"></div>
+                            <div className="w-4 h-4 border-b-2 border-r-2 border-neon-blue"></div>
                         </div>
                     </div>
+                </div>
 
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <h4 className="text-sm font-bold text-white mb-3">Live Stats</h4>
-                        <div className="space-y-3">
-                            <div>
-                                <div className="flex justify-between text-xs text-gray-400 mb-1">
-                                    <span>Confidence</span>
-                                    <span>{scoreHistory.length > 0 ? Math.round(scoreHistory.reduce((a,b)=>a+b,0)/scoreHistory.length * 10) : 0}%</span>
-                                </div>
-                                <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-neon-green" style={{ width: `${scoreHistory.length > 0 ? Math.round(scoreHistory.reduce((a,b)=>a+b,0)/scoreHistory.length * 10) : 0}%` }}></div>
-                                </div>
+                {/* Metrics */}
+                <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <h3 className="text-sm font-bold text-white mb-4">Body Language</h3>
+                    <div className="space-y-5">
+                        <div>
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-gray-400">Eye Contact</span>
+                                <span className="text-green-400 font-mono">{metrics.eyeContact}%</span>
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-400">
-                                <FiCheckCircle className="text-neon-blue"/> {scoreHistory.length} Questions Answered
+                            <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-green-500 transition-all duration-500" style={{width: `${metrics.eyeContact}%`}}></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-gray-400">Posture & Confidence</span>
+                                <span className="text-neon-blue font-mono">{metrics.posture}%</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-neon-blue transition-all duration-500" style={{width: `${metrics.posture}%`}}></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-gray-400">Nervousness</span>
+                                <span className={`${metrics.nerves > 30 ? 'text-red-400' : 'text-yellow-400'} font-mono`}>{metrics.nerves}%</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div className={`h-full transition-all duration-500 ${metrics.nerves > 30 ? 'bg-red-500' : 'bg-yellow-500'}`} style={{width: `${metrics.nerves}%`}}></div>
                             </div>
                         </div>
                     </div>

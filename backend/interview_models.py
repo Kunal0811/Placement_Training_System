@@ -8,15 +8,23 @@ class InterviewSession(Base):
     __tablename__ = "interview_sessions"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True) # Link to your User table if exists
+    user_id = Column(Integer, index=True) 
     job_role = Column(String(100))
     difficulty = Column(String(50))
-    interview_type = Column(String(50)) # HR, Technical, Managerial
+    interview_type = Column(String(50)) 
     topic = Column(String(100))
     start_time = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime, nullable=True)
+    
+    # --- NEW: Detailed Metrics ---
     overall_score = Column(Float, nullable=True)
-    feedback_summary = Column(Text, nullable=True)
+    communication_score = Column(Float, nullable=True)
+    technical_score = Column(Float, nullable=True)
+    confidence_score = Column(Float, nullable=True)
+    problem_solving_score = Column(Float, nullable=True)
+    
+    # Store the entire final JSON report here for easy retrieval
+    feedback_summary = Column(Text, nullable=True) 
 
     turns = relationship("InterviewTurn", back_populates="session")
 
@@ -27,15 +35,9 @@ class InterviewTurn(Base):
     session_id = Column(Integer, ForeignKey("interview_sessions.id"))
     
     question_text = Column(Text)
-    question_type = Column(String(50)) # Behavioral, Technical
+    question_type = Column(String(50)) 
     
     user_answer_text = Column(Text, nullable=True)
-    user_answer_audio_url = Column(String(255), nullable=True) # Optional if we store audio
-    
-    ai_score = Column(Integer, nullable=True) # 0-10
-    ai_feedback = Column(Text, nullable=True)
-    ai_suggested_answer = Column(Text, nullable=True)
-    
     turn_number = Column(Integer)
 
     session = relationship("InterviewSession", back_populates="turns")

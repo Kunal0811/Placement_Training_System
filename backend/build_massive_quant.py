@@ -8,7 +8,7 @@ DATASET_PATH = "quant_dataset.json"
 MODULE_NAME = "Quantitative Aptitude"
 
 # 🚀 SPEED UP TWEAKS:
-BATCH_SIZE = 30  # Number of questions to generate per API call
+BATCH_SIZE = 19  # Number of questions to generate per API call
 SLEEP_TIME = 60  # Wait time between calls (lower if your API tier allows)
 
 TARGET_TOPICS = [
