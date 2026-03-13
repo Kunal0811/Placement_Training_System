@@ -30236,7 +30236,7 @@
     "D. 27"
     ],
     "answer": "B. 5",
-    "explanation": "Standard method:\nLet the number be N. Then $N = 899k + 63$ for some integer k.\nWe need to find the remainder when N is divided by 29.\nNote that $899 = 29 \times 31$. Since 899 is a perfect multiple of 29, the term $899k$ is perfectly divisible by 29.\nThe remainder will solely depend on dividing 63 by 29.\n$63 \div 29 = 2$ with a remainder of 5.\n\nSHORTCUT Trick:\nIf the first divisor (899) is a multiple of the second (29), just divide the first remainder (63) by the second divisor. $63 \mod 29 = 5$.",
+    "explanation": "Standard method:\nLet the number be N. Then $N = 899k + 63$ for some integer k.\nWe need to find the remainder when N is divided by 29.\nNote that $899 = 29 \times 31$. Since 899 is a perfect multiple of 29, the term $899k$ is perfectly divisible by 29.\nThe remainder will solely depend on dividing 63 by 29.\n$63 \\div 29 = 2$ with a remainder of 5.\n\nSHORTCUT Trick:\nIf the first divisor (899) is a multiple of the second (29), just divide the first remainder (63) by the second divisor. $63 \\mod 29 = 5$.",
     "id": 2016
     },
     {
@@ -30251,7 +30251,7 @@
     "D. 3"
     ],
     "answer": "D. 3",
-    "explanation": "Standard method:\nLet the number be $N = 6k + 3$.\nSquare the number: $N^2 = (6k + 3)^2 = 36k^2 + 36k + 9$.\nWe want the remainder when this is divided by 6.\nThe terms $36k^2$ and $36k$ are perfectly divisible by 6.\nSo, we only need to divide 9 by 6.\n$9 \div 6 = 1$ with a remainder of 3.\n\nSHORTCUT Trick:\nJust square the original remainder. Original remainder = 3. Square = 9. $9 \div 6$ leaves a remainder of 3.",
+    "explanation": "Standard method:\nLet the number be $N = 6k + 3$.\nSquare the number: $N^2 = (6k + 3)^2 = 36k^2 + 36k + 9$.\nWe want the remainder when this is divided by 6.\nThe terms $36k^2$ and $36k$ are perfectly divisible by 6.\nSo, we only need to divide 9 by 6.\n$9 \\div 6 = 1$ with a remainder of 3.\n\nSHORTCUT Trick:\nJust square the original remainder. Original remainder = 3. Square = 9. $9 \\div 6$ leaves a remainder of 3.",
     "id": 2017
     },
     {
@@ -30266,7 +30266,7 @@
     "D. 9"
     ],
     "answer": "A. 1",
-    "explanation": "Standard method:\nFind the unit digit for each term. Both bases end in 7, so we use the cyclicity of 7 (which is 4).\n1) For $137^{13}$: Exponent is 13. $13 \div 4$ leaves remainder 1. So unit digit is $7^1 = 7$.\n2) For $47^{47}$: Exponent is 47. $47 \div 4$ leaves remainder 3. So unit digit is $7^3 = 343 \rightarrow 3$.\nNow multiply the unit digits: $7 \times 3 = 21$.\nThe final unit digit is 1.\n\nSHORTCUT Trick:\n$7^{(13 \mod 4)} \times 7^{(47 \mod 4)} = 7^1 \times 7^3 = 7 \times 3 = 21 \rightarrow 1$.",
+    "explanation": "Standard method:\nFind the unit digit for each term. Both bases end in 7, so we use the cyclicity of 7 (which is 4).\n1) For $137^{13}$: Exponent is 13. $13 \\div 4$ leaves remainder 1. So unit digit is $7^1 = 7$.\n2) For $47^{47}$: Exponent is 47. $47 \\div 4$ leaves remainder 3. So unit digit is $7^3 = 343 \rightarrow 3$.\nNow multiply the unit digits: $7 \times 3 = 21$.\nThe final unit digit is 1.\n\nSHORTCUT Trick:\n$7^{(13 \\mod 4)} \times 7^{(47 \\mod 4)} = 7^1 \times 7^3 = 7 \times 3 = 21 \rightarrow 1$.",
     "id": 2018
     },
     {
@@ -30326,7 +30326,7 @@
     "D. 4 hours"
     ],
     "answer": "C. 3 hours",
-    "explanation": "Standard method:\nThe time after which they toll together again is the Least Common Multiple (LCM) of their individual tolling intervals.\nFind the LCM of 9, 12, and 15.\n$9 = 3^2$\n$12 = 2^2 \times 3$\n$15 = 3 \times 5$\nLCM = $2^2 \times 3^2 \times 5 = 4 \times 9 \times 5 = 180$ minutes.\nConvert 180 minutes to hours: $180 \div 60 = 3$ hours.\n\nSHORTCUT Trick:\nLCM of 9, 12, 15 is $3 \times 3 \times 4 \times 5 = 180$ mins = 3 hours.",
+    "explanation": "Standard method:\nThe time after which they toll together again is the Least Common Multiple (LCM) of their individual tolling intervals.\nFind the LCM of 9, 12, and 15.\n$9 = 3^2$\n$12 = 2^2 \times 3$\n$15 = 3 \times 5$\nLCM = $2^2 \times 3^2 \times 5 = 4 \times 9 \times 5 = 180$ minutes.\nConvert 180 minutes to hours: $180 \\div 60 = 3$ hours.\n\nSHORTCUT Trick:\nLCM of 9, 12, 15 is $3 \times 3 \times 4 \times 5 = 180$ mins = 3 hours.",
     "id": 2022
     },
     {
@@ -30341,7 +30341,7 @@
     "D. 25"
     ],
     "answer": "B. 17",
-    "explanation": "Standard method:\nFirst, find the count of numbers up to 100 divisible by 4: $\lfloor 100 \div 4 \rfloor = 25$.\nNow, find how many of these are ALSO divisible by 3. A number divisible by both 4 and 3 is a multiple of their LCM, which is 12.\nCount of numbers up to 100 divisible by 12: $\lfloor 100 \div 12 \rfloor = 8$.\nSubtract the overlapping multiples (divisible by 12) from the total multiples of 4:\n$25 - 8 = 17$.\n\nSHORTCUT Trick:\nTotal divisible by 4 = 25. Total divisible by 12 = 8. Just do 25 - 8 = 17.",
+    "explanation": "Standard method:\nFirst, find the count of numbers up to 100 divisible by 4: $\\lfloor 100 \\div 4 \rfloor = 25$.\nNow, find how many of these are ALSO divisible by 3. A number divisible by both 4 and 3 is a multiple of their LCM, which is 12.\nCount of numbers up to 100 divisible by 12: $\\lfloor 100 \\div 12 \rfloor = 8$.\nSubtract the overlapping multiples (divisible by 12) from the total multiples of 4:\n$25 - 8 = 17$.\n\nSHORTCUT Trick:\nTotal divisible by 4 = 25. Total divisible by 12 = 8. Just do 25 - 8 = 17.",
     "id": 2023
     },
     {
@@ -30356,7 +30356,7 @@
     "D. 120/11"
     ],
     "answer": "B. 11/600",
-    "explanation": "Standard method:\nLet the two numbers be $x$ and $y$.\nWe know that $x + y = 55$.\nWe also know that Product of numbers = HCF $\times$ LCM. So, $x \times y = 5 \times 120 = 600$.\nWe need to find the sum of their reciprocals: $\frac{1}{x} + \frac{1}{y} = \frac{x + y}{xy}$.\nSubstitute the known values: $\frac{55}{600}$.\nSimplify the fraction by dividing numerator and denominator by 5: $\frac{11}{120}$.\nWait, $55 \div 5 = 11$, $600 \div 5 = 120$. So 11/120. \nWait, look at my options: A. 11/120, B. 11/600. Let me check my calculation. 55/600 = 11/120. Option A is 11/120. Let me change my answer key to A.\nActually, let's keep the exact values. Sum of reciprocals = Sum / Product = 55 / 600 = 11/120.\n\nCorrected Options internally: A. 11/120, B. 11/600, C. 55/120, D. 120/11\n\nSHORTCUT Trick:\nSum of reciprocals = Sum / (HCF * LCM) = 55 / (5 * 120) = 11 / 120.",
+    "explanation": "Standard method:\nLet the two numbers be $x$ and $y$.\nWe know that $x + y = 55$.\nWe also know that Product of numbers = HCF $\times$ LCM. So, $x \times y = 5 \times 120 = 600$.\nWe need to find the sum of their reciprocals: $\frac{1}{x} + \frac{1}{y} = \frac{x + y}{xy}$.\nSubstitute the known values: $\frac{55}{600}$.\nSimplify the fraction by dividing numerator and denominator by 5: $\frac{11}{120}$.\nWait, $55 \\div 5 = 11$, $600 \\div 5 = 120$. So 11/120. \nWait, look at my options: A. 11/120, B. 11/600. Let me check my calculation. 55/600 = 11/120. Option A is 11/120. Let me change my answer key to A.\nActually, let's keep the exact values. Sum of reciprocals = Sum / Product = 55 / 600 = 11/120.\n\nCorrected Options internally: A. 11/120, B. 11/600, C. 55/120, D. 120/11\n\nSHORTCUT Trick:\nSum of reciprocals = Sum / (HCF * LCM) = 55 / (5 * 120) = 11 / 120.",
     "id": 2024
     },
     {
@@ -30386,7 +30386,7 @@
     "D. 5"
     ],
     "answer": "C. 3",
-    "explanation": "Standard method:\nUse modular arithmetic properties.\nWe know that $7 \equiv 1 \pmod 6$.\nTherefore, $7^{19} \equiv 1^{19} \pmod 6 \equiv 1 \pmod 6$.\nNow, substitute this back into the full expression:\n$(7^{19} + 2) \mod 6 = (1 + 2) \mod 6 = 3$.\nThe remainder is 3.\n\nSHORTCUT Trick:\n$(7^n) \div 6$ always leaves a remainder of 1. So, $1 + 2 = 3$.",
+    "explanation": "Standard method:\nUse modular arithmetic properties.\nWe know that $7 \\equiv 1 \\pmod 6$.\nTherefore, $7^{19} \\equiv 1^{19} \\pmod 6 \\equiv 1 \\pmod 6$.\nNow, substitute this back into the full expression:\n$(7^{19} + 2) \\mod 6 = (1 + 2) \\mod 6 = 3$.\nThe remainder is 3.\n\nSHORTCUT Trick:\n$(7^n) \\div 6$ always leaves a remainder of 1. So, $1 + 2 = 3$.",
     "id": 2026
     },
     {
@@ -30401,7 +30401,7 @@
     "D. 7"
     ],
     "answer": "D. 7",
-    "explanation": "Standard method:\nUsing modular arithmetic:\n$9 \equiv 1 \pmod 8$.\nThus, $9^{19} \equiv 1^{19} \pmod 8 \equiv 1 \pmod 8$.\nNow evaluate the whole expression modulo 8:\n$(9^{19} + 6) \mod 8 = (1 + 6) \mod 8 = 7$.\nThe remainder is 7.\n\nSHORTCUT Trick:\n$9 \div 8$ leaves remainder 1. $1^{19} = 1$. Add the 6 to get 7.",
+    "explanation": "Standard method:\nUsing modular arithmetic:\n$9 \\equiv 1 \\pmod 8$.\nThus, $9^{19} \\equiv 1^{19} \\pmod 8 \\equiv 1 \\pmod 8$.\nNow evaluate the whole expression modulo 8:\n$(9^{19} + 6) \\mod 8 = (1 + 6) \\mod 8 = 7$.\nThe remainder is 7.\n\nSHORTCUT Trick:\n$9 \\div 8$ leaves remainder 1. $1^{19} = 1$. Add the 6 to get 7.",
     "id": 2027
     },
     {
@@ -30416,7 +30416,7 @@
     "D. 222"
     ],
     "answer": "A. 111",
-    "explanation": "Standard method:\nLet the two numbers be $37x$ and $37y$, where x and y are co-prime integers.\nTheir product is $(37x) \times (37y) = 4107$.\n$1369xy = 4107 \rightarrow xy = 4107 \div 1369 = 3$.\nThe only co-prime integer pair (x, y) whose product is 3 is (1, 3).\nSo the numbers are $37 \times 1 = 37$ and $37 \times 3 = 111$.\nThe greater number is 111.\n\nSHORTCUT Trick:\n$xy = 4107 / 37^2 = 4107 / 1369 = 3$. The pairs are 1 and 3. Greater number is $3 \times 37 = 111$.",
+    "explanation": "Standard method:\nLet the two numbers be $37x$ and $37y$, where x and y are co-prime integers.\nTheir product is $(37x) \times (37y) = 4107$.\n$1369xy = 4107 \rightarrow xy = 4107 \\div 1369 = 3$.\nThe only co-prime integer pair (x, y) whose product is 3 is (1, 3).\nSo the numbers are $37 \times 1 = 37$ and $37 \times 3 = 111$.\nThe greater number is 111.\n\nSHORTCUT Trick:\n$xy = 4107 / 37^2 = 4107 / 1369 = 3$. The pairs are 1 and 3. Greater number is $3 \times 37 = 111$.",
     "id": 2028
     },
     {
@@ -30446,7 +30446,7 @@
     "D. 87"
     ],
     "answer": "B. 83",
-    "explanation": "Standard method:\nLet the three consecutive odd numbers be $x, x+2,$ and $x+4$.\n$x + (x+2) + (x+4) = 255$\n$3x + 6 = 255$\n$3x = 249 \rightarrow x = 83$.\nThe smallest number is 83.\n\nSHORTCUT Trick:\nThe middle number is the average: $255 \div 3 = 85$.\nThe sequence is 83, 85, 87. Smallest is 83.",
+    "explanation": "Standard method:\nLet the three consecutive odd numbers be $x, x+2,$ and $x+4$.\n$x + (x+2) + (x+4) = 255$\n$3x + 6 = 255$\n$3x = 249 \rightarrow x = 83$.\nThe smallest number is 83.\n\nSHORTCUT Trick:\nThe middle number is the average: $255 \\div 3 = 85$.\nThe sequence is 83, 85, 87. Smallest is 83.",
     "id": 2030
     },
     {
@@ -30491,7 +30491,7 @@
     "D. 32"
     ],
     "answer": "C. 24",
-    "explanation": "Standard method:\nThe required number must perfectly divide $(989 - 5)$ and $(1327 - 7)$.\nSo we need the HCF of 984 and 1320.\nDifference method for HCF: $1320 - 984 = 336$.\nThe HCF must be a factor of 336. Let's check the options.\n$984 \div 24 = 41$.\n$1320 \div 24 = 55$.\nSince 41 and 55 are co-prime, 24 is the Highest Common Factor.\n\nSHORTCUT Trick:\nTarget = HCF(984, 1320). Try options from highest to lowest. 32 does not divide 1320. 24 divides both exactly.",
+    "explanation": "Standard method:\nThe required number must perfectly divide $(989 - 5)$ and $(1327 - 7)$.\nSo we need the HCF of 984 and 1320.\nDifference method for HCF: $1320 - 984 = 336$.\nThe HCF must be a factor of 336. Let's check the options.\n$984 \\div 24 = 41$.\n$1320 \\div 24 = 55$.\nSince 41 and 55 are co-prime, 24 is the Highest Common Factor.\n\nSHORTCUT Trick:\nTarget = HCF(984, 1320). Try options from highest to lowest. 32 does not divide 1320. 24 divides both exactly.",
     "id": 2033
     },
     {
@@ -30506,7 +30506,7 @@
     "D. 31"
     ],
     "answer": "C. 29",
-    "explanation": "Standard method:\nDivide 13601 by 87 to find the remainder.\n$13601 \div 87 = 156$ with a remainder.\n$87 \times 156 = 13572$.\nRemainder = $13601 - 13572 = 29$.\nTo make the number exactly divisible, the remainder must be subtracted. So, subtract 29.\n\nSHORTCUT Trick:\nPerform basic long division: 136 / 87 = 1 (rem 49). 490 / 87 = 5 (rem 55). 551 / 87 = 6 (rem 29). The remainder is the amount to subtract.",
+    "explanation": "Standard method:\nDivide 13601 by 87 to find the remainder.\n$13601 \\div 87 = 156$ with a remainder.\n$87 \times 156 = 13572$.\nRemainder = $13601 - 13572 = 29$.\nTo make the number exactly divisible, the remainder must be subtracted. So, subtract 29.\n\nSHORTCUT Trick:\nPerform basic long division: 136 / 87 = 1 (rem 49). 490 / 87 = 5 (rem 55). 551 / 87 = 6 (rem 29). The remainder is the amount to subtract.",
     "id": 2034
     },
     {
@@ -30551,7 +30551,7 @@
     "D. 18 and 20"
     ],
     "answer": "C. 16 and 18",
-    "explanation": "Standard method:\nLet the consecutive even numbers be $2x$ and $2x + 2$. Their HCF is 2.\nWe know that Product = HCF $\times$ LCM.\n$(2x)(2x + 2) = 2 \times 144$\n$4x(x + 1) = 288 \rightarrow x(x + 1) = 72$.\nSolving for x, $x^2 + x - 72 = 0 \rightarrow (x+9)(x-8) = 0 \rightarrow x = 8$.\nThe numbers are $2(8) = 16$ and $2(8)+2 = 18$.\n\nSHORTCUT Trick:\nTest the options. LCM of 16 and 18 is $16 \times 18 \div 2 = 144$. Correct.",
+    "explanation": "Standard method:\nLet the consecutive even numbers be $2x$ and $2x + 2$. Their HCF is 2.\nWe know that Product = HCF $\times$ LCM.\n$(2x)(2x + 2) = 2 \times 144$\n$4x(x + 1) = 288 \rightarrow x(x + 1) = 72$.\nSolving for x, $x^2 + x - 72 = 0 \rightarrow (x+9)(x-8) = 0 \rightarrow x = 8$.\nThe numbers are $2(8) = 16$ and $2(8)+2 = 18$.\n\nSHORTCUT Trick:\nTest the options. LCM of 16 and 18 is $16 \times 18 \\div 2 = 144$. Correct.",
     "id": 2037
     },
     {
@@ -30611,7 +30611,7 @@
     "D. 5"
     ],
     "answer": "C. 4",
-    "explanation": "Standard method:\nLet the numbers be $33x$ and $33y$, where x and y are co-prime.\nGiven, $33x + 33y = 528 \rightarrow x + y = 528 / 33 = 16$.\nFind co-prime pairs summing to 16:\n(1, 15) - Yes\n(2, 14) - No (both even)\n(3, 13) - Yes\n(4, 12) - No\n(5, 11) - Yes\n(6, 10) - No\n(7, 9) - Yes\n(8, 8) - No\nThere are 4 valid co-prime pairs.\n\nSHORTCUT Trick:\nSum of multipliers = 16. Count numbers less than 16 that are co-prime to 16. Euler's totient function $\phi(16) = 16(1 - 1/2) = 8$. Since pairs (a,b) and (b,a) are the same, divide by 2. $8 / 2 = 4$ pairs.",
+    "explanation": "Standard method:\nLet the numbers be $33x$ and $33y$, where x and y are co-prime.\nGiven, $33x + 33y = 528 \rightarrow x + y = 528 / 33 = 16$.\nFind co-prime pairs summing to 16:\n(1, 15) - Yes\n(2, 14) - No (both even)\n(3, 13) - Yes\n(4, 12) - No\n(5, 11) - Yes\n(6, 10) - No\n(7, 9) - Yes\n(8, 8) - No\nThere are 4 valid co-prime pairs.\n\nSHORTCUT Trick:\nSum of multipliers = 16. Count numbers less than 16 that are co-prime to 16. Euler's totient function $\\phi(16) = 16(1 - 1/2) = 8$. Since pairs (a,b) and (b,a) are the same, divide by 2. $8 / 2 = 4$ pairs.",
     "id": 2041
     },
     {
@@ -30626,7 +30626,7 @@
     "D. 28"
     ],
     "answer": "B. 24",
-    "explanation": "Standard method:\nThis is equivalent to finding the number of trailing zeros in 100!.\nThe number of zeros depends on the power of 5 in 100! (since 2s are abundant).\nPower of 5 = $\lfloor 100/5 \rfloor + \lfloor 100/25 \rfloor = 20 + 4 = 24$.\nThus, $10^{24}$ is the highest power of 10 dividing 100!.\n\nSHORTCUT Trick:\n$100 \div 5 = 20$. $20 \div 5 = 4$. $20 + 4 = 24$.",
+    "explanation": "Standard method:\nThis is equivalent to finding the number of trailing zeros in 100!.\nThe number of zeros depends on the power of 5 in 100! (since 2s are abundant).\nPower of 5 = $\\lfloor 100/5 \rfloor + \\lfloor 100/25 \rfloor = 20 + 4 = 24$.\nThus, $10^{24}$ is the highest power of 10 dividing 100!.\n\nSHORTCUT Trick:\n$100 \\div 5 = 20$. $20 \\div 5 = 4$. $20 + 4 = 24$.",
     "id": 2042
     },
     {
@@ -30641,7 +30641,7 @@
     "D. 5"
     ],
     "answer": "C. 4",
-    "explanation": "Standard method:\nUsing Fermat's Little Theorem, $a^{p-1} \equiv 1 \pmod p$ when p is prime.\nHere, $4^{7-1} \equiv 1 \pmod 7 \rightarrow 4^6 \equiv 1 \pmod 7$.\nDivide the exponent 1000 by 6 to find the remainder.\n$1000 \div 6 = 166$ with a remainder of 4.\nSo, $4^{1000} = (4^6)^{166} \times 4^4 \equiv 1^{166} \times 4^4 \pmod 7$.\nNow evaluate $4^4 \mod 7 = 256 \mod 7$.\n$256 \div 7 = 36$ remainder 4. The final remainder is 4.\n\nSHORTCUT Trick:\nCycle of $4^n \mod 7$: $4^1=4, 4^2=2, 4^3=1$. The cycle length is 3.\n$1000 \mod 3 = 1$. So the remainder is the 1st in cycle, which is 4.",
+    "explanation": "Standard method:\nUsing Fermat's Little Theorem, $a^{p-1} \\equiv 1 \\pmod p$ when p is prime.\nHere, $4^{7-1} \\equiv 1 \\pmod 7 \rightarrow 4^6 \\equiv 1 \\pmod 7$.\nDivide the exponent 1000 by 6 to find the remainder.\n$1000 \\div 6 = 166$ with a remainder of 4.\nSo, $4^{1000} = (4^6)^{166} \times 4^4 \\equiv 1^{166} \times 4^4 \\pmod 7$.\nNow evaluate $4^4 \\mod 7 = 256 \\mod 7$.\n$256 \\div 7 = 36$ remainder 4. The final remainder is 4.\n\nSHORTCUT Trick:\nCycle of $4^n \\mod 7$: $4^1=4, 4^2=2, 4^3=1$. The cycle length is 3.\n$1000 \\mod 3 = 1$. So the remainder is the 1st in cycle, which is 4.",
     "id": 2043
     },
     {
@@ -30686,7 +30686,7 @@
     "D. 5"
     ],
     "answer": "A. 2",
-    "explanation": "Standard method:\nLet the number be N = $119k + 19$.\nWe want to divide N by 17.\nObserve that $119 = 17 \times 7$, so $119k$ is completely divisible by 17.\nThe remainder depends only on the previous remainder: $19 \div 17 = 1$ with a remainder of 2.\n\nSHORTCUT Trick:\nIf 119 is divisible by 17, just divide the remainder 19 by 17. $19 \mod 17 = 2$.",
+    "explanation": "Standard method:\nLet the number be N = $119k + 19$.\nWe want to divide N by 17.\nObserve that $119 = 17 \times 7$, so $119k$ is completely divisible by 17.\nThe remainder depends only on the previous remainder: $19 \\div 17 = 1$ with a remainder of 2.\n\nSHORTCUT Trick:\nIf 119 is divisible by 17, just divide the remainder 19 by 17. $19 \\mod 17 = 2$.",
     "id": 2046
     },
     {
@@ -30716,7 +30716,7 @@
     "D. 89"
     ],
     "answer": "C. 85",
-    "explanation": "Standard method:\nLet the three co-prime numbers be $a, b, c$.\nGiven $a \times b = 551$ and $b \times c = 1073$.\nThe middle number $b$ is the HCF of 551 and 1073.\nHCF(551, 1073): $1073 - 551 = 522$. $551 - 522 = 29$. $522 \div 29 = 18$ (perfect division). So HCF = 29.\nThus, $b = 29$.\n$a = 551 \div 29 = 19$.\n$c = 1073 \div 29 = 37$.\nSum = $a + b + c = 19 + 29 + 37 = 85$.\n\nSHORTCUT Trick:\nThe common factor of 551 and 1073 must be $b$. Subtract them: 522. Divide 522 by obvious primes or note $29 \times 18 = 522$. $b = 29$. $a = 19, c = 37$. Sum = 85.",
+    "explanation": "Standard method:\nLet the three co-prime numbers be $a, b, c$.\nGiven $a \times b = 551$ and $b \times c = 1073$.\nThe middle number $b$ is the HCF of 551 and 1073.\nHCF(551, 1073): $1073 - 551 = 522$. $551 - 522 = 29$. $522 \\div 29 = 18$ (perfect division). So HCF = 29.\nThus, $b = 29$.\n$a = 551 \\div 29 = 19$.\n$c = 1073 \\div 29 = 37$.\nSum = $a + b + c = 19 + 29 + 37 = 85$.\n\nSHORTCUT Trick:\nThe common factor of 551 and 1073 must be $b$. Subtract them: 522. Divide 522 by obvious primes or note $29 \times 18 = 522$. $b = 29$. $a = 19, c = 37$. Sum = 85.",
     "id": 2048
     },
     {

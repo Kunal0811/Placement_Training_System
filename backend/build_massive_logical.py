@@ -8,16 +8,12 @@ DATASET_PATH = "logical_dataset.json"
 MODULE_NAME = "Logical Reasoning"
 
 # 🚀 SPEED UP TWEAKS:
-BATCH_SIZE = 20  # Sweet spot for generating valid JSON without errors
+BATCH_SIZE = 30  # Sweet spot for generating valid JSON without errors
 SLEEP_TIME = 60  # Wait time between calls to prevent rate limits
 
 # Logical topics (Make sure these perfectly match what your frontend requests!)
 TARGET_TOPICS = [
-    "Blood Relations",
-    "Coding and Decoding",
-    "Direction Sense",
-    "Series & Patterns",
-    "Clocks and Calendars"
+    "Series & Patterns"
 ]
 
 def generate_prompt(topic: str, difficulty: str) -> str:
@@ -80,7 +76,7 @@ async def main():
     api_key = os.getenv("GEMINI_API_KEY_Logical") or os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
     
-    runs = ["easy", "medium", "hard"]
+    runs = ["easy"]
     
     print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:

@@ -115,28 +115,28 @@ function AnimatedRoutes() {
         <Route path="/aptitude/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
         
         {/* Technical Section - LEVEL 2 (Requires Level 2) */}
-        <Route path="/technical" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/cnotes" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/cpp" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/java" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/python" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/dsa" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/dbms" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/os" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/cn" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={2} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cnotes" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><CNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cpp" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><CppNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/java" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><JavaNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/python" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><PythonNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/dsa" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><DSANotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/dbms" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><DBMSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/os" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><OSNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/cn" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><CNNotes /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><ModeSelection /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><TestPage /></ModuleLock></ProtectedRoute></AnimatedPage>} />
 
         {/* Coding Section - LEVEL 3 (Requires Level 3) */}
-        <Route path="/coding" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/coding-levels" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/coding-test" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/technical/coding-test/:difficulty" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={3} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/coding" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-levels" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-test" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/technical/coding-test/:difficulty" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
 
         {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
-        <Route path="/interview" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/gd" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute></AnimatedPage>} />
-        <Route path="/gd/room/:id" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={4} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/interview" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/gd" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Group Discussion" limitType="gd"><GD /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/gd/room/:id" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Group Discussion" limitType="gd"><GDRoom /></ModuleLock></ProtectedRoute></AnimatedPage>} />
       </Routes>
     </AnimatePresence>
   );

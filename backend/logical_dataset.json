@@ -6163,5 +6163,1820 @@
     "answer": "A. ARGPES",
     "explanation": "*Standard method*:\nObserve the pattern between 'ORANGE' and 'ARONGE'.\nThe word 'ORANGE' has 6 letters. It is divided into two halves: 'ORA' and 'NGE'.\nThe first half 'ORA' is reversed to become 'ARO'.\nThe second half 'NGE' remains unchanged.\nConcatenating these gives 'ARONGE'.\nApplying this pattern to 'GRAPES':\nThe word 'GRAPES' has 6 letters. Divide it into two halves: 'GRA' and 'PES'.\nReverse the first half: 'GRA' reversed becomes 'ARG'.\nThe second half 'PES' remains unchanged.\nConcatenate these: 'ARGPES'.\nSo, 'GRAPES' is coded as 'ARGPES'.\n\n*SHORTCUT Trick*:\nSplit 'GRAPES' into 'GRA' and 'PES'.\nReverse 'GRA' to 'ARG'.\nKeep 'PES' as is.\nCombine them: 'ARGPES'.\n",
     "id": 411
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the series: 2, 5, 8, 11, ?",
+    "options": [
+      "A. 13",
+      "B. 14",
+      "C. 15",
+      "D. 12"
+    ],
+    "answer": "B. 14",
+    "explanation": "*Standard method*:\nObserve the difference between consecutive terms.\n5 - 2 = 3.\n8 - 5 = 3.\n11 - 8 = 3.\nThe pattern is a constant addition of 3 to the previous term.\nTo find the next term, add 3 to 11.\n11 + 3 = 14.\n\n*SHORTCUT Trick*:\nIdentify the common difference immediately.\nIt's +3.\nApply this directly to the last number.\n11 + 3 = 14.\n",
+    "id": 412
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 20, 15, 10, 5, ?",
+    "options": [
+      "A. 0",
+      "B. -5",
+      "C. 1",
+      "D. 2"
+    ],
+    "answer": "A. 0",
+    "explanation": "*Standard method*:\nExamine the change from one number to the next.\n15 - 20 = -5.\n10 - 15 = -5.\n5 - 10 = -5.\nThe pattern is a constant subtraction of 5 from the previous term.\nTo find the next term, subtract 5 from 5.\n5 - 5 = 0.\n\n*SHORTCUT Trick*:\nNotice the consistent decrease of 5.\nSimply subtract 5 from the last given number.\n5 - 5 = 0.\n",
+    "id": 413
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 3, 6, 12, 24, ?",
+    "options": [
+      "A. 36",
+      "B. 48",
+      "C. 42",
+      "D. 30"
+    ],
+    "answer": "B. 48",
+    "explanation": "*Standard method*:\nLook at the relationship between terms.\n6 / 3 = 2.\n12 / 6 = 2.\n24 / 12 = 2.\nThe pattern is multiplication by 2 for each subsequent term.\nTo find the next term, multiply 24 by 2.\n24 * 2 = 48.\n\n*SHORTCUT Trick*:\nRecognize the geometric progression with a common ratio of 2.\nDouble the last term.\n24 * 2 = 48.\n",
+    "id": 414
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 1, 4, 9, 16, ?",
+    "options": [
+      "A. 20",
+      "B. 25",
+      "C. 30",
+      "D. 36"
+    ],
+    "answer": "B. 25",
+    "explanation": "*Standard method*:\nIdentify the type of numbers in the series.\n1 = 1^2.\n4 = 2^2.\n9 = 3^2.\n16 = 4^2.\nThe pattern consists of consecutive perfect squares.\nThe next number in the sequence will be 5^2.\n5^2 = 25.\n\n*SHORTCUT Trick*:\nSee the sequence as squares of natural numbers.\n1, 2, 3, 4 are squared.\nThe next is 5 squared.\n5^2 = 25.\n",
+    "id": 415
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Fill in the blank: 1, 8, 27, 64, ?",
+    "options": [
+      "A. 100",
+      "B. 125",
+      "C. 144",
+      "D. 216"
+    ],
+    "answer": "B. 125",
+    "explanation": "*Standard method*:\nObserve the values and try to find a mathematical relationship.\n1 = 1^3.\n8 = 2^3.\n27 = 3^3.\n64 = 4^3.\nThe pattern is the cube of consecutive natural numbers.\nThe next number will be 5^3.\n5^3 = 125.\n\n*SHORTCUT Trick*:\nRecognize the pattern as cubes of 1, 2, 3, 4.\nThe next is 5 cubed.\n5 * 5 * 5 = 125.\n",
+    "id": 416
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next letter in the series: A, B, C, D, ?",
+    "options": [
+      "A. E",
+      "B. F",
+      "C. G",
+      "D. H"
+    ],
+    "answer": "A. E",
+    "explanation": "*Standard method*:\nThis is a simple alphabetical sequence.\nEach letter is followed by the next letter in the English alphabet.\nAfter 'D' comes 'E'.\n\n*SHORTCUT Trick*:\nIt's a straightforward alphabetical progression.\nThe letter after D is E.\n",
+    "id": 417
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing letter in the sequence: A, C, E, G, ?",
+    "options": [
+      "A. H",
+      "B. I",
+      "C. J",
+      "D. K"
+    ],
+    "answer": "B. I",
+    "explanation": "*Standard method*:\nDetermine the difference in position between consecutive letters.\nFrom A to C, one letter (B) is skipped.\nFrom C to E, one letter (D) is skipped.\nFrom E to G, one letter (F) is skipped.\nThe pattern is to skip one letter in between each term.\nFollowing G, we skip H, and the next letter is I.\n\n*SHORTCUT Trick*:\nEach letter is an alternate letter in the alphabet.\nA, then C, then E, then G.\nThe next alternate letter after G is I.\n",
+    "id": 418
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the reverse alphabetical series: Z, Y, X, W, ?",
+    "options": [
+      "A. U",
+      "B. V",
+      "C. S",
+      "D. T"
+    ],
+    "answer": "B. V",
+    "explanation": "*Standard method*:\nThe series is moving backward through the English alphabet.\nZ is followed by Y, Y by X, X by W.\nThe letter immediately preceding 'W' is 'V'.\n\n*SHORTCUT Trick*:\nRecognize the reverse alphabetical order.\nThe letter before W is V.\n",
+    "id": 419
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the alphanumeric series: A1, B3, C5, D7, ?",
+    "options": [
+      "A. E9",
+      "B. E8",
+      "C. F9",
+      "D. F8"
+    ],
+    "answer": "A. E9",
+    "explanation": "*Standard method*:\nAnalyze the letter part and the number part separately.\nLetters: A, B, C, D. This is a simple alphabetical progression (+1).\nThe next letter will be E.\nNumbers: 1, 3, 5, 7. This is an arithmetic progression with a common difference of +2.\nThe next number will be 7 + 2 = 9.\nCombining them, the next term is E9.\n\n*SHORTCUT Trick*:\nLetters go A,B,C,D, so next is E.\nNumbers go 1,3,5,7 (odd numbers), so next is 9.\nCombine for E9.\n",
+    "id": 420
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next term in the series: 5, 7, 6, 8, 7, ?",
+    "options": [
+      "A. 8",
+      "B. 9",
+      "C. 10",
+      "D. 7"
+    ],
+    "answer": "B. 9",
+    "explanation": "*Standard method*:\nLook at the alternating operations in the series.\n5 (+2) = 7.\n7 (-1) = 6.\n6 (+2) = 8.\n8 (-1) = 7.\nThe pattern is alternately adding 2 and then subtracting 1.\nSo, after 7, the next operation should be adding 2.\n7 + 2 = 9.\n\n*SHORTCUT Trick*:\nObserve the 'up 2, down 1' pattern.\n(+2, -1, +2, -1).\nApply the next step: 7 + 2 = 9.\n",
+    "id": 421
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the sequence: 10, 13, 12, 15, 14, ?",
+    "options": [
+      "A. 16",
+      "B. 17",
+      "C. 18",
+      "D. 15"
+    ],
+    "answer": "B. 17",
+    "explanation": "*Standard method*:\nIdentify the operations between consecutive terms.\n10 (+3) = 13.\n13 (-1) = 12.\n12 (+3) = 15.\n15 (-1) = 14.\nThe pattern is a recurring sequence of operations: +3, then -1.\nFollowing 14, the next operation is +3.\n14 + 3 = 17.\n\n*SHORTCUT Trick*:\nNotice the 'add 3, subtract 1' cycle.\n(+3, -1, +3, -1).\nThe next step is to add 3.\n14 + 3 = 17.\n",
+    "id": 422
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the Fibonacci-like series: 1, 1, 2, 3, 5, ?",
+    "options": [
+      "A. 6",
+      "B. 7",
+      "C. 8",
+      "D. 9"
+    ],
+    "answer": "C. 8",
+    "explanation": "*Standard method*:\nObserve the relationship between terms.\n1 + 1 = 2.\n1 + 2 = 3.\n2 + 3 = 5.\nThe pattern is that each term is the sum of the two preceding terms.\nTo find the next term, add the last two terms: 3 and 5.\n3 + 5 = 8.\n\n*SHORTCUT Trick*:\nRecognize the Fibonacci sequence.\nSum the last two numbers.\n3 + 5 = 8.\n",
+    "id": 423
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing prime number: 2, 3, 5, 7, ?",
+    "options": [
+      "A. 9",
+      "B. 11",
+      "C. 13",
+      "D. 15"
+    ],
+    "answer": "B. 11",
+    "explanation": "*Standard method*:\nExamine the given numbers.\n2 is the first prime number.\n3 is the second prime number.\n5 is the third prime number.\n7 is the fourth prime number.\nThe pattern is a sequence of consecutive prime numbers.\nThe next prime number after 7 is 11.\n(9 is not prime, 10 is not prime).\n\n*SHORTCUT Trick*:\nIdentify the series as consecutive prime numbers.\nThe next prime after 7 is 11.\n",
+    "id": 424
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the letter series: A, C, F, J, ?",
+    "options": [
+      "A. K",
+      "B. L",
+      "C. M",
+      "D. O"
+    ],
+    "answer": "D. O",
+    "explanation": "*Standard method*:\nConvert letters to their positional values (A=1, B=2, etc.).\nA (1).\nC (3). Difference = 3 - 1 = 2.\nF (6). Difference = 6 - 3 = 3.\nJ (10). Difference = 10 - 6 = 4.\nThe pattern of differences is increasing by 1 each time: +2, +3, +4.\nThe next difference should be +5.\nSo, the next letter will be 10 + 5 = 15.\nThe 15th letter of the alphabet is O.\n\n*SHORTCUT Trick*:\nObserve the increasing skips.\nSkip 1 letter (B) after A to get C.\nSkip 2 letters (D, E) after C to get F.\nSkip 3 letters (G, H, I) after F to get J.\nNext, skip 4 letters (K, L, M, N) after J to get O.\n",
+    "id": 425
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: A2, C4, E8, G16, ?",
+    "options": [
+      "A. I32",
+      "B. H32",
+      "C. I24",
+      "D. J32"
+    ],
+    "answer": "A. I32",
+    "explanation": "*Standard method*:\nAnalyze the letter and number components separately.\nLetters: A, C, E, G. This is a sequence of alternate letters (skipping one letter each time).\nAfter G, the next alternate letter (skipping H) is I.\nNumbers: 2, 4, 8, 16. This is a geometric progression where each term is multiplied by 2.\nAfter 16, the next number is 16 * 2 = 32.\nCombining these, the next term is I32.\n\n*SHORTCUT Trick*:\nLetters are A, C, E, G (skip one).\nNext letter is I.\nNumbers are 2, 4, 8, 16 (doubling).\nNext number is 32.\nCombine them: I32.\n",
+    "id": 426
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 64, 32, 16, 8, ?",
+    "options": [
+      "A. 2",
+      "B. 4",
+      "C. 6",
+      "D. 1"
+    ],
+    "answer": "B. 4",
+    "explanation": "*Standard method*:\nExamine the relationship between consecutive terms.\n32 = 64 / 2.\n16 = 32 / 2.\n8 = 16 / 2.\nThe pattern is that each term is half of the previous term (division by 2).\nTo find the next term, divide 8 by 2.\n8 / 2 = 4.\n\n*SHORTCUT Trick*:\nThe series halves with each step.\nDivide the last number by 2.\n8 / 2 = 4.\n",
+    "id": 427
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number in the series: 1, 2, 4, 7, 11, ?",
+    "options": [
+      "A. 12",
+      "B. 13",
+      "C. 14",
+      "D. 16"
+    ],
+    "answer": "D. 16",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms.\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nThe next difference should be 5.\nSo, add 5 to the last term 11.\n11 + 5 = 16.\n\n*SHORTCUT Trick*:\nObserve the pattern of increasing additions: +1, +2, +3, +4.\nThe next addition is +5.\n11 + 5 = 16.\n",
+    "id": 428
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: 1, 3, 7, 15, ?",
+    "options": [
+      "A. 23",
+      "B. 31",
+      "C. 27",
+      "D. 29"
+    ],
+    "answer": "B. 31",
+    "explanation": "*Standard method*:\nExamine the relationship between terms.\n(1 * 2) + 1 = 3.\n(3 * 2) + 1 = 7.\n(7 * 2) + 1 = 15.\nThe pattern is to multiply the previous term by 2 and then add 1.\nTo find the next term, apply this rule to 15.\n(15 * 2) + 1 = 30 + 1 = 31.\n\n*SHORTCUT Trick*:\nNotice the pattern of 'double and add one'.\n15 * 2 = 30.\n30 + 1 = 31.\n",
+    "id": 429
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the letter series: A, B, D, E, G, ?",
+    "options": [
+      "A. H",
+      "B. I",
+      "C. F",
+      "D. J"
+    ],
+    "answer": "A. H",
+    "explanation": "*Standard method*:\nDetermine the letter progression:\nA (+1) -> B.\nB (+2) -> D.\nD (+1) -> E.\nE (+2) -> G.\nThe pattern is an alternating addition of +1 and +2 to the letter's position.\nFollowing G (+2 from E), the next operation should be +1.\nG (+1) -> H.\n\n*SHORTCUT Trick*:\nSee the skips: none, then one, none, then one.\nAB (no skip) DE (no skip) GH (no skip).\nBut it is A B (C) D E (F) G H.\nPattern: skip 0, skip 1, skip 0, skip 1.\nSo A to B (0 skip), B to D (1 skip 'C'), D to E (0 skip), E to G (1 skip 'F').\nSo G to H (0 skip).\n",
+    "id": 430
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next term in the series: A1, B2, C4, D7, ?",
+    "options": [
+      "A. E11",
+      "B. E12",
+      "C. F11",
+      "D. E10"
+    ],
+    "answer": "A. E11",
+    "explanation": "*Standard method*:\nBreak down the series into letter and number components.\nLetters: A, B, C, D. This is a simple alphabetical progression (+1).\nThe next letter is E.\nNumbers: 1, 2, 4, 7.\nDifferences between numbers: 2-1=1, 4-2=2, 7-4=3.\nThe differences are increasing by 1 each time (+1, +2, +3).\nThe next difference should be +4.\nSo, 7 + 4 = 11.\nCombining the letter and number, the next term is E11.\n\n*SHORTCUT Trick*:\nLetters are sequential: A, B, C, D, E.\nNumbers have increasing differences: +1, +2, +3, next +4.\nSo 7 + 4 = 11.\nResult: E11.\n",
+    "id": 431
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 1, 3, 6, 10, 15, ?",
+    "options": [
+      "A. 19",
+      "B. 20",
+      "C. 21",
+      "D. 22"
+    ],
+    "answer": "C. 21",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms.\n3 - 1 = 2.\n6 - 3 = 3.\n10 - 6 = 4.\n15 - 10 = 5.\nThe differences are consecutive natural numbers (2, 3, 4, 5).\nThe next difference should be 6.\nSo, add 6 to the last term 15.\n15 + 6 = 21.\n\n*SHORTCUT Trick*:\nNotice the incrementing difference: +2, +3, +4, +5.\nThe next increment is +6.\n15 + 6 = 21.\n",
+    "id": 432
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the letter series: Z, X, V, T, ?",
+    "options": [
+      "A. R",
+      "B. S",
+      "C. U",
+      "D. W"
+    ],
+    "answer": "A. R",
+    "explanation": "*Standard method*:\nExamine the positional value of each letter (Z=26, X=24, V=22, T=20).\n26 (-2) = 24.\n24 (-2) = 22.\n22 (-2) = 20.\nThe pattern is a consistent subtraction of 2 from the alphabetical position (skipping one letter backwards).\nSo, from T (20), subtract 2.\n20 - 2 = 18.\nThe 18th letter of the alphabet is R.\n\n*SHORTCUT Trick*:\nIdentify the pattern as skipping one letter backward.\nZ (skip Y) X (skip W) V (skip U) T (skip S) R.\n",
+    "id": 433
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the number series: 10, 15, 13, 18, 16, ?",
+    "options": [
+      "A. 19",
+      "B. 20",
+      "C. 21",
+      "D. 17"
+    ],
+    "answer": "C. 21",
+    "explanation": "*Standard method*:\nObserve the operations between terms.\n10 (+5) = 15.\n15 (-2) = 13.\n13 (+5) = 18.\n18 (-2) = 16.\nThe pattern is an alternating addition of 5 and subtraction of 2.\nAfter 16 (which came from -2), the next operation is +5.\n16 + 5 = 21.\n\n*SHORTCUT Trick*:\nRecognize the repeating pattern of (+5, -2).\nApply the next step: 16 + 5 = 21.\n",
+    "id": 434
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term: K81, J27, I9, H3, ?",
+    "options": [
+      "A. G1",
+      "B. G0",
+      "C. F1",
+      "D. G3"
+    ],
+    "answer": "A. G1",
+    "explanation": "*Standard method*:\nSeparate the letter and number series.\nLetters: K, J, I, H. This is a reverse alphabetical progression (-1).\nThe next letter before H is G.\nNumbers: 81, 27, 9, 3.\n81 / 3 = 27.\n27 / 3 = 9.\n9 / 3 = 3.\nThe pattern is a geometric progression where each term is divided by 3.\nTo find the next number, divide 3 by 3.\n3 / 3 = 1.\nCombining them, the next term is G1.\n\n*SHORTCUT Trick*:\nLetters count down: K, J, I, H, G.\nNumbers divide by 3: 81, 27, 9, 3, 1.\nCombine: G1.\n",
+    "id": 435
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the series: 2, 4, 8, 16, ?",
+    "options": [
+      "A. 24",
+      "B. 30",
+      "C. 32",
+      "D. 64"
+    ],
+    "answer": "C. 32",
+    "explanation": "*Standard method*:\nObserve the relationship between consecutive terms.\n4 = 2 * 2.\n8 = 4 * 2.\n16 = 8 * 2.\nThe pattern is that each term is multiplied by 2 to get the next term.\nThis is a series of powers of 2 (2^1, 2^2, 2^3, 2^4).\nThe next term will be 16 * 2 or 2^5.\n16 * 2 = 32.\n\n*SHORTCUT Trick*:\nRecognize the doubling pattern or powers of 2.\nDouble the last number.\n16 * 2 = 32.\n",
+    "id": 436
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the letter group series: ACE, CEG, EGI, GIK, ?",
+    "options": [
+      "A. IKM",
+      "B. KMO",
+      "C. ILM",
+      "D. IMO"
+    ],
+    "answer": "A. IKM",
+    "explanation": "*Standard method*:\nAnalyze the progression of letters within each group and from group to group.\nFirst letter of each group: A, C, E, G. This sequence adds 2 positions (skips one letter) each time.\nSo, the next first letter after G (skipping H) will be I.\nSecond letter of each group: C, E, G, I. This also adds 2 positions.\nSo, the next second letter after I (skipping J) will be K.\nThird letter of each group: E, G, I, K. This also adds 2 positions.\nSo, the next third letter after K (skipping L) will be M.\nCombining these, the next group is IKM.\n\n*SHORTCUT Trick*:\nEach letter in a group shifts forward by 2 positions from the corresponding letter in the previous group.\n(G+2) = I.\n(I+2) = K.\n(K+2) = M.\nThus, GIK becomes IKM.\n",
+    "id": 437
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 2, 6, 12, 20, 30, ?",
+    "options": [
+      "A. 36",
+      "B. 40",
+      "C. 42",
+      "D. 44"
+    ],
+    "answer": "C. 42",
+    "explanation": "*Standard method*:\nLook at the differences between consecutive terms.\n6 - 2 = 4.\n12 - 6 = 6.\n20 - 12 = 8.\n30 - 20 = 10.\nThe differences are increasing by 2 each time (4, 6, 8, 10).\nThe next difference should be 12.\nSo, add 12 to the last term 30.\n30 + 12 = 42.\n\n*SHORTCUT Trick*:\nRecognize the pattern as n * (n+1).\n1*2=2, 2*3=6, 3*4=12, 4*5=20, 5*6=30.\nThe next term is 6*7.\n6*7 = 42.\n",
+    "id": 438
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number in the series: 20, 15, 11, 8, 6, ?",
+    "options": [
+      "A. 3",
+      "B. 4",
+      "C. 5",
+      "D. 7"
+    ],
+    "answer": "C. 5",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms.\n15 - 20 = -5.\n11 - 15 = -4.\n8 - 11 = -3.\n6 - 8 = -2.\nThe subtractions are decreasing by 1 each time (-5, -4, -3, -2).\nThe next subtraction should be -1.\nSo, subtract 1 from the last term 6.\n6 - 1 = 5.\n\n*SHORTCUT Trick*:\nNotice the decreasing subtrahend: -5, -4, -3, -2.\nThe next subtraction is -1.\n6 - 1 = 5.\n",
+    "id": 439
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the letter group series: ABC, BCD, CDE, DEF, ?",
+    "options": [
+      "A. EFG",
+      "B. FGH",
+      "C. GHI",
+      "D. HIJ"
+    ],
+    "answer": "A. EFG",
+    "explanation": "*Standard method*:\nExamine how each group relates to the previous one.\nEach letter in a group shifts forward by one alphabetical position to form the next group.\nA in ABC becomes B in BCD.\nB in ABC becomes C in BCD.\nC in ABC becomes D in BCD.\nFollowing this rule for DEF:\nD becomes E.\nE becomes F.\nF becomes G.\nSo, the next group is EFG.\n\n*SHORTCUT Trick*:\nEach entire block of letters simply shifts forward by one letter.\nDEF shifts to EFG.\n",
+    "id": 440
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the alphanumeric series: A1, B5, C14, D30, ?",
+    "options": [
+      "A. E45",
+      "B. E55",
+      "C. F55",
+      "D. E60"
+    ],
+    "answer": "B. E55",
+    "explanation": "*Standard method*:\nAnalyze the letter and number components separately.\nLetters: A, B, C, D. This is a simple alphabetical progression (+1).\nThe next letter will be E.\nNumbers: 1, 5, 14, 30.\nLet's find the differences between consecutive numbers:\n5 - 1 = 4.\n14 - 5 = 9.\n30 - 14 = 16.\nThe differences are 4, 9, 16, which are perfect squares: 2^2, 3^2, 4^2.\nThe next difference should be 5^2, which is 25.\nSo, add 25 to the last number 30.\n30 + 25 = 55.\nCombining the letter and number, the next term is E55.\n\n*SHORTCUT Trick*:\nLetters are sequential: A, B, C, D, E.\nNumbers: Look at the increments: +4, +9, +16.\nThese are 2^2, 3^2, 4^2.\nThe next increment is 5^2 = 25.\nAdd 25 to 30: 30 + 25 = 55.\nCombine for E55.\n",
+    "id": 441
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number in the series: 100, 90, 81, 73, ?",
+    "options": [
+      "A. 65",
+      "B. 66",
+      "C. 67",
+      "D. 68"
+    ],
+    "answer": "B. 66",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms.\n90 - 100 = -10.\n81 - 90 = -9.\n73 - 81 = -8.\nThe subtractions are decreasing by 1 each time (-10, -9, -8).\nThe next subtraction should be -7.\nSo, subtract 7 from the last term 73.\n73 - 7 = 66.\n\n*SHORTCUT Trick*:\nObserve the decreasing values of subtraction: -10, -9, -8.\nNext, subtract -7.\n73 - 7 = 66.\n",
+    "id": 442
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 2, 5, 8, 11, ?",
+    "options": [
+      "A. 12",
+      "B. 13",
+      "C. 14",
+      "D. 15"
+    ],
+    "answer": "C. 14",
+    "explanation": "*Standard method*:\nObserve the difference between consecutive terms.\n5 - 2 = 3.\n8 - 5 = 3.\n11 - 8 = 3.\nThe pattern is to add 3 to the previous term.\nSo, the next term is 11 + 3 = 14.\n\n*SHORTCUT Trick*:\nIt's a simple arithmetic progression.\nCommon difference = 3.\nNext term = Last term + Common difference = 11 + 3 = 14.\n",
+    "id": 443
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: 3, 6, 12, 24, ?",
+    "options": [
+      "A. 27",
+      "B. 30",
+      "C. 36",
+      "D. 48"
+    ],
+    "answer": "D. 48",
+    "explanation": "*Standard method*:\nObserve the relationship between consecutive terms.\n6 / 3 = 2.\n12 / 6 = 2.\n24 / 12 = 2.\nThe pattern is to multiply the previous term by 2.\nSo, the next term is 24 * 2 = 48.\n\n*SHORTCUT Trick*:\nIt's a geometric progression.\nCommon ratio = 2.\nNext term = Last term * Common ratio = 24 * 2 = 48.\n",
+    "id": 444
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 1, 3, 6, 8, 11, ?",
+    "options": [
+      "A. 12",
+      "B. 13",
+      "C. 14",
+      "D. 15"
+    ],
+    "answer": "B. 13",
+    "explanation": "*Standard method*:\nLook at the differences between consecutive terms.\n3 - 1 = 2.\n6 - 3 = 3.\n8 - 6 = 2.\n11 - 8 = 3.\nThe pattern is an alternating addition of +2 and +3.\nThe last operation was +3 (8 + 3 = 11), so the next operation should be +2.\nTherefore, the next term is 11 + 2 = 13.\n\n*SHORTCUT Trick*:\nIdentify the alternating pattern: +2, +3, +2, +3.\nThe last step was +3.\nSo, the next step is +2.\n11 + 2 = 13.\n",
+    "id": 445
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 1, 4, 9, 16, ?",
+    "options": [
+      "A. 20",
+      "B. 25",
+      "C. 30",
+      "D. 36"
+    ],
+    "answer": "B. 25",
+    "explanation": "*Standard method*:\nIdentify each term as a square of a natural number.\n1 = 1 * 1 = 1^2.\n4 = 2 * 2 = 2^2.\n9 = 3 * 3 = 3^2.\n16 = 4 * 4 = 4^2.\nThe pattern is the square of consecutive natural numbers.\nThe next number in the sequence of natural numbers is 5.\nSo, the next term is 5^2 = 5 * 5 = 25.\n\n*SHORTCUT Trick*:\nRecognize the perfect squares immediately.\n1^2, 2^2, 3^2, 4^2.\nThe next is 5^2 = 25.\n",
+    "id": 446
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 1, 1, 2, 3, 5, ?",
+    "options": [
+      "A. 6",
+      "B. 7",
+      "C. 8",
+      "D. 9"
+    ],
+    "answer": "C. 8",
+    "explanation": "*Standard method*:\nObserve the relationship between terms.\n1 + 1 = 2.\n1 + 2 = 3.\n2 + 3 = 5.\nThis is a Fibonacci-like sequence where each term is the sum of the two preceding terms.\nSo, the next term is 3 + 5 = 8.\n\n*SHORTCUT Trick*:\nClassic Fibonacci sequence starting with 1, 1.\nAdd the last two numbers: 3 + 5 = 8.\n",
+    "id": 447
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Choose the next letter in the series: A, B, C, D, ?",
+    "options": [
+      "A. E",
+      "B. F",
+      "C. G",
+      "D. H"
+    ],
+    "answer": "A. E",
+    "explanation": "*Standard method*:\nObserve the sequence of letters.\nEach letter is the next letter in the English alphabet.\nA is followed by B, B by C, C by D.\nSo, D is followed by E.\n\n*SHORTCUT Trick*:\nSimple alphabetical order.\nE comes after D.\n",
+    "id": 448
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next letter: A, C, E, G, ?",
+    "options": [
+      "A. H",
+      "B. I",
+      "C. J",
+      "D. K"
+    ],
+    "answer": "B. I",
+    "explanation": "*Standard method*:\nConsider the position of each letter in the alphabet:\nA = 1st.\nC = 3rd.\nE = 5th.\nG = 7th.\nThe pattern is to skip one letter in between (B, D, F are skipped), or to add 2 to the positional value.\nThe next position in the pattern (1, 3, 5, 7) is 9.\nThe 9th letter of the alphabet is I.\n\n*SHORTCUT Trick*:\nEach letter is an alternate letter (skipping one).\nAfter G, skip H to get I.\n",
+    "id": 449
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What completes the series: A1, B3, C5, D7, ?",
+    "options": [
+      "A. E9",
+      "B. E8",
+      "C. F9",
+      "D. F8"
+    ],
+    "answer": "A. E9",
+    "explanation": "*Standard method*:\nBreak the series into two parts: letters and numbers.\nFor the letters: A, B, C, D. This is a simple alphabetical progression, so the next letter is E.\nFor the numbers: 1, 3, 5, 7. This is a series of odd numbers, increasing by 2 each time.\nThe next odd number after 7 is 9.\nCombining these, the next term is E9.\n\n*SHORTCUT Trick*:\nLetters: A (+1) B (+1) C (+1) D (+1) E.\nNumbers: 1 (+2) 3 (+2) 5 (+2) 7 (+2) 9.\nCombine for E9.\n",
+    "id": 450
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next term in the sequence: 20, 16, 12, 8, ?",
+    "options": [
+      "A. 0",
+      "B. 2",
+      "C. 4",
+      "D. 6"
+    ],
+    "answer": "C. 4",
+    "explanation": "*Standard method*:\nObserve the difference between consecutive terms.\n16 - 20 = -4.\n12 - 16 = -4.\n8 - 12 = -4.\nThe pattern is to subtract 4 from the previous term.\nSo, the next term is 8 - 4 = 4.\n\n*SHORTCUT Trick*:\nSimple arithmetic progression with a negative common difference.\nCommon difference = -4.\nNext term = Last term - 4 = 8 - 4 = 4.\n",
+    "id": 451
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What number comes next: 81, 27, 9, 3, ?",
+    "options": [
+      "A. 0",
+      "B. 1",
+      "C. 2",
+      "D. 3"
+    ],
+    "answer": "B. 1",
+    "explanation": "*Standard method*:\nObserve the relationship between consecutive terms.\n27 / 81 = 1/3.\n9 / 27 = 1/3.\n3 / 9 = 1/3.\nThe pattern is to divide the previous term by 3.\nSo, the next term is 3 / 3 = 1.\n\n*SHORTCUT Trick*:\nGeometric progression with a common ratio of 1/3 (or division by 3).\nNext term = Last term / 3 = 3 / 3 = 1.\n",
+    "id": 452
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 1, 2, 4, 7, 11, ?",
+    "options": [
+      "A. 13",
+      "B. 14",
+      "C. 15",
+      "D. 16"
+    ],
+    "answer": "D. 16",
+    "explanation": "*Standard method*:\nLook at the differences between consecutive terms.\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nThe next difference should be 5.\nSo, the next term is 11 + 5 = 16.\n\n*SHORTCUT Trick*:\nSequence of differences: +1, +2, +3, +4.\nThe next difference will be +5.\n11 + 5 = 16.\n",
+    "id": 453
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next letter in the series: Z, Y, X, W, ?",
+    "options": [
+      "A. V",
+      "B. U",
+      "C. T",
+      "D. S"
+    ],
+    "answer": "A. V",
+    "explanation": "*Standard method*:\nObserve the sequence of letters.\nEach letter is the preceding letter in the English alphabet, going backwards.\nZ is followed by Y (in reverse), Y by X, X by W.\nSo, W is preceded by V.\n\n*SHORTCUT Trick*:\nSimple reverse alphabetical order.\nV comes before W.\n",
+    "id": 454
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next term in the series: A10, B9, C8, D7, ?",
+    "options": [
+      "A. E6",
+      "B. F6",
+      "C. E5",
+      "D. F5"
+    ],
+    "answer": "A. E6",
+    "explanation": "*Standard method*:\nBreak the series into two parts: letters and numbers.\nFor the letters: A, B, C, D. This is a simple alphabetical progression, so the next letter is E.\nFor the numbers: 10, 9, 8, 7. This is a decreasing sequence, subtracting 1 each time.\nThe next number after 7 is 6.\nCombining these, the next term is E6.\n\n*SHORTCUT Trick*:\nLetters: A (+1) B (+1) C (+1) D (+1) E.\nNumbers: 10 (-1) 9 (-1) 8 (-1) 7 (-1) 6.\nCombine for E6.\n",
+    "id": 455
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: 2, 5, 11, 23, ?",
+    "options": [
+      "A. 35",
+      "B. 42",
+      "C. 47",
+      "D. 50"
+    ],
+    "answer": "C. 47",
+    "explanation": "*Standard method*:\nObserve the relationship between consecutive terms.\n(2 * 2) + 1 = 5.\n(5 * 2) + 1 = 11.\n(11 * 2) + 1 = 23.\nThe pattern is to multiply the previous term by 2 and then add 1.\nSo, the next term is (23 * 2) + 1 = 46 + 1 = 47.\n\n*SHORTCUT Trick*:\nPattern is 'x2 + 1'.\n23 x 2 = 46.\n46 + 1 = 47.\n",
+    "id": 456
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 2, 3, 5, 7, ?",
+    "options": [
+      "A. 8",
+      "B. 9",
+      "C. 10",
+      "D. 11"
+    ],
+    "answer": "D. 11",
+    "explanation": "*Standard method*:\nObserve the numbers in the series.\n2 is a prime number.\n3 is a prime number.\n5 is a prime number.\n7 is a prime number.\nThe pattern is the sequence of prime numbers.\nThe next prime number after 7 is 11.\n\n*SHORTCUT Trick*:\nRecognize the prime number sequence.\nThe primes are 2, 3, 5, 7, 11, 13, etc.\nThe next in the series is 11.\n",
+    "id": 457
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 1, 8, 27, 64, ?",
+    "options": [
+      "A. 81",
+      "B. 100",
+      "C. 125",
+      "D. 144"
+    ],
+    "answer": "C. 125",
+    "explanation": "*Standard method*:\nIdentify each term as a cube of a natural number.\n1 = 1 * 1 * 1 = 1^3.\n8 = 2 * 2 * 2 = 2^3.\n27 = 3 * 3 * 3 = 3^3.\n64 = 4 * 4 * 4 = 4^3.\nThe pattern is the cube of consecutive natural numbers.\nThe next number in the sequence of natural numbers is 5.\nSo, the next term is 5^3 = 5 * 5 * 5 = 125.\n\n*SHORTCUT Trick*:\nRecognize the perfect cubes immediately.\n1^3, 2^3, 3^3, 4^3.\nThe next is 5^3 = 125.\n",
+    "id": 458
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next letter in the series: A, B, D, G, K, ?",
+    "options": [
+      "A. L",
+      "B. M",
+      "C. N",
+      "D. P"
+    ],
+    "answer": "D. P",
+    "explanation": "*Standard method*:\nConvert letters to their positional values in the alphabet:\nA=1, B=2, D=4, G=7, K=11.\nLook at the differences between these positions:\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nThe next difference should be 5.\nSo, the positional value of the next letter is 11 + 5 = 16.\nThe 16th letter of the alphabet is P.\n(Self-correction during thought process: K is 11th, +5 is 16th, which is P. Not M which is 13th. The pattern for M would be +2, +3, +2, +3... No, I meant to make it a simple increasing difference. Let me correct the answer and explanation accordingly.)\n\n*Standard method*:\nConvert letters to their positional values in the alphabet:\nA=1, B=2, D=4, G=7, K=11.\nLook at the differences between these positions:\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nThe next difference should be 5.\nSo, the positional value of the next letter is 11 + 5 = 16.\nThe 16th letter of the alphabet is P.\n\n*SHORTCUT Trick*:\nPattern of skips: +1 (A to B), +2 (B to D), +3 (D to G), +4 (G to K).\nThe next skip should be +5.\nK (11th letter) + 5 = 16th letter.\nThe 16th letter is P.\n",
+    "id": 459
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next number in the series: 1, 3, 7, 13, 21, ?",
+    "options": [
+      "A. 29",
+      "B. 30",
+      "C. 31",
+      "D. 32"
+    ],
+    "answer": "C. 31",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms:\n3 - 1 = 2.\n7 - 3 = 4.\n13 - 7 = 6.\n21 - 13 = 8.\nThe differences form an arithmetic progression: 2, 4, 6, 8.\nThe next difference should be 10.\nSo, the next term in the original series is 21 + 10 = 31.\n\n*SHORTCUT Trick*:\nFirst level differences: +2, +4, +6, +8.\nSecond level differences: +2, +2, +2.\nThe next first level difference is 8 + 2 = 10.\nThe next term is 21 + 10 = 31.\n",
+    "id": 460
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What completes the series: A5, C5, E5, G5, ?",
+    "options": [
+      "A. H5",
+      "B. I5",
+      "C. J5",
+      "D. K5"
+    ],
+    "answer": "B. I5",
+    "explanation": "*Standard method*:\nBreak the series into two parts: letters and numbers.\nFor the letters: A, C, E, G. This is an alternating alphabetical progression, skipping one letter each time (B, D, F are skipped).\nThe next letter after G, skipping H, is I.\nFor the numbers: 5, 5, 5, 5. The number remains constant.\nSo, the next number is 5.\nCombining these, the next term is I5.\n\n*SHORTCUT Trick*:\nLetters: A (+2) C (+2) E (+2) G (+2) I.\nNumbers: All are 5.\nCombine for I5.\n",
+    "id": 461
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term: 10, 15, 13, 18, 16, ?",
+    "options": [
+      "A. 19",
+      "B. 20",
+      "C. 21",
+      "D. 22"
+    ],
+    "answer": "C. 21",
+    "explanation": "*Standard method*:\nObserve the operations between consecutive terms.\n10 (+5) 15.\n15 (-2) 13.\n13 (+5) 18.\n18 (-2) 16.\nThe pattern is an alternating addition of +5 and subtraction of -2.\nThe last operation was -2 (18 - 2 = 16), so the next operation should be +5.\nTherefore, the next term is 16 + 5 = 21.\n\n*SHORTCUT Trick*:\nAlternating pattern: +5, -2, +5, -2.\nThe next operation is +5.\n16 + 5 = 21.\n",
+    "id": 462
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: AA, BB, CC, DD, ?",
+    "options": [
+      "A. EE",
+      "B. EF",
+      "C. FF",
+      "D. GG"
+    ],
+    "answer": "A. EE",
+    "explanation": "*Standard method*:\nObserve the pairs of letters.\nEach pair consists of two identical consecutive letters of the alphabet.\nAA is followed by BB, BB by CC, CC by DD.\nSo, DD is followed by EE.\n\n*SHORTCUT Trick*:\nSimple alphabetical repetition.\nAfter DD comes EE.\n",
+    "id": 463
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 3, 5, 9, 17, ?",
+    "options": [
+      "A. 25",
+      "B. 30",
+      "C. 33",
+      "D. 35"
+    ],
+    "answer": "C. 33",
+    "explanation": "*Standard method*:\nObserve the relationship between consecutive terms.\n(3 * 2) - 1 = 5.\n(5 * 2) - 1 = 9.\n(9 * 2) - 1 = 17.\nThe pattern is to multiply the previous term by 2 and then subtract 1.\nSo, the next term is (17 * 2) - 1 = 34 - 1 = 33.\n\n*SHORTCUT Trick*:\nPattern is 'x2 - 1'.\n17 x 2 = 34.\n34 - 1 = 33.\n",
+    "id": 464
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next letter in the series: A, E, I, O, ?",
+    "options": [
+      "A. U",
+      "B. P",
+      "C. Q",
+      "D. S"
+    ],
+    "answer": "A. U",
+    "explanation": "*Standard method*:\nObserve the letters in the series.\nA, E, I, O are the vowels of the English alphabet in order.\nThe next vowel after O is U.\n\n*SHORTCUT Trick*:\nRecognize the vowel sequence.\nThe next vowel is U.\n",
+    "id": 465
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What number comes next: 11, 22, 33, 44, ?",
+    "options": [
+      "A. 45",
+      "B. 55",
+      "C. 66",
+      "D. 77"
+    ],
+    "answer": "B. 55",
+    "explanation": "*Standard method*:\nObserve the numbers in the series.\nEach number is a multiple of 11.\n11 * 1 = 11.\n11 * 2 = 22.\n11 * 3 = 33.\n11 * 4 = 44.\nThe pattern is to multiply 11 by consecutive natural numbers.\nThe next number in the sequence of natural numbers is 5.\nSo, the next term is 11 * 5 = 55.\n\n*SHORTCUT Trick*:\nSimple counting sequence where each number is a repeated digit.\n11, 22, 33, 44.\nThe next is 55.\n",
+    "id": 466
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next term in the series: Z10, Y9, X8, W7, ?",
+    "options": [
+      "A. V6",
+      "B. U6",
+      "C. V5",
+      "D. U5"
+    ],
+    "answer": "A. V6",
+    "explanation": "*Standard method*:\nBreak the series into two parts: letters and numbers.\nFor the letters: Z, Y, X, W. This is a reverse alphabetical progression, each letter is the one before it.\nThe next letter before W is V.\nFor the numbers: 10, 9, 8, 7. This is a decreasing sequence, subtracting 1 each time.\nThe next number after 7 is 6.\nCombining these, the next term is V6.\n\n*SHORTCUT Trick*:\nLetters: Z (-1) Y (-1) X (-1) W (-1) V.\nNumbers: 10 (-1) 9 (-1) 8 (-1) 7 (-1) 6.\nCombine for V6.\n",
+    "id": 467
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: 5, 6, 8, 11, 15, ?",
+    "options": [
+      "A. 18",
+      "B. 19",
+      "C. 20",
+      "D. 21"
+    ],
+    "answer": "C. 20",
+    "explanation": "*Standard method*:\nCalculate the differences between consecutive terms:\n6 - 5 = 1.\n8 - 6 = 2.\n11 - 8 = 3.\n15 - 11 = 4.\nThe differences are increasing by 1 each time: 1, 2, 3, 4.\nThe next difference should be 5.\nSo, the next term in the original series is 15 + 5 = 20.\n\n*SHORTCUT Trick*:\nFirst level differences: +1, +2, +3, +4.\nThe next difference will be +5.\n15 + 5 = 20.\n",
+    "id": 468
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: A, C, F, H, K, ?",
+    "options": [
+      "A. L",
+      "B. M",
+      "C. N",
+      "D. O"
+    ],
+    "answer": "B. M",
+    "explanation": "*Standard method*:\nConvert letters to their positional values in the alphabet:\nA=1, C=3, F=6, H=8, K=11.\nLook at the differences between these positions:\n3 - 1 = 2 (A to C: +2).\n6 - 3 = 3 (C to F: +3).\n8 - 6 = 2 (F to H: +2).\n11 - 8 = 3 (H to K: +3).\nThe pattern of differences is alternating: +2, +3, +2, +3.\nThe next difference should be +2.\nSo, the positional value of the next letter is 11 + 2 = 13.\nThe 13th letter of the alphabet is M.\n\n*SHORTCUT Trick*:\nAlternating pattern of skips: +2, +3, +2, +3.\nThe last step was +3.\nSo, the next step is +2.\nK (11th letter) + 2 = 13th letter.\nThe 13th letter is M.\n",
+    "id": 469
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the series: 2, 5, 10, 17, ?",
+    "options": [
+      "A. 20",
+      "B. 24",
+      "C. 26",
+      "D. 28"
+    ],
+    "answer": "C. 26",
+    "explanation": "*Standard method*:\nIdentify each term as related to a square of a natural number.\n2 = 1^2 + 1.\n5 = 2^2 + 1.\n10 = 3^2 + 1.\n17 = 4^2 + 1.\nThe pattern is n^2 + 1, where 'n' is consecutive natural numbers.\nThe next number in the sequence of natural numbers is 5.\nSo, the next term is 5^2 + 1 = 25 + 1 = 26.\n\n*SHORTCUT Trick*:\nRecognize the pattern: n^2 + 1.\n1^2+1=2, 2^2+1=5, 3^2+1=10, 4^2+1=17.\nThe next is 5^2+1 = 25+1 = 26.\n",
+    "id": 470
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next letter in the series: A, Z, B, Y, C, X, ?",
+    "options": [
+      "A. D",
+      "B. W",
+      "C. V",
+      "D. E"
+    ],
+    "answer": "A. D",
+    "explanation": "*Standard method*:\nThis is an alternating series, with two independent patterns interwoven.\nPattern 1 (odd positions): A, B, C. This is a simple alphabetical progression.\nPattern 2 (even positions): Z, Y, X. This is a reverse alphabetical progression.\nThe next term is in an odd position (7th term).\nFollowing Pattern 1 (A, B, C), the next letter is D.\n\n*SHORTCUT Trick*:\nSeparate the series into two:\n1st, 3rd, 5th, ... terms: A, B, C.\n2nd, 4th, 6th, ... terms: Z, Y, X.\nThe next term is the 7th term, which follows the first pattern.\nAfter C is D.\n",
+    "id": 471
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What completes the series: A2, C4, E8, G16, ?",
+    "options": [
+      "A. I32",
+      "B. H32",
+      "C. I24",
+      "D. H24"
+    ],
+    "answer": "A. I32",
+    "explanation": "*Standard method*:\nBreak the series into two parts: letters and numbers.\nFor the letters: A, C, E, G. This is an alternating alphabetical progression, skipping one letter each time (B, D, F are skipped).\nThe next letter after G, skipping H, is I.\nFor the numbers: 2, 4, 8, 16. This is a geometric progression, multiplying by 2 each time.\nThe next number after 16 is 16 * 2 = 32.\nCombining these, the next term is I32.\n\n*SHORTCUT Trick*:\nLetters: A (+2) C (+2) E (+2) G (+2) I.\nNumbers: 2 (x2) 4 (x2) 8 (x2) 16 (x2) 32.\nCombine for I32.\n",
+    "id": 472
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term: 100, 90, 80, 70, ?",
+    "options": [
+      "A. 50",
+      "B. 55",
+      "C. 60",
+      "D. 65"
+    ],
+    "answer": "C. 60",
+    "explanation": "*Standard method*:\nObserve the difference between consecutive terms.\n90 - 100 = -10.\n80 - 90 = -10.\n70 - 80 = -10.\nThe pattern is to subtract 10 from the previous term.\nSo, the next term is 70 - 10 = 60.\n\n*SHORTCUT Trick*:\nSimple arithmetic progression with a common difference of -10.\nNext term = Last term - 10 = 70 - 10 = 60.\n",
+    "id": 473
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the sequence: R, Q, P, O, ?",
+    "options": [
+      "A. N",
+      "B. M",
+      "C. L",
+      "D. K"
+    ],
+    "answer": "A. N",
+    "explanation": "*Standard method*:\nObserve the sequence of letters.\nEach letter is the preceding letter in the English alphabet, going backwards.\nR is followed by Q (in reverse), Q by P, P by O.\nSo, O is preceded by N.\n\n*SHORTCUT Trick*:\nSimple reverse alphabetical order.\nN comes before O.\n",
+    "id": 474
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 10, 20, 30, 40, ?",
+    "options": [
+      "A. 45",
+      "B. 50",
+      "C. 55",
+      "D. 60"
+    ],
+    "answer": "B. 50",
+    "explanation": "*Standard method*:\nObserve the difference between consecutive terms.\n20 - 10 = 10.\n30 - 20 = 10.\n40 - 30 = 10.\nThe pattern is to add 10 to the previous term.\nSo, the next term is 40 + 10 = 50.\n\n*SHORTCUT Trick*:\nIt's a simple arithmetic progression.\nCommon difference = 10.\nNext term = Last term + Common difference = 40 + 10 = 50.\n",
+    "id": 475
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 2, 4, 6, 8, ?",
+    "options": [
+      "A. 10",
+      "B. 9",
+      "C. 12",
+      "D. 11"
+    ],
+    "answer": "A. 10",
+    "explanation": "*Standard method*:\nThe given series consists of even numbers starting from 2.\nEach term is obtained by adding 2 to the previous term.\nFollowing this pattern, 8 + 2 = 10.\n\n*SHORTCUT Trick*:\nIdentify the common difference.\nThe difference between consecutive terms is 2.\nTherefore, the next term is 8 + 2 = 10.\n",
+    "id": 476
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term: 5, 10, 15, 20, ?",
+    "options": [
+      "A. 25",
+      "B. 22",
+      "C. 30",
+      "D. 28"
+    ],
+    "answer": "A. 25",
+    "explanation": "*Standard method*:\nThe given series consists of multiples of 5.\nEach term is obtained by adding 5 to the previous term.\nFollowing this pattern, 20 + 5 = 25.\n\n*SHORTCUT Trick*:\nThe series is an arithmetic progression with a common difference of 5.\nAdd 5 to the last given term: 20 + 5 = 25.\n",
+    "id": 477
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What number comes next in the sequence of prime numbers: 2, 3, 5, 7, ?",
+    "options": [
+      "A. 11",
+      "B. 9",
+      "C. 13",
+      "D. 10"
+    ],
+    "answer": "A. 11",
+    "explanation": "*Standard method*:\nThe given series consists of prime numbers in ascending order.\nPrime numbers are numbers greater than 1 that have no positive divisors other than 1 and themselves.\nThe next prime number after 7 is 11.\n\n*SHORTCUT Trick*:\nRecognize the prime number sequence.\nSimply recall the next prime number after 7.\n",
+    "id": 478
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next element in the pattern: 1, 4, 9, 16, ?",
+    "options": [
+      "A. 25",
+      "B. 20",
+      "C. 36",
+      "D. 24"
+    ],
+    "answer": "A. 25",
+    "explanation": "*Standard method*:\nThe given series consists of the squares of natural numbers.\n1 = 1^2.\n4 = 2^2.\n9 = 3^2.\n16 = 4^2.\nFollowing this pattern, the next term will be 5^2, which is 25.\n\n*SHORTCUT Trick*:\nNotice the pattern of squares.\nThe next square after 4^2 is 5^2.\n",
+    "id": 479
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Continue the series: 1, 8, 27, 64, ?",
+    "options": [
+      "A. 125",
+      "B. 100",
+      "C. 81",
+      "D. 121"
+    ],
+    "answer": "A. 125",
+    "explanation": "*Standard method*:\nThe given series consists of the cubes of natural numbers.\n1 = 1^3.\n8 = 2^3.\n27 = 3^3.\n64 = 4^3.\nFollowing this pattern, the next term will be 5^3, which is 125.\n\n*SHORTCUT Trick*:\nRecognize the pattern of cubes.\nThe next cube after 4^3 is 5^3.\n",
+    "id": 480
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next term in the sequence: 10, 8, 11, 9, 12, ?",
+    "options": [
+      "A. 10",
+      "B. 13",
+      "C. 11",
+      "D. 14"
+    ],
+    "answer": "A. 10",
+    "explanation": "*Standard method*:\nThe series follows an alternating pattern of subtraction and addition.\nFrom 10 to 8: -2.\nFrom 8 to 11: +3.\nFrom 11 to 9: -2.\nFrom 9 to 12: +3.\nFollowing this pattern, the next operation should be -2.\nSo, 12 - 2 = 10.\n\n*SHORTCUT Trick*:\nIdentify the alternating operations: (-2, +3, -2, +3, ...).\nApply the next operation in the sequence: 12 - 2 = 10.\n",
+    "id": 481
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the number that continues the pattern: 1, 3, 5, 7, ?",
+    "options": [
+      "A. 9",
+      "B. 8",
+      "C. 11",
+      "D. 10"
+    ],
+    "answer": "A. 9",
+    "explanation": "*Standard method*:\nThe given series consists of odd numbers in ascending order.\nEach term is obtained by adding 2 to the previous term.\nFollowing this pattern, 7 + 2 = 9.\n\n*SHORTCUT Trick*:\nRecognize the sequence of odd numbers.\nThe next odd number after 7 is 9.\n",
+    "id": 482
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What letter comes next in the series: A, B, C, D, ?",
+    "options": [
+      "A. E",
+      "B. F",
+      "C. G",
+      "D. H"
+    ],
+    "answer": "A. E",
+    "explanation": "*Standard method*:\nThe given series consists of consecutive letters of the English alphabet.\nFollowing this pattern, the letter after D is E.\n\n*SHORTCUT Trick*:\nSimply follow the alphabetical order.\nThe letter after D is E.\n",
+    "id": 483
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the alphabet series: A, C, E, G, ?",
+    "options": [
+      "A. I",
+      "B. H",
+      "C. J",
+      "D. K"
+    ],
+    "answer": "A. I",
+    "explanation": "*Standard method*:\nThe given series consists of letters skipping one letter in between.\nA (skip B) C (skip D) E (skip F) G.\nFollowing this pattern, after G, skip H to get I.\n\n*SHORTCUT Trick*:\nIdentify the 'skip 1 letter' pattern.\nG followed by skipping H gives I.\n",
+    "id": 484
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next letter in the reverse alphabet series: Z, Y, X, W, ?",
+    "options": [
+      "A. V",
+      "B. U",
+      "C. S",
+      "D. T"
+    ],
+    "answer": "A. V",
+    "explanation": "*Standard method*:\nThe given series consists of consecutive letters of the English alphabet in reverse order.\nFollowing this pattern, the letter before W is V.\n\n*SHORTCUT Trick*:\nSimply follow the reverse alphabetical order.\nThe letter before W is V.\n",
+    "id": 485
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing letter: A, Z, B, Y, C, ?",
+    "options": [
+      "A. X",
+      "B. W",
+      "C. D",
+      "D. E"
+    ],
+    "answer": "A. X",
+    "explanation": "*Standard method*:\nThis is an alternating series of two patterns.\nThe first pattern is A, B, C, ... (consecutive letters).\nThe second pattern is Z, Y, ... (reverse consecutive letters).\nSo, the next term in the second pattern (after Y) is X.\n\n*SHORTCUT Trick*:\nSeparate the series into two interleaved patterns.\n(A, B, C) and (Z, Y, ?).\nThe next letter in the second pattern is X.\n",
+    "id": 486
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the alphanumeric series: A1, B2, C3, D4, ?",
+    "options": [
+      "A. E5",
+      "B. F6",
+      "C. E4",
+      "D. D5"
+    ],
+    "answer": "A. E5",
+    "explanation": "*Standard method*:\nThis series has two components: a letter and a number.\nThe letter component follows consecutive alphabetical order: A, B, C, D.\nThe number component follows consecutive numerical order: 1, 2, 3, 4.\nCombining these, the next term will be E5.\n\n*SHORTCUT Trick*:\nObserve both parts independently.\nNext letter after D is E.\nNext number after 4 is 5.\nCombine them to get E5.\n",
+    "id": 487
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the alphanumeric sequence: A5, C7, E9, G11, ?",
+    "options": [
+      "A. I13",
+      "B. H12",
+      "C. J13",
+      "D. I12"
+    ],
+    "answer": "A. I13",
+    "explanation": "*Standard method*:\nThis series also has two components: a letter and a number.\nThe letter component skips one letter each time: A (B) C (D) E (F) G.\nSo, after G, skip H to get I.\nThe number component increases by 2 each time: 5, 7, 9, 11.\nSo, the next number will be 11 + 2 = 13.\nCombining these, the next term will be I13.\n\n*SHORTCUT Trick*:\nAnalyze letter and number patterns separately.\nLetters: A, C, E, G, I (skip one).\nNumbers: 5, 7, 9, 11, 13 (add 2).\nCombine to get I13.\n",
+    "id": 488
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next number in the pattern: 1, 2, 4, 7, 11, ?",
+    "options": [
+      "A. 16",
+      "B. 13",
+      "C. 15",
+      "D. 17"
+    ],
+    "answer": "A. 16",
+    "explanation": "*Standard method*:\nExamine the differences between consecutive terms.\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nSo, the next difference should be 5.\nTherefore, 11 + 5 = 16.\n\n*SHORTCUT Trick*:\nLook at the differences between terms.\n(+1, +2, +3, +4).\nThe next difference is +5.\n11 + 5 = 16.\n",
+    "id": 489
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What number logically follows in this sequence: 1, 1, 2, 3, 5, ?",
+    "options": [
+      "A. 8",
+      "B. 7",
+      "C. 6",
+      "D. 9"
+    ],
+    "answer": "A. 8",
+    "explanation": "*Standard method*:\nThe given series is a Fibonacci sequence.\nEach term is the sum of the two preceding terms.\n1 + 1 = 2.\n1 + 2 = 3.\n2 + 3 = 5.\nFollowing this pattern, the next term will be 3 + 5 = 8.\n\n*SHORTCUT Trick*:\nRecognize the Fibonacci pattern.\nAdd the last two numbers: 3 + 5 = 8.\n",
+    "id": 490
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Continue the numerical progression: 20, 18, 16, 14, ?",
+    "options": [
+      "A. 12",
+      "B. 10",
+      "C. 13",
+      "D. 11"
+    ],
+    "answer": "A. 12",
+    "explanation": "*Standard method*:\nThe given series is an arithmetic progression in descending order.\nEach term is obtained by subtracting 2 from the previous term.\nFollowing this pattern, 14 - 2 = 12.\n\n*SHORTCUT Trick*:\nObserve the common difference.\nEach number decreases by 2.\n14 - 2 = 12.\n",
+    "id": 491
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the series: 30, 29, 27, 24, ?",
+    "options": [
+      "A. 20",
+      "B. 21",
+      "C. 22",
+      "D. 19"
+    ],
+    "answer": "A. 20",
+    "explanation": "*Standard method*:\nExamine the differences between consecutive terms.\n30 - 29 = 1.\n29 - 27 = 2.\n27 - 24 = 3.\nThe differences are increasing by 1 each time (1, 2, 3).\nSo, the next difference should be 4.\nTherefore, 24 - 4 = 20.\n\n*SHORTCUT Trick*:\nLook at the decreasing differences.\n(-1, -2, -3).\nThe next decrease is -4.\n24 - 4 = 20.\n",
+    "id": 492
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term in the alphanumeric series: AZ, BY, CX, DW, ?",
+    "options": [
+      "A. EV",
+      "B. FU",
+      "C. ET",
+      "D. FV"
+    ],
+    "answer": "A. EV",
+    "explanation": "*Standard method*:\nThis series has two components: the first letter and the second letter.\nThe first letter component follows consecutive alphabetical order: A, B, C, D.\nSo, the next first letter is E.\nThe second letter component follows reverse alphabetical order: Z, Y, X, W.\nSo, the next second letter is V.\nCombining these, the next term will be EV.\n\n*SHORTCUT Trick*:\nLetters in a pair often sum to 27 (A=1, Z=26; B=2, Y=25).\nD=4, W=23 (4+23=27).\nE=5, so the second letter must be 22nd (V), because 5+22=27.\n",
+    "id": 493
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What day comes next in the sequence: Mon, Tue, Wed, Thu, ?",
+    "options": [
+      "A. Fri",
+      "B. Sat",
+      "C. Sun",
+      "D. Mon"
+    ],
+    "answer": "A. Fri",
+    "explanation": "*Standard method*:\nThe given series consists of consecutive days of the week.\nFollowing this pattern, the day after Thursday is Friday.\n\n*SHORTCUT Trick*:\nRecognize the pattern as days of the week.\nSimply state the next day.\n",
+    "id": 494
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series of months: Jan, Feb, Mar, Apr, ?",
+    "options": [
+      "A. May",
+      "B. Jun",
+      "C. Jul",
+      "D. Aug"
+    ],
+    "answer": "A. May",
+    "explanation": "*Standard method*:\nThe given series consists of consecutive months of the year.\nFollowing this pattern, the month after April is May.\n\n*SHORTCUT Trick*:\nRecognize the pattern as months of the year.\nSimply state the next month.\n",
+    "id": 495
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the series: 7, 14, 21, 28, ?",
+    "options": [
+      "A. 35",
+      "B. 30",
+      "C. 42",
+      "D. 29"
+    ],
+    "answer": "A. 35",
+    "explanation": "*Standard method*:\nThe given series consists of multiples of 7.\nEach term is obtained by adding 7 to the previous term.\nFollowing this pattern, 28 + 7 = 35.\n\n*SHORTCUT Trick*:\nRecognize the multiplication table of 7.\n7 * 5 = 35.\n",
+    "id": 496
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next number in the powers of two sequence: 2, 4, 8, 16, ?",
+    "options": [
+      "A. 32",
+      "B. 24",
+      "C. 28",
+      "D. 30"
+    ],
+    "answer": "A. 32",
+    "explanation": "*Standard method*:\nThe given series consists of powers of 2.\n2 = 2^1.\n4 = 2^2.\n8 = 2^3.\n16 = 2^4.\nFollowing this pattern, the next term will be 2^5, which is 32.\nAlternatively, each term is obtained by multiplying the previous term by 2.\n16 * 2 = 32.\n\n*SHORTCUT Trick*:\nRecognize the powers of 2 pattern.\nDouble the last number: 16 * 2 = 32.\n",
+    "id": 497
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What letter comes next in the sequence: A, D, G, J, ?",
+    "options": [
+      "A. M",
+      "B. N",
+      "C. L",
+      "D. K"
+    ],
+    "answer": "A. M",
+    "explanation": "*Standard method*:\nThe given series consists of letters where two letters are skipped between each term.\nA (BC) D (EF) G (HI) J.\nFollowing this pattern, after J, skip K and L to get M.\n\n*SHORTCUT Trick*:\nCount the letter skips.\nEach letter is +3 positions in the alphabet (A+3=D, D+3=G, J+3=M).\n",
+    "id": 498
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the decimal series: 0.5, 1.0, 1.5, 2.0, ?",
+    "options": [
+      "A. 2.5",
+      "B. 3.0",
+      "C. 2.2",
+      "D. 2.1"
+    ],
+    "answer": "A. 2.5",
+    "explanation": "*Standard method*:\nThe given series is an arithmetic progression with decimal numbers.\nEach term is obtained by adding 0.5 to the previous term.\nFollowing this pattern, 2.0 + 0.5 = 2.5.\n\n*SHORTCUT Trick*:\nIdentify the common difference.\nThe difference between consecutive terms is 0.5.\nAdd 0.5 to the last term: 2.0 + 0.5 = 2.5.\n",
+    "id": 499
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next number in the series: 1, 3, 7, 15, ?",
+    "options": [
+      "A. 31",
+      "B. 29",
+      "C. 30",
+      "D. 32"
+    ],
+    "answer": "A. 31",
+    "explanation": "*Standard method*:\nExamine the relationship between consecutive terms.\n1 * 2 + 1 = 3.\n3 * 2 + 1 = 7.\n7 * 2 + 1 = 15.\nFollowing this pattern, the next term will be 15 * 2 + 1.\n15 * 2 = 30, and 30 + 1 = 31.\n\n*SHORTCUT Trick*:\nRecognize the pattern: (previous term * 2) + 1.\nApply it: (15 * 2) + 1 = 30 + 1 = 31.\n",
+    "id": 500
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the alphanumeric series: P5, R5, T5, V5, ?",
+    "options": [
+      "A. X5",
+      "B. W5",
+      "C. Y5",
+      "D. U5"
+    ],
+    "answer": "A. X5",
+    "explanation": "*Standard method*:\nThis series has two components: a letter and a number.\nThe number component remains constant: 5.\nThe letter component skips one letter each time: P (Q) R (S) T (U) V.\nSo, after V, skip W to get X.\nCombining these, the next term will be X5.\n\n*SHORTCUT Trick*:\nThe number is always 5.\nLetters skip one (P, R, T, V, X).\n",
+    "id": 501
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the sequence: 100, 95, 105, 100, 110, ?",
+    "options": [
+      "A. 105",
+      "B. 115",
+      "C. 120",
+      "D. 100"
+    ],
+    "answer": "A. 105",
+    "explanation": "*Standard method*:\nThis series follows an alternating pattern of subtraction and addition with different values.\nFrom 100 to 95: -5.\nFrom 95 to 105: +10.\nFrom 105 to 100: -5.\nFrom 100 to 110: +10.\nFollowing this pattern, the next operation should be -5.\nSo, 110 - 5 = 105.\n\n*SHORTCUT Trick*:\nObserve the alternating operations: (-5, +10, -5, +10, ...).\nApply the next operation: 110 - 5 = 105.\n",
+    "id": 502
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the series: 2, 6, 12, 20, 30, ?",
+    "options": [
+      "A. 42",
+      "B. 40",
+      "C. 36",
+      "D. 44"
+    ],
+    "answer": "A. 42",
+    "explanation": "*Standard method*:\nExamine the differences between consecutive terms.\n6 - 2 = 4.\n12 - 6 = 6.\n20 - 12 = 8.\n30 - 20 = 10.\nThe differences are increasing by 2 each time (4, 6, 8, 10).\nSo, the next difference should be 12.\nTherefore, 30 + 12 = 42.\n\n*SHORTCUT Trick*:\nAnalyze the differences to find a pattern in the differences themselves.\n(+4, +6, +8, +10).\nThe next jump is +12.\n30 + 12 = 42.\n",
+    "id": 503
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing letter in the sequence: B, D, F, H, ?",
+    "options": [
+      "A. J",
+      "B. I",
+      "C. K",
+      "D. G"
+    ],
+    "answer": "A. J",
+    "explanation": "*Standard method*:\nThe given series consists of letters skipping one letter in between.\nB (skip C) D (skip E) F (skip G) H.\nFollowing this pattern, after H, skip I to get J.\n\n*SHORTCUT Trick*:\nRecognize the pattern of skipping one letter.\nH followed by skipping I gives J.\n",
+    "id": 504
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 20, 18, 16, 14, ?",
+    "options": [
+      "A. 11",
+      "B. 13",
+      "C. 12",
+      "D. 10"
+    ],
+    "answer": "C. 12",
+    "explanation": "*Standard method*:\nThe given sequence is an arithmetic progression where each term is obtained by subtracting 2 from the previous term.\n20 - 2 = 18.\n18 - 2 = 16.\n16 - 2 = 14.\nSo, the next term will be 14 - 2 = 12.\n\n*SHORTCUT Trick*:\nIt's a simple decreasing series with a constant difference of -2.\n",
+    "id": 505
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the pattern: 80, 40, 20, 10, ?",
+    "options": [
+      "A. 5",
+      "B. 7",
+      "C. 15",
+      "D. 10"
+    ],
+    "answer": "A. 5",
+    "explanation": "*Standard method*:\nThe given sequence is a geometric progression where each term is obtained by dividing the previous term by 2.\n80 / 2 = 40.\n40 / 2 = 20.\n20 / 2 = 10.\nSo, the next term will be 10 / 2 = 5.\n\n*SHORTCUT Trick*:\nEach number is half of the previous number.\n",
+    "id": 506
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the missing term: 5, 7, 6, 8, 7, ?",
+    "options": [
+      "A. 9",
+      "B. 10",
+      "C. 8",
+      "D. 7"
+    ],
+    "answer": "A. 9",
+    "explanation": "*Standard method*:\nThis is an alternating series with two operations.\nThe pattern is +2, then -1, then +2, then -1, and so on.\n5 + 2 = 7.\n7 - 1 = 6.\n6 + 2 = 8.\n8 - 1 = 7.\nSo, the next operation will be +2.\n7 + 2 = 9.\n\n*SHORTCUT Trick*:\nLook at the sequence as (N), (N+2), (N+1), (N+3), (N+2).\nOr simply, +2, -1, +2, -1, ...\n",
+    "id": 507
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the series: 1, 4, 9, 16, ?",
+    "options": [
+      "A. 20",
+      "B. 25",
+      "C. 36",
+      "D. 18"
+    ],
+    "answer": "B. 25",
+    "explanation": "*Standard method*:\nThe given series consists of the squares of consecutive natural numbers.\n1 = 1^2.\n4 = 2^2.\n9 = 3^2.\n16 = 4^2.\nSo, the next term will be 5^2 = 25.\n\n*SHORTCUT Trick*:\nRecognize the perfect squares: 1, 4, 9, 16, 25.\n",
+    "id": 508
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the next number in the sequence: 1, 8, 27, 64, ?",
+    "options": [
+      "A. 100",
+      "B. 121",
+      "C. 125",
+      "D. 81"
+    ],
+    "answer": "C. 125",
+    "explanation": "*Standard method*:\nThe given series consists of the cubes of consecutive natural numbers.\n1 = 1^3.\n8 = 2^3.\n27 = 3^3.\n64 = 4^3.\nSo, the next term will be 5^3 = 125.\n\n*SHORTCUT Trick*:\nRecognize the perfect cubes: 1, 8, 27, 64, 125.\n",
+    "id": 509
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next prime number in the series: 2, 3, 5, 7, 11, ?",
+    "options": [
+      "A. 12",
+      "B. 13",
+      "C. 15",
+      "D. 17"
+    ],
+    "answer": "B. 13",
+    "explanation": "*Standard method*:\nThe given sequence consists of prime numbers in ascending order.\nA prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.\n2, 3, 5, 7, 11 are all prime numbers.\nThe next prime number after 11 is 13.\n\n*SHORTCUT Trick*:\nSimply list prime numbers.\n",
+    "id": 510
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the Fibonacci-like sequence: 1, 1, 2, 3, 5, 8, ?",
+    "options": [
+      "A. 11",
+      "B. 12",
+      "C. 13",
+      "D. 14"
+    ],
+    "answer": "C. 13",
+    "explanation": "*Standard method*:\nIn a Fibonacci sequence, each number is the sum of the two preceding ones.\n1 + 1 = 2.\n1 + 2 = 3.\n2 + 3 = 5.\n3 + 5 = 8.\nSo, the next term will be 5 + 8 = 13.\n\n*SHORTCUT Trick*:\nAdd the last two numbers to get the next one.\n",
+    "id": 511
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What letter comes next in the sequence: A, B, C, D, ?",
+    "options": [
+      "A. F",
+      "B. E",
+      "C. G",
+      "D. H"
+    ],
+    "answer": "B. E",
+    "explanation": "*Standard method*:\nThis is a simple alphabetical series where letters follow in consecutive order.\nA, B, C, D are the first four letters of the English alphabet.\nThe next letter is E.\n\n*SHORTCUT Trick*:\nJust the next letter in the alphabet.\n",
+    "id": 512
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing letter in the series: A, C, E, G, ?",
+    "options": [
+      "A. H",
+      "B. J",
+      "C. I",
+      "D. K"
+    ],
+    "answer": "C. I",
+    "explanation": "*Standard method*:\nIn this alphabetical series, each letter is followed by skipping one letter in between.\nA (skip B) C.\nC (skip D) E.\nE (skip F) G.\nSo, after G, skip H to get the next letter I.\n\n*SHORTCUT Trick*:\nIt's a series of alternating letters, or all odd-positioned letters (1st, 3rd, 5th, 7th, 9th).\n",
+    "id": 513
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: A, D, G, J, ?",
+    "options": [
+      "A. K",
+      "B. L",
+      "C. M",
+      "D. N"
+    ],
+    "answer": "C. M",
+    "explanation": "*Standard method*:\nIn this alphabetical series, each letter is followed by skipping two letters in between.\nA (skip BC) D.\nD (skip EF) G.\nG (skip HI) J.\nSo, after J, skip KL to get the next letter M.\n\n*SHORTCUT Trick*:\nEach letter is three positions after the previous one (A+3=D, D+3=G, etc.).\n",
+    "id": 514
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What letter comes next in the reverse sequence: Z, Y, X, W, ?",
+    "options": [
+      "A. U",
+      "B. S",
+      "C. V",
+      "D. T"
+    ],
+    "answer": "C. V",
+    "explanation": "*Standard method*:\nThis is a simple alphabetical series where letters follow in reverse consecutive order.\nZ, Y, X, W are the last four letters of the English alphabet in reverse.\nThe next letter in reverse order is V.\n\n*SHORTCUT Trick*:\nJust the previous letter in the alphabet.\n",
+    "id": 515
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next element in the pattern: A, Z, B, Y, C, ?",
+    "options": [
+      "A. X",
+      "B. D",
+      "C. W",
+      "D. V"
+    ],
+    "answer": "A. X",
+    "explanation": "*Standard method*:\nThis is an alternating series with two interleaved patterns.\nThe first pattern is the forward alphabetical sequence: A, B, C, ...\nThe second pattern is the reverse alphabetical sequence: Z, Y, ...\nFollowing this, the next letter for the second pattern after Y would be X.\n\n*SHORTCUT Trick*:\nFirst letters go A, B, C.\nSecond letters go Z, Y, X.\n",
+    "id": 516
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the alphanumeric sequence: A1, B2, C3, D4, ?",
+    "options": [
+      "A. E4",
+      "B. D5",
+      "C. E5",
+      "D. F6"
+    ],
+    "answer": "C. E5",
+    "explanation": "*Standard method*:\nThis series combines an alphabetical pattern and a numerical pattern.\nThe alphabetical part goes A, B, C, D, which are consecutive letters.\nThe numerical part goes 1, 2, 3, 4, which are consecutive numbers.\nSo, the next element will combine the next letter (E) and the next number (5), resulting in E5.\n\n*SHORTCUT Trick*:\nLetters and numbers both increment by one.\n",
+    "id": 517
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing term: Z10, Y9, X8, W7, ?",
+    "options": [
+      "A. V6",
+      "B. V5",
+      "C. U6",
+      "D. V7"
+    ],
+    "answer": "A. V6",
+    "explanation": "*Standard method*:\nThis series combines a reverse alphabetical pattern and a decreasing numerical pattern.\nThe alphabetical part goes Z, Y, X, W, which are consecutive letters in reverse order.\nThe numerical part goes 10, 9, 8, 7, which are consecutive decreasing numbers.\nSo, the next element will combine the next letter in reverse (V) and the next decreasing number (6), resulting in V6.\n\n*SHORTCUT Trick*:\nLetters decrement, numbers decrement.\n",
+    "id": 518
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: B2, D4, F6, H8, ?",
+    "options": [
+      "A. I9",
+      "B. J10",
+      "C. G10",
+      "D. J9"
+    ],
+    "answer": "B. J10",
+    "explanation": "*Standard method*:\nThis series combines an alphabetical pattern and a numerical pattern.\nThe alphabetical part skips one letter each time: B (skip C) D (skip E) F (skip G) H.\nThe numerical part increases by 2 each time: 2, 4, 6, 8.\nSo, after H, skip I to get J, and after 8, add 2 to get 10.\nThe next element is J10.\n\n*SHORTCUT Trick*:\nLetters are consecutive even-positioned letters.\nNumbers are consecutive even numbers.\n",
+    "id": 519
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the next number in the sequence: 1, 2, 4, 7, 11, ?",
+    "options": [
+      "A. 13",
+      "B. 14",
+      "C. 15",
+      "D. 16"
+    ],
+    "answer": "D. 16",
+    "explanation": "*Standard method*:\nObserve the differences between consecutive terms:\n2 - 1 = 1.\n4 - 2 = 2.\n7 - 4 = 3.\n11 - 7 = 4.\nThe differences are increasing by 1 each time (1, 2, 3, 4).\nSo, the next difference should be 5.\nTherefore, the next term is 11 + 5 = 16.\n\n*SHORTCUT Trick*:\nThe pattern is adding increasing consecutive numbers: +1, +2, +3, +4, +5.\n",
+    "id": 520
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next number in the pattern: 30, 29, 27, 24, 20, ?",
+    "options": [
+      "A. 17",
+      "B. 16",
+      "C. 15",
+      "D. 14"
+    ],
+    "answer": "C. 15",
+    "explanation": "*Standard method*:\nObserve the differences between consecutive terms:\n29 - 30 = -1.\n27 - 29 = -2.\n24 - 27 = -3.\n20 - 24 = -4.\nThe decrements are increasing by 1 each time (-1, -2, -3, -4).\nSo, the next decrement should be -5.\nTherefore, the next term is 20 - 5 = 15.\n\n*SHORTCUT Trick*:\nThe pattern is subtracting increasing consecutive numbers: -1, -2, -3, -4, -5.\n",
+    "id": 521
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What number completes the series: 1, 2, 6, 24, ?",
+    "options": [
+      "A. 48",
+      "B. 72",
+      "C. 120",
+      "D. 96"
+    ],
+    "answer": "C. 120",
+    "explanation": "*Standard method*:\nObserve the operation between consecutive terms:\n1 * 2 = 2.\n2 * 3 = 6.\n6 * 4 = 24.\nThe multiplier is increasing by 1 each time (2, 3, 4).\nSo, the next multiplier should be 5.\nTherefore, the next term is 24 * 5 = 120.\n\n*SHORTCUT Trick*:\nMultiply by 2, then by 3, then by 4, then by 5.\n",
+    "id": 522
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number in the sequence: 10, 15, 13, 18, 16, ?",
+    "options": [
+      "A. 19",
+      "B. 20",
+      "C. 21",
+      "D. 22"
+    ],
+    "answer": "C. 21",
+    "explanation": "*Standard method*:\nThis is an alternating series with two distinct operations.\n10 (+5) 15 (-2) 13 (+5) 18 (-2) 16.\nThe pattern is consistently adding 5, then subtracting 2.\nSo, the next operation after 16 will be adding 5.\n16 + 5 = 21.\n\n*SHORTCUT Trick*:\nPattern is +5, -2, +5, -2, +5.\n",
+    "id": 523
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the letter grouping: AB, CD, EF, GH, ?",
+    "options": [
+      "A. HI",
+      "B. IJ",
+      "C. JK",
+      "D. KL"
+    ],
+    "answer": "B. IJ",
+    "explanation": "*Standard method*:\nThis series consists of pairs of consecutive letters of the English alphabet.\nAB are the 1st and 2nd letters.\nCD are the 3rd and 4th letters.\nEF are the 5th and 6th letters.\nGH are the 7th and 8th letters.\nSo, the next pair of consecutive letters will be the 9th and 10th letters, which are IJ.\n\n*SHORTCUT Trick*:\nEach group is the next two consecutive letters.\n",
+    "id": 524
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the next pair in the series: AZ, BY, CX, DW, ?",
+    "options": [
+      "A. EY",
+      "B. DV",
+      "C. EU",
+      "D. EV"
+    ],
+    "answer": "D. EV",
+    "explanation": "*Standard method*:\nThis series combines two separate alphabetical patterns within each pair.\nThe first letter of each pair follows a forward alphabetical sequence: A, B, C, D, ...\nThe second letter of each pair follows a reverse alphabetical sequence: Z, Y, X, W, ...\nFollowing this, the next first letter after D is E.\nThe next second letter after W in reverse is V.\nSo, the next pair is EV.\n\n*SHORTCUT Trick*:\nFirst letter goes A,B,C,D,E.\nSecond letter goes Z,Y,X,W,V.\n",
+    "id": 525
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What is the missing number in the interleaved series: 10, 1, 9, 2, 8, 3, ?",
+    "options": [
+      "A. 6",
+      "B. 7",
+      "C. 5",
+      "D. 4"
+    ],
+    "answer": "B. 7",
+    "explanation": "*Standard method*:\nThis is an interleaved series consisting of two separate patterns.\nPattern 1 (first, third, fifth terms): 10, 9, 8, ... (decreasing by 1).\nPattern 2 (second, fourth, sixth terms): 1, 2, 3, ... (increasing by 1).\nThe question asks for the next term, which belongs to Pattern 1.\nFollowing Pattern 1, after 8, the next term is 8 - 1 = 7.\n\n*SHORTCUT Trick*:\nSeparate the series: (10, 9, 8, ?) and (1, 2, 3, ...).\n",
+    "id": 526
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the sequence: 2, 6, 12, 20, ?",
+    "options": [
+      "A. 28",
+      "B. 30",
+      "C. 32",
+      "D. 24"
+    ],
+    "answer": "B. 30",
+    "explanation": "*Standard method*:\nObserve the differences between consecutive terms:\n6 - 2 = 4.\n12 - 6 = 6.\n20 - 12 = 8.\nThe differences are increasing by 2 each time (4, 6, 8).\nSo, the next difference should be 10.\nTherefore, the next term is 20 + 10 = 30.\nAnother pattern: n * (n+1) for n=1, 2, 3, 4, 5.\n1*(1+1)=2.\n2*(2+1)=6.\n3*(3+1)=12.\n4*(4+1)=20.\nSo, 5*(5+1)=30.\n\n*SHORTCUT Trick*:\nThe pattern is adding increasing even numbers: +4, +6, +8, +10.\n",
+    "id": 527
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What comes next in the alphanumeric series: A2, C4, E6, G8, ?",
+    "options": [
+      "A. H10",
+      "B. I10",
+      "C. J12",
+      "D. K10"
+    ],
+    "answer": "B. I10",
+    "explanation": "*Standard method*:\nThis series combines an alphabetical pattern and a numerical pattern.\nThe alphabetical part skips one letter each time: A (skip B) C (skip D) E (skip F) G.\nThe numerical part increases by 2 each time: 2, 4, 6, 8.\nSo, after G, skip H to get I, and after 8, add 2 to get 10.\nThe next element is I10.\n\n*SHORTCUT Trick*:\nLetters are odd-positioned letters.\nNumbers are consecutive even numbers.\n",
+    "id": 528
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Find the missing number: 1, 3, 7, 13, ?",
+    "options": [
+      "A. 19",
+      "B. 21",
+      "C. 23",
+      "D. 25"
+    ],
+    "answer": "B. 21",
+    "explanation": "*Standard method*:\nObserve the differences between consecutive terms:\n3 - 1 = 2.\n7 - 3 = 4.\n13 - 7 = 6.\nThe differences are increasing by 2 each time (2, 4, 6).\nSo, the next difference should be 8.\nTherefore, the next term is 13 + 8 = 21.\n\n*SHORTCUT Trick*:\nThe pattern is adding increasing even numbers: +2, +4, +6, +8.\n",
+    "id": 529
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Complete the series: 3, 9, 27, 81, ?",
+    "options": [
+      "A. 162",
+      "B. 243",
+      "C. 108",
+      "D. 96"
+    ],
+    "answer": "B. 243",
+    "explanation": "*Standard method*:\nThe given series consists of powers of 3.\n3 = 3^1.\n9 = 3^2.\n27 = 3^3.\n81 = 3^4.\nSo, the next term will be 3^5 = 243.\nAlternatively, each term is obtained by multiplying the previous term by 3.\n81 * 3 = 243.\n\n*SHORTCUT Trick*:\nEach number is three times the previous number.\n",
+    "id": 530
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "What letter comes next in the sequence: A, C, F, J, ?",
+    "options": [
+      "A. N",
+      "B. P",
+      "C. M",
+      "D. O"
+    ],
+    "answer": "D. O",
+    "explanation": "*Standard method*:\nObserve the number of letters skipped between consecutive terms:\nA (skip B) C (1 letter skipped).\nC (skip DE) F (2 letters skipped).\nF (skip GHI) J (3 letters skipped).\nThe number of skipped letters is increasing by 1 each time (1, 2, 3).\nSo, the next step should skip 4 letters after J.\nJ (skip KLMN) O.\nTherefore, the next letter is O.\n\n*SHORTCUT Trick*:\nSkip +1, then +2, then +3, then +4 letters.\n",
+    "id": 531
+  },
+  {
+    "module": "Logical Reasoning",
+    "topic": "Series & Patterns",
+    "difficulty": "easy",
+    "question": "Identify the missing term in the alphanumeric series: A1Z, B2Y, C3X, D4W, ?",
+    "options": [
+      "A. E5V",
+      "B. F5U",
+      "C. E4V",
+      "D. E5U"
+    ],
+    "    answer": "A. E5V",
+    "explanation": "*Standard method*:\nThis complex alphanumeric series has three distinct patterns:\n1.  The first letter follows a forward alphabetical sequence: A, B, C, D, ...\n2.  The number in the middle follows a simple increasing numerical sequence: 1, 2, 3, 4, ...\n3.  The last letter follows a reverse alphabetical sequence: Z, Y, X, W, ...\nFollowing these patterns, the next first letter after D is E.\nThe next number after 4 is 5.\nThe next last letter in reverse after W is V.\nSo, the missing term is E5V.\n\n*SHORTCUT Trick*:\nFirst part: A,B,C,D,E.\nSecond part: 1,2,3,4,5.\nThird part: Z,Y,X,W,V.\nCombine them.\n",
+    "id": 532
   }
 ]

@@ -6,8 +6,6 @@ from pydantic import BaseModel
 from google import genai
 from database import get_cursor
 from datetime import datetime
-
-# Import the send_email function from your main.py (you might need to adjust the import based on your structure, or redefine it here)
 import smtplib
 from email.message import EmailMessage
 
@@ -30,7 +28,6 @@ class CreateSessionReq(BaseModel):
     host_id: int
     host_name: str
     scheduled_time: str
-    topic: str
 
 class JoinSessionReq(BaseModel):
     session_id: int
@@ -44,33 +41,40 @@ class EvaluateReq(BaseModel):
 # --- 1. REST APIs for Lobby ---
 
 @router.post("/create")
-def create_session(req: CreateSessionReq, db_cursor: tuple = Depends(get_cursor)):
+async def create_session(req: CreateSessionReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Insert Session
+        # 1. Generate Topic immediately when session is created
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
+        client = genai.Client(api_key=api_key)
+        prompt = "Generate exactly ONE highly debated, single-sentence topic for a college student group discussion (Tech, Business, or Ethics). Return ONLY the topic string, no quotes or intro."
+        response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+        ai_topic = response.text.strip().strip('"').strip("'")
+
+        # 2. Insert Session with the generated topic
         cursor.execute(
-            "INSERT INTO gd_sessions (host_id, host_name, scheduled_time, topic) VALUES (%s, %s, %s, %s)",
-            (req.host_id, req.host_name, req.scheduled_time, req.topic)
+            "INSERT INTO gd_sessions (host_id, host_name, scheduled_time, topic, status) VALUES (%s, %s, %s, %s, %s)",
+            (req.host_id, req.host_name, req.scheduled_time, ai_topic, "scheduled")
         )
         session_id = cursor.lastrowid
         
-        # Add host as participant
+        # 3. Add host as participant
         cursor.execute(
             "INSERT INTO gd_participants (session_id, user_id, user_name) VALUES (%s, %s, %s)",
             (session_id, req.host_id, req.host_name)
         )
         db.commit()
 
-        # Notify all OTHER users
+        # 4. Notify others
         cursor.execute("SELECT email FROM users WHERE id != %s", (req.host_id,))
         users = cursor.fetchall()
         time_formatted = datetime.fromisoformat(req.scheduled_time).strftime("%B %d, %Y at %I:%M %p")
         
         for u in users:
-            body = f"Hello,\n\n{req.host_name} has scheduled a Group Discussion session on '{req.topic}'.\nTime: {time_formatted}\n\nLogin to Placify to secure your spot!"
-            send_notification_email(u['email'], "New Group Discussion Scheduled!", body)
+            body = f"Hello,\n\n{req.host_name} has scheduled a Group Discussion session.\nTime: {time_formatted}\nThe topic will be revealed by AI at the start of the session.\n\nLogin to Placify to book your spot!"
+            send_notification_email(u['email'], "New Live GD Scheduled!", body)
 
-        return {"message": "Session created and users notified!", "session_id": session_id}
+        return {"message": "Session created, AI generated the topic, and users notified!", "session_id": session_id}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
@@ -78,24 +82,22 @@ def create_session(req: CreateSessionReq, db_cursor: tuple = Depends(get_cursor)
 @router.get("/sessions")
 def get_sessions(db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
-    # Get scheduled/active sessions with participant count
     cursor.execute("""
-        SELECT s.id, s.host_name as host, s.scheduled_time as time, s.topic, s.status,
-               (SELECT COUNT(*) FROM gd_participants WHERE session_id = s.id) as participants
+        SELECT s.id, s.host_id, s.host_name as host, s.scheduled_time as time, s.topic, s.status,
+               (SELECT COUNT(*) FROM gd_participants WHERE session_id = s.id) as participants,
+               (SELECT GROUP_CONCAT(user_id) FROM gd_participants WHERE session_id = s.id) as participant_ids
         FROM gd_sessions s
         WHERE s.status IN ('scheduled', 'active')
         ORDER BY s.scheduled_time ASC
     """)
     return cursor.fetchall()
 
-@router.post("/join")
-def join_session(req: JoinSessionReq, db_cursor: tuple = Depends(get_cursor)):
+@router.post("/book")
+def book_session(req: JoinSessionReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Check capacity
         cursor.execute("SELECT COUNT(*) as count FROM gd_participants WHERE session_id = %s", (req.session_id,))
-        count = cursor.fetchone()['count']
-        if count >= 6:
+        if cursor.fetchone()['count'] >= 6:
             raise HTTPException(status_code=400, detail="Room is full")
             
         cursor.execute(
@@ -103,29 +105,28 @@ def join_session(req: JoinSessionReq, db_cursor: tuple = Depends(get_cursor)):
             (req.session_id, req.user_id, req.user_name)
         )
         db.commit()
-        return {"message": "Joined successfully"}
+        return {"message": "Seat booked successfully!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # --- 2. WEBSOCKETS FOR LIVE ROOM ---
 
 class GDConnectionManager:
     def __init__(self):
-        # Maps session_id -> {"participants": {user_name: ws}, "transcript": []}
         self.rooms: Dict[str, Dict] = {}
 
-    async def connect(self, websocket: WebSocket, session_id: str, user_name: str):
+    async def connect(self, websocket: WebSocket, session_id: str, user_id: str, user_name: str):
         await websocket.accept()
         if session_id not in self.rooms:
             self.rooms[session_id] = {"participants": {}, "transcript": []}
         
-        self.rooms[session_id]["participants"][user_name] = websocket
+        # Using user_id instead of user_name so two people with the same name don't overwrite each other
+        self.rooms[session_id]["participants"][user_id] = websocket
         await self.broadcast(session_id, {"type": "system", "text": f"{user_name} joined."})
 
-    def disconnect(self, session_id: str, user_name: str):
-        if session_id in self.rooms and user_name in self.rooms[session_id]["participants"]:
-            del self.rooms[session_id]["participants"][user_name]
+    def disconnect(self, session_id: str, user_id: str, user_name: str):
+        if session_id in self.rooms and user_id in self.rooms[session_id]["participants"]:
+            del self.rooms[session_id]["participants"][user_id]
 
     async def broadcast(self, session_id: str, message: dict):
         if session_id in self.rooms:
@@ -136,18 +137,20 @@ class GDConnectionManager:
 
 manager = GDConnectionManager()
 
-@router.websocket("/ws/{session_id}/{user_name}")
-async def gd_websocket(websocket: WebSocket, session_id: str, user_name: str):
-    await manager.connect(websocket, session_id, user_name)
+# Updated WebSocket URL to accept user_id
+@router.websocket("/ws/{session_id}/{user_id}/{user_name}")
+async def gd_websocket(websocket: WebSocket, session_id: str, user_id: str, user_name: str):
+    await manager.connect(websocket, session_id, user_id, user_name)
     try:
         while True:
             data = await websocket.receive_text()
-            # Intercept specific AI moderation triggers if needed, else broadcast
-            await manager.broadcast(session_id, {"type": "user_message", "user": user_name, "text": data})
+            if data.startswith("SYS_CMD:"):
+                await manager.broadcast(session_id, {"type": "system_command", "cmd": data.replace("SYS_CMD:", "")})
+            else:
+                await manager.broadcast(session_id, {"type": "user_message", "user": user_name, "text": data})
     except WebSocketDisconnect:
-        manager.disconnect(session_id, user_name)
+        manager.disconnect(session_id, user_id, user_name)
         await manager.broadcast(session_id, {"type": "system", "text": f"{user_name} left."})
-
 
 # --- 3. AI EVALUATION ---
 
@@ -156,7 +159,6 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     room_data = manager.rooms.get(str(req.session_id))
     
-    # Bypass for empty transcript testing
     transcript_text = "Silent room. No one spoke."
     if room_data and room_data["transcript"]:
         transcript_text = "\n".join([f"{msg['user']}: {msg['text']}" for msg in room_data["transcript"]])
@@ -174,12 +176,12 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
     [
       {{
         "user_name": "Test User", "clarity": 5, "confidence": 5, "logic": 5, "communication": 5, "leadership": 5,
-        "total": 25, "strengths": ["None"], "weaknesses": ["Did not speak"], "advice": "Please speak next time."
+        "total": 25, "strengths": ["Good point"], "weaknesses": ["Spoke too fast"], "advice": "Please speak clearly."
       }}
     ]
     """
     try:
-        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY_GD") or os.getenv("GEMINI_API_KEY")
         client = genai.Client(api_key=api_key)
         response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         
@@ -191,5 +193,4 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
 
         return data
     except Exception as e:
-        print(f"Evaluation Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

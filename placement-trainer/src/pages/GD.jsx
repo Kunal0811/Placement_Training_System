@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiUsers, FiClock, FiPlus, FiCalendar } from "react-icons/fi";
+import { FiUsers, FiClock, FiPlus, FiCalendar, FiCpu } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api";
 import axios from "axios";
@@ -9,11 +9,9 @@ export default function GD() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [scheduledTime, setScheduledTime] = useState("");
-  const [topic, setTopic] = useState("AI replacing jobs: Threat or Opportunity?");
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch scheduled sessions from the database
   const fetchSessions = async () => {
     try {
       const res = await axios.get(`${API_BASE}/api/gd/sessions`);
@@ -25,6 +23,8 @@ export default function GD() {
 
   useEffect(() => { 
     fetchSessions(); 
+    const interval = setInterval(fetchSessions, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleCreateSession = async () => {
@@ -34,11 +34,10 @@ export default function GD() {
       const res = await axios.post(`${API_BASE}/api/gd/create`, {
         host_id: user.id,
         host_name: user.fname,
-        scheduled_time: scheduledTime,
-        topic: topic
+        scheduled_time: scheduledTime
       });
       alert(res.data.message);
-      fetchSessions(); // Refresh the list
+      fetchSessions(); 
       setScheduledTime("");
     } catch (err) {
       alert("Failed to create session.");
@@ -47,18 +46,24 @@ export default function GD() {
     }
   };
 
-  // THIS IS THE FUNCTION THAT HANDLES "ENTER WAITING ROOM"
-  const handleJoin = async (session) => {
+  const handleAction = async (session, actionType) => {
       try {
-          await axios.post(`${API_BASE}/api/gd/join`, {
-              session_id: session.id,
-              user_id: user.id,
-              user_name: user.fname
-          });
-          // Navigates the user to the Live Room
-          navigate(`/gd/room/${session.id}?topic=${encodeURIComponent(session.topic)}`);
+          if (actionType === "book") {
+              await axios.post(`${API_BASE}/api/gd/book`, {
+                  session_id: session.id,
+                  user_id: user.id,
+                  user_name: user.fname
+              });
+              alert("Seat booked! Enter the room 5 minutes before start time.");
+              fetchSessions();
+          } else {
+              // Pass the topic and hostId to the room securely so we don't need to fetch it again
+              navigate(`/gd/room/${session.id}`, { 
+                  state: { topic: session.topic, hostId: session.host_id } 
+              });
+          }
       } catch (err) {
-          alert(err.response?.data?.detail || "Failed to join room");
+          alert(err.response?.data?.detail || "Action failed");
       }
   };
 
@@ -69,57 +74,62 @@ export default function GD() {
             <h1 className="text-5xl font-display font-bold mb-4">
                 Live <span className="text-neon-orange">Group Discussions</span>
             </h1>
-            <p className="text-gray-400">Schedule a session, invite peers, and get evaluated by AI.</p>
+            <p className="text-gray-400">Schedule, book a seat, and get evaluated by AI in real-time.</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-            {/* LEFT SIDE: Create Session */}
+            {/* Host Session */}
             <div className="glass-panel p-8 rounded-3xl border border-white/10 bg-black/40 relative overflow-hidden h-fit">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
                 <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><FiPlus className="text-neon-orange"/> Host a Session</h2>
-                <p className="text-sm text-gray-400 mb-6">We will email all registered students to join you.</p>
+                <p className="text-sm text-gray-400 mb-6">Set a time. The AI will generate a surprise topic behind the scenes.</p>
 
                 <div className="space-y-4">
-                    <div>
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Topic</label>
-                        <input type="text" className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 focus:border-neon-orange text-white" value={topic} onChange={e => setTopic(e.target.value)} />
-                    </div>
                     <div>
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Schedule Time</label>
                         <input type="datetime-local" className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 focus:border-neon-orange text-white" value={scheduledTime} onChange={e => setScheduledTime(e.target.value)} />
                     </div>
                     <button onClick={handleCreateSession} disabled={loading} className="w-full py-4 mt-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl shadow-lg hover:scale-[1.02] transition-transform">
-                        {loading ? "Scheduling & Emailing..." : "Schedule & Notify Everyone"}
+                        {loading ? "Generating Topic & Notifying..." : "Schedule & Notify Everyone"}
                     </button>
                 </div>
             </div>
 
-            {/* RIGHT SIDE: Scheduled Sessions */}
+            {/* Upcoming Sessions */}
             <div className="glass-panel p-8 rounded-3xl border border-white/10 bg-black/20">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><FiCalendar className="text-neon-blue"/> Upcoming Sessions</h2>
                 <div className="space-y-4 overflow-y-auto max-h-[500px] pr-2">
                     {sessions.map((session) => {
                         const date = new Date(session.time);
+                        const now = new Date();
+                        const timeDiffMins = (date - now) / (1000 * 60);
                         const isFull = session.participants >= 6;
+                        
+                        const canJoinLive = (timeDiffMins <= 5 && timeDiffMins >= -30) || session.status === 'active';
+                        const participantIdsArray = (session.participant_ids || "").split(",");
+                        const hasBooked = participantIdsArray.includes(user.id.toString());
+
                         return (
                             <div key={session.id} className="p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-white/20 transition-all flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <div>
                                     <h3 className="font-bold text-white flex items-center gap-2">
-                                        <span className={`w-2 h-2 rounded-full ${session.status === 'active' ? 'bg-red-500 animate-pulse' : 'bg-neon-green'}`}></span>
-                                        {session.topic}
+                                        <FiCpu className="text-purple-400" /> Topic: Revealed in Live Room
                                     </h3>
                                     <p className="text-xs text-gray-400 mt-1">Host: {session.host}</p>
                                     <div className="flex gap-4 mt-2 text-xs text-gray-500 font-mono">
                                         <span><FiClock className="inline"/> {date.toLocaleString()}</span>
-                                        <span><FiUsers className="inline"/> {session.participants}/6 Joined</span>
+                                        <span><FiUsers className="inline"/> {session.participants}/6 Booked</span>
                                     </div>
                                 </div>
                                 <button 
-                                  onClick={() => handleJoin(session)} 
-                                  disabled={isFull} 
-                                  className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${isFull ? "bg-gray-800 text-gray-500" : "bg-neon-blue text-black hover:bg-cyan-300 shadow-[0_0_10px_rgba(45,212,191,0.2)]"}`}
+                                  onClick={() => handleAction(session, canJoinLive ? "join" : "book")} 
+                                  disabled={isFull && !hasBooked && !canJoinLive} 
+                                  className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap 
+                                    ${canJoinLive ? "bg-red-500 text-white animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.4)]" : 
+                                      hasBooked ? "bg-green-500/20 text-green-400 border border-green-500/50" :
+                                      isFull ? "bg-gray-800 text-gray-500" : "bg-neon-blue text-black hover:bg-cyan-300 shadow-[0_0_10px_rgba(45,212,191,0.2)]"}`}
                                 >
-                                    {isFull ? "Full" : (session.status === 'active' ? "Join Live" : "Enter Waiting Room")}
+                                    {canJoinLive ? "Enter Live Room" : hasBooked ? "Seat Booked" : isFull ? "Full" : "Book Seat"}
                                 </button>
                             </div>
                         );
