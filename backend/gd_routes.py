@@ -44,28 +44,24 @@ class EvaluateReq(BaseModel):
 async def create_session(req: CreateSessionReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # 1. Generate Topic immediately when session is created
         api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
         client = genai.Client(api_key=api_key)
         prompt = "Generate exactly ONE highly debated, single-sentence topic for a college student group discussion (Tech, Business, or Ethics). Return ONLY the topic string, no quotes or intro."
         response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         ai_topic = response.text.strip().strip('"').strip("'")
 
-        # 2. Insert Session with the generated topic
         cursor.execute(
             "INSERT INTO gd_sessions (host_id, host_name, scheduled_time, topic, status) VALUES (%s, %s, %s, %s, %s)",
             (req.host_id, req.host_name, req.scheduled_time, ai_topic, "scheduled")
         )
         session_id = cursor.lastrowid
         
-        # 3. Add host as participant
         cursor.execute(
             "INSERT INTO gd_participants (session_id, user_id, user_name) VALUES (%s, %s, %s)",
             (session_id, req.host_id, req.host_name)
         )
         db.commit()
 
-        # 4. Notify others
         cursor.execute("SELECT email FROM users WHERE id != %s", (req.host_id,))
         users = cursor.fetchall()
         time_formatted = datetime.fromisoformat(req.scheduled_time).strftime("%B %d, %Y at %I:%M %p")
@@ -120,9 +116,8 @@ class GDConnectionManager:
         if session_id not in self.rooms:
             self.rooms[session_id] = {"participants": {}, "transcript": []}
         
-        # Using user_id instead of user_name so two people with the same name don't overwrite each other
         self.rooms[session_id]["participants"][user_id] = websocket
-        await self.broadcast(session_id, {"type": "system", "text": f"{user_name} joined."})
+        await self.broadcast(session_id, {"type": "system", "text": f"{user_name} joined the room."})
 
     def disconnect(self, session_id: str, user_id: str, user_name: str):
         if session_id in self.rooms and user_id in self.rooms[session_id]["participants"]:
@@ -137,7 +132,6 @@ class GDConnectionManager:
 
 manager = GDConnectionManager()
 
-# Updated WebSocket URL to accept user_id
 @router.websocket("/ws/{session_id}/{user_id}/{user_name}")
 async def gd_websocket(websocket: WebSocket, session_id: str, user_id: str, user_name: str):
     await manager.connect(websocket, session_id, user_id, user_name)
@@ -150,7 +144,7 @@ async def gd_websocket(websocket: WebSocket, session_id: str, user_id: str, user
                 await manager.broadcast(session_id, {"type": "user_message", "user": user_name, "text": data})
     except WebSocketDisconnect:
         manager.disconnect(session_id, user_id, user_name)
-        await manager.broadcast(session_id, {"type": "system", "text": f"{user_name} left."})
+        await manager.broadcast(session_id, {"type": "system", "text": f"{user_name} left the room."})
 
 # --- 3. AI EVALUATION ---
 
@@ -159,38 +153,106 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     room_data = manager.rooms.get(str(req.session_id))
     
+    # 1. Check if already evaluated to prevent double-generation
+    cursor.execute("SELECT status FROM gd_sessions WHERE id=%s", (req.session_id,))
+    session = cursor.fetchone()
+    if session and session['status'] == 'completed':
+        cursor.execute("""
+            SELECT e.*, p.user_name FROM gd_evaluations e
+            JOIN gd_participants p ON e.user_id = p.user_id AND e.session_id = p.session_id
+            WHERE e.session_id = %s
+        """, (req.session_id,))
+        evals = cursor.fetchall()
+        if evals:
+            return [{
+                "user_name": e["user_name"], "clarity": e["clarity"], "confidence": e["confidence"],
+                "logic": e["content"], "communication": e["communication"], "leadership": e["leadership"],
+                "total": e["overall_score"], 
+                "strengths": json.loads(e["strengths"]) if isinstance(e["strengths"], str) else e["strengths"],
+                "weaknesses": json.loads(e["improvements"]) if isinstance(e["improvements"], str) else e["improvements"],
+                "advice": e["ideal_response"]
+            } for e in evals]
+
+    # 2. Grab actual Participants from the Database
+    cursor.execute("SELECT user_id, user_name FROM gd_participants WHERE session_id=%s", (req.session_id,))
+    participants = cursor.fetchall()
+    participant_names = [p['user_name'] for p in participants]
+    name_to_id = {p['user_name'].lower(): p['user_id'] for p in participants}
+
     transcript_text = "Silent room. No one spoke."
     if room_data and room_data["transcript"]:
         transcript_text = "\n".join([f"{msg['user']}: {msg['text']}" for msg in room_data["transcript"]])
     
+    # 3. STRICT AI Prompt forcing it to use real names
     prompt = f"""
     You are an expert HR Interviewer. Analyze this Group Discussion transcript.
     Topic: {req.topic}
+    
+    The official participants in this room are: {', '.join(participant_names)}
+
     Transcript:
     {transcript_text}
 
-    Evaluate EVERY participant who spoke (or if none, evaluate a placeholder user named 'Test User') based on 5 metrics (each out of 10):
-    1. Clarity 2. Confidence 3. Logic 4. Communication 5. Leadership.
+    RULES:
+    1. You MUST evaluate EVERY SINGLE PARTICIPANT listed above.
+    2. Do NOT use placeholder names like 'Test User'. ONLY use the exact names from the official participants list.
+    3. If a participant did not speak at all, give them a low score (e.g., 2 or 3) and mention "Did not participate" in their weaknesses.
+    4. Provide 5 metrics (each out of 10): Clarity, Confidence, Logic, Communication, Leadership.
     
-    Return STRICT JSON array exactly like this:
+    Return a STRICT JSON array exactly like this:
     [
       {{
-        "user_name": "Test User", "clarity": 5, "confidence": 5, "logic": 5, "communication": 5, "leadership": 5,
+        "user_name": "Exact Name", "clarity": 5, "confidence": 5, "logic": 5, "communication": 5, "leadership": 5,
         "total": 25, "strengths": ["Good point"], "weaknesses": ["Spoke too fast"], "advice": "Please speak clearly."
-      }}
+      }},
+      {{ ... next participant ... }}
     ]
     """
     try:
-        api_key = os.getenv("GEMINI_API_KEY_GD") or os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
         client = genai.Client(api_key=api_key)
         response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         
         cleaned = response.text.replace("```json", "").replace("```", "").strip()
         data = json.loads(cleaned)
         
+        # 4. Save to Database
+        for ev in data:
+            u_name = ev.get("user_name", "")
+            u_id = name_to_id.get(u_name.lower())
+            
+            # Save if the user exists
+            if u_id:
+                cursor.execute("""
+                    INSERT INTO gd_evaluations
+                    (session_id, user_id, overall_score, communication, content, confidence, leadership, clarity, strengths, improvements, ideal_response)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    req.session_id, u_id, ev.get("total", 0), ev.get("communication", 0),
+                    ev.get("logic", 0), ev.get("confidence", 0), ev.get("leadership", 0),
+                    ev.get("clarity", 0), json.dumps(ev.get("strengths", [])),
+                    json.dumps(ev.get("weaknesses", [])), ev.get("advice", "")
+                ))
+
         cursor.execute("UPDATE gd_sessions SET status='completed' WHERE id=%s", (req.session_id,))
         db.commit()
 
-        return data
+        # 5. Send exact evaluated data back to React
+        cursor.execute("""
+            SELECT e.*, p.user_name FROM gd_evaluations e
+            JOIN gd_participants p ON e.user_id = p.user_id AND e.session_id = p.session_id
+            WHERE e.session_id = %s
+        """, (req.session_id,))
+        final_evals = cursor.fetchall()
+
+        return [{
+            "user_name": e["user_name"], "clarity": e["clarity"], "confidence": e["confidence"],
+            "logic": e["content"], "communication": e["communication"], "leadership": e["leadership"],
+            "total": e["overall_score"], 
+            "strengths": json.loads(e["strengths"]) if isinstance(e["strengths"], str) else e["strengths"],
+            "weaknesses": json.loads(e["improvements"]) if isinstance(e["improvements"], str) else e["improvements"],
+            "advice": e["ideal_response"]
+        } for e in final_evals]
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

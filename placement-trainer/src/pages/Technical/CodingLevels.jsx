@@ -32,11 +32,10 @@ const LEVELS = [
     title: 'Hard', 
     problems: 5, 
     icon: '💎', 
-    // Switched to neon-red (or you can use hot-pink if you prefer)
     borderClass: "border-neon-red/50 group-hover:border-neon-red",
-    buttonClass: "bg-neon-red text-white hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]",
     gradientClass: "from-neon-red/70 to-neon-red",
-    shadowClass: "group-hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]"
+    buttonClass: "bg-neon-red text-white hover:bg-red-500 shadow-[0_0_15px_rgba(255,7,58,0.4)]",
+    shadowClass: "group-hover:shadow-[0_0_30px_rgba(255,7,58,0.2)]"
   }
 ];
 

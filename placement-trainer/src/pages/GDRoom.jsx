@@ -1,10 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiMic, FiMicOff, FiStopCircle, FiActivity, FiCpu, FiClock, FiUsers, FiVideo } from 'react-icons/fi';
+import { FiMic, FiMicOff, FiStopCircle, FiCpu, FiClock, FiUsers, FiVideo, FiSend } from 'react-icons/fi';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
+import Peer from 'peerjs';
 import API_BASE from '../api';
+
+// Helper component to render WebRTC streams correctly in React
+const VideoPlayer = ({ stream, isLocal }) => {
+    const videoRef = useRef(null);
+    useEffect(() => {
+        if (videoRef.current && stream) {
+            videoRef.current.srcObject = stream;
+        }
+    }, [stream]);
+    return (
+        <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            muted={isLocal} // Always mute local video to prevent audio feedback loop
+            className={`w-full h-full object-cover ${isLocal ? 'transform scale-x-[-1]' : ''}`} 
+        />
+    );
+};
 
 export default function GDRoom() {
     const { id: sessionId } = useParams();
@@ -12,67 +32,126 @@ export default function GDRoom() {
     const navigate = useNavigate();
     const { user } = useAuth();
     
-    // Retrieve the secret topic and host ID passed from the dashboard
     const { topic: secretTopic, hostId } = location.state || { topic: "Unknown Topic", hostId: null };
     const isHost = user.id === hostId;
 
-    const [phase, setPhase] = useState("waiting"); // waiting, prep, live, report
+    const [phase, setPhase] = useState("waiting"); 
     const [topic, setTopic] = useState("Hidden");
     const [timeLeft, setTimeLeft] = useState(0);
     const [messages, setMessages] = useState([]);
+    
+    // WebRTC & Audio State
     const [isListening, setIsListening] = useState(false);
+    const [localStream, setLocalStream] = useState(null);
+    const [remotePeers, setRemotePeers] = useState([]); // Array of { peerId, stream }
+    
+    // AI Evaluation State
     const [evaluations, setEvaluations] = useState(null);
     const [loadingEval, setLoadingEval] = useState(false);
+    const [manualInput, setManualInput] = useState("");
     
+    // Refs
     const ws = useRef(null);
+    const peerInstance = useRef(null);
     const recognitionRef = useRef(null);
-    const videoRef = useRef(null); // Reference for the webcam
+    const messagesEndRef = useRef(null); 
 
-    // 1. Camera Setup
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-            .then(stream => {
-                if (videoRef.current) videoRef.current.srcObject = stream;
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    // 1. Initialize WebRTC (PeerJS) & Camera/Mic
+    useEffect(() => {
+        // Create a unique Peer ID for this user in this session
+        const myPeerId = `${sessionId}-${user.id}-${Math.floor(Math.random() * 1000)}`;
+        const peer = new Peer(myPeerId);
+        peerInstance.current = peer;
+
+        // Get Video and Audio from the laptop
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                // Mute mic initially (until live phase)
+                stream.getAudioTracks()[0].enabled = false; 
+                setLocalStream(stream);
+
+                // Answer incoming WebRTC calls from other laptops
+                peer.on('call', (call) => {
+                    call.answer(stream); // send our stream
+                    call.on('stream', (userVideoStream) => {
+                        addRemotePeer(call.peer, userVideoStream);
+                    });
+                });
+
+                // Connect to FastAPI WebSocket for text/AI syncing
+                setupWebSocket(myPeerId, stream, peer);
             })
-            .catch(err => console.error("Camera access denied:", err));
-    }, []);
+            .catch(err => {
+                console.error("Camera/Mic access denied:", err);
+                alert("Please allow Camera and Microphone access to join the WebRTC room.");
+            });
 
-    // 2. WebSocket Setup
-    useEffect(() => {
+        return () => {
+            if (ws.current) ws.current.close();
+            if (peerInstance.current) peerInstance.current.destroy();
+            if (recognitionRef.current) recognitionRef.current.stop();
+            if (localStream) localStream.getTracks().forEach(track => track.stop());
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId, user.id]);
+
+    const addRemotePeer = (peerId, stream) => {
+        setRemotePeers(prev => {
+            if (prev.find(p => p.peerId === peerId)) return prev;
+            return [...prev, { peerId, stream }];
+        });
+    };
+
+    // 2. Setup WebSocket for Timers, Chat, and AI Transcript
+    const setupWebSocket = (myPeerId, myStream, peerObj) => {
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
         const wsHost = API_BASE.replace(/^https?:\/\//, '');
-        // Added user.id to the URL to prevent overwriting same names
         const wsUrl = `${protocol}://${wsHost}/api/gd/ws/${sessionId}/${user.id}/${user.fname}`;
         
         ws.current = new WebSocket(wsUrl);
+        
+        ws.current.onopen = () => {
+            // Tell everyone else in the room our WebRTC Peer ID so they can call us
+            ws.current.send(`SYS_CMD:PEER_JOINED:${myPeerId}`);
+        };
+
         ws.current.onmessage = (event) => {
             const data = JSON.parse(event.data);
             
             if (data.type === "system_command") {
-                if (data.cmd === "START_PREP") {
-                    setTopic(secretTopic); // Reveal the topic to everyone
+                if (data.cmd.startsWith("PEER_JOINED:")) {
+                    const incomingPeerId = data.cmd.split(":")[1];
+                    // If someone else joined, call them via WebRTC
+                    if (incomingPeerId !== myPeerId) {
+                        const call = peerObj.call(incomingPeerId, myStream);
+                        call.on('stream', (remoteStream) => {
+                            addRemotePeer(incomingPeerId, remoteStream);
+                        });
+                    }
+                } else if (data.cmd === "START_PREP") {
+                    setTopic(secretTopic); 
                     setPhase("prep");
-                    setTimeLeft(120); // 2 minutes
+                    setTimeLeft(120); 
                 } else if (data.cmd === "START_LIVE") {
                     setPhase("live");
-                    setTimeLeft(900); // 15 minutes
+                    setTimeLeft(900); 
                 } else if (data.cmd === "END_SESSION") {
                     handleEndSession();
+                } else if (data.cmd.startsWith("REPORT_READY:")) {
+                    const reportJson = data.cmd.substring("REPORT_READY:".length);
+                    setEvaluations(JSON.parse(reportJson));
+                    setLoadingEval(false);
+                    setPhase("report");
                 }
             } else {
                 setMessages((prev) => [...prev, data]);
             }
         };
-
-        return () => {
-            if (ws.current) ws.current.close();
-            if (recognitionRef.current) recognitionRef.current.stop();
-            // Stop camera when leaving
-            if (videoRef.current && videoRef.current.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, [sessionId, user.id, user.fname, secretTopic]);
+    };
 
     // 3. Timer Logic
     useEffect(() => {
@@ -86,54 +165,116 @@ export default function GDRoom() {
         return () => clearInterval(timer);
     }, [timeLeft, phase, isHost]);
 
-    // 4. End Session & Get Report
+    // 4. End Session & Trigger AI Report
     const handleEndSession = async () => {
         if (recognitionRef.current) recognitionRef.current.stop();
+        if (localStream) localStream.getAudioTracks()[0].enabled = false;
         setIsListening(false);
         setPhase("report");
-        setLoadingEval(true);
-        try {
-            const res = await axios.post(`${API_BASE}/api/gd/evaluate`, { session_id: sessionId, topic: secretTopic });
-            setEvaluations(res.data);
-        } catch (err) {
-            alert("Evaluation failed.");
-        } finally {
-            setLoadingEval(false);
+        setLoadingEval(true); 
+
+        if (isHost) {
+            try {
+                const res = await axios.post(`${API_BASE}/api/gd/evaluate`, { session_id: sessionId, topic: secretTopic });
+                ws.current.send(`SYS_CMD:REPORT_READY:${JSON.stringify(res.data)}`);
+                setEvaluations(res.data);
+                setLoadingEval(false);
+            } catch (err) {
+                alert("Evaluation failed.");
+            }
         }
     };
 
-    // 5. Mic Logic
+    // 5. Mic & Speech-to-Text Logic (Combines WebRTC Audio + AI Transcript)
     const toggleMic = () => {
         if (phase !== "live") return alert("Microphones are locked. Wait for the live discussion phase.");
         
         if (isListening) {
+            // Turn off Mic
+            if (localStream) localStream.getAudioTracks()[0].enabled = false;
             recognitionRef.current?.stop();
             setIsListening(false);
         } else {
+            // Turn on Mic for peers to hear
+            if (localStream) localStream.getAudioTracks()[0].enabled = true;
+            
+            // Turn on Speech Recognition for AI to read
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("Browser does not support Speech API. Please use Chrome/Edge.");
-            
-            const recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            
-            recognition.onresult = (e) => {
-                const transcript = e.results[e.results.length - 1][0].transcript;
-                if (transcript.trim() && ws.current) {
-                    ws.current.send(transcript);
-                }
-            };
-            recognition.onend = () => { if (isListening) recognition.start(); };
-
-            recognitionRef.current = recognition;
-            recognition.start();
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = false;
+                
+                recognition.onresult = (event) => {
+                    let finalTranscript = "";
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
+                    }
+                    if (finalTranscript.trim() && ws.current) {
+                        ws.current.send(finalTranscript.trim());
+                    }
+                };
+                
+                recognition.onend = () => { if (isListening) recognition.start(); };
+                recognitionRef.current = recognition;
+                recognition.start();
+            }
             setIsListening(true);
+        }
+    };
+
+    const handleManualSubmit = (e) => {
+        e.preventDefault();
+        if (phase !== "live") return alert("Wait for live phase.");
+        if (manualInput.trim() && ws.current) {
+            ws.current.send(manualInput.trim());
+            setManualInput("");
         }
     };
 
     const formatTime = (secs) => `${Math.floor(secs / 60).toString().padStart(2, '0')}:${(secs % 60).toString().padStart(2, '0')}`;
 
-    // --- VIEW: WAITING ROOM ---
+    // Calculate dynamic grid squares (Max 6)
+    const renderGridSquares = () => {
+        const totalSlots = 6;
+        const slots = [];
+        
+        // Slot 1: Local User
+        slots.push(
+            <div key="local" className="bg-black/40 rounded-xl border border-white/5 relative overflow-hidden bg-gray-900">
+                <div className={`absolute inset-0 border-2 rounded-xl transition-all z-10 pointer-events-none ${isListening ? 'border-neon-green shadow-[inset_0_0_20px_rgba(34,197,94,0.3)]' : 'border-transparent'}`}></div>
+                <span className="text-white font-bold text-xs absolute bottom-2 left-2 bg-black/60 px-2 py-1 rounded z-10 backdrop-blur-md flex items-center gap-2">
+                    You {isListening ? <FiMic className="text-neon-green"/> : <FiMicOff className="text-red-500"/>}
+                </span>
+                {localStream ? <VideoPlayer stream={localStream} isLocal={true} /> : <div className="flex items-center justify-center h-full"><FiVideo className="text-4xl text-gray-800"/></div>}
+            </div>
+        );
+
+        // Slots 2+: Remote Peers
+        remotePeers.forEach((peer, idx) => {
+            slots.push(
+                <div key={peer.peerId} className="bg-black/40 rounded-xl border border-white/5 relative overflow-hidden bg-gray-900">
+                    <span className="text-white font-bold text-xs absolute bottom-2 left-2 bg-black/60 px-2 py-1 rounded z-10 backdrop-blur-md">
+                        Peer {idx + 1}
+                    </span>
+                    <VideoPlayer stream={peer.stream} isLocal={false} />
+                </div>
+            );
+        });
+
+        // Fill remaining slots
+        while (slots.length < totalSlots) {
+            slots.push(
+                <div key={`empty-${slots.length}`} className="bg-black/40 rounded-xl border border-white/5 flex items-center justify-center relative overflow-hidden">
+                    <FiUsers className="text-4xl text-gray-800/50"/>
+                    <span className="text-gray-600 text-xs absolute bottom-2 left-2 px-2 py-1">Waiting...</span>
+                </div>
+            );
+        }
+
+        return slots;
+    };
+
     if (phase === "waiting") {
         return (
             <div className="min-h-screen bg-game-bg flex items-center justify-center p-8 text-white">
@@ -142,7 +283,7 @@ export default function GDRoom() {
                     <h2 className="text-3xl font-bold mb-4">Waiting Room</h2>
                     {isHost ? (
                         <>
-                            <p className="text-gray-400 mb-8">You are the Host. Wait for everyone to join, then click Start to reveal the AI topic.</p>
+                            <p className="text-gray-400 mb-8">You are the Host. Wait for everyone to join, then click Start.</p>
                             <button onClick={() => ws.current.send("SYS_CMD:START_PREP")} className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-xl hover:scale-105 transition-transform shadow-[0_0_15px_rgba(45,212,191,0.3)]">
                                 Reveal Topic & Start Session
                             </button>
@@ -158,7 +299,6 @@ export default function GDRoom() {
         );
     }
 
-    // --- VIEW: AI REPORT ---
     if (phase === "report") {
         if (loadingEval) return <div className="min-h-screen bg-game-bg flex items-center justify-center text-white"><h2 className="text-2xl animate-pulse flex items-center gap-2"><FiCpu/> AI Generating Final Report...</h2></div>;
         
@@ -219,7 +359,6 @@ export default function GDRoom() {
         );
     }
 
-    // --- VIEW: PREP OR LIVE DISCUSSION ---
     return (
         <div className="min-h-screen bg-game-bg flex flex-col p-4 md:p-8">
             <div className="max-w-5xl w-full mx-auto flex-1 flex flex-col">
@@ -244,24 +383,7 @@ export default function GDRoom() {
 
                 <div className="flex-1 flex flex-col md:flex-row gap-6 min-h-[500px]">
                     <div className="w-full md:w-1/3 grid grid-cols-2 grid-rows-3 gap-3">
-                        {/* Video Grid */}
-                        {[1,2,3,4,5,6].map(i => (
-                            <div key={i} className="bg-black/40 rounded-xl border border-white/5 flex items-center justify-center relative overflow-hidden bg-gray-900">
-                                {i === 1 ? (
-                                    <>
-                                        <div className={`absolute inset-0 border-2 rounded-xl transition-all z-10 pointer-events-none ${isListening ? 'border-neon-green shadow-[inset_0_0_20px_rgba(34,197,94,0.3)]' : 'border-transparent'}`}></div>
-                                        <span className="text-white font-bold text-xs absolute bottom-2 left-2 bg-black/60 px-2 py-1 rounded z-10 backdrop-blur-md">You</span>
-                                        {/* Local Webcam Feed */}
-                                        <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover transform scale-x-[-1]"></video>
-                                    </>
-                                ) : (
-                                    <>
-                                        <FiVideo className="text-4xl text-gray-800"/>
-                                        <span className="text-gray-500 text-xs absolute bottom-2 left-2 bg-black/50 px-2 py-1 rounded">Peer {i}</span>
-                                    </>
-                                )}
-                            </div>
-                        ))}
+                        {renderGridSquares()}
                     </div>
 
                     <div className="w-full md:w-2/3 glass-panel bg-black/40 rounded-3xl p-6 border border-white/10 flex flex-col relative">
@@ -274,24 +396,39 @@ export default function GDRoom() {
                         )}
 
                         <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Live AI Transcript</h3>
-                        <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-gray-700">
+                        
+                        <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-gray-700 pb-4">
                             {messages.map((msg, i) => (
                                 <div key={i} className={`p-4 rounded-2xl text-sm ${msg.type === 'system' || msg.type === 'system_command' ? 'mx-auto w-fit bg-white/5 text-gray-500 italic' : msg.user === user.fname ? 'ml-auto max-w-[80%] bg-neon-blue/20 border border-neon-blue/30 text-white rounded-br-none' : 'mr-auto max-w-[80%] bg-white/5 border border-white/10 text-gray-300 rounded-bl-none'}`}>
                                     {msg.type !== 'system' && msg.type !== 'system_command' && <span className="block text-[10px] uppercase font-bold text-gray-400 mb-1">{msg.user}</span>}
                                     {msg.text}
                                 </div>
                             ))}
+                            <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                            <p className="text-gray-400 text-sm">{isListening ? "Listening..." : "Mic is off."}</p>
+                        <div className="mt-4 pt-4 border-t border-white/10 flex items-center gap-4">
                             <button 
                                 onClick={toggleMic}
                                 disabled={phase === 'prep'}
-                                className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all shadow-xl ${phase === 'prep' ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : isListening ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.5)] animate-pulse' : 'bg-neon-blue text-black hover:scale-105 shadow-[0_0_15px_rgba(45,212,191,0.4)]'}`}
+                                className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all shadow-xl ${phase === 'prep' ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : isListening ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.5)] animate-pulse' : 'bg-neon-blue text-black hover:scale-105 shadow-[0_0_15px_rgba(45,212,191,0.4)]'}`}
                             >
                                 {isListening ? <FiStopCircle /> : <FiMic />}
                             </button>
+                            
+                            <form onSubmit={handleManualSubmit} className="flex-1 flex gap-2">
+                                <input 
+                                    type="text" 
+                                    value={manualInput}
+                                    onChange={(e) => setManualInput(e.target.value)}
+                                    placeholder={phase === "prep" ? "Chat locked during prep..." : "Or type your argument here if mic fails..."}
+                                    disabled={phase === "prep"}
+                                    className="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-blue transition-colors disabled:opacity-50"
+                                />
+                                <button type="submit" disabled={phase === "prep" || !manualInput.trim()} className="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-xl disabled:opacity-50 flex items-center justify-center transition-colors">
+                                    <FiSend />
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

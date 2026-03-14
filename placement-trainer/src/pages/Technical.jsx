@@ -75,7 +75,7 @@ export default function Technical() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] bg-secondary/20 rounded-[100%] blur-[120px] -z-10 animate-pulse-soft"></div>
             
             <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6 drop-shadow-2xl">
-                Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow-primary">Module</span>
+                Technical <span className="text-transparent bg-white bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow-primary">Module</span>
             </h1>
             <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
                 The core subjects essential for your technical interviews. Master programming languages, data structures, and computer science fundamentals.

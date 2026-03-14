@@ -47,25 +47,36 @@ export default function GD() {
   };
 
   const handleAction = async (session, actionType) => {
-      try {
-          if (actionType === "book") {
-              await axios.post(`${API_BASE}/api/gd/book`, {
-                  session_id: session.id,
-                  user_id: user.id,
-                  user_name: user.fname
-              });
-              alert("Seat booked! Enter the room 5 minutes before start time.");
-              fetchSessions();
-          } else {
-              // Pass the topic and hostId to the room securely so we don't need to fetch it again
-              navigate(`/gd/room/${session.id}`, { 
-                  state: { topic: session.topic, hostId: session.host_id } 
-              });
-          }
-      } catch (err) {
-          alert(err.response?.data?.detail || "Action failed");
-      }
-  };
+    try {
+        if (actionType === "book") {
+            await axios.post(`${API_BASE}/api/gd/book`, {
+                session_id: session.id,
+                user_id: user.id,
+                user_name: user.fname
+            });
+            alert("Seat booked! Enter the room 5 minutes before start time.");
+            fetchSessions();
+        } else {
+            // FIX: If they click "Enter Live Room", check if they are already in the database.
+            // If not, silently book their seat right now so the AI knows they exist!
+            const participantIdsArray = (session.participant_ids || "").split(",");
+            if (!participantIdsArray.includes(user.id.toString())) {
+                await axios.post(`${API_BASE}/api/gd/book`, {
+                    session_id: session.id,
+                    user_id: user.id,
+                    user_name: user.fname
+                });
+            }
+
+            // Now navigate them securely to the room
+            navigate(`/gd/room/${session.id}`, { 
+                state: { topic: session.topic, hostId: session.host_id } 
+            });
+        }
+    } catch (err) {
+        alert(err.response?.data?.detail || "Action failed");
+    }
+};
 
   return (
     <div className="min-h-screen bg-game-bg p-6 md:p-12 text-white">
@@ -78,7 +89,6 @@ export default function GD() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-            {/* Host Session */}
             <div className="glass-panel p-8 rounded-3xl border border-white/10 bg-black/40 relative overflow-hidden h-fit">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
                 <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><FiPlus className="text-neon-orange"/> Host a Session</h2>
@@ -95,7 +105,6 @@ export default function GD() {
                 </div>
             </div>
 
-            {/* Upcoming Sessions */}
             <div className="glass-panel p-8 rounded-3xl border border-white/10 bg-black/20">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><FiCalendar className="text-neon-blue"/> Upcoming Sessions</h2>
                 <div className="space-y-4 overflow-y-auto max-h-[500px] pr-2">

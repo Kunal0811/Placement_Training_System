@@ -25,6 +25,7 @@ export default {
         'hot-pink': '#fb7185',
         'neon-green': '#4ade80',
         'dark-accent': '#1e1e2e', // For sidebar/header distinction
+        'neon-red':'#ff073a',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
