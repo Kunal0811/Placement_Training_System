@@ -4,8 +4,7 @@ import re
 import json
 import uuid
 import shutil
-import asyncio
-from typing import List
+from typing import List, Dict
 from fastapi import APIRouter, HTTPException, Depends
 from google import genai 
 from pydantic import BaseModel
@@ -15,91 +14,227 @@ from database import get_cursor
 router = APIRouter(prefix="/api/coding", tags=["Coding"])
 
 # --- Pydantic Models ---
-class LevelProblemRequest(BaseModel):
-    difficulty: str
-    user_id: int
-    count: int = 5
-
-class EvaluationRequest(BaseModel):
-    user_id: int
-    problem: dict
-    code: str
-    language: str
-    difficulty: str
-
-class RunRequest(BaseModel):
-    code: str
-    language: str
-    input: str
-
 class LevelStatusRequest(BaseModel):
     user_id: int
     difficulty: str
 
-# --- Helper Functions ---
-def create_batch_problem_prompt(difficulty: str, count: int, solved_titles: List[str] = None) -> str:
-    avoid_instruction = ""
+class LevelProblemRequest(BaseModel):
+    difficulty: str
+    user_id: int
+    count: int = 5 # Request 5 problems at once
+
+class RunRequest(BaseModel):
+    language: str
+    code: str
+    input: str = ""
+
+class ProblemSubmission(BaseModel):
+    problem_title: str
+    code: str
+    language: str
+
+class SessionEvaluationRequest(BaseModel):
+    user_id: int
+    difficulty: str
+    time_taken: int # in seconds
+    submissions: List[ProblemSubmission]
+
+# --- 1. AI Generation Prompts ---
+
+def create_batch_problem_prompt(difficulty: str, solved_titles: List[str], count: int) -> str:
+    avoid_str = ""
     if solved_titles:
-        titles_str = ", ".join([f'"{title}"' for title in solved_titles])
-        avoid_instruction = f"\\nIMPORTANT: Do NOT generate a problem with any of the following titles: {titles_str}."
+        avoid_str = f"DO NOT GENERATE ANY OF THESE PROBLEMS: {', '.join(solved_titles)}. "
 
     return f"""
-    Generate exactly {count} unique software engineering coding interview problems of {difficulty} difficulty.
-    Focus on common topics like arrays, strings, trees, graphs, or dynamic programming.{avoid_instruction}
+    You are an expert technical interviewer. Generate exactly {count} distinct Data Structures and Algorithms (DSA) coding problems at the '{difficulty}' level.
+    {avoid_str}
 
-    **CRITICAL JSON RULES:**
-    1. Return strictly VALID JSON.
-    2. Do NOT use Markdown formatting (no ```json blocks).
-    3. ESCAPE all control characters inside strings. For example, use "\\n" for newlines, NOT actual line breaks.
-    4. The output must be a single line of JSON or properly structured JSON without unescaped control characters.
+    Ensure the problems require actual algorithmic thinking.
 
-    Return the response as a SINGLE, STRICT JSON object with a key "problems" which is a list of {count} problem objects.
-    Each problem object must have the following structure:
-    {{
-        "title": "A concise and descriptive title",
-        "description": "A detailed description. Use \\n for line breaks.",
-        "input_format": "Description of input format",
-        "output_format": "Description of output format",
-        "constraints": ["Constraint 1", "Constraint 2"],
-        "examples": [{{ "input": "...", "output": "...", "explanation": "..." }}]
-    }}
-    """
+    CRITICAL INSTRUCTIONS FOR 'starter_code':
+    1. The user's sandbox evaluates code using Standard Input (STDIN) and Standard Output (STDOUT).
+    2. The 'starter_code' MUST contain the boilerplate to read the input and print the output.
+    3. ABSOLUTE STRICT RULE: DO NOT WRITE THE ACTUAL DSA SOLUTION IN THE STARTER CODE! You must leave the algorithmic logic completely blank with a comment like "// TODO: Write your logic here". If you give the solution in the starter code, the user cannot practice!
 
-def create_evaluation_prompt(problem: dict, code: str, language: str) -> str:
-    problem_str = json.dumps(problem, indent=2)
-    return f"""
-    You are a strict code linter and logical evaluator. 
-    
-    **CRITICAL JSON RULES:**
-    1. Return strictly VALID JSON.
-    2. Do NOT use Markdown formatting.
-    3. Escape all newlines in feedback strings (e.g., use "\\n").
+    Return strictly a JSON array of objects. Do not use markdown blocks.
 
-    **THE PROBLEM:**
-    {problem_str}
-
-    **THE USER'S CODE ({language}):**
-    ```
-    {code}
-    ```
-
-    **EVALUATION STEPS:**
-    1. Check Syntax & Executability.
-    2. Check I/O Handling.
-    3. Check Logical Correctness.
-
-    **RESPONSE FORMAT (Strict JSON):**
-    {{
-        "is_correct": boolean,
-        "feedback_points": [
-            "Syntax/Logic error point 1",
-            "Feedback point 2"
+    [
+      {{
+        "title": "Problem Title",
+        "description": "Clear, detailed problem description. Explain exactly what the input string format will be.",
+        "examples": [
+          {{"input": "Example STDIN input string", "output": "Expected STDOUT output string", "explanation": "Brief explanation"}}
         ],
-        "time_complexity": "O(n)",
-        "space_complexity": "O(1)"
-    }}
+        "starter_code": {{
+            "python": "import sys\\n\\ndef solve():\\n    # Read all lines from standard input\\n    input_data = sys.stdin.read().splitlines()\\n    if not input_data:\\n        return\\n    \\n    # TODO: Parse input and write your logic here! DO NOT print debug statements, only the final result.\\n    \\n    \\n    # print(result)\\n\\nif __name__ == '__main__':\\n    solve()",
+            "java": "import java.util.Scanner;\\n\\npublic class MyClass {{\\n    public static void main(String[] args) {{\\n        Scanner sc = new Scanner(System.in);\\n        \\n        // TODO: Read input and write your logic here!\\n        \\n        \\n        // System.out.println(result);\\n    }}\\n}}",
+            "cpp": "#include <iostream>\\nusing namespace std;\\n\\nint main() {{\\n    // TODO: Read input and write your logic here!\\n    \\n    \\n    // cout << result << endl;\\n    return 0;\\n}}"
+        }}
+      }},
+      ... (generate {count} objects in total)
+    ]
     """
 
+def create_session_evaluation_prompt(submissions: List[Dict[str, str]], difficulty: str) -> str:
+    subs_text = ""
+    for i, sub in enumerate(submissions):
+        subs_text += f"\n--- Problem {i+1}: {sub['problem_title']} ---\nLanguage: {sub['language']}\nCode:\n```\n{sub['code']}\n```\n"
+
+    return f"""
+    You are an expert code reviewer evaluating a candidate's coding session.
+    The candidate submitted solutions for a batch of {difficulty} level DSA problems.
+
+    Here are their submissions:
+    {subs_text}
+
+    Evaluate each submission. Determine if it is logically correct and solves the intended problem.
+    Provide constructive feedback, highlighting mistakes or suggesting improvements.
+
+    CRITICAL RULE: For the 'ideal_solution_snippets', you MUST provide the correct code snippet in Python, Java, AND C++.
+
+    Return strictly a JSON array of objects. Do not use markdown blocks.
+    
+    [
+      {{
+        "problem_title": "Title from the input",
+        "is_correct": true/false,
+        "feedback": "1-2 short sentences of feedback.",
+        "ideal_solution_snippets": {{
+            "python": "Ideal python code here",
+            "java": "Ideal java code here",
+            "cpp": "Ideal C++ code here"
+        }}
+      }}
+    ]
+    """
+
+# --- 2. Routes ---
+
+# ✅ RESTORED ROUTE: Used by CodingLevels.jsx to check progress
+@router.post("/level-status")
+def get_level_status(req: LevelStatusRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        # Count how many distinct problems the user has solved for this difficulty
+        cursor.execute(
+            "SELECT COUNT(DISTINCT problem_title) as solved_count FROM coding_attempts WHERE user_id = %s AND LOWER(difficulty) = %s AND is_correct = 1",
+            (req.user_id, req.difficulty.lower())
+        )
+        result = cursor.fetchone()
+        count = result['solved_count'] if result else 0
+        return {"solved_count": count}
+    except Exception as e:
+        print(f"Error fetching level status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch level status")
+
+@router.post("/generate-level")
+def get_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
+    
+    client = genai.Client(api_key=api_key)
+
+    cursor.execute(
+        "SELECT DISTINCT problem_title FROM coding_attempts WHERE user_id = %s AND LOWER(difficulty) = %s AND is_correct = 1",
+        (req.user_id, req.difficulty.lower())
+    )
+    solved_problems = cursor.fetchall()
+    solved_titles = [item['problem_title'] for item in solved_problems]
+
+    prompt = create_batch_problem_prompt(req.difficulty, solved_titles, req.count)
+
+    max_retries = 2
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+            )
+            cleaned = response.text.replace("```json", "").replace("```", "").strip()
+            
+            start_idx = cleaned.find('[')
+            end_idx = cleaned.rfind(']')
+            if start_idx != -1 and end_idx != -1:
+                cleaned = cleaned[start_idx:end_idx+1]
+                
+            problems_list = json.loads(cleaned)
+            
+            if len(problems_list) > 0:
+                 return {"problems": problems_list}
+            else:
+                 raise ValueError("AI returned empty list")
+
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"Failed generation on last attempt: {e}")
+                return {"problems": [{
+                    "title": "Reverse String (Fallback)",
+                    "description": "Write a function that reverses a string.",
+                    "examples": [{"input": "hello", "output": "olleh"}],
+                    "starter_code": {
+                        "python": "def reverse_string(s):\n    pass",
+                        "java": "public class MyClass { public static void main(String[] args){} }",
+                        "cpp": "#include <iostream>\nusing namespace std;\nint main() { return 0; }"
+                    }
+                }]}
+
+@router.post("/run-code")
+def execute_code(req: RunRequest):
+    output = run_in_sandbox(req.language, req.code, req.input)
+    return {"output": output}
+
+@router.post("/evaluate-session")
+def evaluate_session(req: SessionEvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    api_key = os.getenv("GEMINI_API_KEY_TECHNICAL") 
+    client = genai.Client(api_key=api_key)
+
+    subs_data = [{"problem_title": s.problem_title, "code": s.code, "language": s.language} for s in req.submissions]
+    prompt = create_session_evaluation_prompt(subs_data, req.difficulty)
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+        cleaned = response.text.replace("```json", "").replace("```", "").strip()
+        start_idx = cleaned.find('[')
+        end_idx = cleaned.rfind(']')
+        if start_idx != -1 and end_idx != -1:
+            cleaned = cleaned[start_idx:end_idx+1]
+            
+        evaluation_results = json.loads(cleaned)
+
+        total_correct = 0
+        for res in evaluation_results:
+            is_correct = 1 if res.get('is_correct') else 0
+            if is_correct:
+                total_correct += 1
+            
+            cursor.execute("""
+                INSERT INTO coding_attempts (user_id, problem_title, difficulty, is_correct)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE is_correct = GREATEST(is_correct, VALUES(is_correct))
+            """, (req.user_id, res.get('problem_title', 'Unknown'), req.difficulty.lower(), is_correct))
+        
+        db.commit()
+
+        return {
+            "evaluations": evaluation_results,
+            "total_correct": total_correct,
+            "total_problems": len(req.submissions),
+            "time_taken": req.time_taken
+        }
+
+    except Exception as e:
+        db.rollback()
+        print(f"Evaluation Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to evaluate session.")
+
+# --- Sandbox Execution ---
 def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     temp_dir = f"../temp_code/{uuid.uuid4()}"
     os.makedirs(temp_dir, exist_ok=True)
@@ -114,208 +249,50 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
         "java": "javac MyClass.java && java MyClass",
         "cpp": "g++ script.cpp -o script && ./script"
     }
-    
+
     file_name = file_map.get(language, "script.py")
     command = command_map.get(language, "python script.py")
-    
+
     if language == 'java':
         if 'public class' in code and 'public class MyClass' not in code:
-            code = re.sub(r'public class \w+', 'public class MyClass', code, 1)
-        elif 'public class' not in code:
-            code = f'public class MyClass {{ public static void main(String[] args) {{ {code} }} }}'
+            code = re.sub(r'public class \w+', 'public class MyClass', code, count=1)
 
-    code_file_path = os.path.join(temp_dir, file_name)
-    input_file_path = os.path.join(temp_dir, "input.txt")
+    file_path = os.path.join(temp_dir, file_name)
+    with open(file_path, "w") as f:
+        f.write(code)
+
+    input_path = os.path.join(temp_dir, "input.txt")
+    with open(input_path, "w") as f:
+        f.write(stdin)
+
+    client = docker.from_env()
+    abs_temp_dir = os.path.abspath(temp_dir)
+    image_name = f"placify-{language}-runner"
 
     try:
-        # 1. Initialize Docker Client
-        client = None
-        try:
-            client = docker.from_env()
-            client.ping()
-        except Exception:
-            try:
-                # Force Windows named pipe connection if default fails
-                client = docker.DockerClient(base_url='npipe:////./pipe/docker_engine')
-                client.ping()
-            except Exception as e:
-                return f"System Error: Docker Desktop is not running. Please start it. (Error: {str(e)})"
-
-        # 2. Prepare Files
-        with open(code_file_path, "w", encoding='utf-8') as f:
-            f.write(code)
-        with open(input_file_path, "w", encoding='utf-8') as f:
-            f.write(stdin)
-
-        image_name = f"{language}-runner"
-        mount_mode = 'rw' if language in ['java', 'cpp'] else 'ro'
-        
-        # 3. Run Container
         container = client.containers.run(
-            image=image_name,
+            image_name,
             command=f"sh -c '{command} < input.txt'",
-            volumes={os.path.abspath(temp_dir): {'bind': '/app', 'mode': mount_mode}},
-            working_dir="/app",
-            user="coder",
+            volumes={abs_temp_dir: {'bind': '/app', 'mode': 'rw'}},
+            working_dir='/app',
+            detach=True,
+            mem_limit='256m',
+            nano_cpus=int(1e9),
             network_disabled=True,
-            mem_limit="256m",
-            cpuset_cpus="0",
-            security_opt=["no-new-privileges"],
-            cap_drop=["ALL"],
-            remove=True,
-            detach=False,
-            stop_signal='SIGKILL'
         )
-        output = container.decode('utf-8')
-
-    except docker.errors.ContainerError as e:
-        output = e.stderr.decode('utf-8')
-    except docker.errors.ImageNotFound:
-        output = f"Execution environment '{image_name}' not found. Run 'docker build -t {image_name} ...' in backend folder."
-    except Exception as e:
-        output = f"An unexpected execution error occurred: {str(e)}"
-    finally:
-        if os.path.exists(temp_dir):
-            shutil.rmtree(temp_dir)
-        
-    return output
-
-def clean_and_parse_json(text: str):
-    text = re.sub(r'```json\s*', '', text, flags=re.IGNORECASE)
-    text = re.sub(r'```', '', text)
-    text = text.strip()
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError as e:
-        print(f"JSON Parse Error: {e}")
         try:
-            return json.loads(text, strict=False)
-        except:
-            raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
-
-# --- API Routes ---
-
-@router.post("/run-code")
-async def run_user_code(req: RunRequest):
-    try:
-        output = run_in_sandbox(req.language, req.code, req.input)
-        return {"output": output}
+            result = container.wait(timeout=10)
+            logs = container.logs().decode('utf-8')
+            if result['StatusCode'] != 0:
+                return f"Runtime Error:\n{logs}"
+            return logs
+        except Exception as e:
+            container.kill()
+            return "Execution Timed Out (10 seconds limit)."
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/generate-level-problems")
-async def generate_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_cursor)):
-    cursor, db = db_cursor
-    try:
-        api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
-        if not api_key:
-            raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
-
-        client = genai.Client(api_key=api_key)
-        
-        cursor.execute(
-            "SELECT DISTINCT problem_title FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
-            (req.user_id, req.difficulty)
-        )
-        solved_problems = cursor.fetchall()
-        solved_titles = [item['problem_title'] for item in solved_problems]
-
-        prompt = create_batch_problem_prompt(req.difficulty, req.count, solved_titles)
-        
-        # --- ADDED RETRY LOGIC FOR 503 ERRORS ---
-        max_retries = 3
-        response = None
-        
-        for attempt in range(max_retries):
-            try:
-                # You can change this to "gemini-1.5-flash" if 2.5 remains consistently overloaded
-                response = await client.aio.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=prompt
-                )
-                break # Success, break out of the loop
-            except Exception as api_err:
-                if "503" in str(api_err) and attempt < max_retries - 1:
-                    print(f"⚠️ Gemini API overloaded (503). Retrying in 2 seconds... (Attempt {attempt + 1}/{max_retries})")
-                    await asyncio.sleep(2)
-                else:
-                    raise api_err # If it's not a 503, or we ran out of retries, crash normally.
-        
-        data = clean_and_parse_json(response.text)
-        
-        problems_list = []
-        if isinstance(data, dict):
-            problems_list = data.get("problems", [])
-        elif isinstance(data, list):
-            problems_list = data
-
-        if not problems_list or not isinstance(problems_list, list):
-             raise HTTPException(status_code=500, detail="AI generated invalid structure (not a list or missing 'problems' key).")
-
-        return {"problems": problems_list}
-        
-    except Exception as e:
-        print(f"Error generating level problems: {e}")
-        raise HTTPException(status_code=500, detail=f"An error occurred while generating problems: {str(e)}")
-
-
-@router.post("/evaluate-code")
-async def evaluate_user_code(req: EvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
-    cursor, db = db_cursor
-    try:
-        api_key = os.getenv("GEMINI_API_KEY_TECHNICAL")
-        if not api_key:
-            raise HTTPException(status_code=500, detail="Missing API Key for Technical/Coding.")
-
-        client = genai.Client(api_key=api_key)
-
-        prompt = create_evaluation_prompt(req.problem, req.code, req.language)
-        
-        # --- ADDED RETRY LOGIC FOR 503 ERRORS ---
-        max_retries = 3
-        response = None
-        
-        for attempt in range(max_retries):
-            try:
-                response = await client.aio.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=prompt
-                )
-                break
-            except Exception as api_err:
-                if "503" in str(api_err) and attempt < max_retries - 1:
-                    print(f"⚠️ Gemini API overloaded (503). Retrying in 2 seconds... (Attempt {attempt + 1}/{max_retries})")
-                    await asyncio.sleep(2)
-                else:
-                    raise api_err
-        
-        evaluation_data = clean_and_parse_json(response.text)
-
-        if evaluation_data.get("is_correct"):
-            cursor.execute(
-                """
-                INSERT INTO coding_attempts (user_id, problem_title, difficulty, is_correct)
-                VALUES (%s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE is_correct = VALUES(is_correct);
-                """,
-                (req.user_id, req.problem.get("title"), req.difficulty, True)
-            )
-            db.commit()
-
-        return evaluation_data
-    except Exception as e:
-        print(f"Error evaluating code: {e}")
-        raise HTTPException(status_code=500, detail=f"An error occurred during evaluation: {str(e)}")
-
-@router.post("/level-status")
-async def get_level_status(req: LevelStatusRequest, db_cursor: tuple = Depends(get_cursor)):
-    cursor, db = db_cursor
-    try:
-        cursor.execute(
-            "SELECT COUNT(DISTINCT problem_title) as solved_count FROM coding_attempts WHERE user_id = %s AND difficulty = %s AND is_correct = TRUE",
-            (req.user_id, req.difficulty)
-        )
-        result = cursor.fetchone()
-        return {"solved_count": result['solved_count'] if result else 0}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return str(e)
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception:
+            pass

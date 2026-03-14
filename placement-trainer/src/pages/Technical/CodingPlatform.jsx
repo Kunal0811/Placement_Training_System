@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
@@ -7,269 +7,527 @@ import { githubDark } from '@uiw/codemirror-theme-github';
 import API_BASE from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
-
-const boilerplate = {
-  python: `import sys\n\ndef solve():\n    # Your solution logic here.\n\n# Main execution block\nif __name__ == "__main__":\n    solve()\n`,
-  java: `import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nimport java.io.IOException;\n\npublic class MyClass {\n    public static void main(String[] args) {\n        // Your solution logic here.\n    }\n}`,
-  cpp: `#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    // Your solution logic here.\n}`,
-};
+import { FiPlay, FiClock, FiCheckCircle, FiXCircle, FiCode, FiList, FiArrowLeft, FiChevronRight, FiChevronLeft, FiDownload } from 'react-icons/fi';
 
 export default function CodingPlatform() {
-  const { difficulty } = useParams();
-  const navigate = useNavigate();
-  const { user } = useAuth();
+    const { level } = useParams();
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    
+    const [problems, setProblems] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [phase, setPhase] = useState('coding'); 
+    
+    const [timeElapsed, setTimeElapsed] = useState(0);
+    const timerRef = useRef(null);
 
-  const [problemList, setProblemList] = useState([]);
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [isRunning, setIsRunning] = useState(false);
-  const [evaluationResults, setEvaluationResults] = useState({});
-  const [output, setOutput] = useState("");
-  const [customInput, setCustomInput] = useState("");
-  const [codes, setCodes] = useState({});
-  const [language, setLanguage] = useState('python');
+    const [submissions, setSubmissions] = useState([]);
+    const [localInput, setLocalInput] = useState("");
+    const [localOutput, setLocalOutput] = useState("");
+    const [isRunning, setIsRunning] = useState(false);
+    
+    // Report States
+    const [report, setReport] = useState(null);
+    const [reportPageIndex, setReportPageIndex] = useState(0);
 
-  const languageExtensions = { python: [python()], java: [java()], cpp: [cpp()] };
-  const currentProblem = problemList[currentProblemIndex];
-  const currentCode = currentProblem ? codes[currentProblem.title] || boilerplate[language] : boilerplate[language];
-  const currentEvaluation = currentProblem ? evaluationResults[currentProblem.title] : null;
+    const difficultyMap = { easy: "Easy", medium: "Medium", hard: "Hard" };
+    const difficultyName = difficultyMap[level] || "Easy";
 
-  const fetchLevelProblems = async () => {
-    if (!user) return;
-    setIsLoading(true);
-    setProblemList([]);
-    setEvaluationResults({});
-    setCurrentProblemIndex(0);
-    setCodes({});
-    try {
-      const res = await fetch(`${API_BASE}/api/coding/generate-level-problems`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ difficulty, user_id: user.id, count: 5 }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || 'Failed to fetch problems');
-      }
-      const data = await res.json();
-      setProblemList(data.problems || []);
-    } catch (err) {
-      console.error(err);
-      alert(`Error: ${err.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    useEffect(() => {
+        const fetchProblems = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/api/coding/generate-level`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ difficulty: difficultyName, user_id: user.id, count: 5 })
+                });
+                if (!res.ok) throw new Error("Failed to fetch problems");
+                const data = await res.json();
+                
+                setProblems(data.problems);
+                
+                // FIXED: We now store an object 'codes' containing the code for ALL languages independently
+                const initialSubs = data.problems.map((p, idx) => ({
+                    problem_title: p.title || p.Title || p.problem_title || `Problem ${idx + 1}`,
+                    language: 'python',
+                    codes: {
+                        python: p.starter_code?.python || p.starter_code?.Python || "",
+                        java: p.starter_code?.java || p.starter_code?.Java || "",
+                        cpp: p.starter_code?.cpp || p.starter_code?.Cpp || ""
+                    }
+                }));
+                setSubmissions(initialSubs);
+                
+                startTimer();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to load session.");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  useEffect(() => {
-    if(user) fetchLevelProblems();
-  }, [difficulty, user]);
-
-  useEffect(() => {
-    if (currentProblem?.examples?.[0]?.input) {
-      setCustomInput(currentProblem.examples[0].input);
-    }
-    setOutput('');
-  }, [currentProblem]);
-
-  const handleCodeChange = (value) => {
-    if (!currentProblem) return;
-    setCodes(prev => ({ ...prev, [currentProblem.title]: value }));
-  };
-
-  const handleRunCode = async () => {
-    setIsRunning(true);
-    setOutput("");
-    try {
-      const res = await fetch(`${API_BASE}/api/coding/run-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: currentCode, language, input: customInput }),
-      });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || 'Failed to run code');
-      }
-      const data = await res.json();
-      setOutput(data.output || "Execution finished with no output.");
-    } catch (err) {
-      console.error(err);
-      setOutput(`Error: ${err.message}`);
-    } finally {
-      setIsRunning(false);
-    }
-  };
-
-  const handleEvaluateCode = async () => {
-    if (!currentProblem || !user) return;
-    setIsEvaluating(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/coding/evaluate-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id, problem: currentProblem, code: currentCode, language, difficulty }),
-      });
-      if (!res.ok) throw new Error('Failed to evaluate code');
-      const data = await res.json();
-      setEvaluationResults(prev => ({ ...prev, [currentProblem.title]: data }));
-    } catch (err) {
-      console.error(err);
-      alert(`Error: ${err.message}`);
-    } finally {
-      setIsEvaluating(false);
-    }
-  };
-
-  const handleNextProblem = () => {
-    if (currentProblemIndex < problemList.length - 1) {
-      setCurrentProblemIndex(currentProblemIndex + 1);
-    } else {
-      navigate('/technical/coding-levels');
-    }
-  };
-
-  if (isLoading) {
-    return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-            <div className="text-6xl mb-4 animate-spin">⚙️</div>
-            <p className="text-2xl font-semibold text-neon-blue">Generating 5 new problems for you...</p>
-            <p className="text-gray-400">This may take a moment.</p>
-            </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex gap-4 p-4 bg-dark-bg min-h-screen">
-      {/* Problem List Sidebar */}
-      <div className="w-1/4 bg-dark-card p-4 rounded-xl shadow-lg border border-neon-blue/20 flex flex-col">
-        <h2 className="text-2xl font-bold mb-4 border-b border-neon-blue/20 pb-3 text-white">Problems</h2>
-        <ul className="space-y-2 flex-grow">
-          {problemList.map((prob, index) => (
-            <li key={prob.title}>
-              <button
-                onClick={() => setCurrentProblemIndex(index)}
-                className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center justify-between ${
-                  index === currentProblemIndex ? 'bg-neon-blue text-black font-bold shadow-lg animate-glow' : 'text-gray-400 hover:bg-gray-700/50 hover:text-white'
-                }`}
-              >
-                <span>Problem {index + 1}</span>
-                {evaluationResults[prob.title]?.is_correct && <span className="text-green-400">✅</span>}
-              </button>
-            </li>
-          ))}
-        </ul>
-        <button onClick={() => navigate('/technical/coding-levels')} className="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-600 transition-colors">
-            &larr; Back to Levels
-        </button>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="w-3/4 flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row gap-4 flex-grow" style={{ minHeight: 0 }}>
-          {/* Problem Description */}
-          <div className="w-full lg:w-1/2 bg-dark-card p-6 rounded-xl shadow-lg border border-neon-blue/20 overflow-y-auto">
-            {currentProblem && (
-              <div>
-                <h1 className="text-2xl font-bold mb-4 text-white">{currentProblem.title}</h1>
-                <p className="text-gray-300 mb-4 whitespace-pre-wrap">{currentProblem.description}</p>
-                <h3 className="font-semibold text-neon-blue">Input Format:</h3>
-                <p className="text-gray-400 mb-3">{currentProblem.input_format}</p>
-                <h3 className="font-semibold text-neon-blue">Output Format:</h3>
-                <p className="text-gray-400 mb-4">{currentProblem.output_format}</p>
-                {currentProblem.constraints && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-neon-blue">Constraints:</h3>
-                    <ul className="list-disc pl-5 text-gray-400">
-                      {currentProblem.constraints.map((c, i) => <li key={i}>{c}</li>)}
-                    </ul>
-                  </div>
-                )}
-                {currentProblem.examples?.map((ex, i) => (
-                  <div key={i} className="mt-4">
-                    <h3 className="font-semibold text-neon-blue">Example {i + 1}:</h3>
-                    <pre className="bg-dark-bg p-3 rounded mt-1 text-sm whitespace-pre-wrap font-mono border border-gray-700">
-                      <code className="text-gray-300">
-                        <strong>Input:</strong> {ex.input}<br />
-                        <strong>Output:</strong> {ex.output}
-                        {ex.explanation && <><br/><strong>Explanation:</strong> {ex.explanation}</>}
-                      </code>
-                    </pre>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Editor and Output */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl font-bold text-white">Code Editor</h2>
-              <select value={language} onChange={(e) => setLanguage(e.target.value)} className="p-2 bg-dark-card border border-neon-blue/30 rounded-md shadow-sm text-white focus:outline-none focus:border-neon-blue">
-                <option value="python">Python</option>
-                <option value="java">Java</option>
-                <option value="cpp">C++</option>
-              </select>
-            </div>
-            <div className="flex-grow border rounded-lg overflow-hidden shadow-md border-neon-blue/20" style={{ minHeight: '300px' }}>
-              <CodeMirror value={currentCode} height="100%" extensions={languageExtensions[language]} onChange={handleCodeChange} theme={githubDark} style={{ fontSize: '16px' }} />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 h-40">
-              <div className="w-full sm:w-1/2 flex flex-col">
-                <h3 className="font-semibold mb-1 text-white">Custom Input</h3>
-                <textarea value={customInput} onChange={(e) => setCustomInput(e.target.value)} className="w-full flex-grow bg-dark-bg border border-gray-600 rounded-md p-2 font-mono text-sm text-white focus:outline-none focus:border-neon-blue" placeholder="Enter input..."/>
-              </div>
-              <div className="w-full sm:w-1/2 flex flex-col">
-                <h3 className="font-semibold mb-1 text-white">Output</h3>
-                <pre className="w-full flex-grow border border-gray-600 rounded-md p-2 font-mono text-sm bg-dark-bg text-white overflow-auto">
-                  {isRunning ? "Running..." : output}
-                </pre>
-              </div>
-            </div>
-            <div className="mt-2 flex gap-4">
-              <button onClick={handleRunCode} disabled={isRunning || isEvaluating} className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed">
-                {isRunning ? 'Running...' : '▶️ Run Code'}
-              </button>
-              <button onClick={handleEvaluateCode} disabled={isEvaluating || isRunning} className="w-1/2 bg-neon-green text-black font-bold py-2 rounded-lg hover:scale-105 transition-transform animate-glow disabled:bg-gray-600 disabled:animate-none">
-                {isEvaluating ? 'Evaluating...' : 'Submit'}
-              </button>
-            </div>
-          </div>
-        </div>
+        if (user) fetchProblems();
         
-        {/* Evaluation Result */}
-        {(isEvaluating || currentEvaluation) && (
-          <div className="p-6 bg-dark-card rounded-xl shadow-lg border border-neon-blue/20 mt-4">
-            <h2 className="text-2xl font-bold mb-2 text-white">Evaluation Result</h2>
-            {isEvaluating && <p className="text-gray-400">The AI is analyzing your code. Please wait...</p>}
-            {currentEvaluation && (
-              <div>
-                <div className={`p-4 rounded-lg ${currentEvaluation.is_correct ? 'bg-green-500/10 border-green-500' : 'bg-red-500/10 border-red-500'} border-l-4`}>
-                  <h3 className={`text-lg font-bold ${currentEvaluation.is_correct ? 'text-neon-green' : 'text-red-400'}`}>
-                    {currentEvaluation.is_correct ? '✅ Correct Solution' : '❌ Needs Improvement'}
-                  </h3>
-                  <ul className="mt-2 text-gray-300 list-disc pl-5 space-y-1">
-                    {currentEvaluation.feedback_points?.map((point, index) => <li key={index}>{point}</li>)}
-                  </ul>
-                  <div className="mt-4 flex items-center gap-6 text-sm">
-                    <p className="font-medium text-gray-300">Time:<code className={`ml-2 px-2 py-1 rounded-md ${currentEvaluation.is_correct ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-400'}`}>{currentEvaluation.time_complexity}</code></p>
-                    <p className="font-medium text-gray-300">Space:<code className={`ml-2 px-2 py-1 rounded-md ${currentEvaluation.is_correct ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-400'}`}>{currentEvaluation.space_complexity}</code></p>
-                  </div>
+        return () => stopTimer();
+    }, [level, user, difficultyName]);
+
+    const startTimer = () => {
+        timerRef.current = setInterval(() => {
+            setTimeElapsed(prev => prev + 1);
+        }, 1000);
+    };
+    
+    const stopTimer = () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+    };
+    
+    const formatTime = (secs) => {
+        const m = Math.floor(secs / 60).toString().padStart(2, '0');
+        const s = (secs % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    };
+
+    // FIXED: Safely update only the active language's code, preserving the others
+    const updateCurrentSubmission = (key, value) => {
+        const newSubs = [...submissions];
+        if (key === 'language') {
+            newSubs[currentIndex].language = value;
+        } else if (key === 'code') {
+            const activeLang = newSubs[currentIndex].language;
+            newSubs[currentIndex].codes[activeLang] = value;
+        }
+        setSubmissions(newSubs);
+    };
+
+    const handleRunLocal = async () => {
+        const currentSub = submissions[currentIndex];
+        const activeCode = currentSub.codes[currentSub.language]; // Get code for currently selected language
+        
+        if (!activeCode.trim()) return;
+        
+        setIsRunning(true);
+        setLocalOutput("Running...");
+        try {
+            const res = await fetch(`${API_BASE}/api/coding/run-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    language: currentSub.language, 
+                    code: activeCode, 
+                    input: localInput 
+                })
+            });
+            const data = await res.json();
+            setLocalOutput(data.output || "No output.");
+        } catch (err) {
+            setLocalOutput(`Error: ${err.message}`);
+        } finally {
+            setIsRunning(false);
+        }
+    };
+
+    const handleEndSession = async () => {
+        const confirmEnd = window.confirm("Are you sure you want to end the session? All your code will be submitted for evaluation.");
+        if (!confirmEnd) return;
+
+        stopTimer();
+        setPhase('evaluating');
+        
+        const payload = {
+            user_id: Number(user.id),
+            difficulty: String(level || 'easy'),
+            time_taken: Number(timeElapsed),
+            // Send only the code for the language the user had actively selected
+            submissions: submissions.map(sub => ({
+                problem_title: String(sub.problem_title || "Unknown Problem"),
+                code: String(sub.codes[sub.language] || " "), 
+                language: String(sub.language || "python")
+            }))
+        };
+        
+        try {
+            const res = await fetch(`${API_BASE}/api/coding/evaluate-session`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!res.ok) throw new Error("Evaluation failed due to schema mismatch.");
+
+            const data = await res.json();
+            setReport(data);
+            setPhase('report');
+        } catch (err) {
+            console.error(err);
+            alert("Failed to generate report. Check console for details.");
+            setPhase('coding'); 
+            startTimer();
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#0F172A] flex flex-col items-center justify-center text-white">
+                <FiCode className="text-6xl text-neon-blue animate-pulse mb-6" />
+                <h2 className="text-2xl font-bold font-display">Preparing your {difficultyName} Session...</h2>
+                <p className="text-gray-400 mt-2">Generating 5 unique problems</p>
+            </div>
+        );
+    }
+
+    if (phase === 'evaluating') {
+        return (
+            <div className="min-h-screen bg-[#0F172A] flex flex-col items-center justify-center text-white">
+                <FiClock className="text-6xl text-neon-orange animate-spin mb-6" />
+                <h2 className="text-3xl font-bold font-display">AI is Reviewing Your Code</h2>
+                <p className="text-gray-400 mt-2">Checking logic, syntax, and finding improvements...</p>
+            </div>
+        );
+    }
+
+    // --- REPORT PHASE UI ---
+    if (phase === 'report' && report) {
+        const currentEval = report.evaluations[reportPageIndex];
+        const originalProb = problems[reportPageIndex];
+        const originalSub = submissions[reportPageIndex];
+
+        return (
+            <div className="min-h-screen bg-[#0F172A] text-white p-4 md:p-8 flex flex-col">
+                
+                {/* Header Area */}
+                <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start md:items-center justify-between mb-6 pb-6 border-b border-white/10 shrink-0 print:hidden">
+                    <div>
+                        <h1 className="text-4xl font-display font-bold">Session <span className="text-neon-green">Complete</span></h1>
+                        <p className="text-gray-400 mt-2">Difficulty: {difficultyName}</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0">
+                        <div className="bg-black/40 px-6 py-3 rounded-2xl border border-white/10 text-center">
+                            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Time</p>
+                            <p className="text-xl font-mono text-neon-blue">{formatTime(report.time_taken)}</p>
+                        </div>
+                        <div className="bg-black/40 px-6 py-3 rounded-2xl border border-white/10 text-center">
+                            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Score</p>
+                            <p className="text-xl font-bold text-neon-green">{report.total_correct} / {report.total_problems}</p>
+                        </div>
+                        <button 
+                            onClick={() => window.print()} 
+                            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-6 py-4 rounded-2xl font-bold transition-colors"
+                        >
+                            <FiDownload /> Download PDF
+                        </button>
+                    </div>
                 </div>
-                {currentEvaluation.is_correct && (
-                  <div className="mt-4">
-                    <button onClick={handleNextProblem} className="bg-neon-blue text-black font-bold py-2 px-6 rounded-lg hover:scale-105 transition-transform animate-glow">
-                      {currentProblemIndex < problemList.length - 1 ? 'Next Problem →' : 'Finish Level'}
+
+                {/* Paginated Report View */}
+                <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0 print:hidden">
+                    
+                    <div className="flex items-center justify-between bg-black/40 p-4 rounded-t-2xl border border-white/10 border-b-0 shrink-0">
+                        <button 
+                            onClick={() => setReportPageIndex(prev => prev - 1)} 
+                            disabled={reportPageIndex === 0}
+                            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-xl font-bold text-sm"
+                        >
+                            <FiChevronLeft /> Previous
+                        </button>
+                        <span className="font-mono text-gray-400 font-bold">
+                            Problem {reportPageIndex + 1} of {report.total_problems}
+                        </span>
+                        <button 
+                            onClick={() => setReportPageIndex(prev => prev + 1)} 
+                            disabled={reportPageIndex === report.total_problems - 1}
+                            className="flex items-center gap-2 bg-neon-blue text-black hover:bg-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-xl font-bold text-sm"
+                        >
+                            Next <FiChevronRight />
+                        </button>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-6 bg-black/20 p-6 rounded-b-2xl border border-white/10 flex-1 overflow-hidden">
+                        
+                        {/* LEFT COLUMN: Problem & Code */}
+                        <div className="w-full lg:w-1/2 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-4">
+                            <div>
+                                <h2 className="text-2xl font-bold mb-4">{originalProb?.title || currentEval.problem_title}</h2>
+                                <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed mb-4">{originalProb?.description}</p>
+                                
+                                {originalProb?.examples?.map((ex, i) => (
+                                    <div key={i} className="mb-4">
+                                        <h3 className="text-xs font-bold text-gray-500 uppercase mb-1">Example {i + 1}:</h3>
+                                        <pre className="bg-black/50 p-3 rounded-xl text-xs whitespace-pre-wrap font-mono border border-white/5 text-gray-300">
+                                            <span className="text-neon-green">Input:</span> {ex.input}<br />
+                                            <span className="text-neon-blue">Output:</span> {ex.output}
+                                        </pre>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-auto">
+                                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Your Submitted Code</h3>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-gray-300 uppercase bg-gray-800 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-gray-700">
+                                        {originalSub?.language}
+                                    </span>
+                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-sm overflow-x-auto text-gray-300 font-mono">
+                                        <code>{originalSub?.codes?.[originalSub.language] || ""}</code>
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: Feedback */}
+                        <div className="w-full lg:w-1/2 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-4">
+                            <div className={`p-6 rounded-2xl border bg-black/40 ${currentEval.is_correct ? 'border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.1)]' : 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]'}`}>
+                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                                    {currentEval.is_correct ? <FiCheckCircle className="text-3xl text-green-500"/> : <FiXCircle className="text-3xl text-red-500"/>}
+                                    <h3 className={`text-2xl font-bold ${currentEval.is_correct ? 'text-green-400' : 'text-red-400'}`}>
+                                        {currentEval.is_correct ? 'Correct Solution' : 'Needs Improvement'}
+                                    </h3>
+                                </div>
+                                
+                                <div className="mb-6">
+                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">AI Code Review</h4>
+                                    <p className="text-white text-lg leading-relaxed">
+                                        {currentEval.feedback}
+                                    </p>
+                                </div>
+
+                                {currentEval.ideal_solution_snippets && (
+                                    <div className="mt-8">
+                                        <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Ideal Approaches</h4>
+                                        <div className="flex flex-col gap-6">
+                                            {currentEval.ideal_solution_snippets.python && (
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-bold text-blue-400 uppercase bg-blue-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-blue-500/20">Python</span>
+                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                        <code>{currentEval.ideal_solution_snippets.python}</code>
+                                                    </pre>
+                                                </div>
+                                            )}
+                                            {currentEval.ideal_solution_snippets.java && (
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-bold text-orange-400 uppercase bg-orange-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-orange-500/20">Java</span>
+                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                        <code>{currentEval.ideal_solution_snippets.java}</code>
+                                                    </pre>
+                                                </div>
+                                            )}
+                                            {currentEval.ideal_solution_snippets.cpp && (
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-bold text-purple-400 uppercase bg-purple-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-purple-500/20">C++</span>
+                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                        <code>{currentEval.ideal_solution_snippets.cpp}</code>
+                                                    </pre>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-6 text-center shrink-0 print:hidden">
+                    <button onClick={() => navigate('/technical/levels')} className="px-8 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors">
+                        Return to Dashboard
                     </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+                </div>
+
+                {/* --- PRINT ONLY VIEW --- */}
+                <div className="hidden print:block text-black bg-white w-full">
+                    <div className="text-center mb-8 border-b-2 border-black pb-4">
+                        <h1 className="text-3xl font-bold">Placify AI Coding Report</h1>
+                        <p className="text-lg">Difficulty: {difficultyName} | Score: {report.total_correct}/{report.total_problems} | Time: {formatTime(report.time_taken)}</p>
+                    </div>
+
+                    {report.evaluations.map((ev, i) => {
+                        const prob = problems.find(p => p.title === ev.problem_title) || problems[i];
+                        const sub = submissions.find(s => s.problem_title === ev.problem_title) || submissions[i];
+                        return (
+                            <div key={i} className="mb-12 border-b border-gray-300 pb-8 page-break-inside-avoid">
+                                <h2 className="text-2xl font-bold mb-2">Q{i+1}: {ev.problem_title}</h2>
+                                <p className="mb-4 text-sm">{prob?.description}</p>
+                                
+                                <h3 className="font-bold mt-4 text-sm uppercase">Your Code ({sub?.language}):</h3>
+                                <pre className="bg-gray-100 p-3 rounded text-xs overflow-hidden mb-4 border border-gray-300 whitespace-pre-wrap">
+                                    <code>{sub?.codes?.[sub.language]}</code>
+                                </pre>
+
+                                <h3 className="font-bold text-sm uppercase mt-4">AI Evaluation: {ev.is_correct ? '✅ Passed' : '❌ Failed'}</h3>
+                                <p className="mb-4 text-sm font-semibold">{ev.feedback}</p>
+
+                                {ev.ideal_solution_snippets && (
+                                    <>
+                                        <h3 className="font-bold text-sm uppercase mt-4">Ideal Solutions:</h3>
+                                        {ev.ideal_solution_snippets.python && (
+                                            <div className="mt-2">
+                                                <span className="font-bold text-xs underline">Python:</span>
+                                                <pre className="bg-gray-100 p-3 rounded text-xs border border-gray-300 whitespace-pre-wrap">
+                                                    <code>{ev.ideal_solution_snippets.python}</code>
+                                                </pre>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+
+            </div>
+        );
+    }
+
+    // --- ACTIVE CODING PHASE UI ---
+    const currentProb = problems[currentIndex];
+    const currentSub = submissions[currentIndex];
+
+    return (
+        <div className="h-screen bg-[#0F172A] text-white flex flex-col font-sans overflow-hidden print:hidden">
+            <header className="h-16 flex items-center justify-between px-6 bg-black/50 border-b border-white/10 shrink-0">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => navigate('/technical/levels')} className="text-gray-400 hover:text-white transition-colors">
+                        <FiArrowLeft className="text-xl" />
+                    </button>
+                    <h1 className="text-xl font-bold font-display">{difficultyName} Session</h1>
+                </div>
+                
+                <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2 bg-gray-900 px-4 py-1.5 rounded-full border border-gray-700">
+                        <FiClock className="text-neon-orange" />
+                        <span className="font-mono text-lg font-bold">{formatTime(timeElapsed)}</span>
+                    </div>
+                    <button 
+                        onClick={handleEndSession}
+                        className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-5 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-red-500/20"
+                    >
+                        <FiCheckCircle /> Finish Session
+                    </button>
+                </div>
+            </header>
+
+            <div className="flex flex-1 overflow-hidden">
+                <div className="w-64 bg-black/30 border-r border-white/10 flex-col overflow-y-auto hidden md:flex shrink-0">
+                    <div className="p-4 border-b border-white/5">
+                        <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2"><FiList/> Problems</h2>
+                    </div>
+                    <div className="p-2 space-y-1">
+                        {problems.map((p, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm font-medium flex items-center justify-between ${currentIndex === idx ? 'bg-neon-blue/20 text-neon-blue border border-neon-blue/30' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="truncate pr-2">{idx + 1}. {p.title}</span>
+                                {currentIndex === idx && <FiChevronRight/>}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="w-full md:w-1/3 p-6 overflow-y-auto border-r border-white/10 custom-scrollbar shrink-0">
+                    <div className="flex gap-2 mb-4 md:hidden overflow-x-auto pb-2">
+                         {problems.map((_, idx) => (
+                            <button key={idx} onClick={() => setCurrentIndex(idx)} className={`px-4 py-1 rounded-full text-sm whitespace-nowrap ${currentIndex === idx ? 'bg-neon-blue text-black font-bold' : 'bg-gray-800 text-gray-400'}`}>
+                                Prob {idx + 1}
+                            </button>
+                         ))}
+                    </div>
+
+                    <h2 className="text-2xl font-bold mb-4 text-white">{currentProb?.title}</h2>
+                    <p className="text-gray-300 leading-relaxed mb-6 whitespace-pre-wrap">{currentProb?.description}</p>
+
+                    <div className="space-y-4">
+                        {currentProb?.examples?.map((ex, i) => (
+                            <div key={i}>
+                                <h3 className="text-sm font-bold text-gray-400 uppercase mb-1">Example {i + 1}:</h3>
+                                <pre className="bg-black/50 p-4 rounded-xl text-sm whitespace-pre-wrap font-mono border border-white/5 text-gray-300">
+                                    <span className="text-neon-green">Input:</span> {ex.input}<br />
+                                    <span className="text-neon-blue">Output:</span> {ex.output}
+                                </pre>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="w-full md:w-auto flex-1 flex flex-col min-w-0 bg-[#0d1117]">
+                    <div className="h-12 bg-[#161b22] border-b border-gray-800 flex items-center justify-between px-4 shrink-0">
+                        <select 
+                            className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-neon-blue cursor-pointer"
+                            value={currentSub?.language}
+                            onChange={(e) => updateCurrentSubmission('language', e.target.value)}
+                        >
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                        </select>
+                        
+                        <button 
+                            onClick={handleRunLocal} 
+                            disabled={isRunning}
+                            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            {isRunning ? <FiClock className="animate-spin" /> : <FiPlay className="text-green-400" />}
+                            Run Code
+                        </button>
+                    </div>
+
+                    <div className="flex-1 overflow-auto bg-[#0d1117] text-base">
+                        <CodeMirror
+                            // FIXED: Now we pass the code for the CURRENT language
+                            value={currentSub?.codes?.[currentSub?.language] || ""}
+                            height="100%"
+                            theme={githubDark}
+                            extensions={[
+                                currentSub?.language === 'python' ? python() :
+                                currentSub?.language === 'java' ? java() : cpp()
+                            ]}
+                            onChange={(val) => updateCurrentSubmission('code', val)}
+                            className="h-full"
+                            style={{ fontSize: '15px' }}
+                        />
+                    </div>
+
+                    <div className="h-64 bg-[#161b22] border-t border-gray-800 flex flex-col shrink-0">
+                        <div className="flex border-b border-gray-800 bg-[#0d1117]">
+                            <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-widest border-r border-gray-800">Custom Input</div>
+                            <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-widest">Output</div>
+                        </div>
+                        <div className="flex-1 flex min-h-0">
+                            <textarea
+                                value={localInput}
+                                onChange={(e) => setLocalInput(e.target.value)}
+                                placeholder="Enter input here..."
+                                className="w-1/2 h-full bg-transparent text-gray-300 p-4 font-mono text-sm resize-none focus:outline-none border-r border-gray-800 custom-scrollbar"
+                            />
+                            <div className="w-1/2 h-full p-4 overflow-y-auto font-mono text-sm custom-scrollbar bg-black/20">
+                                {isRunning ? (
+                                    <span className="text-gray-500 animate-pulse">Executing...</span>
+                                ) : (
+                                    <pre className={localOutput.includes("Error") ? "text-red-400" : "text-green-400"}>
+                                        {localOutput || "Run code to see output..."}
+                                    </pre>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <style jsx>{`
+                .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+                .cm-theme-light, .cm-theme-dark { height: 100%; }
+                .cm-scroller { font-family: 'JetBrains Mono', 'Fira Code', monospace !important; }
+                @media print {
+                    @page { margin: 1cm; }
+                    .page-break-inside-avoid { page-break-inside: avoid; }
+                }
+            `}</style>
+        </div>
+    );
 }
