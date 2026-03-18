@@ -25,6 +25,11 @@ import ModeSelection from "./pages/Aptitude/ModeSelection.jsx";
 import ResumeAnalyzer from "./pages/ResumeAnalyzer.jsx";
 import GDRoom from "./pages/GDRoom.jsx";
 
+// NEW: Admin & Test Components
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import ScheduledTests from "./pages/ScheduledTests.jsx";
+
 // Technical Notes Components
 import CNotes from "./pages/Technical/CNotes.jsx";
 import CppNotes from "./pages/Technical/CppNotes.jsx";
@@ -71,6 +76,11 @@ function AnimatedRoutes() {
     // AnimatePresence tells React to wait for the exit animation before unmounting the old page
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AnimatedPage><AdminLogin /></AnimatedPage>} />
+        <Route path="/admin/dashboard" element={<AnimatedPage><AdminDashboard /></AnimatedPage>} />
+
         {/* Public Routes */}
         <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
         <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
@@ -83,6 +93,7 @@ function AnimatedRoutes() {
         <Route path="/dashboard" element={<AnimatedPage><ProtectedRoute><Dashboard /></ProtectedRoute></AnimatedPage>} />
         <Route path="/leaderboard" element={<AnimatedPage><ProtectedRoute><Leaderboard /></ProtectedRoute></AnimatedPage>} />
         <Route path="/resume-analyzer" element={<AnimatedPage><ProtectedRoute><ResumeAnalyzer /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/tests" element={<AnimatedPage><ProtectedRoute><ScheduledTests /></ProtectedRoute></AnimatedPage>} />
 
         {/* Aptitude Section - LEVEL 1 (Open to all) */}
         <Route path="/aptitude" element={<AnimatedPage><ProtectedRoute><Aptitude /></ProtectedRoute></AnimatedPage>} />
@@ -142,35 +153,47 @@ function AnimatedRoutes() {
   );
 }
 
-function App() {
+// ----------------------------------------------------
+// THE FIX: AppLayout conditionally removes the student sidebar!
+// ----------------------------------------------------
+function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const location = useLocation();
+  
+  // Check if we are currently on an admin page
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const showSidebar = !isAdminRoute && sidebarOpen;
 
   return (
-    <Router>
-      <div className="flex bg-game-bg min-h-screen text-gray-200 font-sans overflow-x-hidden">
-        <div
-          className={`fixed top-0 left-0 h-screen transition-all duration-300 ${
-            sidebarOpen ? "w-64" : "w-0"
-          } overflow-hidden z-40`}
-        >
-          <Sidebar isOpen={sidebarOpen} />
+    <div className="flex bg-game-bg min-h-screen text-gray-200 font-sans overflow-x-hidden">
+      
+      {/* Hide the student sidebar entirely if on admin route */}
+      {!isAdminRoute && (
+        <div className={`fixed top-0 left-0 h-screen transition-all duration-300 ${showSidebar ? "w-64" : "w-0"} overflow-hidden z-40`}>
+          <Sidebar isOpen={showSidebar} />
         </div>
+      )}
 
-        <div
-          className={`flex-1 min-h-screen flex flex-col min-w-0 transition-all duration-300 ${
-            sidebarOpen ? "ml-64" : "ml-0"
-          }`}
-        >
-          <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      {/* Remove the left margin if on an admin route so it takes full width */}
+      <div className={`flex-1 min-h-screen flex flex-col min-w-0 transition-all duration-300 ${showSidebar ? "ml-64" : "ml-0"}`}>
+        
+        {/* FIX: Only show the global Navbar for Students, NOT Admins! */}
+        {!isAdminRoute && <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />}
 
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-            <AnimatedRoutes />
-          </div>
-          
-          <Footer />
-
+        <div className={`flex-1 overflow-y-auto overflow-x-hidden ${isAdminRoute ? "p-0" : "p-4"}`}>
+          <AnimatedRoutes />
         </div>
+        
+        {!isAdminRoute && <Footer />}
       </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppLayout />
     </Router>
   );
 }

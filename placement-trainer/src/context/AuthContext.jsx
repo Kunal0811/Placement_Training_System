@@ -5,6 +5,7 @@ import API_BASE from "../api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // Student State
   const [user, setUser] = useState(() => {
     try {
       const storedUser = sessionStorage.getItem("user");
@@ -12,7 +13,14 @@ export const AuthProvider = ({ children }) => {
     } catch (error) { return null; }
   });
 
-  // GLOBAL GAMIFICATION STATE
+  // Admin State
+  const [admin, setAdmin] = useState(() => {
+    try {
+      const storedAdmin = localStorage.getItem("adminUser");
+      return storedAdmin ? JSON.parse(storedAdmin) : null;
+    } catch (error) { return null; }
+  });
+
   const [stats, setStats] = useState({ 
       xp: 0, level: 1, next_level_xp: 100, streak: 0, interviews_taken: 0, gds_taken: 0 
   });
@@ -26,7 +34,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Fetch stats whenever the user logs in
   useEffect(() => { fetchStats(); }, [user]);
 
   const login = (userData) => {
@@ -34,10 +41,18 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem("user", JSON.stringify(userData));
   };
 
+  // New Admin Login Function
+  const adminLogin = (adminData) => {
+    setAdmin(adminData);
+    localStorage.setItem("adminUser", JSON.stringify(adminData));
+  };
+
   const logout = () => {
     setUser(null);
+    setAdmin(null);
     setStats({ xp: 0, level: 1, next_level_xp: 100, streak: 0, interviews_taken: 0, gds_taken: 0 });
     sessionStorage.removeItem("user");
+    localStorage.removeItem("adminUser");
   };
 
   const updateUser = (updatedData) => {
@@ -49,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, stats, fetchStats }}>
+    <AuthContext.Provider value={{ user, admin, login, adminLogin, logout, updateUser, stats, fetchStats }}>
       {children}
     </AuthContext.Provider>
   );

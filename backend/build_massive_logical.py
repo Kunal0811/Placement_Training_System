@@ -76,7 +76,7 @@ async def main():
     api_key = os.getenv("GEMINI_API_KEY_Logical") or os.getenv("GEMINI_API_KEY")
     client = genai.Client(api_key=api_key)
     
-    runs = ["easy"]
+    runs = ["medium"]
     
     print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:

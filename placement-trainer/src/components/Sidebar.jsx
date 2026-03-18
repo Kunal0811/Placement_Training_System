@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { 
   FiHome, FiFileText, FiBookOpen, FiCpu, 
-  FiUserCheck, FiUsers, FiLock, FiChevronRight 
+  FiUserCheck, FiUsers, FiLock, FiChevronRight
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion"; // Ensure you ran 'npm install framer-motion'
@@ -17,6 +17,7 @@ const Sidebar = ({ isOpen }) => {
     { title: "Technical Hub", path: "/technical", icon: <FiCpu />, reqLevel: 1 },
     { title: "Mock Interview", path: "/interview", icon: <FiUserCheck />, reqLevel: 1 },
     { title: "Group Discussion", path: "/gd", icon: <FiUsers />, reqLevel: 1 },
+    { title: "Scheduled Tests", path: "/tests",icon: "📃" },
   ];
 
   const sidebarBg = "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1000&auto=format&fit=crop";

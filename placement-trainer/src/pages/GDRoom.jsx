@@ -49,6 +49,7 @@ export default function GDRoom() {
     const [evaluations, setEvaluations] = useState(null);
     const [loadingEval, setLoadingEval] = useState(false);
     const [manualInput, setManualInput] = useState("");
+    const [isWsConnected, setIsWsConnected] = useState(false);
     
     // Refs
     const ws = useRef(null);

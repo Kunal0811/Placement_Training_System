@@ -27,6 +27,8 @@ from coding_routes import router as coding_router
 from resume_routes import router as resume_router
 from interview_routes import router as interview_router
 from gd_routes import router as gd_router
+from admin_routes import router as admin_router
+from test_routes import router as test_router
 
 # --- Setup ---
 load_dotenv()
@@ -51,7 +53,7 @@ os.makedirs("static/profile_pics", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # --- CORS Middleware ---
-allowed = os.getenv("ALLOWED_ORIGINS", "https://1x7hgzrp-5173.inc1.devtunnels.ms",).split(",")
+allowed = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173",).split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in allowed if o.strip()],
@@ -67,6 +69,8 @@ app.include_router(coding_router)
 app.include_router(resume_router, prefix="/api")
 app.include_router(interview_router)
 app.include_router(gd_router)
+app.include_router(admin_router)
+app.include_router(test_router)
 
 registration_otps = {}
 

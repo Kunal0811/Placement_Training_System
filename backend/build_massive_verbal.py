@@ -75,7 +75,7 @@ async def main():
     client = genai.Client(api_key=api_key)
     
     # You can adjust this array to dictate the mix of difficulties per topic loop
-    runs = ["easy"]
+    runs = ["hard"]
     
     print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:
