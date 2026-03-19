@@ -31,8 +31,10 @@ export default function CodingPlatform() {
     const [report, setReport] = useState(null);
     const [reportPageIndex, setReportPageIndex] = useState(0);
 
-    const difficultyMap = { easy: "Easy", medium: "Medium", hard: "Hard" };
-    const difficultyName = difficultyMap[level] || "Easy";
+    // 🔥 SUPER FIXED: Grab from useParams, but if it fails, manually extract it from the URL window location!
+    const rawLevel = level || window.location.pathname.split('/').pop() || "easy";
+    const safeLevel = rawLevel.toLowerCase();
+    const difficultyName = safeLevel.charAt(0).toUpperCase() + safeLevel.slice(1);
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -48,14 +50,13 @@ export default function CodingPlatform() {
                 
                 setProblems(data.problems);
                 
-                // FIXED: We now store an object 'codes' containing the code for ALL languages independently
                 const initialSubs = data.problems.map((p, idx) => ({
                     problem_title: p.title || p.Title || p.problem_title || `Problem ${idx + 1}`,
                     language: 'python',
                     codes: {
-                        python: p.starter_code?.python || p.starter_code?.Python || "",
-                        java: p.starter_code?.java || p.starter_code?.Java || "",
-                        cpp: p.starter_code?.cpp || p.starter_code?.Cpp || ""
+                        python: p.starter_code?.python || p.starter_code?.Python || "# Write your python code here",
+                        java: p.starter_code?.java || p.starter_code?.Java || "// Write your java code here",
+                        cpp: p.starter_code?.cpp || p.starter_code?.Cpp || "// Write your C++ code here"
                     }
                 }));
                 setSubmissions(initialSubs);
@@ -90,7 +91,6 @@ export default function CodingPlatform() {
         return `${m}:${s}`;
     };
 
-    // FIXED: Safely update only the active language's code, preserving the others
     const updateCurrentSubmission = (key, value) => {
         const newSubs = [...submissions];
         if (key === 'language') {
@@ -104,20 +104,25 @@ export default function CodingPlatform() {
 
     const handleRunLocal = async () => {
         const currentSub = submissions[currentIndex];
-        const activeCode = currentSub.codes[currentSub.language]; // Get code for currently selected language
+        const activeCode = currentSub.codes[currentSub.language]; 
+        const currentProb = problems[currentIndex]; 
         
         if (!activeCode.trim()) return;
         
         setIsRunning(true);
         setLocalOutput("Running...");
+        
         try {
+            const hiddenDriverCode = currentProb?.driver_code?.[currentSub.language] || "";
+
             const res = await fetch(`${API_BASE}/api/coding/run-code`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     language: currentSub.language, 
                     code: activeCode, 
-                    input: localInput 
+                    input: localInput,
+                    driver_code: hiddenDriverCode
                 })
             });
             const data = await res.json();
@@ -138,9 +143,8 @@ export default function CodingPlatform() {
         
         const payload = {
             user_id: Number(user.id),
-            difficulty: String(level || 'easy'),
+            difficulty: difficultyName, // 🔥 FIXED: Using the properly formatted string!
             time_taken: Number(timeElapsed),
-            // Send only the code for the language the user had actively selected
             submissions: submissions.map(sub => ({
                 problem_title: String(sub.problem_title || "Unknown Problem"),
                 code: String(sub.codes[sub.language] || " "), 
@@ -249,7 +253,7 @@ export default function CodingPlatform() {
                         {/* LEFT COLUMN: Problem & Code */}
                         <div className="w-full lg:w-1/2 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-4">
                             <div>
-                                <h2 className="text-2xl font-bold mb-4">{originalProb?.title || currentEval.problem_title}</h2>
+                                <h2 className="text-2xl font-bold mb-4">{originalProb?.title || currentEval?.problem_title}</h2>
                                 <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed mb-4">{originalProb?.description}</p>
                                 
                                 {originalProb?.examples?.map((ex, i) => (
@@ -278,53 +282,55 @@ export default function CodingPlatform() {
 
                         {/* RIGHT COLUMN: Feedback */}
                         <div className="w-full lg:w-1/2 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-4">
-                            <div className={`p-6 rounded-2xl border bg-black/40 ${currentEval.is_correct ? 'border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.1)]' : 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]'}`}>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                                    {currentEval.is_correct ? <FiCheckCircle className="text-3xl text-green-500"/> : <FiXCircle className="text-3xl text-red-500"/>}
-                                    <h3 className={`text-2xl font-bold ${currentEval.is_correct ? 'text-green-400' : 'text-red-400'}`}>
-                                        {currentEval.is_correct ? 'Correct Solution' : 'Needs Improvement'}
-                                    </h3>
-                                </div>
-                                
-                                <div className="mb-6">
-                                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">AI Code Review</h4>
-                                    <p className="text-white text-lg leading-relaxed">
-                                        {currentEval.feedback}
-                                    </p>
-                                </div>
-
-                                {currentEval.ideal_solution_snippets && (
-                                    <div className="mt-8">
-                                        <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Ideal Approaches</h4>
-                                        <div className="flex flex-col gap-6">
-                                            {currentEval.ideal_solution_snippets.python && (
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-bold text-blue-400 uppercase bg-blue-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-blue-500/20">Python</span>
-                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
-                                                        <code>{currentEval.ideal_solution_snippets.python}</code>
-                                                    </pre>
-                                                </div>
-                                            )}
-                                            {currentEval.ideal_solution_snippets.java && (
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-bold text-orange-400 uppercase bg-orange-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-orange-500/20">Java</span>
-                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
-                                                        <code>{currentEval.ideal_solution_snippets.java}</code>
-                                                    </pre>
-                                                </div>
-                                            )}
-                                            {currentEval.ideal_solution_snippets.cpp && (
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-bold text-purple-400 uppercase bg-purple-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-purple-500/20">C++</span>
-                                                    <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
-                                                        <code>{currentEval.ideal_solution_snippets.cpp}</code>
-                                                    </pre>
-                                                </div>
-                                            )}
-                                        </div>
+                            {currentEval && (
+                                <div className={`p-6 rounded-2xl border bg-black/40 ${currentEval.is_correct ? 'border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.1)]' : 'border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.1)]'}`}>
+                                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                                        {currentEval.is_correct ? <FiCheckCircle className="text-3xl text-green-500"/> : <FiXCircle className="text-3xl text-red-500"/>}
+                                        <h3 className={`text-2xl font-bold ${currentEval.is_correct ? 'text-green-400' : 'text-red-400'}`}>
+                                            {currentEval.is_correct ? 'Correct Solution' : 'Needs Improvement'}
+                                        </h3>
                                     </div>
-                                )}
-                            </div>
+                                    
+                                    <div className="mb-6">
+                                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">AI Code Review</h4>
+                                        <p className="text-white text-lg leading-relaxed">
+                                            {currentEval.feedback}
+                                        </p>
+                                    </div>
+
+                                    {currentEval.ideal_solution_snippets && (
+                                        <div className="mt-8">
+                                            <h4 className="text-xs font-bold text-orange-400 uppercase tracking-widest mb-4">Ideal Approaches</h4>
+                                            <div className="flex flex-col gap-6">
+                                                {currentEval.ideal_solution_snippets.python && (
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-bold text-blue-400 uppercase bg-blue-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-blue-500/20">Python</span>
+                                                        <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                            <code>{currentEval.ideal_solution_snippets.python}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                                {currentEval.ideal_solution_snippets.java && (
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-bold text-orange-400 uppercase bg-orange-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-orange-500/20">Java</span>
+                                                        <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                            <code>{currentEval.ideal_solution_snippets.java}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                                {currentEval.ideal_solution_snippets.cpp && (
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-bold text-purple-400 uppercase bg-purple-500/10 px-3 py-1 rounded-t-lg w-fit border border-b-0 border-purple-500/20">C++</span>
+                                                        <pre className="bg-[#0d1117] p-4 rounded-xl rounded-tl-none border border-gray-700 text-xs overflow-x-auto text-gray-300 custom-scrollbar">
+                                                            <code>{currentEval.ideal_solution_snippets.cpp}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -476,7 +482,6 @@ export default function CodingPlatform() {
 
                     <div className="flex-1 overflow-auto bg-[#0d1117] text-base">
                         <CodeMirror
-                            // FIXED: Now we pass the code for the CURRENT language
                             value={currentSub?.codes?.[currentSub?.language] || ""}
                             height="100%"
                             theme={githubDark}

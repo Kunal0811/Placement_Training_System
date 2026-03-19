@@ -1,4 +1,3 @@
-# backend/coding_routes.py
 import os
 import re
 import json
@@ -23,10 +22,11 @@ class LevelProblemRequest(BaseModel):
     user_id: int
     count: int = 5 # Request 5 problems at once
 
-class RunRequest(BaseModel):
+class RunCodeRequest(BaseModel):
     language: str
     code: str
     input: str = ""
+    driver_code: str = ""
 
 class ProblemSubmission(BaseModel):
     problem_title: str
@@ -38,6 +38,16 @@ class SessionEvaluationRequest(BaseModel):
     difficulty: str
     time_taken: int # in seconds
     submissions: List[ProblemSubmission]
+
+class TestCaseItem(BaseModel):
+    input: str
+    expected_output: str
+
+class BulkRunRequest(BaseModel):
+    language: str
+    code: str
+    test_cases: List[TestCaseItem]
+    driver_code: str = ""
 
 # --- 1. AI Generation Prompts ---
 
@@ -52,28 +62,30 @@ def create_batch_problem_prompt(difficulty: str, solved_titles: List[str], count
 
     Ensure the problems require actual algorithmic thinking.
 
-    CRITICAL INSTRUCTIONS FOR 'starter_code':
-    1. The user's sandbox evaluates code using Standard Input (STDIN) and Standard Output (STDOUT).
-    2. The 'starter_code' MUST contain the boilerplate to read the input and print the output.
-    3. ABSOLUTE STRICT RULE: DO NOT WRITE THE ACTUAL DSA SOLUTION IN THE STARTER CODE! You must leave the algorithmic logic completely blank with a comment like "// TODO: Write your logic here". If you give the solution in the starter code, the user cannot practice!
-
-    Return strictly a JSON array of objects. Do not use markdown blocks.
-
+    Return STRICTLY a valid JSON array of objects. DO NOT wrap in markdown formatting.
     [
-      {{
-        "title": "Problem Title",
-        "description": "Clear, detailed problem description. Explain exactly what the input string format will be.",
-        "examples": [
-          {{"input": "Example STDIN input string", "output": "Expected STDOUT output string", "explanation": "Brief explanation"}}
-        ],
-        "starter_code": {{
-            "python": "import sys\\n\\ndef solve():\\n    # Read all lines from standard input\\n    input_data = sys.stdin.read().splitlines()\\n    if not input_data:\\n        return\\n    \\n    # TODO: Parse input and write your logic here! DO NOT print debug statements, only the final result.\\n    \\n    \\n    # print(result)\\n\\nif __name__ == '__main__':\\n    solve()",
-            "java": "import java.util.Scanner;\\n\\npublic class MyClass {{\\n    public static void main(String[] args) {{\\n        Scanner sc = new Scanner(System.in);\\n        \\n        // TODO: Read input and write your logic here!\\n        \\n        \\n        // System.out.println(result);\\n    }}\\n}}",
-            "cpp": "#include <iostream>\\nusing namespace std;\\n\\nint main() {{\\n    // TODO: Read input and write your logic here!\\n    \\n    \\n    // cout << result << endl;\\n    return 0;\\n}}"
+        {{
+            "title": "Problem Name",
+            "description": "Detailed problem statement...",
+            "examples": [
+                {{"input": "2 3", "output": "5", "explanation": "Brief explanation"}}
+            ],
+            "starter_code": {{
+                "python": "def solve(a, b):\\n    # Write your code here\\n    pass",
+                "java": "class Solution {{\\n    public int solve(int a, int b) {{\\n        // Write your code here\\n        return 0;\\n    }}\\n}}",
+                "cpp": "class Solution {{\\npublic:\\n    int solve(int a, int b) {{\\n        // Write your code here\\n        return 0;\\n    }}\\n}};"
+            }},
+            "driver_code": {{
+                "python": "\\nimport sys\\nif __name__ == '__main__':\\n    input_data = sys.stdin.read().split()\\n    if input_data:\\n        print(solve(int(input_data[0]), int(input_data[1])))",
+                "java": "\\nimport java.util.*;\\npublic class MyClass {{\\n    public static void main(String[] args) {{\\n        Scanner sc = new Scanner(System.in);\\n        if(sc.hasNextInt()) {{\\n            int a = sc.nextInt();\\n            int b = sc.nextInt();\\n            Solution sol = new Solution();\\n            System.out.println(sol.solve(a, b));\\n        }}\\n    }}\\n}}",
+                "cpp": "\\n#include <iostream>\\nusing namespace std;\\nint main() {{\\n    int a, b;\\n    if(cin >> a >> b) {{\\n        Solution sol;\\n        cout << sol.solve(a, b) << endl;\\n    }}\\n    return 0;\\n}}"
+            }}
         }}
-      }},
-      ... (generate {count} objects in total)
     ]
+    IMPORTANT RULES FOR DRIVER CODE: 
+    1. The user's starter code will be pasted EXACTLY ABOVE your driver code in the final execution file.
+    2. The driver code MUST parse standard input, call the user's function/class, and print the result.
+    3. In Java, DO NOT make the user's class 'public'. ONLY the driver code should have 'public class MyClass'.
     """
 
 def create_session_evaluation_prompt(submissions: List[Dict[str, str]], difficulty: str) -> str:
@@ -111,12 +123,10 @@ def create_session_evaluation_prompt(submissions: List[Dict[str, str]], difficul
 
 # --- 2. Routes ---
 
-# ✅ RESTORED ROUTE: Used by CodingLevels.jsx to check progress
 @router.post("/level-status")
 def get_level_status(req: LevelStatusRequest, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Count how many distinct problems the user has solved for this difficulty
         cursor.execute(
             "SELECT COUNT(DISTINCT problem_title) as solved_count FROM coding_attempts WHERE user_id = %s AND LOWER(difficulty) = %s AND is_correct = 1",
             (req.user_id, req.difficulty.lower())
@@ -175,16 +185,28 @@ def get_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_
                     "description": "Write a function that reverses a string.",
                     "examples": [{"input": "hello", "output": "olleh"}],
                     "starter_code": {
-                        "python": "def reverse_string(s):\n    pass",
-                        "java": "public class MyClass { public static void main(String[] args){} }",
-                        "cpp": "#include <iostream>\nusing namespace std;\nint main() { return 0; }"
+                        "python": "def reverse_string(s):\n    # Write your code here\n    pass",
+                        "java": "class Solution {\n    public String reverseString(String s) {\n        // Write your code here\n        return \"\";\n    }\n}",
+                        "cpp": "class Solution {\npublic:\n    string reverseString(string s) {\n        // Write your code here\n        return \"\";\n    }\n};"
+                    },
+                    "driver_code": {
+                        "python": "\nimport sys\nif __name__ == '__main__':\n    input_data = sys.stdin.read().strip()\n    if input_data:\n        print(reverse_string(input_data))",
+                        "java": "\nimport java.util.Scanner;\npublic class MyClass {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(sc.hasNextLine()) {\n            String s = sc.nextLine();\n            Solution sol = new Solution();\n            System.out.println(sol.reverseString(s));\n        }\n    }\n}",
+                        "cpp": "\n#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s;\n    if(getline(cin, s)) {\n        Solution sol;\n        cout << sol.reverseString(s) << endl;\n    }\n    return 0;\n}"
                     }
                 }]}
 
 @router.post("/run-code")
-def execute_code(req: RunRequest):
-    output = run_in_sandbox(req.language, req.code, req.input)
-    return {"output": output}
+def run_code(req: RunCodeRequest):
+    try:
+        # 🔥 GLUE THE CODE TOGETHER: User Code + Hidden Driver Code
+        full_execution_code = req.code + "\n" + req.driver_code
+        
+        # Pass the COMBINED code to the Docker sandbox
+        output = run_in_sandbox(req.language, full_execution_code, req.input)
+        return {"output": output}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/evaluate-session")
 def evaluate_session(req: SessionEvaluationRequest, db_cursor: tuple = Depends(get_cursor)):
@@ -296,3 +318,24 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
             shutil.rmtree(temp_dir)
         except Exception:
             pass
+
+@router.post("/execute-bulk")
+def execute_bulk_code(req: BulkRunRequest):
+    results = []
+    
+    # 🔥 GLUE THE CODE TOGETHER: User Code + Hidden Driver Code
+    full_execution_code = req.code + "\n" + req.driver_code
+
+    for tc in req.test_cases:
+        # Pass the COMBINED code to the Docker sandbox
+        actual_output = run_in_sandbox(req.language, full_execution_code, tc.input).strip()
+        expected = tc.expected_output.strip()
+        
+        passed = (actual_output == expected)
+        
+        results.append({
+            "passed": passed,
+            "actual_output": actual_output,
+            "expected_output": expected
+        })
+    return {"results": results}

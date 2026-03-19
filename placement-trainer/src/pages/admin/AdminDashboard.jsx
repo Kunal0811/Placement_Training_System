@@ -168,12 +168,23 @@ export default function AdminDashboard() {
                                             <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Test Title</label>
                                             <input type="text" required value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 focus:border-red-500 outline-none" />
                                         </div>
+                                        {/* Replace the Category and Duration dropdowns with this: */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Category</label>
-                                                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 focus:border-red-500 outline-none">
+                                                <select 
+                                                    value={category} 
+                                                    onChange={e => {
+                                                        setCategory(e.target.value);
+                                                        // Auto-set duration to 75 mins for coding, 60 for others
+                                                        if (e.target.value === 'coding') setDuration(75);
+                                                        else setDuration(60);
+                                                    }} 
+                                                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 focus:border-red-500 outline-none"
+                                                >
                                                     <option value="aptitude">Aptitude</option>
                                                     <option value="technical">Technical</option>
+                                                    <option value="coding">Coding Assessment</option>
                                                 </select>
                                             </div>
                                             <div>

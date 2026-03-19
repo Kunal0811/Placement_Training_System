@@ -8,7 +8,7 @@ DATASET_PATH = "logical_dataset.json"
 MODULE_NAME = "Logical Reasoning"
 
 # 🚀 SPEED UP TWEAKS:
-BATCH_SIZE = 30  # Sweet spot for generating valid JSON without errors
+BATCH_SIZE = 50  # Sweet spot for generating valid JSON without errors
 SLEEP_TIME = 60  # Wait time between calls to prevent rate limits
 
 # Logical topics (Make sure these perfectly match what your frontend requests!)

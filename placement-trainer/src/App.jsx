@@ -67,6 +67,7 @@ import Leaderboard from "./pages/Leaderboard.jsx";
 
 // 🚀 IMPORT ANIMATION COMPONENT
 import AnimatedPage from "./animations/AnimatedPage.jsx";
+import ScheduledCodingTest from "./pages/ScheduledCodingTest.jsx";
 
 // Create a new inner component to handle the routing and animations
 function AnimatedRoutes() {
@@ -124,6 +125,7 @@ function AnimatedRoutes() {
         
         <Route path="/aptitude/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModeSelection /></ProtectedRoute></AnimatedPage>} />
         <Route path="/aptitude/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/scheduled-test/:testId" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
         
         {/* Technical Section - LEVEL 2 (Requires Level 2) */}
         <Route path="/technical" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Technical Hub"><Technical /></ModuleLock></ProtectedRoute></AnimatedPage>} />
@@ -143,6 +145,9 @@ function AnimatedRoutes() {
         <Route path="/technical/coding-levels" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingLevels /></ModuleLock></ProtectedRoute></AnimatedPage>} />
         <Route path="/technical/coding-test" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
         <Route path="/technical/coding-test/:difficulty" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Coding Arena"><CodingPlatform /></ModuleLock></ProtectedRoute></AnimatedPage>} />
+        <Route path="/scheduled-test/:testId" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
+{/* Add this line: */}
+<Route path="/scheduled-coding-test/:testId" element={<AnimatedPage><ProtectedRoute><ScheduledCodingTest /></ProtectedRoute></AnimatedPage>} />
 
         {/* Interview & GD - LEVEL 4 (Requires Level 4 & Has attempt limits) */}
         <Route path="/interview" element={<AnimatedPage><ProtectedRoute><ModuleLock reqLevel={1} feature="Mock Interview" limitType="interview"><Interview /></ModuleLock></ProtectedRoute></AnimatedPage>} />

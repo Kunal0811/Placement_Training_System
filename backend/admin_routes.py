@@ -230,12 +230,83 @@ def get_test_results(test_id: int, db_cursor: tuple = Depends(get_cursor)):
         print(f"Error fetching results: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch test results")
 
+# --- NEW: Background Task for Coding Tests (1 Easy, 1 Med, 1 Hard) ---
+async def generate_coding_test_background(test_id: int, req: ScheduleTestReq):
+    print(f"🚀 Background Task Started for Coding Test ID {test_id}")
+    api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
+    
+    prompt = """
+    Generate exactly 3 distinct coding challenges for a programming assessment.
+    DIFFICULTY BREAKDOWN: Exactly 1 Easy, 1 Medium, and 1 Hard.
+    
+    Return STRICTLY a valid JSON array of objects. DO NOT wrap in markdown formatting.
+    [
+        {
+            "title": "Problem Name",
+            "description": "Detailed problem statement...",
+            "difficulty": "Easy",
+            "test_cases": [
+                {"input": "2 3", "expected_output": "5"}
+            ],
+            "starter_code": {
+                "python": "def solve(a, b):\n    # Write your code here\n    pass",
+                "java": "class Solution {\n    public int solve(int a, int b) {\n        // Write your code here\n        return 0;\n    }\n}",
+                "cpp": "class Solution {\npublic:\n    int solve(int a, int b) {\n        // Write your code here\n        return 0;\n    }\n};"
+            },
+            "driver_code": {
+                "python": "\nimport sys\nif __name__ == '__main__':\n    input_data = sys.stdin.read().split()\n    if input_data:\n        print(solve(int(input_data[0]), int(input_data[1])))",
+                "java": "\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(sc.hasNextInt()) {\n            int a = sc.nextInt();\n            int b = sc.nextInt();\n            Solution sol = new Solution();\n            System.out.println(sol.solve(a, b));\n        }\n    }\n}",
+                "cpp": "\n#include <iostream>\nusing namespace std;\nint main() {\n    int a, b;\n    if(cin >> a >> b) {\n        Solution sol;\n        cout << sol.solve(a, b) << endl;\n    }\n    return 0;\n}"
+            }
+        }
+    ]
+    IMPORTANT RULES FOR DRIVER CODE: 
+    1. The user's starter code will be pasted EXACTLY ABOVE your driver code in the final execution file.
+    2. The driver code MUST parse standard input, call the user's function/class, and print the result.
+    3. In Java, DO NOT make the user's class 'public'. ONLY the driver code should have 'public class Main'.
+    """
+    
+    all_questions = []
+    for attempt in range(3):
+        try:
+            print(f"⏳ Generating Coding Questions (Attempt {attempt+1})...")
+            response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+            cleaned = response.text.replace("```json", "").replace("```", "").strip()
+            start_idx, end_idx = cleaned.find('['), cleaned.rfind(']')
+            if start_idx != -1 and end_idx != -1:
+                all_questions = json.loads(cleaned[start_idx:end_idx+1])
+                break
+        except Exception as e:
+            print(f"⚠️ Coding Gen Error: {e}")
+            await asyncio.sleep(5)
+
+    print(f"🎉 Background Task Finished Coding Generation. Total: {len(all_questions)}")
+
+    try:
+        db = mysql.connector.connect(
+            host=os.getenv("DB_HOST", "localhost"), user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""), database=os.getenv("DB_NAME", "placify")
+        )
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("UPDATE scheduled_tests SET questions = %s WHERE id = %s", (json.dumps(all_questions), test_id))
+        db.commit()
+
+        cursor.execute("SELECT email FROM users")
+        emails = [u['email'] for u in cursor.fetchall()]
+        email_body = f"Hello Student,\n\nA new Coding Assessment has been scheduled!\nTest: {req.title}\nTime: {req.scheduled_time}\nDuration: {req.duration} mins\n\nYou MUST start the test within 10 minutes of the scheduled time.\n\nBest of luck!"
+        send_mass_email(emails, f"New Scheduled Coding Test: {req.title}", email_body)
+    except Exception as e:
+        print(f"❌ Background DB/Email Error: {e}")
+    finally:
+        if 'cursor' in locals(): cursor.close()
+        if 'db' in locals(): db.close()
+
 
 @router.post("/schedule-test")
 def schedule_test(req: ScheduleTestReq, background_tasks: BackgroundTasks, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
     try:
-        # Create an empty placeholder for the test so the Admin Dashboard sees it immediately
         cursor.execute(
             "INSERT INTO scheduled_tests (title, test_category, scheduled_time, duration_minutes, questions) VALUES (%s, %s, %s, %s, %s)",
             (req.title, req.category, req.scheduled_time, req.duration, "[]")
@@ -243,10 +314,14 @@ def schedule_test(req: ScheduleTestReq, background_tasks: BackgroundTasks, db_cu
         db.commit()
         test_id = cursor.lastrowid
 
-        # Tell FastAPI to run your 3-minute sleep logic in the background!
-        background_tasks.add_task(generate_test_background, test_id, req)
-
-        return {"message": "Test scheduling started! AI is generating questions in the background (will take ~3 mins). Emails will be sent automatically when finished."}
+        # 🔥 ROUTE LOGIC: Run different AI generators based on the Category
+        if req.category.lower() == "coding":
+            background_tasks.add_task(generate_coding_test_background, test_id, req)
+            return {"message": "Coding Test scheduling started! AI is generating 3 problems in the background (takes ~15 secs)."}
+        else:
+            background_tasks.add_task(generate_test_background, test_id, req)
+            return {"message": "MCQ Test scheduling started! AI is generating 50 questions in the background (takes ~3 mins)."}
+            
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to initiate schedule: {str(e)}")
