@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiUsers, FiCalendar, FiBookOpen, FiLogOut, FiPlus, FiTrash2, FiClock, FiSearch, FiAward, FiArrowLeft, FiActivity, FiCode, FiAlertTriangle, FiMail, FiTarget } from 'react-icons/fi';
+import { FiUsers, FiCalendar, FiBookOpen, FiLogOut, FiPlus, FiTrash2, FiClock, FiSearch, FiAward, FiArrowLeft, FiActivity, FiCode, FiAlertTriangle, FiMail, FiTarget, FiFileText, FiYoutube, FiGithub, FiHeadphones, FiImage, FiGlobe } from 'react-icons/fi';
 import axios from 'axios';
 import API_BASE from '../../api';
 import Navbar from '../../components/Navbar'; 
@@ -9,11 +9,11 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 export default function AdminDashboard() {
     const navigate = useNavigate();
     
-    const [activeTab, setActiveTab] = useState('tests'); // 'tests', 'users', 'student_profile'
+    const [activeTab, setActiveTab] = useState('tests'); 
     const [stats, setStats] = useState({ total_users: 0, total_tests: 0 });
     const [loading, setLoading] = useState(false);
 
-    // Tests State
+    // Tests & Users State
     const [tests, setTests] = useState([]);
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('aptitude');
@@ -21,14 +21,19 @@ export default function AdminDashboard() {
     const [duration, setDuration] = useState(60);
     const [selectedTestForResults, setSelectedTestForResults] = useState(null);
     const [leaderboard, setLeaderboard] = useState([]);
-
-    // Users State
     const [usersList, setUsersList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    
-    // 360 Profile State
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [studentProfile, setStudentProfile] = useState(null);
+
+    // Resources State
+    const [resources, setResources] = useState([]);
+    const [resTitle, setResTitle] = useState('');
+    const [resDesc, setResDesc] = useState('');
+    const [resCategory, setResCategory] = useState('Aptitude');
+    const [resType, setResType] = useState('PDF');
+    const [resUrl, setResUrl] = useState('');
+    const [resFile, setResFile] = useState(null); 
 
     const fetchDashboardData = async () => {
         try {
@@ -38,23 +43,24 @@ export default function AdminDashboard() {
             setTests(testsRes.data);
             const usersRes = await axios.get(`${API_BASE}/api/admin/users`);
             setUsersList(usersRes.data);
+            
+            const resourceRes = await axios.get(`${API_BASE}/api/resources/`);
+            setResources(resourceRes.data);
         } catch (err) { console.error("Failed to fetch admin data", err); }
     };
 
     useEffect(() => {
-        // 🔥 FIXED: Reading from sessionStorage instead of localStorage
         const adminUser = sessionStorage.getItem('adminUser');
         if (!adminUser) return navigate('/admin/login');
         fetchDashboardData();
     }, [navigate]);
 
     const handleLogout = () => {
-        // 🔥 FIXED: Removing from sessionStorage instead of localStorage
         sessionStorage.removeItem('adminUser');
         navigate('/admin/login');
     };
 
-    // --- Actions ---
+    // --- Handlers ---
     const handleScheduleTest = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -91,10 +97,47 @@ export default function AdminDashboard() {
     const handleViewStudentProfile = async (user) => {
         try {
             const res = await axios.get(`${API_BASE}/api/admin/users/${user.id}/profile`);
-            setStudentProfile(res.data);
-            setSelectedStudent(user);
-            setActiveTab('student_profile');
+            setStudentProfile(res.data); setSelectedStudent(user); setActiveTab('student_profile');
         } catch (err) { alert("Failed to load student profile."); }
+    };
+
+    // --- Resource Handlers ---
+    const handleAddResource = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append('title', resTitle);
+            formData.append('description', resDesc);
+            formData.append('category', resCategory);
+            formData.append('resource_type', resType);
+            
+            if (resFile && ['PDF', 'CheatSheet', 'Podcast'].includes(resType)) {
+                formData.append('file', resFile);
+            } else {
+                formData.append('content_url', resUrl);
+            }
+
+            await axios.post(`${API_BASE}/api/resources/`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            alert("Resource added successfully!");
+            setResTitle(''); setResDesc(''); setResUrl(''); setResFile(null);
+            fetchDashboardData();
+        } catch(err) { 
+            alert("Failed to add resource. " + (err.response?.data?.detail || "")); 
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteResource = async (id) => {
+        if(!window.confirm("Delete this resource?")) return;
+        try {
+            await axios.delete(`${API_BASE}/api/resources/${id}`);
+            fetchDashboardData();
+        } catch(err) { alert("Failed to delete"); }
     };
 
     const filteredUsers = usersList.filter(u => 
@@ -102,18 +145,28 @@ export default function AdminDashboard() {
         u.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Helper for health color
     const getHealthColor = (score) => {
         if (score >= 80) return "text-green-400 bg-green-500/10 border-green-500/30";
         if (score >= 50) return "text-yellow-400 bg-yellow-500/10 border-yellow-500/30";
         return "text-red-400 bg-red-500/10 border-red-500/30";
     };
 
+    const getResourceIcon = (type) => {
+        switch(type) {
+            case 'PDF': return <FiFileText className="text-red-400" />;
+            case 'Video': return <FiYoutube className="text-red-500" />;
+            case 'GitHub': return <FiGithub className="text-gray-300" />;
+            case 'Podcast': return <FiHeadphones className="text-green-400" />;
+            case 'CheatSheet': return <FiImage className="text-purple-400" />;
+            default: return <FiGlobe className="text-blue-400" />;
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#0F172A] flex text-white font-sans overflow-hidden">
             
             {/* LEFT COLUMN: Sidebar */}
-            <div className="w-64 bg-[#1E293B] border-r border-gray-800 flex flex-col p-6 shrink-0 h-screen sticky top-0">
+            <div className="w-64 bg-[#1E293B] border-r border-gray-800 flex flex-col p-6 shrink-0 h-screen sticky top-0 z-40">
                 <h1 className="text-2xl font-black text-red-500 mb-10 tracking-widest uppercase">PLACIFY <span className="text-white">ADMIN</span></h1>
                 <nav className="flex-1 space-y-2">
                     <button onClick={() => { setActiveTab('tests'); setSelectedTestForResults(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${activeTab === 'tests' ? 'bg-red-500/10 text-red-500' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
@@ -121,6 +174,9 @@ export default function AdminDashboard() {
                     </button>
                     <button onClick={() => { setActiveTab('users'); setSelectedStudent(null); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${activeTab === 'users' || activeTab === 'student_profile' ? 'bg-red-500/10 text-red-500' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
                         <FiUsers /> Manage Users
+                    </button>
+                    <button onClick={() => setActiveTab('resources')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${activeTab === 'resources' ? 'bg-red-500/10 text-red-500' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
+                        <FiBookOpen /> Study Resources
                     </button>
                 </nav>
                 <button onClick={handleLogout} className="flex items-center justify-center gap-2 text-gray-500 hover:text-white mt-auto py-3">
@@ -130,7 +186,7 @@ export default function AdminDashboard() {
 
             {/* RIGHT COLUMN */}
             <div className="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar relative">
-                <div className="shrink-0 w-full z-50">
+                <div className="shrink-0 w-full z-30">
                     <Navbar toggleSidebar={() => {}} />
                 </div>
 
@@ -159,16 +215,12 @@ export default function AdminDashboard() {
                                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-gray-700 pb-4">
                                         <FiPlus className="text-red-500" /> Schedule New Test
                                     </h3>
-                                    <p className="text-gray-400 text-xs mb-6 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
-                                        Warning: Saving this triggers Gemini AI to generate 50 questions in the background (takes ~3 mins). Emails are sent automatically.
-                                    </p>
                                     
                                     <form onSubmit={handleScheduleTest} className="space-y-5">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Test Title</label>
                                             <input type="text" required value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 focus:border-red-500 outline-none" />
                                         </div>
-                                        {/* Replace the Category and Duration dropdowns with this: */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Category</label>
@@ -176,7 +228,6 @@ export default function AdminDashboard() {
                                                     value={category} 
                                                     onChange={e => {
                                                         setCategory(e.target.value);
-                                                        // Auto-set duration to 75 mins for coding, 60 for others
                                                         if (e.target.value === 'coding') setDuration(75);
                                                         else setDuration(60);
                                                     }} 
@@ -211,11 +262,10 @@ export default function AdminDashboard() {
                                                         <FiArrowLeft /> Back to Tests
                                                     </button>
                                                     <h3 className="text-xl font-bold flex items-center gap-2">
-                                                        <FiAward className="text-yellow-400" /> Leaderboard: {selectedTestForResults.title}
+                                                        <FiAward className="text-yellow-400" /> Leaderboard
                                                     </h3>
                                                 </div>
                                             </div>
-                                            
                                             {leaderboard.length > 0 ? (
                                                 <div className="space-y-3">
                                                     {leaderboard.map((student, idx) => (
@@ -303,6 +353,111 @@ export default function AdminDashboard() {
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB: RESOURCES */}
+                    {activeTab === 'resources' && (
+                        <div className="animate-fade-in">
+                            <h2 className="text-3xl font-bold mb-8">Resource Library Management</h2>
+                            <div className="grid xl:grid-cols-3 gap-8">
+                                {/* Add Resource Form */}
+                                <div className="bg-[#1E293B] border border-gray-700 p-8 rounded-3xl h-fit xl:col-span-1">
+                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-gray-700 pb-4">
+                                        <FiPlus className="text-red-500" /> Add New Material
+                                    </h3>
+                                    <form onSubmit={handleAddResource} className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Title</label>
+                                            <input type="text" required value={resTitle} onChange={e=>setResTitle(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-sm focus:border-neon-blue outline-none text-white" placeholder="e.g. Top 100 Array Questions" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Description</label>
+                                            <textarea required value={resDesc} onChange={e=>setResDesc(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-sm focus:border-neon-blue outline-none text-white h-20 resize-none" placeholder="Brief description..."></textarea>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Category</label>
+                                                <select value={resCategory} onChange={e=>setResCategory(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-sm focus:border-neon-blue outline-none text-white">
+                                                    <option value="Aptitude">Aptitude</option>
+                                                    <option value="Technical">Technical & Coding</option>
+                                                    <option value="Interview">Interview & HR</option>
+                                                    <option value="General">General Career</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Type</label>
+                                                <select value={resType} onChange={e=>setResType(e.target.value)} className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-sm focus:border-neon-blue outline-none text-white">
+                                                    <option value="PDF">PDF Document</option>
+                                                    <option value="Video">YouTube Video</option>
+                                                    <option value="GitHub">GitHub Repo</option>
+                                                    <option value="Article">Web Roadmap</option>
+                                                    <option value="Podcast">Podcast / Audio</option>
+                                                    <option value="CheatSheet">Cheat Sheet (Img/PDF)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* DYNAMIC INPUT: Switch between File Upload and URL based on Type */}
+                                        {['PDF', 'CheatSheet', 'Podcast'].includes(resType) ? (
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Upload File</label>
+                                                <input 
+                                                    type="file" 
+                                                    required 
+                                                    // 🔥 FIXED: Accept both image/* and .pdf when CheatSheet is selected!
+                                                    accept={resType === 'PDF' ? ".pdf" : resType === 'CheatSheet' ? "image/*,.pdf" : "audio/*"}
+                                                    onChange={e => setResFile(e.target.files[0])} 
+                                                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:border-neon-blue outline-none text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-neon-blue file:text-black hover:file:bg-cyan-300 cursor-pointer" 
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">URL Link</label>
+                                                <input 
+                                                    type="url" 
+                                                    required 
+                                                    value={resUrl} 
+                                                    onChange={e=>setResUrl(e.target.value)} 
+                                                    className="w-full bg-[#0F172A] border border-gray-700 rounded-xl px-4 py-3 text-sm focus:border-neon-blue outline-none text-white" 
+                                                    placeholder="https://..." 
+                                                />
+                                            </div>
+                                        )}
+
+                                        <button type="submit" disabled={loading} className="w-full py-4 bg-neon-blue hover:bg-cyan-300 text-black font-bold rounded-xl shadow-[0_0_15px_rgba(45,212,191,0.3)] transition-colors mt-2 disabled:opacity-50">
+                                            {loading ? "Uploading..." : "Upload Resource"}
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {/* Resource List */}
+                                <div className="bg-[#1E293B] border border-gray-700 p-8 rounded-3xl xl:col-span-2 overflow-y-auto max-h-[700px] custom-scrollbar">
+                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-gray-700 pb-4">
+                                        <FiBookOpen className="text-blue-400" /> Uploaded Materials Database
+                                    </h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {resources.map(res => (
+                                            <div key={res.id} className="bg-[#0F172A] p-5 rounded-2xl border border-gray-700 relative group flex flex-col hover:border-gray-500 transition-colors">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        {getResourceIcon(res.resource_type)}
+                                                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{res.resource_type}</span>
+                                                    </div>
+                                                    <span className="text-[10px] text-gray-500 uppercase font-bold bg-white/5 px-2 py-0.5 rounded">{res.category}</span>
+                                                </div>
+                                                <h4 className="font-bold text-white mb-1 line-clamp-1">{res.title}</h4>
+                                                <p className="text-xs text-gray-400 line-clamp-2 flex-1 mb-2">{res.description}</p>
+                                                
+                                                <button onClick={() => handleDeleteResource(res.id)} className="absolute top-4 right-4 bg-red-500/20 text-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100">
+                                                    <FiTrash2 />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {resources.length === 0 && <p className="text-gray-500 italic text-sm col-span-2 text-center py-10 border border-dashed border-gray-700 rounded-xl">No resources uploaded yet.</p>}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -470,7 +625,6 @@ export default function AdminDashboard() {
 
                         </div>
                     )}
-                    
                 </div>
             </div>
         </div>

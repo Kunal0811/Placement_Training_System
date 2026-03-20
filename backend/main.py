@@ -18,6 +18,7 @@ import uuid
 import nltk
 import interview_models
 from sqlalchemy import text
+import resource_routes
 
 # Import from the new database file and other route files
 from database import get_cursor, engine, Base
@@ -35,6 +36,7 @@ load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
+
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
@@ -47,6 +49,11 @@ except LookupError:
     nltk.download('stopwords')
 
 app = FastAPI(title="Placify Backend", version="1.0.0")
+
+# Create the directory if it doesn't exist
+os.makedirs("static/resources", exist_ok=True)
+# Mount it to the server
+app.mount("/static/resources", StaticFiles(directory="static/resources"), name="resources")
 
 # --- Mount Static Files Directory ---
 os.makedirs("static/profile_pics", exist_ok=True)
@@ -71,6 +78,7 @@ app.include_router(interview_router)
 app.include_router(gd_router)
 app.include_router(admin_router)
 app.include_router(test_router)
+app.include_router(resource_routes.router)
 
 registration_otps = {}
 

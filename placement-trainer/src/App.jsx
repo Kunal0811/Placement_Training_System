@@ -64,6 +64,7 @@ import GrammarNotes from "./pages/Aptitude/Verbal/GrammarNotes.jsx";
 import VocabularyNotes from "./pages/Aptitude/Verbal/VocabularyNotes.jsx";
 import ComprehensionNotes from "./pages/Aptitude/Verbal/ComprehensionNotes.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx"; 
+import ResourceHub from "./pages/ResourceHub.jsx";
 
 // 🚀 IMPORT ANIMATION COMPONENT
 import AnimatedPage from "./animations/AnimatedPage.jsx";
@@ -122,6 +123,7 @@ function AnimatedRoutes() {
         <Route path="/aptitude/verbal/grammar" element={<AnimatedPage><ProtectedRoute><GrammarNotes /></ProtectedRoute></AnimatedPage>} />
         <Route path="/aptitude/verbal/vocabulary" element={<AnimatedPage><ProtectedRoute><VocabularyNotes /></ProtectedRoute></AnimatedPage>} />
         <Route path="/aptitude/verbal/reading-comprehension" element={<AnimatedPage><ProtectedRoute><ComprehensionNotes /></ProtectedRoute></AnimatedPage>} />
+        <Route path="/resources" element={<AnimatedPage><ProtectedRoute><ResourceHub /></ProtectedRoute></AnimatedPage>} />
         
         <Route path="/aptitude/modes/:topic" element={<AnimatedPage><ProtectedRoute><ModeSelection /></ProtectedRoute></AnimatedPage>} />
         <Route path="/aptitude/test/:topic/:mode" element={<AnimatedPage><ProtectedRoute><TestPage /></ProtectedRoute></AnimatedPage>} />
