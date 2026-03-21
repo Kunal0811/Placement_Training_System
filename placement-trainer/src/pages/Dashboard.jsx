@@ -274,7 +274,7 @@ export default function Dashboard() {
                   <>
                     <td className="p-4 font-bold text-blue-400 group-hover:text-blue-300 transition-colors">{item.job_role}</td>
                     <td className="p-4 text-xs opacity-70">{item.interview_type}</td>
-                    <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 7 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/10</span></td>
+                    <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 70 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/100</span></td>
                   </>
                 ) : selectedView === 'gd' ? (
                   <>
@@ -454,7 +454,7 @@ export default function Dashboard() {
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                             <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis domain={[0, 100]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip />} />
                             <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
                           </AreaChart>

@@ -18,12 +18,15 @@ class SubmitTestReq(BaseModel):
 @router.get("/available")
 def get_available_tests(user_id: int, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor
+    # 🔥 UPDATED: Now fetches the user_score and total_score to show on the dashboard!
     cursor.execute("""
         SELECT t.id, t.title, t.test_category, t.scheduled_time, t.duration_minutes,
-               (SELECT COUNT(*) FROM test_results WHERE test_id = t.id AND user_id = %s) as is_attempted
+               (SELECT COUNT(*) FROM test_results WHERE test_id = t.id AND user_id = %s) as is_attempted,
+               (SELECT score FROM test_results WHERE test_id = t.id AND user_id = %s LIMIT 1) as user_score,
+               (SELECT total FROM test_results WHERE test_id = t.id AND user_id = %s LIMIT 1) as total_score
         FROM scheduled_tests t
         ORDER BY t.scheduled_time DESC
-    """, (user_id,))
+    """, (user_id, user_id, user_id))
     return cursor.fetchall()
 
 @router.get("/{test_id}/start")

@@ -1,10 +1,9 @@
-// placement-trainer/src/pages/Aptitude/TestPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import API_BASE from "../../api";
-import { FiX, FiChevronRight, FiChevronLeft, FiCheckCircle, FiGrid, FiShield, FiAlertTriangle, FiClock, FiBookmark, FiRefreshCcw, FiDownload, FiHome } from "react-icons/fi";
+import { FiX, FiChevronRight, FiChevronLeft, FiCheckCircle, FiGrid, FiShield, FiAlertTriangle, FiClock, FiBookmark, FiRefreshCcw, FiDownload, FiHome, FiXCircle, FiFileText, FiAlertCircle } from "react-icons/fi";
 import html2pdf from "html2pdf.js";
 
 const ExplanationDisplay = ({ explanation }) => {
@@ -75,7 +74,7 @@ const PDFExplanationDisplay = ({ explanation }) => {
 
 
 export default function TestPage() {
-  const { topic, mode, testId } = useParams(); // testId added for Scheduled Tests
+  const { topic, mode, testId } = useParams(); 
   const decodedTopic = topic ? decodeURIComponent(topic) : "Scheduled Assessment";
   const location = useLocation();
   const navigate = useNavigate();
@@ -105,6 +104,9 @@ export default function TestPage() {
   
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // 🔥 NEW: Pagination State for the Result Report
+  const [reportPageIndex, setReportPageIndex] = useState(0);
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -113,16 +115,14 @@ export default function TestPage() {
             // MODE: ADMIN SCHEDULED TEST
             // ==========================================
             const res = await axios.get(`${API_BASE}/api/tests/${testId}/start`);
-            // Map the AI JSON format to the Test Engine format
             const mappedQs = res.data.questions.map(aiQ => ({
                 question: aiQ.q,
                 options: aiQ.options,
-                // We leave answer and explanation undefined so they can't cheat by checking the React state!
             }));
             
             setSections([{ id: 0, title: res.data.title, qs: mappedQs }]);
             setTotalQuestions(mappedQs.length);
-            setTimeLeft(res.data.duration * 60); // Server duration to seconds
+            setTimeLeft(res.data.duration * 60);
 
         } else {
             // ==========================================
@@ -267,9 +267,6 @@ export default function TestPage() {
     
     try {
         if (testId) {
-            // ==========================================
-            // SUBMIT: ADMIN SCHEDULED TEST
-            // ==========================================
             let answersPayload = {};
             sections[0].qs.forEach((q, qId) => {
                 const key = `0-${qId}`;
@@ -283,13 +280,9 @@ export default function TestPage() {
             });
 
             alert("Assessment Submitted Successfully! Your answers have been securely recorded.");
-            // Do NOT show local answers to prevent cheating. Redirect back to Dashboard.
             navigate('/tests');
 
         } else {
-            // ==========================================
-            // SUBMIT: PRACTICE TEST
-            // ==========================================
             let calculatedScore = 0;
             sections.forEach((sec, sId) => {
                 sec.qs.forEach((q, qId) => {
@@ -302,7 +295,7 @@ export default function TestPage() {
                 user_id: user.id, topic: decodedTopic, mode: mode, score: calculatedScore, total: totalQuestions,
             });
             await fetchStats(); 
-            setIsFinished(true); // Show detailed review screen
+            setIsFinished(true); 
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     } catch (err) {
@@ -330,6 +323,25 @@ export default function TestPage() {
 
     html2pdf().set(opt).from(element).save().then(() => setIsDownloading(false));
   };
+
+  // 🔥 NEW: Flatten sections into a single array for easier pagination
+  const flatReport = useMemo(() => {
+      const arr = [];
+      sections.forEach((sec, sId) => {
+          sec.qs.forEach((q, qId) => {
+              const ansKey = `${sId}-${qId}`;
+              arr.push({
+                  ...q,
+                  sectionTitle: sec.title,
+                  user_ans: userAnswers[ansKey] || "Not Answered",
+                  is_correct: userAnswers[ansKey] === q.answer,
+                  correct_ans: q.answer,
+                  qNum: arr.length + 1
+              });
+          });
+      });
+      return arr;
+  }, [sections, userAnswers]);
 
   if (loading || !sections.length) {
     return (
@@ -362,85 +374,167 @@ export default function TestPage() {
     );
   }
 
-  // --- RESULT SCREEN (ONLY SHOWS FOR PRACTICE TESTS) ---
+  // --- RESULT SCREEN (UPDATED: SPLIT SCREEN PAGINATION) ---
   if (isFinished && !testId) {
       const accuracy = totalQuestions > 0 ? Math.round((finalScore / totalQuestions) * 100) : 0;
       const passed = accuracy >= 75;
+      const currentReportItem = flatReport[reportPageIndex];
 
       return (
-        <div className="min-h-screen bg-[#0a0a0c] text-white p-4 md:p-8 animate-fade-in custom-scrollbar">
-          {/* Action Bar */}
-          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end gap-4 mb-6">
-             <button onClick={() => navigate('/dashboard')} className="px-6 py-2.5 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
-                 <FiHome/> Dashboard
-             </button>
-             <button onClick={handleDownloadPDF} disabled={isDownloading} className="px-6 py-2.5 bg-neon-purple text-white font-bold rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:hover:scale-100">
-                 <FiDownload /> {isDownloading ? "Generating PDF..." : "Download Clean Report"}
-             </button>
+        <div className="min-h-screen bg-[#0F172A] text-white p-4 md:p-8 font-sans flex flex-col">
+          
+          {/* Action Bar & Summary */}
+          <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-4 mb-6 pb-6 border-b border-white/10 shrink-0">
+             <div className="flex items-center gap-4">
+                 <div className="text-4xl">{passed ? '🏆' : '🎯'}</div>
+                 <div>
+                     <h1 className={`text-3xl font-black font-display ${passed ? 'text-yellow-400' : 'text-neon-blue'}`}>{passed ? 'Test Passed!' : 'Keep Practicing!'}</h1>
+                     <p className="text-gray-400 font-mono text-sm mt-1">Score: <span className="text-white font-bold">{finalScore}/{totalQuestions}</span> • Accuracy: <span className="text-white font-bold">{accuracy}%</span></p>
+                 </div>
+             </div>
+             <div className="flex gap-4">
+                 <button onClick={() => navigate('/dashboard')} className="px-6 py-2.5 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                     <FiHome/> Dashboard
+                 </button>
+                 <button onClick={handleDownloadPDF} disabled={isDownloading} className="px-6 py-2.5 bg-neon-purple text-white font-bold rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:hover:scale-100">
+                     <FiDownload /> {isDownloading ? "Generating PDF..." : "Download Report"}
+                 </button>
+             </div>
           </div>
 
-          <div className="max-w-5xl mx-auto bg-[#0a0a0c] p-6 md:p-10 rounded-3xl border border-white/5 shadow-2xl">
-            <div className="glass-panel p-8 rounded-3xl text-center mb-10 border border-white/10 bg-black/40">
-              <div className="text-6xl mb-4">{passed ? '🏆' : '🎯'}</div>
-              <h1 className={`text-4xl font-black mb-2 ${passed ? 'text-yellow-400' : 'text-neon-blue'}`}>{passed ? 'Test Passed!' : 'Keep Practicing!'}</h1>
-              <div className="flex flex-wrap justify-center gap-4 mt-6">
-                <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-2xl p-6 w-48">
-                  <p className="text-yellow-500 font-bold uppercase text-xs tracking-widest mb-1">Final Score</p>
-                  <p className="text-4xl font-black">{finalScore} / {totalQuestions}</p>
-                </div>
-                <div className="bg-neon-blue/10 border-2 border-neon-blue/30 rounded-2xl p-6 w-48">
-                  <p className="text-neon-blue font-bold uppercase text-xs tracking-widest mb-1">Accuracy</p>
-                  <p className="text-4xl font-black">{accuracy}%</p>
-                </div>
-              </div>
-            </div>
+          {/* 🔥 SPLIT SCREEN MCQ REPORT */}
+          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0 bg-[#1E293B] rounded-3xl border border-gray-700 shadow-2xl overflow-hidden animate-fade-in">
+              
+              {/* Pagination Header */}
+              <div className="flex flex-col md:flex-row items-center justify-between bg-black/40 p-4 border-b border-gray-700 shrink-0 gap-4">
+                  <button 
+                      onClick={() => setReportPageIndex(prev => prev - 1)} 
+                      disabled={reportPageIndex === 0}
+                      className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2 rounded-xl font-bold text-sm transition-colors w-full md:w-auto justify-center"
+                  >
+                      <FiChevronLeft /> Previous
+                  </button>
+                  
+                  <div className="flex items-center gap-4">
+                      <span className="font-mono text-gray-400 font-bold hidden md:inline">
+                          <span className="text-blue-400 mr-2">{currentReportItem.sectionTitle}</span>| Question {reportPageIndex + 1} of {totalQuestions}
+                      </span>
+                      <div className="flex items-center gap-2 bg-[#0F172A] px-3 py-1.5 rounded-lg border border-gray-700">
+                          {currentReportItem.is_correct ? <FiCheckCircle className="text-green-500" /> : <FiXCircle className="text-red-500" />}
+                          <span className={`text-sm font-bold ${currentReportItem.is_correct ? 'text-green-400' : 'text-red-400'}`}>
+                              {currentReportItem.is_correct ? '+1 Marks' : '0 Marks'}
+                          </span>
+                      </div>
+                  </div>
 
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><FiCheckCircle className="text-neon-green" /> Detailed Review</h2>
-            
-            {sections.map((sec, sId) => (
-                <div key={sId} className="mb-10">
-                    <h3 className="text-xl font-bold text-neon-purple border-b border-white/10 pb-2 mb-6">{sec.title}</h3>
-                    <div className="space-y-6">
-                        {sec.qs.map((q, qId) => {
-                            const ansKey = `${sId}-${qId}`;
-                            const isSkipped = !userAnswers[ansKey];
-                            const isCorrect = userAnswers[ansKey] === q.answer;
-                            
-                            return (
-                                <div key={qId} className="p-6 rounded-2xl border border-white/10 bg-black/40">
-                                    <div className="flex gap-4 mb-4">
-                                        <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${isCorrect ? 'bg-green-500/20 text-green-400' : (isSkipped ? 'bg-gray-500/20 text-gray-400' : 'bg-red-500/20 text-red-400')}`}>
-                                            {qId + 1}
-                                        </span>
-                                        <h3 className="text-lg font-medium leading-snug whitespace-pre-wrap">{q.question}</h3>
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-3 pl-12 mb-4">
-                                        {q.options.map((opt, optIdx) => {
-                                            const isActualAnswer = q.answer === opt;
-                                            const isUsersPick = userAnswers[ansKey] === opt;
-                                            let style = "bg-white/5 border-white/10 text-gray-400";
-                                            if (isActualAnswer) style = "bg-green-500/20 border-green-500/50 text-green-400 font-bold";
-                                            else if (isUsersPick) style = "bg-red-500/20 border-red-500/50 text-red-400 font-bold";
-                                            return <div key={optIdx} className={`p-3 rounded-xl border text-sm ${style}`}>{opt}</div>;
-                                        })}
-                                    </div>
-                                    <div className="pl-12 mt-4">
-                                        {isSkipped && <div className="text-gray-400 font-bold text-sm mb-3 uppercase tracking-widest border border-gray-600/30 bg-gray-600/10 inline-block px-3 py-1 rounded-md">Not Attempted</div>}
-                                        <div className="bg-neon-blue/5 border border-neon-blue/20 rounded-xl p-4 text-sm text-blue-100">
-                                            <ExplanationDisplay explanation={q.explanation} />
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            ))}
+                  <button 
+                      onClick={() => setReportPageIndex(prev => prev + 1)} 
+                      disabled={reportPageIndex === totalQuestions - 1}
+                      className="flex items-center gap-2 bg-neon-blue text-black hover:bg-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2 rounded-xl font-bold text-sm transition-colors w-full md:w-auto justify-center"
+                  >
+                      Next <FiChevronRight />
+                  </button>
+              </div>
+
+              {/* Split Screen Content */}
+              <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+                  
+                  {/* LEFT PANEL: Question & Options */}
+                  <div className="w-full lg:w-1/2 p-6 lg:p-8 overflow-y-auto custom-scrollbar border-b lg:border-b-0 lg:border-r border-gray-700">
+                      <p className="md:hidden text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">{currentReportItem.sectionTitle}</p>
+                      
+                      <h2 className="text-xl lg:text-2xl font-bold leading-relaxed mb-8 text-white whitespace-pre-wrap">
+                          <span className="text-gray-500 mr-2">{reportPageIndex + 1}.</span> 
+                          {currentReportItem.question}
+                      </h2>
+                      
+                      <div className="space-y-4">
+                          {currentReportItem.options && currentReportItem.options.map((opt, idx) => {
+                              const isUserSelected = opt === currentReportItem.user_ans;
+                              const isCorrectAnswer = opt === currentReportItem.correct_ans;
+                              
+                              let boxStyle = "bg-[#0F172A] border-gray-700 text-gray-300"; 
+                              
+                              if (isCorrectAnswer) {
+                                  boxStyle = "bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.2)]";
+                              } else if (isUserSelected && !isCorrectAnswer) {
+                                  boxStyle = "bg-red-500/20 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)]";
+                              }
+
+                              return (
+                                  <div key={idx} className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${boxStyle}`}>
+                                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${isCorrectAnswer ? 'border-green-500 bg-green-500/30' : isUserSelected ? 'border-red-500 bg-red-500/30' : 'border-gray-600'}`}>
+                                          {isCorrectAnswer && <FiCheckCircle className="text-green-400 text-sm" />}
+                                          {isUserSelected && !isCorrectAnswer && <FiXCircle className="text-red-400 text-sm" />}
+                                      </div>
+                                      <span className="font-medium text-base whitespace-pre-wrap">{opt}</span>
+                                  </div>
+                              );
+                          })}
+                          
+                          {currentReportItem.user_ans === "Not Answered" && (
+                              <div className="mt-6 p-4 rounded-2xl border-2 border-yellow-500/50 bg-yellow-500/10 text-yellow-400 flex items-center gap-3">
+                                  <FiAlertCircle className="text-xl shrink-0" />
+                                  <span className="font-bold">You did not attempt this question.</span>
+                              </div>
+                          )}
+                      </div>
+                  </div>
+
+                  {/* RIGHT PANEL: Explanation */}
+                  <div className="w-full lg:w-1/2 bg-[#0d1117] p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+                      <div className="sticky top-0 bg-[#0d1117] pb-4 mb-4 border-b border-gray-800 z-10">
+                          <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2">
+                              <FiFileText className="text-lg" /> Detailed Explanation
+                          </h3>
+                      </div>
+                      
+                      {currentReportItem.explanation ? (
+                          <div className="text-gray-300 text-base leading-relaxed font-serif">
+                              {/* Using the custom ExplanationDisplay component! */}
+                              <ExplanationDisplay explanation={currentReportItem.explanation} />
+                          </div>
+                      ) : (
+                          <div className="flex flex-col items-center justify-center h-48 text-gray-500 opacity-50">
+                              <FiAlertCircle className="text-4xl mb-3" />
+                              <p>No detailed explanation provided for this question.</p>
+                          </div>
+                      )}
+                  </div>
+                  
+              </div>
           </div>
           
+          {/* Hidden PDF Div for html2pdf */}
           <div className="absolute top-0 left-0 w-full h-0 overflow-hidden opacity-0 pointer-events-none z-[-999]">
               <div id="clean-pdf-report" className="w-[794px] bg-white text-black px-12 py-10 font-sans mx-auto break-words">
-                  {/* PDF Layout omitted for brevity since it's unmodified */}
+                 <h1 className="text-3xl font-black text-blue-600 mb-2">{decodedTopic} - Report</h1>
+                 <p className="text-gray-500 mb-8 font-bold border-b border-gray-300 pb-4">Student: {user?.fname} {user?.lname} | Score: {finalScore}/{totalQuestions}</p>
+                 
+                 {flatReport.map((q, idx) => (
+                    <div key={idx} className="mb-8 pb-8 border-b border-gray-200" style={{ pageBreakInside: 'avoid' }}>
+                       <div className="flex gap-3 mb-3">
+                          <span className={`flex-shrink-0 font-bold ${q.is_correct ? 'text-green-600' : (q.user_ans === "Not Answered" ? 'text-gray-500' : 'text-red-600')}`}>
+                             Q{idx + 1}.
+                          </span>
+                          <h3 className="font-bold text-gray-800 whitespace-pre-wrap">{q.question}</h3>
+                       </div>
+                       
+                       <div className="pl-8 mb-4 space-y-1">
+                          {q.options.map((opt, oIdx) => {
+                             let mark = "[ ]";
+                             let style = "text-gray-600";
+                             if (opt === q.correct_ans) { mark = "[✓]"; style = "text-green-600 font-bold"; }
+                             else if (opt === q.user_ans) { mark = "[✗]"; style = "text-red-600 font-bold line-through"; }
+                             return <div key={oIdx} className={`text-sm ${style}`}>{mark} {opt}</div>;
+                          })}
+                       </div>
+
+                       <div className="pl-8 bg-gray-50 p-4 rounded-lg">
+                          <PDFExplanationDisplay explanation={q.explanation} />
+                       </div>
+                    </div>
+                 ))}
               </div>
           </div>
         </div>
