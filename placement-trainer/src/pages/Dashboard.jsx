@@ -4,9 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import API_BASE from "../api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // <-- NEW
-import ScrollReveal from "../animations/ScrollReveal"; // <-- NEW
-import BouncyClick from "../animations/BouncyClick"; // <-- NEW
+import { motion } from "framer-motion"; 
+import ScrollReveal from "../animations/ScrollReveal"; 
+import BouncyClick from "../animations/BouncyClick"; 
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,7 +21,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload } from "react-icons/fi";
+import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload, FiUsers } from "react-icons/fi";
 
 // --- CONSTANTS ---
 const APTITUDE_TOPICS = [
@@ -91,14 +91,18 @@ export default function Dashboard() {
   const { user: authUser, updateUser } = useAuth();
   const navigate = useNavigate();
   const [user, setUser] = useState(authUser);
+  
+  // Data States
   const [tests, setTests] = useState([]);
   const [codingAttempts, setCodingAttempts] = useState([]);
   const [interviewAttempts, setInterviewAttempts] = useState([]);
+  const [gdAttempts, setGdAttempts] = useState([]); // 🔥 NEW: GD State
+
   const [loading, setLoading] = useState(true);
-  
   const [selectedView, setSelectedView] = useState('aptitude');
   const [graphTopic, setGraphTopic] = useState(APTITUDE_TOPICS[0]); 
 
+  // Profile Pic States
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -117,6 +121,15 @@ export default function Dashboard() {
         setTests((data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setCodingAttempts((data.coding || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setInterviewAttempts(data.interviews || []);
+        
+        // 🔥 NEW: Fetch GD History
+        try {
+            const gdRes = await axios.get(`${API_BASE}/api/gd/user/${authUser.id}/history`, { signal: controller.signal });
+            setGdAttempts(gdRes.data || []);
+        } catch (gdErr) {
+            console.error("No GD history found or error fetching.", gdErr);
+        }
+
       } catch (err) {
         if (err.name !== 'AbortError') console.error("Fetch error:", err);
       } finally {
@@ -228,12 +241,20 @@ export default function Dashboard() {
     date: item.created_at ? new Date(item.created_at).toLocaleDateString() : "N/A"
   })), [interviewAttempts]);
 
+  // 🔥 NEW: Format GD data for the chart
+  const gdGraphData = useMemo(() => gdAttempts.map((item, index) => ({
+    topic: item.topic || `GD ${index + 1}`,
+    score: item.overall_score || 0,
+    date: item.created_at ? new Date(item.created_at).toLocaleDateString() : "N/A"
+  })), [gdAttempts]);
+
   // --- RENDERERS ---
 
   const renderTable = () => {
     let items = [], headers = [];
     if (selectedView === 'coding') { items = codingAttempts; headers = ['Problem', 'Difficulty', 'Status', 'Date']; }
     else if (selectedView === 'interview') { items = interviewAttempts; headers = ['Job Role', 'Type', 'Score', 'Date']; }
+    else if (selectedView === 'gd') { items = gdAttempts; headers = ['GD Topic', 'Comm. Score', 'Overall Score', 'Date']; } // 🔥 NEW
     else { items = filteredTests; headers = ['Topic', 'Mode', 'Score', 'Date']; }
 
     if (items.length === 0) return <div className="p-12 text-center text-gray-500 font-mono text-sm border-t border-white/5">No data logs found. Start grinding! 🚀</div>;
@@ -254,6 +275,13 @@ export default function Dashboard() {
                     <td className="p-4 font-bold text-blue-400 group-hover:text-blue-300 transition-colors">{item.job_role}</td>
                     <td className="p-4 text-xs opacity-70">{item.interview_type}</td>
                     <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 7 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/10</span></td>
+                  </>
+                ) : selectedView === 'gd' ? (
+                  <>
+                    {/* 🔥 NEW: Render GD Table Row */}
+                    <td className="p-4 font-bold text-purple-400 group-hover:text-purple-300 transition-colors line-clamp-1 max-w-[200px] truncate" title={item.topic}>{item.topic}</td>
+                    <td className="p-4 text-xs opacity-70">{item.communication}/10</td>
+                    <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 35 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/50</span></td>
                   </>
                 ) : selectedView === 'coding' ? (
                   <>
@@ -313,7 +341,7 @@ export default function Dashboard() {
           </div>
         </ScrollReveal>
 
-        {/* 1. STATS GRID (Animated Stagger) */}
+        {/* 1. STATS GRID */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -388,8 +416,8 @@ export default function Dashboard() {
                 
                 <ScrollReveal direction="left" delay={0.3}>
                   {/* TABS */}
-                  <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto">
-                      {['aptitude', 'technical', 'coding', 'interview'].map((tab) => (
+                  <div className="p-1 bg-black/40 backdrop-blur rounded-2xl border border-white/10 inline-flex w-full overflow-x-auto custom-scrollbar">
+                      {['aptitude', 'technical', 'coding', 'interview', 'gd'].map((tab) => (
                         <BouncyClick key={tab} className="flex-1 min-w-[100px]">
                           <button
                               onClick={() => { 
@@ -403,7 +431,7 @@ export default function Dashboard() {
                                   : 'text-gray-400 hover:text-white hover:bg-white/5'
                               }`}
                           >
-                              {tab}
+                              {tab === 'gd' ? 'GD' : tab}
                           </button>
                         </BouncyClick>
                       ))}
@@ -429,6 +457,27 @@ export default function Dashboard() {
                             <YAxis domain={[0, 10]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip />} />
                             <Area type="monotone" dataKey="score" stroke="#2DD4BF" strokeWidth={3} fill="url(#colorScore)" />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                     </div>
+                  ) : selectedView === 'gd' ? (
+                     <div className="bg-black/40 backdrop-blur-xl p-6 rounded-3xl border border-white/10 relative overflow-hidden h-[400px]">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -z-10" />
+                        <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2"><FiUsers className="text-purple-400"/> GD Performance (Out of 50)</h3>
+                        <ResponsiveContainer width="100%" height="90%">
+                          <AreaChart data={gdGraphData}>
+                            <defs>
+                              <linearGradient id="colorGdScore" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#c084fc" stopOpacity={0.3}/>
+                                <stop offset="95%" stopColor="#c084fc" stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                            <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            {/* GD Score is out of 50 (5 metrics * 10) */}
+                            <YAxis domain={[0, 50]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Area type="monotone" dataKey="score" stroke="#c084fc" strokeWidth={3} fill="url(#colorGdScore)" />
                           </AreaChart>
                         </ResponsiveContainer>
                      </div>

@@ -256,3 +256,22 @@ async def evaluate_gd(req: EvaluateReq, db_cursor: tuple = Depends(get_cursor)):
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# --- ADD THIS TO THE BOTTOM OF backend/gd_routes.py ---
+
+@router.get("/user/{user_id}/history")
+def get_user_gd_history(user_id: int, db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        cursor.execute("""
+            SELECT e.overall_score, e.communication, e.content, e.confidence, 
+                   e.leadership, e.clarity, e.strengths, e.improvements, e.ideal_response,
+                   s.topic, s.scheduled_time as created_at
+            FROM gd_evaluations e
+            JOIN gd_sessions s ON e.session_id = s.id
+            WHERE e.user_id = %s
+            ORDER BY s.scheduled_time ASC
+        """, (user_id,))
+        return cursor.fetchall()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

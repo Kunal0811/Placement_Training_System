@@ -17,7 +17,7 @@ class StartInterviewRequest(BaseModel):
     user_id: int
     job_role: str
     interview_type: str  
-    skill_level: str # Added for Smart Question Generation
+    skill_level: str 
 
 class ChatMessage(BaseModel):
     role: str
@@ -73,7 +73,7 @@ async def start_interview(req: StartInterviewRequest, db: Session = Depends(get_
 
 @router.post("/chat")
 async def interview_chat(req: InterviewRequest, db: Session = Depends(get_session)):
-    """Conversational interviewer with SMART question generation."""
+    """Conversational interviewer with SMART dynamic topic shifting."""
     try:
         api_key = os.getenv("GEMINI_API_KEY_INTERVIEW") or os.getenv("GEMINI_API_KEY")
         client = genai.Client(api_key=api_key)
@@ -86,20 +86,24 @@ async def interview_chat(req: InterviewRequest, db: Session = Depends(get_sessio
             last_turn.user_answer_text = req.user_input
             db.commit()
 
-        # Generate conversational follow-up based on user mistakes / answers
+        # Grab recent history
         history_text = "\n".join([f"{msg.role}: {msg.content}" for msg in req.history[-6:]]) 
         
+        # 🔥 THE FIX: A highly strict prompt that forces topic rotation and handles "I don't know" gracefully
         prompt = f"""
         You are a hiring manager conducting a {session.interview_type} interview for a {session.job_role} role. Candidate level: {session.difficulty}.
         
-        Conversation History:
+        Conversation History (Turn {turn_count}):
         {history_text}
         Candidate's Latest Answer: "{req.user_input}"
         
-        SMART QUESTION GENERATION:
-        1. Evaluate their answer silently. If they made a mistake or lacked detail, ask a probing follow-up to test them.
-        2. If their answer was perfect, move on to a new, slightly harder question related to {session.job_role}.
-        3. Make it sound exactly like a real human speaking. Keep it under 40 words.
+        CRITICAL INTERVIEW FLOW RULES:
+        1. DYNAMIC TOPIC SHIFTING: A real interview covers many subjects. If the last 1-2 questions were about a specific tool or concept, your NEXT question MUST be about a completely different core domain. Cycle through these topics: [Projects, OOPs concepts, Databases/SQL, Data Structures & Algorithms, Networking/OS, Scenario-based problem solving].
+        2. HANDLING "DON'T KNOW": If the candidate says "I don't know", "dk", or asks to change the topic, IMMEDIATELY say "No problem, let's move on to..." and ask a brand new question from a DIFFERENT core topic. NEVER try to teach them, simplify the question, or ask about the same topic again.
+        3. AVOID DEEP DRILLING: Never ask more than one follow-up question on the exact same detail. Test for breadth of knowledge.
+        4. Make it sound exactly like a real human speaking. Keep your response under 40 words.
+        
+        Based on the rules above, generate your next interview question:
         """
 
         response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
