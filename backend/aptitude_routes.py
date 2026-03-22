@@ -32,7 +32,6 @@ def load_specific_db(filename):
 def get_balanced_sample(module_qs, count=20):
     """Fetches exactly 20% Easy, 30% Medium, 50% Hard for Final Exam"""
     easy_qs = [q for q in module_qs if q.get('difficulty') == 'easy']
-    # 🚀 THE FIX: Check for both words here too!
     med_qs = [q for q in module_qs if q.get('difficulty') in ['medium', 'moderate']]
     hard_qs = [q for q in module_qs if q.get('difficulty') == 'hard']
     
