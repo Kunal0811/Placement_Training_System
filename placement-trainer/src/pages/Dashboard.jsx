@@ -21,7 +21,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload, FiUsers } from "react-icons/fi";
+import { FiActivity, FiCode, FiCpu, FiTrendingUp, FiUser, FiCamera, FiZap, FiTarget, FiCheckCircle, FiAward, FiUpload, FiUsers, FiVideo } from "react-icons/fi";
 
 // --- CONSTANTS ---
 const APTITUDE_TOPICS = [
@@ -96,7 +96,7 @@ export default function Dashboard() {
   const [tests, setTests] = useState([]);
   const [codingAttempts, setCodingAttempts] = useState([]);
   const [interviewAttempts, setInterviewAttempts] = useState([]);
-  const [gdAttempts, setGdAttempts] = useState([]); // 🔥 NEW: GD State
+  const [gdAttempts, setGdAttempts] = useState([]); 
 
   const [loading, setLoading] = useState(true);
   const [selectedView, setSelectedView] = useState('aptitude');
@@ -113,21 +113,28 @@ export default function Dashboard() {
     
     async function fetchUser() {
       try {
-        const data = await getUserDetails(authUser.id, 1, 100, controller.signal);
+        const data = await getUserDetails(authUser.id, 1, 10000000, controller.signal);
         if(data.user) {
             setUser(data.user);
             updateUser(data.user);
         }
         setTests((data.tests || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
         setCodingAttempts((data.coding || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)));
-        setInterviewAttempts(data.interviews || []);
         
-        // 🔥 NEW: Fetch GD History
+        // 🔥 Fetch GD History
         try {
             const gdRes = await axios.get(`${API_BASE}/api/gd/user/${authUser.id}/history`, { signal: controller.signal });
             setGdAttempts(gdRes.data || []);
         } catch (gdErr) {
             console.error("No GD history found or error fetching.", gdErr);
+        }
+
+        // 🔥 Fetch AI Interview History directly from the new backend route!
+        try {
+            const intRes = await axios.get(`${API_BASE}/api/interview/history/${authUser.id}`, { signal: controller.signal });
+            setInterviewAttempts(intRes.data.history || []);
+        } catch (intErr) {
+            console.error("No interview history found.", intErr);
         }
 
       } catch (err) {
@@ -169,25 +176,10 @@ export default function Dashboard() {
     return { totalTests, avgScore, codingSolved, interviewCount: interviewAttempts.length };
   }, [tests, codingAttempts, interviewAttempts]);
 
-  const { mcqBarChartData, filteredTests } = useMemo(() => {
+  const { filteredTests } = useMemo(() => {
     const relevantTopics = selectedView === 'aptitude' ? APTITUDE_TOPICS : TECHNICAL_TOPICS;
     const filtered = tests.filter(test => test.topic && relevantTopics.includes(test.topic));
-    
-    const statsObj = {};
-    filtered.forEach(test => {
-      const mode = test.mode ? test.mode.toLowerCase() : 'moderate';
-      const topic = test.topic || 'Unknown';
-      if (!statsObj[topic]) statsObj[topic] = { easy: { s: 0, c: 0 }, moderate: { s: 0, c: 0 }, hard: { s: 0, c: 0 } };
-      if (statsObj[topic][mode]) { statsObj[topic][mode].s += (test.score || 0); statsObj[topic][mode].c += 1; }
-    });
-
-    const barData = Object.keys(statsObj).map(topic => ({
-      topic,
-      easy: statsObj[topic].easy.c > 0 ? parseFloat((statsObj[topic].easy.s / statsObj[topic].easy.c).toFixed(2)) : 0,
-      moderate: statsObj[topic].moderate.c > 0 ? parseFloat((statsObj[topic].moderate.s / statsObj[topic].moderate.c).toFixed(2)) : 0,
-      hard: statsObj[topic].hard.c > 0 ? parseFloat((statsObj[topic].hard.s / statsObj[topic].hard.c).toFixed(2)) : 0,
-    }));
-    return { mcqBarChartData: barData, filteredTests: filtered };
+    return { filteredTests: filtered };
   }, [tests, selectedView]);
 
   const codingData = useMemo(() => {
@@ -235,13 +227,13 @@ export default function Dashboard() {
     return data;
   }, [tests, graphTopic]);
 
+  // Map the new Database Schema correctly for the AreaChart
   const interviewGraphData = useMemo(() => interviewAttempts.map(item => ({
-    role: item.job_role || "General",
-    score: item.overall_score || 0,
-    date: item.created_at ? new Date(item.created_at).toLocaleDateString() : "N/A"
-  })), [interviewAttempts]);
+    role: item.role || "General",
+    score: item.score || 0,
+    date: item.timestamp || "N/A"
+  })).reverse(), [interviewAttempts]); // Reverse so oldest is on left of chart
 
-  // 🔥 NEW: Format GD data for the chart
   const gdGraphData = useMemo(() => gdAttempts.map((item, index) => ({
     topic: item.topic || `GD ${index + 1}`,
     score: item.overall_score || 0,
@@ -250,11 +242,69 @@ export default function Dashboard() {
 
   // --- RENDERERS ---
 
+  // 🔥 NEW: Beautiful Interview Cards Grid instead of a boring table!
+  const renderInterviewCards = () => {
+    if (interviewAttempts.length === 0) {
+        return (
+            <div className="bg-black/40 border border-white/10 p-10 rounded-3xl text-center shadow-xl m-4">
+                <p className="text-gray-400 text-lg">No interviews completed yet.</p>
+                <p className="text-gray-500 text-sm mt-2 mb-6">Take your first AI interview to see your performance metrics here.</p>
+                <button 
+                    onClick={() => navigate('/interview')} 
+                    className="bg-neon-purple text-white font-bold px-6 py-3 rounded-xl hover:bg-purple-600 transition-colors"
+                >
+                    Start Mock Interview
+                </button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
+            {interviewAttempts.map((interview) => (
+                <div key={interview.id} className="bg-[#1e293b] border border-gray-700 p-6 rounded-3xl shadow-xl hover:border-neon-purple/50 transition-all hover:-translate-y-1 relative overflow-hidden group">
+                    
+                    {/* Dynamic Color Bar */}
+                    <div className={`absolute top-0 left-0 w-full h-1 ${interview.score >= 75 ? 'bg-neon-green' : interview.score >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
+                    
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-white group-hover:text-neon-purple transition-colors">
+                                {interview.role || "Software Engineer"}
+                            </h3>
+                            <p className="text-xs text-gray-400 mt-1">{interview.timestamp}</p>
+                        </div>
+                        <div className={`text-3xl font-black ${interview.score >= 75 ? 'text-neon-green' : interview.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                            {interview.score}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-black/30 p-4 rounded-2xl border border-white/5">
+                            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Technical</p>
+                            <div className="flex items-end gap-1">
+                                <p className="text-xl font-bold text-white">{interview.technical_score}</p>
+                                <p className="text-gray-600 text-sm mb-0.5">/10</p>
+                            </div>
+                        </div>
+                        <div className="bg-black/30 p-4 rounded-2xl border border-white/5">
+                            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Communication</p>
+                            <div className="flex items-end gap-1">
+                                <p className="text-xl font-bold text-white">{interview.communication_score}</p>
+                                <p className="text-gray-600 text-sm mb-0.5">/10</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+  };
+
   const renderTable = () => {
     let items = [], headers = [];
     if (selectedView === 'coding') { items = codingAttempts; headers = ['Problem', 'Difficulty', 'Status', 'Date']; }
-    else if (selectedView === 'interview') { items = interviewAttempts; headers = ['Job Role', 'Type', 'Score', 'Date']; }
-    else if (selectedView === 'gd') { items = gdAttempts; headers = ['GD Topic', 'Comm. Score', 'Overall Score', 'Date']; } // 🔥 NEW
+    else if (selectedView === 'gd') { items = gdAttempts; headers = ['GD Topic', 'Comm. Score', 'Overall Score', 'Date']; } 
     else { items = filteredTests; headers = ['Topic', 'Mode', 'Score', 'Date']; }
 
     if (items.length === 0) return <div className="p-12 text-center text-gray-500 font-mono text-sm border-t border-white/5">No data logs found. Start grinding! 🚀</div>;
@@ -270,15 +320,8 @@ export default function Dashboard() {
           <tbody className="divide-y divide-white/5 text-sm text-gray-300">
             {items.slice().reverse().map((item, index) => (
               <tr key={index} className="hover:bg-white/5 transition-colors group">
-                {selectedView === 'interview' ? (
+                {selectedView === 'gd' ? (
                   <>
-                    <td className="p-4 font-bold text-blue-400 group-hover:text-blue-300 transition-colors">{item.job_role}</td>
-                    <td className="p-4 text-xs opacity-70">{item.interview_type}</td>
-                    <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 70 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/100</span></td>
-                  </>
-                ) : selectedView === 'gd' ? (
-                  <>
-                    {/* 🔥 NEW: Render GD Table Row */}
                     <td className="p-4 font-bold text-purple-400 group-hover:text-purple-300 transition-colors line-clamp-1 max-w-[200px] truncate" title={item.topic}>{item.topic}</td>
                     <td className="p-4 text-xs opacity-70">{item.communication}/10</td>
                     <td className="p-4"><span className={`px-2 py-1 rounded-md text-xs font-bold ${item.overall_score >= 35 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>{item.overall_score}/50</span></td>
@@ -474,7 +517,6 @@ export default function Dashboard() {
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                             <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
-                            {/* GD Score is out of 50 (5 metrics * 10) */}
                             <YAxis domain={[0, 50]} tick={{ fill: '#9ca3af', fontSize: 10 }} axisLine={false} tickLine={false} />
                             <Tooltip content={<CustomTooltip />} />
                             <Area type="monotone" dataKey="score" stroke="#c084fc" strokeWidth={3} fill="url(#colorGdScore)" />
@@ -551,15 +593,17 @@ export default function Dashboard() {
             </div>
         </div>
 
-        {/* 3. ACTIVITY LOG TABLE */}
+        {/* 3. ACTIVITY LOG / INTERVIEW CARDS */}
         <ScrollReveal delay={0.2} direction="up">
           <div className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden mb-12">
               <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-white/5">
-                  <FiActivity className="text-neon-blue" />
-                  <h3 className="text-lg font-bold text-white">Recent Activity Log</h3>
+                  {selectedView === 'interview' ? <FiVideo className="text-neon-purple" /> : <FiActivity className="text-neon-blue" />}
+                  <h3 className="text-lg font-bold text-white">
+                      {selectedView === 'interview' ? 'Interview History' : 'Recent Activity Log'}
+                  </h3>
               </div>
               <div className="p-2">
-                  {renderTable()}
+                  {selectedView === 'interview' ? renderInterviewCards() : renderTable()}
               </div>
           </div>
         </ScrollReveal>
