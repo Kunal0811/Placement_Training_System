@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CodeMirror from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { java } from '@codemirror/lang-java';
-import { cpp } from '@codemirror/lang-cpp';
-import { githubDark } from '@uiw/codemirror-theme-github';
+import Editor from '@monaco-editor/react'; // 🔥 NEW: Monaco Editor
 import API_BASE from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -31,7 +27,6 @@ export default function CodingPlatform() {
     const [report, setReport] = useState(null);
     const [reportPageIndex, setReportPageIndex] = useState(0);
 
-    // 🔥 SUPER FIXED: Grab from useParams, but if it fails, manually extract it from the URL window location!
     const rawLevel = level || window.location.pathname.split('/').pop() || "easy";
     const safeLevel = rawLevel.toLowerCase();
     const difficultyName = safeLevel.charAt(0).toUpperCase() + safeLevel.slice(1);
@@ -143,7 +138,7 @@ export default function CodingPlatform() {
         
         const payload = {
             user_id: Number(user.id),
-            difficulty: difficultyName, // 🔥 FIXED: Using the properly formatted string!
+            difficulty: difficultyName,
             time_taken: Number(timeElapsed),
             submissions: submissions.map(sub => ({
                 problem_title: String(sub.problem_title || "Unknown Problem"),
@@ -480,18 +475,27 @@ export default function CodingPlatform() {
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-auto bg-[#0d1117] text-base">
-                        <CodeMirror
-                            value={currentSub?.codes?.[currentSub?.language] || ""}
+                    <div className="flex-1 overflow-hidden bg-[#1e1e1e] relative">
+                        {/* 🔥 NEW: Monaco Editor Component */}
+                        <Editor
                             height="100%"
-                            theme={githubDark}
-                            extensions={[
-                                currentSub?.language === 'python' ? python() :
-                                currentSub?.language === 'java' ? java() : cpp()
-                            ]}
-                            onChange={(val) => updateCurrentSubmission('code', val)}
-                            className="h-full"
-                            style={{ fontSize: '15px' }}
+                            theme="vs-dark"
+                            language={currentSub?.language || "python"}
+                            value={currentSub?.codes?.[currentSub?.language] || ""}
+                            onChange={(val) => updateCurrentSubmission('code', val || "")}
+                            options={{
+                                fontSize: 15,
+                                minimap: { enabled: false }, // Hides the tiny side-map to save space
+                                scrollBeyondLastLine: false,
+                                wordWrap: "on",
+                                padding: { top: 16 },
+                                fontFamily: "'JetBrains Mono', 'Fira Code', monospace"
+                            }}
+                            loading={
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                    Loading Monaco Editor...
+                                </div>
+                            }
                         />
                     </div>
 
@@ -511,7 +515,7 @@ export default function CodingPlatform() {
                                 {isRunning ? (
                                     <span className="text-gray-500 animate-pulse">Executing...</span>
                                 ) : (
-                                    <pre className={localOutput.includes("Error") ? "text-red-400" : "text-green-400"}>
+                                    <pre className={localOutput.includes("Error") ? "text-red-400 whitespace-pre-wrap" : "text-green-400 whitespace-pre-wrap"}>
                                         {localOutput || "Run code to see output..."}
                                     </pre>
                                 )}
@@ -526,8 +530,6 @@ export default function CodingPlatform() {
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-                .cm-theme-light, .cm-theme-dark { height: 100%; }
-                .cm-scroller { font-family: 'JetBrains Mono', 'Fira Code', monospace !important; }
                 @media print {
                     @page { margin: 1cm; }
                     .page-break-inside-avoid { page-break-inside: avoid; }

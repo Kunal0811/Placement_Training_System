@@ -12,7 +12,7 @@ BATCH_SIZE = 30  # Number of questions to generate per API call
 SLEEP_TIME = 60  # Wait time between calls (lower if your API tier allows)
 
 TARGET_TOPICS = [
-    "Reading Comprehension"
+    "Grammer"
 ]
 
 def generate_prompt(topic: str, difficulty: str) -> str:
@@ -75,7 +75,7 @@ async def main():
     client = genai.Client(api_key=api_key)
     
     # You can adjust this array to dictate the mix of difficulties per topic loop
-    runs = ["hard"]
+    runs = ["easy"]
     
     print(f"🚀 Starting {MODULE_NAME} Miner (Batch Size: {BATCH_SIZE})...")
     while True:

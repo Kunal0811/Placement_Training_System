@@ -104,7 +104,6 @@ export default function TestPage() {
   
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // 🔥 NEW: Pagination State for the Result Report
   const [reportPageIndex, setReportPageIndex] = useState(0);
 
   useEffect(() => {
@@ -116,6 +115,7 @@ export default function TestPage() {
             // ==========================================
             const res = await axios.get(`${API_BASE}/api/tests/${testId}/start`);
             const mappedQs = res.data.questions.map(aiQ => ({
+                id: aiQ.id, // Ensure ID is mapped if available
                 question: aiQ.q,
                 options: aiQ.options,
             }));
@@ -132,10 +132,12 @@ export default function TestPage() {
             const endpoint = isTechnical ? '/api/technical/mcqs/test' : '/api/aptitude/mcqs/test';
             const count = decodedTopic === "Final Aptitude Test" ? 60 : 20;
 
+            // 🔥 Sending user_id so backend can filter out seen UUIDs!
             const res = await axios.post(`${API_BASE}${endpoint}`, {
                 topic: decodedTopic,
                 difficulty: mode,
                 count: count,
+                user_id: user?.id 
             });
 
             let processedSections = [];
@@ -167,8 +169,10 @@ export default function TestPage() {
         setLoading(false);
       }
     };
-    fetchQuestions();
-  }, [testId, decodedTopic, mode, location.pathname, navigate]);
+    if (user?.id) {
+        fetchQuestions();
+    }
+  }, [testId, decodedTopic, mode, location.pathname, navigate, user?.id]);
 
   useEffect(() => {
       if (sections.length > 0 && hasStarted && !isFinished) {
@@ -284,16 +288,41 @@ export default function TestPage() {
 
         } else {
             let calculatedScore = 0;
+            const trackingPayload = []; // 🔥 NEW: Prepare data for tracking
+            
             sections.forEach((sec, sId) => {
                 sec.qs.forEach((q, qId) => {
-                    if (userAnswers[`${sId}-${qId}`] === q.answer) calculatedScore += 1;
+                    const isCorrect = userAnswers[`${sId}-${qId}`] === q.answer;
+                    if (isCorrect) calculatedScore += 1;
+                    
+                    // 🔥 NEW: Add to tracking payload if it has a unique UUID
+                    if (q.id) {
+                        trackingPayload.push({
+                            id: q.id,
+                            is_correct: isCorrect
+                        });
+                    }
                 });
             });
             setFinalScore(calculatedScore);
 
+            // 1. Submit Standard Score
             await axios.post(`${API_BASE}/api/test/submit`, {
                 user_id: user.id, topic: decodedTopic, mode: mode, score: calculatedScore, total: totalQuestions,
             });
+            
+            // 2. 🔥 NEW: Background tracking request for Question Weakness Data
+            if (trackingPayload.length > 0) {
+                try {
+                    await axios.post(`${API_BASE}/api/aptitude/mcqs/track`, {
+                        user_id: user.id,
+                        results: trackingPayload
+                    });
+                } catch (trackErr) {
+                    console.error("Failed to track question UUIDs (non-fatal):", trackErr);
+                }
+            }
+
             await fetchStats(); 
             setIsFinished(true); 
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -324,7 +353,6 @@ export default function TestPage() {
     html2pdf().set(opt).from(element).save().then(() => setIsDownloading(false));
   };
 
-  // 🔥 NEW: Flatten sections into a single array for easier pagination
   const flatReport = useMemo(() => {
       const arr = [];
       sections.forEach((sec, sId) => {
@@ -374,7 +402,7 @@ export default function TestPage() {
     );
   }
 
-  // --- RESULT SCREEN (UPDATED: SPLIT SCREEN PAGINATION) ---
+  // --- RESULT SCREEN (SPLIT SCREEN PAGINATION) ---
   if (isFinished && !testId) {
       const accuracy = totalQuestions > 0 ? Math.round((finalScore / totalQuestions) * 100) : 0;
       const passed = accuracy >= 75;
@@ -402,7 +430,7 @@ export default function TestPage() {
              </div>
           </div>
 
-          {/* 🔥 SPLIT SCREEN MCQ REPORT */}
+          {/* SPLIT SCREEN MCQ REPORT */}
           <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col min-h-0 bg-[#1E293B] rounded-3xl border border-gray-700 shadow-2xl overflow-hidden animate-fade-in">
               
               {/* Pagination Header */}
@@ -491,7 +519,6 @@ export default function TestPage() {
                       
                       {currentReportItem.explanation ? (
                           <div className="text-gray-300 text-base leading-relaxed font-serif">
-                              {/* Using the custom ExplanationDisplay component! */}
                               <ExplanationDisplay explanation={currentReportItem.explanation} />
                           </div>
                       ) : (

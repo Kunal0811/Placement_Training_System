@@ -20,7 +20,7 @@ class LevelStatusRequest(BaseModel):
 class LevelProblemRequest(BaseModel):
     difficulty: str
     user_id: int
-    count: int = 5 # Request 5 problems at once
+    count: int = 5 
 
 class RunCodeRequest(BaseModel):
     language: str
@@ -36,7 +36,7 @@ class ProblemSubmission(BaseModel):
 class SessionEvaluationRequest(BaseModel):
     user_id: int
     difficulty: str
-    time_taken: int # in seconds
+    time_taken: int 
     submissions: List[ProblemSubmission]
 
 class TestCaseItem(BaseModel):
@@ -199,13 +199,19 @@ def get_level_problems(req: LevelProblemRequest, db_cursor: tuple = Depends(get_
 @router.post("/run-code")
 def run_code(req: RunCodeRequest):
     try:
-        # 🔥 GLUE THE CODE TOGETHER: User Code + Hidden Driver Code
-        full_execution_code = req.code + "\n" + req.driver_code
+        # 🔥 FIX 1: Safely handle null/None values if the frontend sends them
+        safe_code = req.code if req.code else ""
+        safe_driver = req.driver_code if req.driver_code else ""
+        safe_input = req.input if req.input else ""
+
+        # GLUE THE CODE TOGETHER: User Code + Hidden Driver Code
+        full_execution_code = safe_code + "\n" + safe_driver
         
         # Pass the COMBINED code to the Docker sandbox
-        output = run_in_sandbox(req.language, full_execution_code, req.input)
+        output = run_in_sandbox(req.language, full_execution_code, safe_input)
         return {"output": output}
     except Exception as e:
+        print(f"🔥 CRITICAL ERROR in /run-code: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/evaluate-session")
@@ -257,9 +263,13 @@ def evaluate_session(req: SessionEvaluationRequest, db_cursor: tuple = Depends(g
         raise HTTPException(status_code=500, detail="Failed to evaluate session.")
 
 # --- Sandbox Execution ---
+# --- Sandbox Execution ---
 def run_in_sandbox(language: str, code: str, stdin: str) -> str:
     temp_dir = f"../temp_code/{uuid.uuid4()}"
-    os.makedirs(temp_dir, exist_ok=True)
+    try:
+        os.makedirs(temp_dir, exist_ok=True)
+    except Exception as e:
+        return f"System Error: Failed to create temp directory. {e}"
 
     file_map = {
         "python": "script.py",
@@ -280,18 +290,21 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
             code = re.sub(r'public class \w+', 'public class MyClass', code, count=1)
 
     file_path = os.path.join(temp_dir, file_name)
-    with open(file_path, "w") as f:
+    # 🔥 THE FIX: Forced UTF-8 encoding so arrows and emojis don't crash Windows!
+    with open(file_path, "w", encoding="utf-8") as f:
         f.write(code)
 
     input_path = os.path.join(temp_dir, "input.txt")
-    with open(input_path, "w") as f:
+    # 🔥 THE FIX: Forced UTF-8 here as well
+    with open(input_path, "w", encoding="utf-8") as f:
         f.write(stdin)
 
-    client = docker.from_env()
     abs_temp_dir = os.path.abspath(temp_dir)
     image_name = f"placify-{language}-runner"
 
     try:
+        client = docker.from_env()
+        
         container = client.containers.run(
             image_name,
             command=f"sh -c '{command} < input.txt'",
@@ -311,6 +324,9 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
         except Exception as e:
             container.kill()
             return "Execution Timed Out (10 seconds limit)."
+            
+    except docker.errors.DockerException as de:
+        return f"Sandbox Error: Docker daemon is not running or accessible. Please open Docker Desktop and try again."
     except Exception as e:
         return str(e)
     finally:
@@ -318,17 +334,19 @@ def run_in_sandbox(language: str, code: str, stdin: str) -> str:
             shutil.rmtree(temp_dir)
         except Exception:
             pass
-
+        
 @router.post("/execute-bulk")
 def execute_bulk_code(req: BulkRunRequest):
     results = []
     
-    # 🔥 GLUE THE CODE TOGETHER: User Code + Hidden Driver Code
-    full_execution_code = req.code + "\n" + req.driver_code
+    # 🔥 Safely concatenate to prevent NoneType errors
+    safe_code = req.code if req.code else ""
+    safe_driver = req.driver_code if req.driver_code else ""
+    full_execution_code = safe_code + "\n" + safe_driver
 
     for tc in req.test_cases:
-        # Pass the COMBINED code to the Docker sandbox
-        actual_output = run_in_sandbox(req.language, full_execution_code, tc.input).strip()
+        safe_input = tc.input if tc.input else ""
+        actual_output = run_in_sandbox(req.language, full_execution_code, safe_input).strip()
         expected = tc.expected_output.strip()
         
         passed = (actual_output == expected)
