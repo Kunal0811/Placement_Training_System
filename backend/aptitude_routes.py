@@ -261,21 +261,15 @@ async def generate_aptitude_test(req: MCQRequest, db_cursor: tuple = Depends(get
         
         return final_test
 
-    # ==========================================
-    # 2. MODULE/TOPIC TEST LOGIC -> Try Local DB FIRST!
-    # ==========================================
     local_qs = get_local_topic_questions(req.topic, req.count, req.difficulty)
     if len(local_qs) == req.count:
         random.shuffle(local_qs)
         return local_qs
 
-    # ==========================================
-    # 3. FALLBACK HYBRID LOGIC -> Ask AI for missing questions
-    # ==========================================
     needed_count = req.count - len(local_qs)
     print(f"⚠️ Found {len(local_qs)}/{req.count} local Qs. Asking AI for {needed_count} more...")
     
-    api_key = os.getenv("GEMINI_API_KEY_APTITUDE") or os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY_APTITUDE")
     ai_qs = await generate_single_topic(req.topic, needed_count, req.difficulty, api_key)
     
     final_qs = local_qs + ai_qs
@@ -286,9 +280,6 @@ async def generate_aptitude_test(req: MCQRequest, db_cursor: tuple = Depends(get
     return final_qs
 
 
-# ==========================================
-# 🔥 4. TRACK USER RESPONSES ROUTE
-# ==========================================
 @router.post("/mcqs/track")
 def track_user_questions(req: TrackQuestionsReq, db_cursor: tuple = Depends(get_cursor)):
     cursor, db = db_cursor

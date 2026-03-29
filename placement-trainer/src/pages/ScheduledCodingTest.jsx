@@ -3,11 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE from '../api';
 import { useAuth } from '../context/AuthContext';
-import CodeMirror from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { java } from '@codemirror/lang-java';
-import { cpp } from '@codemirror/lang-cpp';
-import { githubDark } from '@uiw/codemirror-theme-github';
+import Editor from '@monaco-editor/react'; // 🔥 NEW: Monaco Editor
 import { FiClock, FiCheckCircle, FiPlay, FiList, FiChevronRight, FiArrowLeft, FiCode } from 'react-icons/fi';
 
 export default function ScheduledCodingTest() {
@@ -39,7 +35,7 @@ export default function ScheduledCodingTest() {
                 setTimeLeft(res.data.duration * 60);
                 
                 // Initialize code state for all 3 languages 
-                // 🔥 Initialize with clean LeetCode-style starter code!
+                // Initialize with clean LeetCode-style starter code
                 const initialSubs = res.data.questions.map((p, idx) => ({
                     problem_title: p.title || `Problem ${idx + 1}`,
                     language: 'python',
@@ -60,7 +56,7 @@ export default function ScheduledCodingTest() {
         fetchTest();
     }, [testId, navigate]);
 
-    // Timer Logic (Without the security/tab tracking)
+    // Timer Logic
     useEffect(() => {
         if (!hasStarted || submitting) return;
         
@@ -111,14 +107,14 @@ export default function ScheduledCodingTest() {
         setRunOutput("Running test cases against the server...");
 
         try {
-            // 🔥 Extract the hidden driver code for the current language
+            // Extract the hidden driver code for the current language
             const hiddenDriverCode = question.driver_code?.[currentSub.language] || "";
 
             const res = await axios.post(`${API_BASE}/api/coding/execute-bulk`, {
                 language: currentSub.language,
                 code: activeCode,
                 test_cases: question.test_cases,
-                driver_code: hiddenDriverCode // Send it to the backend secretly!
+                driver_code: hiddenDriverCode 
             });
             
             let outputText = "";
@@ -140,7 +136,7 @@ export default function ScheduledCodingTest() {
         if (!isForced && !window.confirm("Are you sure you want to submit your final coding assessment?")) return;
         
         setSubmitting(true);
-        // Calculate exact time taken in seconds!
+        // Calculate exact time taken in seconds
         const timeTaken = (testData.duration * 60) - timeLeft;
 
         const finalAnswers = {};
@@ -156,7 +152,7 @@ export default function ScheduledCodingTest() {
                 user_id: user.id,
                 user_name: user.fname,
                 answers: finalAnswers,
-                time_taken: timeTaken // Send time to backend
+                time_taken: timeTaken
             });
             alert("Coding Assessment Evaluated & Submitted Successfully!");
             navigate('/tests');
@@ -293,18 +289,26 @@ export default function ScheduledCodingTest() {
                     </div>
 
                     {/* Editor */}
-                    <div className="flex-1 overflow-auto bg-[#0d1117] text-base">
-                        <CodeMirror
-                            value={currentSub?.codes?.[currentSub?.language] || ""}
+                    <div className="flex-1 overflow-hidden bg-[#1e1e1e] relative">
+                        <Editor
                             height="100%"
-                            theme={githubDark}
-                            extensions={[
-                                currentSub?.language === 'python' ? python() :
-                                currentSub?.language === 'java' ? java() : cpp()
-                            ]}
-                            onChange={(val) => updateCurrentSubmission('code', val)}
-                            className="h-full"
-                            style={{ fontSize: '15px' }}
+                            theme="vs-dark"
+                            language={currentSub?.language || "python"}
+                            value={currentSub?.codes?.[currentSub?.language] || ""}
+                            onChange={(val) => updateCurrentSubmission('code', val || "")}
+                            options={{
+                                fontSize: 15,
+                                minimap: { enabled: false }, 
+                                scrollBeyondLastLine: false,
+                                wordWrap: "on",
+                                padding: { top: 16 },
+                                fontFamily: "'JetBrains Mono', 'Fira Code', monospace"
+                            }}
+                            loading={
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                    Loading Monaco Editor...
+                                </div>
+                            }
                         />
                     </div>
 
@@ -331,8 +335,6 @@ export default function ScheduledCodingTest() {
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-                .cm-theme-light, .cm-theme-dark { height: 100%; }
-                .cm-scroller { font-family: 'JetBrains Mono', 'Fira Code', monospace !important; }
             `}</style>
         </div>
     );

@@ -74,6 +74,21 @@ def delete_test(test_id: int, db_cursor: tuple = Depends(get_cursor)):
     db.commit()
     return {"message": "Test deleted successfully"}
 
+# --- 🔥 NEW: Get ALL Users for the Admin Dashboard ---
+@router.get("/users")
+def get_all_users(db_cursor: tuple = Depends(get_cursor)):
+    cursor, db = db_cursor
+    try:
+        cursor.execute("""
+            SELECT id, fname, lname, email, created_at 
+            FROM users 
+            ORDER BY created_at DESC
+        """)
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching users: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch users list")
+
 # --- HELPER: Async chunk fetching with BULLETPROOF JSON Rules ---
 async def fetch_question_chunk_async(client, category: str, diff: str, count: int):
     prompt = f"""
@@ -109,8 +124,6 @@ async def fetch_question_chunk_async(client, category: str, diff: str, count: in
         try:
             response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
             
-            # 🔥 FIX: Find the JSON array brackets FIRST so we don't accidentally delete 
-            # the markdown backticks (```c) that the AI puts inside the code snippets!
             text = response.text
             start_idx, end_idx = text.find('['), text.rfind(']')
             
@@ -119,7 +132,6 @@ async def fetch_question_chunk_async(client, category: str, diff: str, count: in
             else:
                 cleaned = text.replace("```json", "").replace("```", "").strip()
                 
-            # Extra safety cleanup for random control characters
             cleaned = cleaned.replace('\r', '').replace('\t', ' ')
             
             data = json.loads(cleaned)
@@ -142,8 +154,11 @@ def delete_user(user_id: int, db_cursor: tuple = Depends(get_cursor)):
         cursor.execute("DELETE FROM gd_participants WHERE user_id = %s", (user_id,))
         cursor.execute("DELETE FROM gd_evaluations WHERE user_id = %s", (user_id,))
         
-        cursor.execute("DELETE FROM interview_attempts WHERE id IN (SELECT id FROM interview_sessions WHERE user_id = %s)", (user_id,))
-        cursor.execute("DELETE FROM interview_sessions WHERE user_id = %s", (user_id,))
+        # 🔥 FIX: Safely delete from the NEW interview_attempts table
+        try:
+            cursor.execute("DELETE FROM interview_attempts WHERE user_id = %s", (user_id,))
+        except Exception:
+            pass # Table might not exist yet
         
         cursor.execute("SET FOREIGN_KEY_CHECKS=0")
         cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
@@ -272,8 +287,6 @@ async def generate_coding_test_background(test_id: int, req: ScheduleTestReq):
             print(f"⏳ Generating Coding Questions (Attempt {attempt+1})...")
             response = await client.aio.models.generate_content(model="gemini-2.5-flash", contents=prompt)
             
-            # 🔥 FIX: Find the JSON array brackets FIRST so we don't accidentally delete 
-            # the markdown backticks (```c) that the AI puts inside the code snippets!
             text = response.text
             start_idx, end_idx = text.find('['), text.rfind(']')
             
@@ -282,9 +295,7 @@ async def generate_coding_test_background(test_id: int, req: ScheduleTestReq):
             else:
                 cleaned = text.replace("```json", "").replace("```", "").strip()
                 
-            # Clean up hidden control characters that break JSON
             cleaned = cleaned.replace('\r', '').replace('\t', ' ')
-            
             all_questions = json.loads(cleaned)
             break
         except Exception as e:
@@ -388,16 +399,23 @@ def get_student_profile(user_id: int, db_cursor: tuple = Depends(get_cursor)):
             coding_stats[diff] = row['solved']
             coding_stats['total'] += row['solved']
 
-        # 4. Soft Skills & Gamification
-        cursor.execute("SELECT COUNT(*) as count, AVG(overall_score) as avg_score FROM interview_sessions WHERE user_id = %s", (user_id,))
-        int_data = cursor.fetchone()
-        cursor.execute("SELECT COUNT(*) as count FROM gd_participants WHERE user_id = %s", (user_id,))
-        gd_data = cursor.fetchone()
+        # 4. Soft Skills & Gamification (🔥 FIXED TO USE NEW INTERVIEW TABLE)
+        try:
+            cursor.execute("SELECT COUNT(*) as count, AVG(score) as avg_score FROM interview_attempts WHERE user_id = %s", (user_id,))
+            int_data = cursor.fetchone()
+        except Exception:
+            int_data = {'count': 0, 'avg_score': 0}
+            
+        try:
+            cursor.execute("SELECT COUNT(*) as count FROM gd_participants WHERE user_id = %s", (user_id,))
+            gd_data = cursor.fetchone()
+        except Exception:
+            gd_data = {'count': 0}
 
         soft_skills = {
-            "interviews_taken": int_data['count'],
-            "avg_interview_score": round(int_data['avg_score'] or 0, 1),
-            "gds_attended": gd_data['count']
+            "interviews_taken": int_data['count'] if int_data and int_data['count'] else 0,
+            "avg_interview_score": round(int_data['avg_score'] or 0, 1) if int_data else 0,
+            "gds_attended": gd_data['count'] if gd_data and gd_data['count'] else 0
         }
 
         # 5. Calculate Health Score
