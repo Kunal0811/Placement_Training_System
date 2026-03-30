@@ -476,7 +476,6 @@ export default function CodingPlatform() {
                     </div>
 
                     <div className="flex-1 overflow-hidden bg-[#1e1e1e] relative">
-                        {/* 🔥 NEW: Monaco Editor Component */}
                         <Editor
                             height="100%"
                             theme="vs-dark"

@@ -24,9 +24,9 @@ const MODES = [
     description: "Intermediate challenges. Test your knowledge!",
     icon: "🔥",
     previousMode: "Easy",
-    buttonClass: "bg-neon-orange hover:bg-orange-600 text-black",
-    borderClass: "border-neon-orange",
-    progressClass: "from-neon-orange/70 to-neon-orange",
+    buttonClass: "bg-neon-yellow hover:bg-yellow-600 text-yellow",
+    borderClass: "border-neon-yellow",
+    progressClass: "from-neon-yellow/70 to-neon-yellow",
   },
   {
     id: "hard",

@@ -63,41 +63,31 @@ export default function GDRoom() {
 
     // 1. Initialize WebRTC (PeerJS) & Camera/Mic
     useEffect(() => {
-        // Create a unique Peer ID for this user in this session
         const myPeerId = `${sessionId}-${user.id}-${Math.floor(Math.random() * 1000)}`;
         const peer = new Peer(myPeerId);
         peerInstance.current = peer;
-
-        // Get Video and Audio from the laptop
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((stream) => {
-                // Mute mic initially (until live phase)
                 stream.getAudioTracks()[0].enabled = false; 
                 setLocalStream(stream);
-
-                // Answer incoming WebRTC calls from other laptops
                 peer.on('call', (call) => {
-                    call.answer(stream); // send our stream
+                    call.answer(stream); 
                     call.on('stream', (userVideoStream) => {
                         addRemotePeer(call.peer, userVideoStream);
                     });
                 });
-
-                // Connect to FastAPI WebSocket for text/AI syncing
                 setupWebSocket(myPeerId, stream, peer);
             })
             .catch(err => {
                 console.error("Camera/Mic access denied:", err);
                 alert("Please allow Camera and Microphone access to join the WebRTC room.");
             });
-
         return () => {
             if (ws.current) ws.current.close();
             if (peerInstance.current) peerInstance.current.destroy();
             if (recognitionRef.current) recognitionRef.current.stop();
             if (localStream) localStream.getTracks().forEach(track => track.stop());
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId, user.id]);
 
     const addRemotePeer = (peerId, stream) => {

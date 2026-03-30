@@ -121,7 +121,7 @@ export default function CNotes() {
         </p>
         <Link
           to={`/technical/modes/C Programming`}
-          className="inline-block bg-neon-pink text-black font-bold py-3 px-8 rounded-lg hover:scale-105 transition-transform animate-glow"
+          className="inline-block bg-neon-green text-black font-bold py-3 px-8 rounded-lg hover:scale-105 transition-transform animate-glow"
         >
           🚀 Start Test
         </Link>

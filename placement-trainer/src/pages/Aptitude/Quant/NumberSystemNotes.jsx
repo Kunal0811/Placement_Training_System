@@ -21,7 +21,7 @@ export default function NumberSystemNotes() {
           </div>
           <button 
             onClick={() => navigate('/aptitude/modes/Number System')}
-            className="px-6 py-2 bg-neon-pink text-white font-black rounded-xl hover:scale-105 transition-transform uppercase tracking-widest shadow-[0_0_20px_rgba(244,114,182,0.4)]"
+            className="px-6 py-2 bg-neon-yellow text-white font-black rounded-xl hover:scale-105 transition-transform uppercase tracking-widest shadow-[0_0_20px_rgba(244,114,182,0.4)]"
           >
             Take Test
           </button>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import API_BASE from '../api';
-import { FiMic, FiSquare, FiUser, FiCpu, FiCheckCircle, FiAlertCircle, FiSettings, FiArrowRight, FiFileText, FiVideo, FiVideoOff } from 'react-icons/fi';
+import { FiMic, FiSquare, FiUser, FiCpu, FiCheckCircle, FiAlertCircle, FiSettings, FiArrowRight, FiFileText, FiVideo, FiVideoOff, FiActivity } from 'react-icons/fi';
 
 export default function Interview() {
     const { user } = useAuth();
@@ -50,7 +50,7 @@ export default function Interview() {
                         const text = event.results[i][0].transcript;
                         finalTranscript += text + ' ';
                         
-                        // 🔥 LIVE NLP: Detect Filler Words instantly
+                        // LIVE NLP: Detect Filler Words instantly
                         const fillers = (text.match(/\b(um|uh|like|you know|basically|literally)\b/gi) || []).length;
                         if (fillers > 0) setFillerCount(prev => prev + fillers);
                     }
@@ -88,14 +88,13 @@ export default function Interview() {
         setCameraActive(false);
     };
 
-    // Activate camera when interview phase starts
     useEffect(() => {
         if (phase === 'interviewing') {
             startCamera();
         } else {
             stopCamera();
         }
-        return () => stopCamera(); // Cleanup on unmount
+        return () => stopCamera(); 
     }, [phase]);
 
     // --- 3. AI TEXT TO SPEECH ---
@@ -158,7 +157,7 @@ export default function Interview() {
         const newAnswers = [...answers, currentAnswer];
         setAnswers(newAnswers);
         setCurrentAnswer("");
-        setFillerCount(0); // Reset filler count for next question
+        setFillerCount(0); 
 
         if (currentIndex < questions.length - 1) {
             const nextIdx = currentIndex + 1;
@@ -177,7 +176,7 @@ export default function Interview() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        user_id: user.id,  // 🔥 ADD THIS LINE!
+                        user_id: user.id, 
                         role: role, 
                         qa_pairs: qaPairs 
                     })
@@ -194,47 +193,54 @@ export default function Interview() {
         }
     };
 
-
     // ==========================================
     // RENDER LOGIC
     // ==========================================
 
     if (phase === 'setup') {
         return (
-            <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-6 font-sans">
-                <div className="max-w-md w-full bg-black/40 border border-white/10 p-8 rounded-3xl shadow-2xl backdrop-blur-xl animate-fade-in-up">
-                    <FiSettings className="text-5xl text-neon-blue mb-6" />
-                    <h1 className="text-3xl font-display font-bold mb-2">AI Video Interview</h1>
-                    <p className="text-gray-400 mb-8">Requires Camera & Microphone access for full NLP analysis.</p>
+            <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-6 font-sans relative overflow-hidden">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[128px] pointer-events-none"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[128px] pointer-events-none"></div>
+
+                <div className="max-w-md w-full bg-white/5 border border-white/10 p-10 rounded-[2rem] shadow-2xl backdrop-blur-2xl relative z-10">
+                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(34,211,238,0.4)]">
+                        <FiSettings className="text-3xl text-white" />
+                    </div>
+                    <h1 className="text-3xl font-display font-black mb-2 tracking-tight">System Config</h1>
+                    <p className="text-gray-400 mb-8 text-sm">Initialize AI interview parameters and grant hardware access for NLP analysis.</p>
 
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Target Role</label>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Target Role</label>
                             <input 
                                 type="text" 
                                 value={role} 
                                 onChange={e => setRole(e.target.value)}
-                                className="w-full bg-[#1e293b] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition-colors"
+                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-gray-600 shadow-inner"
                                 placeholder="e.g. Full Stack Developer"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Number of Questions</label>
-                            <select 
-                                value={questionCount} 
-                                onChange={e => setQuestionCount(e.target.value)}
-                                className="w-full bg-[#1e293b] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neon-blue cursor-pointer"
-                            >
-                                <option value="5">5 Questions (Quick Practice)</option>
-                                <option value="10">10 Questions (Standard)</option>
-                                <option value="15">15 Questions (Deep Dive)</option>
-                            </select>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Session Length</label>
+                            <div className="relative">
+                                <select 
+                                    value={questionCount} 
+                                    onChange={e => setQuestionCount(e.target.value)}
+                                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 cursor-pointer appearance-none shadow-inner"
+                                >
+                                    <option value="5">5 Questions (Quick Practice)</option>
+                                    <option value="10">10 Questions (Standard)</option>
+                                    <option value="15">15 Questions (Deep Dive)</option>
+                                </select>
+                                <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-gray-400">▼</div>
+                            </div>
                         </div>
                         <button 
                             onClick={handleStartInterview}
-                            className="w-full bg-neon-blue text-black font-bold text-lg py-4 rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(45,212,191,0.3)] mt-4 flex items-center justify-center gap-2"
+                            className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-lg py-4 rounded-2xl hover:scale-[1.02] transition-all shadow-[0_0_30px_rgba(34,211,238,0.3)] mt-4 flex items-center justify-center gap-3"
                         >
-                            <FiVideo /> Enter Interview Room
+                            <FiVideo className="text-xl" /> Initialize Interview
                         </button>
                     </div>
                 </div>
@@ -242,204 +248,292 @@ export default function Interview() {
         );
     }
 
-    if (phase === 'loading') {
+    if (phase === 'loading' || phase === 'evaluating') {
+        const isEval = phase === 'evaluating';
         return (
-            <div className="min-h-screen bg-[#0F172A] flex flex-col items-center justify-center text-white">
-                <FiCpu className="text-6xl text-neon-blue animate-pulse mb-6" />
-                <h2 className="text-2xl font-bold font-display">Generating Interview Parameters...</h2>
-                <p className="text-gray-400 mt-2">Preparing {questionCount} questions for {role}</p>
-            </div>
-        );
-    }
-
-    if (phase === 'evaluating') {
-        return (
-            <div className="min-h-screen bg-[#0F172A] flex flex-col items-center justify-center text-white">
-                <FiFileText className="text-6xl text-neon-purple animate-bounce mb-6" />
-                <h2 className="text-3xl font-bold font-display">Analyzing Your Performance</h2>
-                <p className="text-gray-400 mt-2">Running deep NLP analysis on your responses...</p>
+            <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center text-white relative overflow-hidden">
+                <div className={`absolute w-[500px] h-[500px] rounded-full blur-[150px] opacity-30 ${isEval ? 'bg-fuchsia-600' : 'bg-cyan-600'}`}></div>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                    <div className="relative w-32 h-32 flex items-center justify-center mb-8">
+                        <div className={`absolute inset-0 rounded-full border-t-2 border-l-2 animate-spin ${isEval ? 'border-fuchsia-400' : 'border-cyan-400'}`}></div>
+                        <div className={`absolute inset-4 rounded-full border-b-2 border-r-2 animate-[spin_2s_linear_reverse] ${isEval ? 'border-purple-500' : 'border-blue-500'}`}></div>
+                        {isEval ? <FiFileText className="text-4xl text-fuchsia-400" /> : <FiCpu className="text-4xl text-cyan-400" />}
+                    </div>
+                    
+                    <h2 className="text-3xl font-black font-display tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+                        {isEval ? "Analyzing Performance" : "Compiling Simulation"}
+                    </h2>
+                    <p className="text-gray-400 mt-3 tracking-wide">
+                        {isEval ? "Running deep NLP analysis on transcript..." : `Synthesizing ${questionCount} tailored scenarios for ${role}...`}
+                    </p>
+                </div>
             </div>
         );
     }
 
     if (phase === 'interviewing') {
         return (
-            <div className="h-screen bg-[#0F172A] text-white flex flex-col font-sans overflow-hidden">
-                <header className="px-6 py-4 border-b border-white/10 bg-black/50 flex justify-between items-center shrink-0">
-                    <div>
-                        <h2 className="text-xl font-bold text-neon-blue">{role} Interview</h2>
-                        <p className="text-sm text-gray-400">Question {currentIndex + 1} of {questions.length}</p>
-                    </div>
+            <div className="h-screen bg-[#050505] text-white flex flex-col font-sans overflow-hidden relative">
+                {/* Subtle Background Mesh */}
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50 z-0 pointer-events-none"></div>
+
+                {/* Header */}
+                <header className="px-6 py-5 border-b border-white/5 bg-black/40 backdrop-blur-md flex justify-between items-center shrink-0 z-10 h-20">
                     <div className="flex items-center gap-4">
-                        <div className="flex gap-1 mr-4">
+                        <div className="w-10 h-10 bg-cyan-500/20 border border-cyan-500/50 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                            <FiActivity className="text-cyan-400" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-white tracking-wide">{role} Simulation</h2>
+                            <p className="text-xs text-cyan-400 uppercase tracking-widest font-bold">Question {currentIndex + 1} / {questions.length}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <div className="flex gap-2 hidden md:flex">
                             {questions.map((_, i) => (
-                                <div key={i} className={`h-2 w-8 rounded-full ${i < currentIndex ? 'bg-neon-green' : i === currentIndex ? 'bg-neon-blue animate-pulse' : 'bg-gray-700'}`}></div>
+                                <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${i < currentIndex ? 'w-8 bg-cyan-500' : i === currentIndex ? 'w-12 bg-white shadow-[0_0_10px_white]' : 'w-4 bg-gray-800'}`}></div>
                             ))}
                         </div>
-                        {cameraActive ? <FiVideo className="text-green-400 text-xl" /> : <FiVideoOff className="text-red-400 text-xl" />}
+                        <div className={`px-4 py-1.5 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-2 ${cameraActive ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+                            {cameraActive ? <FiVideo /> : <FiVideoOff />} {cameraActive ? 'Live' : 'No Feed'}
+                        </div>
                     </div>
                 </header>
 
-                <div className="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 overflow-hidden">
+                <div className="flex-1 w-full p-4 md:p-6 flex flex-col lg:flex-row gap-6 overflow-hidden z-10 min-h-0">
                     
-                    {/* LEFT SIDE: AI INTERVIEWER & VIDEO FEED */}
-                    <div className="w-full lg:w-1/3 flex flex-col gap-6 shrink-0">
-                        {/* User Camera Feed */}
-                        <div className="bg-black/60 border border-white/10 rounded-3xl overflow-hidden relative shadow-2xl h-64 md:h-80 w-full flex items-center justify-center">
+                    {/* LEFT SIDE: AI & VIDEO HUD */}
+                    {/* 🔥 FIX: Added 'overflow-y-auto' so the left side scrolls instead of squishing elements */}
+                    <div className="w-full lg:w-[35%] flex flex-col gap-6 h-full overflow-y-auto custom-scrollbar pr-2 pb-4">
+                        
+                        {/* Video Feed HUD */}
+                        {/* 🔥 FIX: Changed to 'aspect-[4/3]' so video scales properly based on width */}
+                        <div className="bg-black/60 border border-white/10 rounded-[2rem] overflow-hidden relative shadow-2xl w-full aspect-[4/3] shrink-0 group">
                             <video 
                                 ref={videoRef} 
                                 autoPlay 
                                 playsInline 
                                 muted 
-                                className="object-cover w-full h-full transform scale-x-[-1]" 
+                                className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1] opacity-90 transition-opacity group-hover:opacity-100" 
                             />
-                            {!cameraActive && <p className="text-gray-500 absolute font-bold uppercase tracking-widest">Camera Off</p>}
-                            <div className="absolute bottom-4 left-4 bg-black/60 px-3 py-1 rounded-lg backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                <span className={`w-2 h-2 rounded-full ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-gray-500'}`}></span>
-                                Candidate
+                            
+                            <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] pointer-events-none"></div>
+                            
+                            <div className="absolute top-5 left-5 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                <span className={`w-2 h-2 rounded-full ${isRecording ? 'bg-red-500 shadow-[0_0_10px_red] animate-pulse' : 'bg-gray-500'}`}></span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">REC</span>
                             </div>
+
+                            <div className="absolute bottom-5 left-5 flex items-center gap-3">
+                                <div className="w-8 h-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
+                                    <FiUser className="text-white text-xs" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-white shadow-black drop-shadow-md">{user?.fname || "Candidate"}</p>
+                                    <p className="text-[10px] text-cyan-400 uppercase tracking-widest">Subject</p>
+                                </div>
+                            </div>
+                            
+                            <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-white/20"></div>
+                            <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-white/20"></div>
+                            <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-white/20"></div>
+                            <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-white/20"></div>
                         </div>
 
-                        {/* Live NLP Stats Panel */}
-                        <div className="bg-[#1e293b] border border-gray-700 p-6 rounded-3xl flex-1 flex flex-col justify-center items-center text-center">
-                            <FiCpu className={`text-5xl mb-4 ${isAiSpeaking ? 'text-neon-blue animate-pulse' : 'text-gray-600'}`} />
-                            <h3 className="text-xl font-bold text-white mb-1">AI Hiring Manager</h3>
-                            <p className="text-sm text-gray-400 mb-6">{isAiSpeaking ? 'Speaking...' : 'Listening...'}</p>
+                        {/* AI State Panel */}
+                        {/* 🔥 FIX: 'min-h-[300px] shrink-0' guarantees this box never gets squished */}
+                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] flex flex-col relative shrink-0 min-h-[300px]">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
                             
-                            <div className="w-full bg-black/30 p-4 rounded-2xl border border-white/5">
-                                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-2">Live NLP Feed</p>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-300">Filler Words Detected:</span>
-                                    <span className={`font-bold ${fillerCount > 3 ? 'text-red-400' : 'text-green-400'}`}>{fillerCount}</span>
+                            <div className="flex-1 flex flex-col justify-center items-center text-center relative z-10 py-6">
+                                <div className="relative mb-6">
+                                    {isAiSpeaking && <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>}
+                                    <div className={`w-20 h-20 rounded-full border border-white/10 flex items-center justify-center bg-black/40 backdrop-blur-md relative z-10 transition-all duration-300 ${isAiSpeaking ? 'shadow-[0_0_30px_rgba(34,211,238,0.3)] border-cyan-500/50 scale-105' : ''}`}>
+                                        <FiCpu className={`text-3xl ${isAiSpeaking ? 'text-cyan-400' : 'text-gray-500'}`} />
+                                    </div>
+                                </div>
+                                <h3 className="text-xl font-bold text-white tracking-tight">Placify AI</h3>
+                                <p className={`text-xs uppercase tracking-widest font-bold mt-2 ${isAiSpeaking ? 'text-cyan-400' : 'text-gray-500'}`}>
+                                    {isAiSpeaking ? 'Broadcasting...' : 'Awaiting Input...'}
+                                </p>
+                            </div>
+                            
+                            <div className="w-full bg-black/40 p-4 rounded-2xl border border-white/5 relative z-10 mt-auto">
+                                <div className="flex justify-between items-center mb-2">
+                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">NLP Buffer</p>
+                                    <div className="flex gap-1">
+                                        <div className="w-1 h-3 bg-cyan-500/50 rounded-full animate-pulse delay-75"></div>
+                                        <div className="w-1 h-3 bg-cyan-500/50 rounded-full animate-pulse delay-150"></div>
+                                        <div className="w-1 h-3 bg-cyan-500/50 rounded-full animate-pulse delay-300"></div>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-end">
+                                    <span className="text-xs text-gray-400">Filler Words</span>
+                                    <span className={`text-2xl font-black ${fillerCount > 3 ? 'text-red-400' : fillerCount > 0 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                        {fillerCount}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT SIDE: Q&A AREA */}
-                    <div className="w-full lg:w-2/3 flex flex-col gap-6 h-full">
+                    {/* 🔥 FIX: Added 'overflow-y-auto' to right side so textarea doesn't vanish off screen */}
+                    <div className="w-full lg:w-[65%] flex flex-col gap-6 h-full overflow-y-auto custom-scrollbar pr-2 pb-4">
                         
                         {/* Question Card */}
-                        <div className="bg-black/40 border border-white/10 p-6 md:p-8 rounded-3xl shadow-xl shrink-0 relative overflow-hidden">
-                            {isAiSpeaking && <div className="absolute top-0 left-0 w-full h-1 bg-neon-blue animate-pulse"></div>}
-                            <h3 className="text-xl md:text-2xl font-medium leading-relaxed">{questions[currentIndex]}</h3>
-                            <button onClick={() => speakText(questions[currentIndex])} className="mt-4 text-xs font-bold text-gray-500 hover:text-neon-blue uppercase tracking-widest transition-colors">
-                                ↺ Repeat Question
+                        {/* 🔥 FIX: 'shrink-0 min-h-[160px]' prevents it from shrinking */}
+                        <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-2xl shrink-0 min-h-[160px] flex flex-col justify-center relative">
+                            {isAiSpeaking && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-[pulse_2s_ease-in-out_infinite]"></div>}
+                            <p className="text-xs text-cyan-400 uppercase tracking-widest font-bold mb-3">Current Objective</p>
+                            <h3 className="text-xl md:text-2xl font-display font-medium leading-relaxed text-white drop-shadow-md">
+                                "{questions[currentIndex]}"
+                            </h3>
+                            <button onClick={() => speakText(questions[currentIndex])} className="mt-4 flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors w-fit">
+                                <FiActivity /> Replay Audio
                             </button>
                         </div>
 
                         {/* Live Transcription Box */}
-                        <div className="bg-[#1e293b] border border-gray-700 p-6 md:p-8 rounded-3xl shadow-xl flex-1 flex flex-col min-h-0 relative">
-                            <div className="flex items-center justify-between mb-4 shrink-0">
-                                <span className="font-bold text-gray-300 uppercase tracking-widest text-sm flex items-center gap-2">
-                                    <FiMic className={isRecording ? 'text-red-400 animate-pulse' : 'text-gray-500'} /> Live Transcription
-                                </span>
+                        {/* 🔥 FIX: 'min-h-[350px] flex-1' ensures text area is always perfectly usable */}
+                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-xl flex flex-col shrink-0 min-h-[350px] flex-1">
+                            <div className="flex flex-wrap items-center justify-between mb-6 shrink-0 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-3 h-3 rounded-full ${isRecording ? 'bg-red-500 shadow-[0_0_10px_red] animate-pulse' : 'bg-gray-600'}`}></div>
+                                    <span className="font-bold text-gray-300 uppercase tracking-widest text-xs">Live Transcript</span>
+                                </div>
                                 
                                 <button 
                                     onClick={toggleRecording}
-                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg ${isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-neon-blue text-black hover:scale-105 shadow-[0_0_15px_rgba(45,212,191,0.3)]'}`}
+                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${isRecording ? 'bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white' : 'bg-white text-black hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]'}`}
                                 >
-                                    {isRecording ? <><FiSquare /> Stop Recording</> : <><FiMic /> Start Speaking</>}
+                                    {isRecording ? <><FiSquare /> Stop</> : <><FiMic /> Record</>}
                                 </button>
                             </div>
 
                             <textarea
                                 value={currentAnswer}
                                 onChange={(e) => setCurrentAnswer(e.target.value)}
-                                placeholder="Your answer will appear here as you speak. You can also type to edit it manually..."
-                                className="w-full flex-1 bg-black/20 text-white text-lg md:text-xl leading-relaxed resize-none focus:outline-none p-6 rounded-2xl border border-white/5 placeholder:text-gray-600 custom-scrollbar"
+                                placeholder="Awaiting voice input... Begin speaking to populate transcript."
+                                className="w-full flex-1 bg-black/40 text-gray-200 text-lg md:text-xl leading-relaxed resize-none focus:outline-none p-6 rounded-2xl border border-white/5 placeholder:text-gray-700 custom-scrollbar shadow-inner min-h-[150px]"
                             ></textarea>
                             
-                            <div className="mt-4 flex justify-end shrink-0">
+                            <div className="mt-6 flex justify-end shrink-0">
                                 <button 
                                     onClick={handleNextQuestion}
-                                    className="flex items-center gap-2 bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest transition-transform hover:scale-105"
+                                    className="flex items-center gap-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-transform hover:scale-105 shadow-[0_0_20px_rgba(34,211,238,0.2)]"
                                 >
-                                    {currentIndex === questions.length - 1 ? "Submit Interview" : "Next Question"} <FiArrowRight />
+                                    {currentIndex === questions.length - 1 ? "Finalize Output" : "Proceed"} <FiArrowRight className="text-lg" />
                                 </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
+                
+                {/* Embedded scrollbar styles to ensure the custom scrollbars look clean */}
+                <style>{`
+                    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+                    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+                `}</style>
             </div>
         );
     }
 
     if (phase === 'report' && report) {
         return (
-            <div className="min-h-screen bg-[#0F172A] text-white p-4 md:p-8 font-sans">
-                <div className="max-w-6xl mx-auto">
+            <div className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12 font-sans relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-violet-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+                
+                <div className="max-w-7xl mx-auto relative z-10">
                     
-                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/10">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 border-b border-white/10 pb-8">
                         <div>
-                            <h1 className="text-4xl font-display font-bold mb-2">Final Evaluation Report</h1>
-                            <p className="text-gray-400">Role: <span className="text-neon-blue font-bold">{role}</span></p>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg text-[10px] font-bold uppercase tracking-widest">Session Complete</div>
+                                <span className="text-sm font-mono text-gray-500">{new Date().toLocaleDateString()}</span>
+                            </div>
+                            <h1 className="text-5xl font-display font-black tracking-tight mb-2">Evaluation Report</h1>
+                            <p className="text-xl text-gray-400">Profile: <span className="text-cyan-400 font-bold">{role}</span></p>
                         </div>
-                        <button onClick={() => navigate('/dashboard')} className="px-6 py-2 border border-gray-600 hover:bg-gray-800 rounded-xl font-bold transition-colors">
-                            Exit to Dashboard
+                        <button onClick={() => navigate('/dashboard')} className="mt-6 md:mt-0 px-8 py-3 bg-white/5 border border-white/10 hover:bg-white/10 backdrop-blur-md rounded-xl font-bold uppercase tracking-widest text-xs transition-colors">
+                            Return to Hub
                         </button>
                     </div>
 
-                    {/* OVERALL METRICS GRID */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                        <div className="col-span-2 md:col-span-1 bg-black/40 border border-white/10 p-6 rounded-3xl text-center">
-                            <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-2">Total Score</p>
-                            <p className={`text-5xl font-black ${report.overall.score >= 75 ? 'text-neon-green' : report.overall.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{report.overall.score}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
+                        <div className="col-span-2 md:col-span-1 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 p-8 rounded-[2rem] text-center shadow-2xl relative overflow-hidden group">
+                            <div className={`absolute top-0 left-0 w-full h-2 ${report.overall.score >= 75 ? 'bg-green-400' : report.overall.score >= 50 ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
+                            <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-4">Total Score</p>
+                            <p className={`text-6xl font-black drop-shadow-lg ${report.overall.score >= 75 ? 'text-green-400' : report.overall.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                                {report.overall.score}
+                            </p>
                         </div>
                         {[
-                            { label: "Technical", val: report.overall.technical },
-                            { label: "Communication", val: report.overall.communication },
-                            { label: "Problem Solving", val: report.overall.problem_solving },
-                            { label: "Confidence", val: report.overall.confidence },
+                            { label: "Technical", val: report.overall.technical, color: "text-cyan-400" },
+                            { label: "Communication", val: report.overall.communication, color: "text-violet-400" },
+                            { label: "Problem Solving", val: report.overall.problem_solving, color: "text-fuchsia-400" },
+                            { label: "Confidence", val: report.overall.confidence, color: "text-blue-400" },
                         ].map((metric, i) => (
-                            <div key={i} className="bg-black/40 border border-white/10 p-6 rounded-3xl flex flex-col items-center justify-center">
-                                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-2 text-center">{metric.label}</p>
-                                <p className="text-3xl font-bold text-white">{metric.val}<span className="text-gray-600 text-lg">/10</span></p>
+                            <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-[2rem] flex flex-col items-center justify-center backdrop-blur-md hover:bg-white/10 transition-colors">
+                                <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-4 text-center">{metric.label}</p>
+                                <p className={`text-4xl font-black ${metric.color}`}>{metric.val}<span className="text-gray-600 text-xl font-medium">/10</span></p>
                             </div>
                         ))}
                     </div>
 
-                    <div className="bg-neon-purple/10 border border-neon-purple/30 p-6 rounded-3xl mb-12">
-                        <h3 className="text-neon-purple font-bold uppercase tracking-widest mb-2 flex items-center gap-2"><FiAlertCircle/> Final Verdict & Suggestions</h3>
-                        <p className="text-gray-300 leading-relaxed">{report.overall.suggestions}</p>
+                    <div className="bg-gradient-to-r from-violet-600/20 to-fuchsia-600/10 border border-violet-500/30 p-8 rounded-[2rem] mb-16 backdrop-blur-xl shadow-2xl">
+                        <h3 className="text-violet-300 font-black uppercase tracking-widest mb-4 flex items-center gap-3 text-sm">
+                            <FiAlertCircle className="text-xl"/> Executive Summary
+                        </h3>
+                        <p className="text-gray-200 text-lg leading-relaxed font-medium">{report.overall.suggestions}</p>
                     </div>
 
-                    {/* PER QUESTION ANALYSIS */}
-                    <h2 className="text-2xl font-bold mb-6 border-b border-gray-700 pb-4">Detailed NLP Question Breakdown</h2>
-                    <div className="space-y-8">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="h-px bg-white/10 flex-1"></div>
+                        <h2 className="text-2xl font-bold font-display uppercase tracking-widest">Transcript Analysis</h2>
+                        <div className="h-px bg-white/10 flex-1"></div>
+                    </div>
+
+                    <div className="space-y-10">
                         {report.per_question_analysis.map((item, index) => (
-                            <div key={index} className="bg-[#1e293b] border border-gray-700 rounded-3xl overflow-hidden shadow-xl">
-                                <div className="p-6 bg-black/20 border-b border-gray-700 flex gap-4">
-                                    <div className="w-10 h-10 shrink-0 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-400">
+                            <div key={index} className="bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+                                <div className="p-8 bg-black/40 border-b border-white/5 flex gap-6 items-start">
+                                    <div className="w-12 h-12 shrink-0 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl flex items-center justify-center font-black text-gray-300 shadow-inner border border-white/10">
                                         Q{index + 1}
                                     </div>
-                                    <h3 className="text-lg font-medium pt-1">{item.question}</h3>
+                                    <h3 className="text-xl font-medium leading-relaxed pt-1 text-white">{item.question}</h3>
                                 </div>
                                 
-                                <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div className="col-span-2 space-y-6">
+                                <div className="p-8 grid grid-cols-1 xl:grid-cols-3 gap-8">
+                                    <div className="col-span-2 space-y-8">
                                         <div>
-                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Your Answer Transcript</h4>
-                                            <p className="text-gray-300 whitespace-pre-wrap leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5">{item.candidate_answer}</p>
+                                            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                <FiUser/> Your Output
+                                            </h4>
+                                            <p className="text-gray-300 whitespace-pre-wrap leading-relaxed bg-black/40 p-6 rounded-2xl border border-white/5 text-sm shadow-inner">{item.candidate_answer}</p>
                                         </div>
                                         <div>
-                                            <h4 className="text-xs font-bold text-green-400 uppercase tracking-widest mb-2">Ideal AI Response</h4>
-                                            <p className="text-green-100 whitespace-pre-wrap leading-relaxed text-sm bg-green-500/10 p-4 rounded-xl border border-green-500/20">{item.ideal_answer}</p>
+                                            <h4 className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                <FiCpu/> Ideal Synthesis
+                                            </h4>
+                                            <p className="text-cyan-100 whitespace-pre-wrap leading-relaxed text-sm bg-cyan-900/20 p-6 rounded-2xl border border-cyan-500/20 shadow-inner">{item.ideal_answer}</p>
                                         </div>
                                     </div>
 
-                                    <div className="col-span-1 border-t lg:border-t-0 lg:border-l border-gray-700 pt-6 lg:pt-0 lg:pl-6">
-                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">NLP Metrics</h4>
-                                        <div className="space-y-4 bg-black/20 p-5 rounded-2xl border border-white/5">
+                                    <div className="col-span-1 border-t xl:border-t-0 xl:border-l border-white/10 pt-8 xl:pt-0 xl:pl-8">
+                                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Sub-Metrics</h4>
+                                        <div className="space-y-5 bg-black/40 p-6 rounded-2xl border border-white/5 shadow-inner">
                                             {Object.entries(item.metrics).map(([key, value]) => (
                                                 <div key={key}>
-                                                    <div className="flex justify-between text-xs font-bold mb-1">
-                                                        <span className="text-gray-400 uppercase">{key.replace('_', ' ')}</span>
+                                                    <div className="flex justify-between text-[10px] font-bold mb-2">
+                                                        <span className="text-gray-400 uppercase tracking-wider">{key.replace('_', ' ')}</span>
                                                         <span className="text-white">{value}/10</span>
                                                     </div>
-                                                    <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
-                                                        <div className="h-full bg-neon-blue" style={{ width: `${(value / 10) * 100}%` }}></div>
+                                                    <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                                                        <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500" style={{ width: `${(value / 10) * 100}%` }}></div>
                                                     </div>
                                                 </div>
                                             ))}
